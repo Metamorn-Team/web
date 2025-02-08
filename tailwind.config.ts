@@ -11,6 +11,15 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        google: '#FFFFFF',
+        kakao: '#FFCD00',
+        kakaoHover: '#F2B900',
+        kakaoText: '#3E1C00',
+        naver: '#1EC800',
+        naverHover: '#1A9A00',
+      },
+      backgroundImage: {
+        homeBg: "url(/images/background.png)"
       },
       fontSize: {
         xs: "0.75rem", // 12px
