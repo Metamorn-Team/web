@@ -1,31 +1,35 @@
-'use client'
-import Card from "@/components/Card";
-import Logo from "@/components/Logo";
-import OauthButton from "@/components/OauthButton";
-import { useGoogleLogin } from "@react-oauth/google";
+"use client";
+import { useEffect, useRef } from "react";
 
-export const Home = () => {
-  const googleLogin = useGoogleLogin({
-    onSuccess: (code) => console.log(code),
-  });
+export const MainPage = () => {
+  const gameContainer = useRef(null);
+
+  useEffect(() => {
+    import("@/game/main").then((mod) => {
+      const initializeGame = mod.initializeGame;
+      const game = initializeGame(window.innerWidth, window.innerHeight);
+
+      const handleResize = () => {
+        game.scale.resize(window.innerWidth, window.innerHeight);
+        game.scene.scenes.forEach((scene) => {
+          scene.cameras.main.setSize(window.innerWidth, window.innerHeight);
+        });
+      };
+      window.addEventListener("resize", handleResize);
+
+      return () => {
+        window.removeEventListener("resize", handleResize);
+        game.destroy(true);
+      };
+    });
+  }, []);
 
   return (
-    <main className="flex justify-center items-center w-screen h-screen bg-center bg-cover bg-homeBg opacity-80">
-      <Card className="flex flex-col bg-slate-200 gap-6 p-8 w-96 h-96">
-        <Logo />
-        <div className="flex flex-col items-center gap-4">
-          <OauthButton type={"GOOGLE"} onClick={googleLogin} />
-          <OauthButton type={"KAKAO"} onClick={() => {}} />
-          <OauthButton type={"NAVER"} onClick={() => {}} />
-          <button className="mt-3">
-            <p className="text-sm text-stone-500 underline">
-              비회원으로 시작하기
-            </p>
-          </button>
-        </div>
-      </Card>
-    </main>
+    <div>
+      <div ref={gameContainer} id="game-container" className="z-0"></div>
+      <button className="absolute left-1/2 bg-white round">음소거</button>
+    </div>
   );
 };
 
-export default Home;
+export default MainPage;
