@@ -11,9 +11,9 @@ export const Home = () => {
 
   return (
     <main className="flex justify-center items-center w-screen h-screen bg-center bg-cover bg-homeBg opacity-80">
-      <Card className="flex flex-col bg-slate-400 gap-6 p-8">
+      <Card className="flex flex-col bg-slate-200 gap-6 p-8 w-96 h-96">
         <Logo />
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col items-center gap-4">
           <OauthButton type={"GOOGLE"} onClick={googleLogin} />
           <OauthButton type={"KAKAO"} onClick={() => {}} />
           <OauthButton type={"NAVER"} onClick={() => {}} />

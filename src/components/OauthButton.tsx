@@ -19,6 +19,7 @@ const OauthButton: React.FC<OauthButtonProps> = ({ type, onClick }) => {
         {type === "GOOGLE" ? "구글" : type === "KAKAO" ? "카카오" : "네이버"}로
         시작하기
       </p>
+      <div className="w-7"></div>
     </button>
   );
 };
@@ -30,7 +31,7 @@ const icons = {
 };
 
 const commonStyles = {
-  button: "w-72 h-11 rounded-xl p-1 flex items-center gap-3",
+  button: "justify-between w-72 h-11 rounded-xl p-1 flex items-center gap-3",
   text: "text-base",
 };
 
