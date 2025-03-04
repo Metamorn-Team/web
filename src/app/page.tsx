@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 
-export const MainPage = () => {
+const MainPage = () => {
   const gameContainer = useRef(null);
 
   useEffect(() => {
