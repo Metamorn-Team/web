@@ -1,10 +1,10 @@
-'use client'
+"use client";
 import Card from "@/components/Card";
 import Logo from "@/components/Logo";
 import OauthButton from "@/components/OauthButton";
 import { useGoogleLogin } from "@react-oauth/google";
 
-export const LoginPage = () => {
+const LoginPage = () => {
   const googleLogin = useGoogleLogin({
     onSuccess: (code) => console.log(code),
   });
