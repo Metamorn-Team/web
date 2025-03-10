@@ -8,6 +8,7 @@ export class Player extends Phaser.Physics.Matter.Sprite {
     super(scene.matter.world, x, y, 'human-base-idle');
     scene.add.existing(this);
 
+    this.setRectangle(12, 17);
     this.setFixedRotation();
 
     this.cursor = scene.input.keyboard?.createCursorKeys();

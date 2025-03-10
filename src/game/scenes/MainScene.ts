@@ -13,27 +13,31 @@ export class MainScene extends Phaser.Scene {
     this.load.image('background', '/images/background.png');
     this.load.spritesheet(
       "human-base-idle",
-      "/images/game/human/idle/base_idle.png",
+      "/game/human/idle/base_idle.png",
       {
         frameWidth: 96,
         frameHeight: 64,
       }
     );
+    this.load.image('sunnysideworld_16px', '/game/tiles/sunnysideworld_16px.png');
+    this.load.tilemapTiledJSON('town', '/game/maps/town.json');
   }
 
   create() {
-    const mapWidth = 2201;
-    const mapHeight = 1300;
+    const map = this.make.tilemap({ key: 'town' });
+    const tileset = map.addTilesetImage('sunnysideworld_16px', 'sunnysideworld_16px');
+    const groundLayer = map.createLayer('ground', tileset!);
+    groundLayer?.setAlpha(1);
+
+    const mapWidth = map.widthInPixels;
+    const mapHeight = map.heightInPixels;
     this.matter.world.setBounds(0, 0, mapWidth, mapHeight);
-    this.cameras.main.setZoom(3);
     this.sound.play('town');
 
-    const centerX = this.cameras.main.width / 3;
-    const centerY = this.cameras.main.height / 3;
-
-    const background = this.add.image(0, 0, "background");
-    background.setOrigin(0, 0);
-    this.player = new Player(this, centerX, centerY);
+    this.player = new Player(this, mapWidth / 2, mapHeight / 2);
+    
+    this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
+    this.cameras.main.setZoom(2.2);
     this.followPlayerCamera();
     this.defineAnimation();
   }
