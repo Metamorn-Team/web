@@ -11,7 +11,7 @@ export const initializeGame = (width: number, height: number) => {
       default: "matter",
       matter: {
         gravity: { x: 0, y: 0 },
-        debug: true,
+        // debug: true,
       },
     },
   });
