@@ -9,7 +9,7 @@ export class MainScene extends Phaser.Scene {
   }
 
   preload() {
-    const warirrorBlue = "warrior_blue.png";
+    // const warirrorBlue = "warrior_blue.png";
     const warirrorPurple = "warrior_purple.png";
     this.load.audio("town", "/sounds/town.mp3");
     this.load.image("background", "/images/background.png");

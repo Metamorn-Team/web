@@ -11,7 +11,8 @@ export class Player extends Phaser.Physics.Matter.Sprite {
     this.setRectangle(96, 96);
     this.setFixedRotation();
 
-    this.on(Phaser.Animations.Events.ANIMATION_COMPLETE, (animation) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.on(Phaser.Animations.Events.ANIMATION_COMPLETE, (animation: any) => {
       console.log(animation);
       if (animation.key === "warrior-attack") {
         this.play("warrior-idle");
