@@ -9,15 +9,15 @@ export class MainScene extends Phaser.Scene {
   }
 
   preload() {
-    // const warirrorBlue = "warrior_blue.png";
-    const warirrorPurple = "warrior_purple.png";
+    const warirrorBlue = "warrior_blue.png";
+    // const warirrorPurple = "warrior_purple.png";
     this.load.audio("town", "/sounds/town.mp3");
     this.load.image("background", "/images/background.png");
     this.load.spritesheet("human-base-idle", "/game/human/idle/base_idle.png", {
       frameWidth: 96,
       frameHeight: 64,
     });
-    this.load.spritesheet("warrior", `/game/warrior/${warirrorPurple}`, {
+    this.load.spritesheet("warrior", `/game/warrior/${warirrorBlue}`, {
       frameWidth: 192,
       frameHeight: 192,
     });
@@ -40,12 +40,12 @@ export class MainScene extends Phaser.Scene {
     const mapWidth = map.widthInPixels;
     const mapHeight = map.heightInPixels;
     this.matter.world.setBounds(0, 0, mapWidth, mapHeight);
-    this.sound.play("town", { volume: 0.3 });
+    this.sound.play("town", { volume: 0.05 });
 
     this.player = new Player(this, mapWidth / 2, mapHeight / 2);
 
     this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
-    this.cameras.main.setZoom(0.9);
+    this.cameras.main.setZoom(0.6);
     this.followPlayerCamera();
     this.defineAnimation();
   }
