@@ -13,7 +13,7 @@ export const defineAnimation = (scene: Phaser.Scene) => {
         start: 0,
         end: 5,
       }),
-      frameRate: 15,
+      frameRate: 10,
       repeat: -1,
     });
 
@@ -23,7 +23,7 @@ export const defineAnimation = (scene: Phaser.Scene) => {
         start: 6,
         end: 11,
       }),
-      frameRate: 15,
+      frameRate: 10,
       repeat: -1,
     });
 
@@ -33,7 +33,7 @@ export const defineAnimation = (scene: Phaser.Scene) => {
         start: 12,
         end: 17,
       }),
-      frameRate: 15,
+      frameRate: 13,
     });
   });
 };
