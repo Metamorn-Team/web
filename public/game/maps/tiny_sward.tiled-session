@@ -1,0 +1,53 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "tiny_sward.json": {
+            "scale": 0.7886,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 970.7075830585849,
+                "y": 655.5921886888156
+            }
+        },
+        "tiny_sward.json#elevation": {
+            "scaleInDock": 0.4621
+        },
+        "tiny_sward.json#mushroom-l": {
+            "scaleInDock": 1
+        },
+        "tiny_sward.json#mushroom-m": {
+            "scaleInDock": 1
+        },
+        "tiny_sward.json#mushroom-s": {
+            "scaleInDock": 1
+        },
+        "tiny_sward.json#tiny_sward_ground": {
+            "scaleInDock": 2.2573
+        },
+        "tiny_sward.json#water": {
+            "scaleInDock": 0.607
+        }
+    },
+    "last.imagePath": "/Users/ganghaeseong/Documents/mmorn-web/public/game/tiles/tiny-sward",
+    "map.lastUsedFormat": "json",
+    "map.tileHeight": 64,
+    "map.tileWidth": 64,
+    "openFiles": [
+    ],
+    "project": "tiny_sward.tiled-project",
+    "property.type": "bool",
+    "recentFiles": [
+        "tiny_sward.json"
+    ],
+    "tileset.embedInMap": true,
+    "tileset.tileSize": {
+        "height": 64,
+        "width": 64
+    }
+}
