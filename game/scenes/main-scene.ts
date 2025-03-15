@@ -13,6 +13,7 @@ export class MainScene extends Phaser.Scene {
 
   preload() {
     this.load.audio("town", "/game/sounds/town.mp3");
+    this.load.audio("woodland-fantasy", "/game/sounds/woodland-fantasy.mp3");
 
     this.load.spritesheet(
       WARRIOR("blue"),
@@ -38,6 +39,8 @@ export class MainScene extends Phaser.Scene {
       "/game/tiles/tiny-sward/tiny_sward_ground.png"
     );
     this.load.image("mushroom-l", "/game/tiles/tiny-sward/mushroom-l.png");
+    this.load.image("bone1", "/game/tiles/tiny-sward/bone1.png");
+    this.load.image("bone2", "/game/tiles/tiny-sward/bone2.png");
     this.load.tilemapTiledJSON("home", "/game/maps/tiny_sward.json");
   }
 
@@ -46,22 +49,21 @@ export class MainScene extends Phaser.Scene {
     const map = this.make.tilemap({ key: "home" });
     const waterTileset = map.addTilesetImage("water", "water");
     const stonTileset = map.addTilesetImage("elevation", "elevation");
+    const bone1Tileset = map.addTilesetImage("bone1", "bone1");
+    const bone2ileset = map.addTilesetImage("bone2", "bone2");
     const mushroomTileset = map.addTilesetImage("mushroom-l", "mushroom-l");
 
     const waterLayer = map.createLayer("water", waterTileset!);
     const stonLayer = map.createLayer("ston", stonTileset!);
-    // const collisionLayer = map.createLayer("mushroom-l", mushroomTileset!);
-
-    // collisionLayer?.setCollisionByProperty({ collidable: true });
-    // this.matter.world.convertTilemapLayer(collisionLayer!);
-
-    // waterLayer?.setAlpha(1);
+    const boneLayer = map.createLayer("bone", [bone1Tileset!, bone2ileset!]);
 
     const mapWidth = map.widthInPixels;
     const mapHeight = map.heightInPixels;
 
     this.matter.world.setBounds(0, 0, mapWidth, mapHeight);
-    this.sound.play("town", { volume: 0.05 });
+
+    // this.sound.play("town", { volume: 0.05 });
+    this.sound.play("woodland-fantasy", { volume: 0.05 });
 
     this.player = new Warrior(this, mapWidth / 2, mapHeight / 2, "purple");
 

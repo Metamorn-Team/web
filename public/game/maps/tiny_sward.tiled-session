@@ -7,6 +7,9 @@
     "expandedProjectPaths": [
     ],
     "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
         "tiny_sward.json": {
             "scale": 0.7886,
             "selectedLayer": 2,
@@ -14,6 +17,9 @@
                 "x": 970.7075830585849,
                 "y": 655.5921886888156
             }
+        },
+        "tiny_sward.json#\bbone1": {
+            "scaleInEditor": 1
         },
         "tiny_sward.json#elevation": {
             "scaleInDock": 0.4621
