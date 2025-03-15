@@ -1,4 +1,4 @@
-import type { WarriorColor } from "constants/entities";
+import type { WarriorColor } from "src/constants/entities";
 
 export const WARRIOR_IDLE = (color: WarriorColor) => `${color}_warrior_idle`;
 export const WARRIOR_WALK = (color: WarriorColor) => `${color}_warrior_walk`;

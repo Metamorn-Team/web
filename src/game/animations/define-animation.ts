@@ -1,9 +1,9 @@
-import { WARRIOR, warriorColors } from "constants/entities";
+import { WARRIOR, warriorColors } from "src/constants/entities";
 import {
   WARRIOR_ATTACK,
   WARRIOR_IDLE,
   WARRIOR_WALK,
-} from "game/animations/keys/warrior";
+} from "src/game/animations/keys/warrior";
 
 export const defineAnimation = (scene: Phaser.Scene) => {
   warriorColors.forEach((color) => {

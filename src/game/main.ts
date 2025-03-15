@@ -1,4 +1,4 @@
-import { MainScene } from "game/scenes/main-scene";
+import { MainScene } from "src/game/scenes/main-scene";
 import * as Phaser from "phaser";
 
 export const initializeGame = (width: number, height: number) => {

@@ -1,10 +1,10 @@
-import { WARRIOR, type WarriorColor } from "constants/entities";
+import { WARRIOR, type WarriorColor } from "src/constants/entities";
 import {
   WARRIOR_ATTACK,
   WARRIOR_IDLE,
   WARRIOR_WALK,
-} from "game/animations/keys/warrior";
-import { Player } from "game/entities/players/player";
+} from "src/game/animations/keys/warrior";
+import { Player } from "src/game/entities/players/player";
 
 export class Warrior extends Player {
   private readonly color: WarriorColor;

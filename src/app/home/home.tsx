@@ -1,4 +1,4 @@
-import { initializeGame } from "game/main";
+import { initializeGame } from "src/game/main";
 import { useEffect, useRef } from "react";
 
 export default function Home() {

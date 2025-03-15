@@ -1,8 +1,8 @@
 import * as Phaser from "phaser";
-import { WARRIOR } from "constants/entities";
-import { defineAnimation } from "game/animations/define-animation";
-import { Player } from "game/entities/players/player";
-import { Warrior } from "game/entities/players/warrior";
+import { WARRIOR } from "src/constants/entities";
+import { defineAnimation } from "src/game/animations/define-animation";
+import { Player } from "src/game/entities/players/player";
+import { Warrior } from "src/game/entities/players/warrior";
 
 export class MainScene extends Phaser.Scene {
   private player: Player;
