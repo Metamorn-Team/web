@@ -31,22 +31,31 @@ export class MainScene extends Phaser.Scene {
       }
     );
 
+    this.load.image("water", "/game/tiles/tiny-sward/water.png");
+    this.load.image("elevation", "/game/tiles/tiny-sward/elevation.png");
     this.load.image(
-      "sunnysideworld_16px",
-      "/game/tiles/sunnysideworld_16px.png"
+      "tiny_sward_ground",
+      "/game/tiles/tiny-sward/tiny_sward_ground.png"
     );
-    this.load.tilemapTiledJSON("town", "/game/maps/town.json");
+    this.load.image("mushroom-l", "/game/tiles/tiny-sward/mushroom-l.png");
+    this.load.tilemapTiledJSON("home", "/game/maps/tiny_sward.json");
   }
 
   create() {
     defineAnimation(this);
-    const map = this.make.tilemap({ key: "town" });
-    const tileset = map.addTilesetImage(
-      "sunnysideworld_16px",
-      "sunnysideworld_16px"
-    );
-    const groundLayer = map.createLayer("ground", tileset!);
-    groundLayer?.setAlpha(1);
+    const map = this.make.tilemap({ key: "home" });
+    const waterTileset = map.addTilesetImage("water", "water");
+    const stonTileset = map.addTilesetImage("elevation", "elevation");
+    const mushroomTileset = map.addTilesetImage("mushroom-l", "mushroom-l");
+
+    const waterLayer = map.createLayer("water", waterTileset!);
+    const stonLayer = map.createLayer("ston", stonTileset!);
+    // const collisionLayer = map.createLayer("mushroom-l", mushroomTileset!);
+
+    // collisionLayer?.setCollisionByProperty({ collidable: true });
+    // this.matter.world.convertTilemapLayer(collisionLayer!);
+
+    // waterLayer?.setAlpha(1);
 
     const mapWidth = map.widthInPixels;
     const mapHeight = map.heightInPixels;
@@ -57,7 +66,7 @@ export class MainScene extends Phaser.Scene {
     this.player = new Warrior(this, mapWidth / 2, mapHeight / 2, "purple");
 
     this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
-    this.cameras.main.setZoom(0.6);
+    this.cameras.main.setZoom(1.5);
     this.followPlayerCamera();
   }
 
