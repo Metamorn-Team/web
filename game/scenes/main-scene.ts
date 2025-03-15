@@ -41,6 +41,7 @@ export class MainScene extends Phaser.Scene {
     this.load.image("mushroom-l", "/game/tiles/tiny-sward/mushroom-l.png");
     this.load.image("bone1", "/game/tiles/tiny-sward/bone1.png");
     this.load.image("bone2", "/game/tiles/tiny-sward/bone2.png");
+    this.load.image("bridge", "/game/tiles/tiny-sward/bridge.png");
     this.load.tilemapTiledJSON("home", "/game/maps/tiny_sward.json");
   }
 
@@ -51,11 +52,12 @@ export class MainScene extends Phaser.Scene {
     const stonTileset = map.addTilesetImage("elevation", "elevation");
     const bone1Tileset = map.addTilesetImage("bone1", "bone1");
     const bone2ileset = map.addTilesetImage("bone2", "bone2");
-    const mushroomTileset = map.addTilesetImage("mushroom-l", "mushroom-l");
+    const bridgeileset = map.addTilesetImage("bridge", "bridge");
 
     const waterLayer = map.createLayer("water", waterTileset!);
     const stonLayer = map.createLayer("ston", stonTileset!);
     const boneLayer = map.createLayer("bone", [bone1Tileset!, bone2ileset!]);
+    const bridgeLayer = map.createLayer("bridge", bridgeileset!);
 
     const mapWidth = map.widthInPixels;
     const mapHeight = map.heightInPixels;
@@ -68,7 +70,7 @@ export class MainScene extends Phaser.Scene {
     this.player = new Warrior(this, mapWidth / 2, mapHeight / 2, "purple");
 
     this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
-    this.cameras.main.setZoom(1.5);
+    this.cameras.main.setZoom(1.2);
     this.followPlayerCamera();
   }
 
