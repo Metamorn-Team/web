@@ -11,9 +11,11 @@ export class Warrior extends Player {
 
   constructor(scene: Phaser.Scene, x: number, y: number, color: WarriorColor) {
     super(scene, x, y, WARRIOR(color));
+    this.speed = 3.5;
     this.color = color;
 
-    this.setRectangle(96, 96);
+    this.setScale(0.5);
+    this.setRectangle(50, 50);
 
     this.on(Phaser.Animations.Events.ANIMATION_COMPLETE, (animation: any) => {
       if (animation.key === WARRIOR_ATTACK(color)) {
