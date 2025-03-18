@@ -1,7 +1,7 @@
 import { MainScene } from "src/game/scenes/main-scene";
 import * as Phaser from "phaser";
 
-export const initializeGame = (width: number, height: number) => {
+export default function initializeGame(width: number, height: number) {
   return new Phaser.Game({
     type: Phaser.AUTO,
     width,
@@ -15,4 +15,4 @@ export const initializeGame = (width: number, height: number) => {
       },
     },
   });
-};
+}
