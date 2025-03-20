@@ -1,3 +1,4 @@
+import type { Socket } from "socket.io-client";
 import { WARRIOR, type WarriorColor } from "src/constants/entities";
 import {
   WARRIOR_ATTACK,
@@ -9,13 +10,22 @@ import { Player } from "src/game/entities/players/player";
 export class Warrior extends Player {
   private readonly color: WarriorColor;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, color: WarriorColor) {
-    super(scene, x, y, WARRIOR(color));
-    this.speed = 3;
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    color: WarriorColor,
+    nickname: string,
+    io?: Socket
+  ) {
+    super(scene, x, y, WARRIOR(color), nickname, io);
+    this.speed = 1;
     this.color = color;
 
     this.setScale(0.7);
     this.setRectangle(50, 50);
+    this.setFixedRotation();
+    this.setStatic(true);
 
     this.on(Phaser.Animations.Events.ANIMATION_COMPLETE, (animation: any) => {
       if (animation.key === WARRIOR_ATTACK(color)) {
