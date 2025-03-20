@@ -3,41 +3,51 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "tiny_sward.json",
     "expandedProjectPaths": [
+        "."
     ],
     "fileStates": {
         "": {
-            "scaleInDock": 1
+            "scaleInDock": 1.3753
         },
         "tiny_sward.json": {
-            "scale": 0.7886,
-            "selectedLayer": 2,
+            "scale": 0.5039,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 970.7075830585849,
-                "y": 655.5921886888156
+                "x": 427.6642190910894,
+                "y": 424.68743798372697
             }
         },
         "tiny_sward.json#\bbone1": {
             "scaleInEditor": 1
         },
+        "tiny_sward.json#bone1": {
+            "scaleInDock": 2.29
+        },
+        "tiny_sward.json#bone2": {
+            "scaleInDock": 2.29
+        },
+        "tiny_sward.json#bridge": {
+            "scaleInDock": 2.29
+        },
         "tiny_sward.json#elevation": {
-            "scaleInDock": 0.4621
+            "scaleInDock": 0.9378
         },
         "tiny_sward.json#mushroom-l": {
-            "scaleInDock": 1
+            "scaleInDock": 2.29
         },
         "tiny_sward.json#mushroom-m": {
-            "scaleInDock": 1
+            "scaleInDock": 2.29
         },
         "tiny_sward.json#mushroom-s": {
-            "scaleInDock": 1
+            "scaleInDock": 2.29
         },
         "tiny_sward.json#tiny_sward_ground": {
             "scaleInDock": 2.2573
         },
         "tiny_sward.json#water": {
-            "scaleInDock": 0.607
+            "scaleInDock": 2.29
         }
     },
     "last.imagePath": "/Users/ganghaeseong/Documents/mmorn-web/public/game/tiles/tiny-sward",
@@ -45,6 +55,7 @@
     "map.tileHeight": 64,
     "map.tileWidth": 64,
     "openFiles": [
+        "tiny_sward.json"
     ],
     "project": "tiny_sward.tiled-project",
     "property.type": "bool",
