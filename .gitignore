@@ -1,7 +1,1 @@
-.DS_Store
-/node_modules/
-
-# React Router
-/.react-router/
-/build/
-.netlify
+node_modules
