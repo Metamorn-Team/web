@@ -27,6 +27,7 @@ export class Warrior extends Player {
     this.setFixedRotation();
     this.setStatic(true);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.on(Phaser.Animations.Events.ANIMATION_COMPLETE, (animation: any) => {
       if (animation.key === WARRIOR_ATTACK(color)) {
         this.isAttack = false;

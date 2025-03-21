@@ -140,6 +140,7 @@ export class PlazaScene extends Phaser.Scene {
   }
 
   setPortal() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.matter.world.on("collisionstart", (_: any, bodyA: any, bodyB: any) => {
       if (
         bodyA.gameObject instanceof Player &&

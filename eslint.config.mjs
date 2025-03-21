@@ -11,11 +11,6 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
-  {
-    rules: {
-      "no-explicit-any": "off", // 명시적인 any 사용을 허용
-    },
-  },
 ];
 
 export default eslintConfig;
