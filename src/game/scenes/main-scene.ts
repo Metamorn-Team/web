@@ -91,7 +91,7 @@ export class MainScene extends Phaser.Scene {
   create() {
     this.initWorld();
 
-    this.io = io("http://localhost:3000");
+    this.io = io("http://localhost:3000/game");
     this.spwanMyPlayer();
 
     this.io.emit("playerJoin", {
@@ -231,7 +231,7 @@ export class MainScene extends Phaser.Scene {
     this.sound.play("woodland-fantasy", { volume: 0.1 });
 
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
-    this.cameras.main.setZoom(1.2);
+    this.cameras.main.setZoom(1.1);
   }
 
   spwanMyPlayer() {
