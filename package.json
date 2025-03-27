@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@next/font": "^14.2.15",
     "@react-oauth/google": "^0.12.1",
     "next": "15.1.6",
     "phaser": "^3.87.0",
