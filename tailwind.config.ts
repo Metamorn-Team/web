@@ -9,17 +9,18 @@ export default {
   theme: {
     extend: {
       colors: {
+        darkBg: "#353A4B",
         background: "var(--background)",
         foreground: "var(--foreground)",
-        google: '#FFFFFF',
-        kakao: '#FFCD00',
-        kakaoHover: '#F2B900',
-        kakaoText: '#3E1C00',
-        naver: '#1EC800',
-        naverHover: '#1A9A00',
+        google: "#FFFFFF",
+        kakao: "#FFCD00",
+        kakaoHover: "#F2B900",
+        kakaoText: "#3E1C00",
+        naver: "#1EC800",
+        naverHover: "#1A9A00",
       },
       backgroundImage: {
-        homeBg: "url(/images/background.png)"
+        homeBg: "url(/images/background.png)",
       },
       fontSize: {
         xs: "0.75rem", // 12px
@@ -34,15 +35,24 @@ export default {
         "6xl": "4rem", // 64px
       },
       fontWeight: {
-        thin: '100',
-        extralight: '200',
-        light: '300',
-        normal: '400',
-        medium: '500',
-        semibold: '600',
-        bold: '700',
-        extrabold: '800',
-        black: '900',
+        thin: "100",
+        extralight: "200",
+        light: "300",
+        normal: "400",
+        medium: "500",
+        semibold: "600",
+        bold: "700",
+        extrabold: "800",
+        black: "900",
+      },
+      animation: {
+        fire: "fireAnim 0.6s steps(7) infinite", // steps(7) → 7개의 프레임을 순차적으로 표시
+      },
+      keyframes: {
+        fireAnim: {
+          from: { backgroundPosition: "0% 0" },
+          to: { backgroundPosition: "-700% 0" },
+        },
       },
     },
   },
