@@ -6,6 +6,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "메타몬",
   description: "메타메타몬몬",
+  icons: {
+    icon: "/icons/favicon.png",
+  },
 };
 
 const BMJUA = localFont({
