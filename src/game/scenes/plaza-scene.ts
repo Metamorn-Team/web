@@ -12,14 +12,18 @@ export class PlazaScene extends Phaser.Scene {
   private player: Player;
   private otherPlayers: { [playerId: string]: Player } = {};
 
+  private isMute = false;
+
   private mapWidth: number;
   private mapHeight: number;
   private centerOfMap: { x: number; y: number };
 
+  public updateLoadingState: (state: boolean) => void;
+
   private io: Socket<ServerToClientEvents, ClientToServerEvents>;
 
   constructor() {
-    super({ key: "MainScene" });
+    super({ key: "PlazaScene" });
   }
 
   preload() {
@@ -86,7 +90,7 @@ export class PlazaScene extends Phaser.Scene {
   create() {
     this.initWorld();
 
-    this.io = io("http://localhost:3000/game");
+    this.io = io("http://localhost:4000/game");
     this.spwanMyPlayer();
 
     this.io.emit("playerJoin", {
@@ -261,5 +265,16 @@ export class PlazaScene extends Phaser.Scene {
     this.io.on("playerMoved", (data) => {
       this.handlePlayerMove(data.playerId, data.x, data.y);
     });
+  }
+
+  mute() {
+    if (this.isMute) {
+      this.sound.setVolume(0.1);
+      this.isMute = false;
+      return this.isMute;
+    }
+    this.sound.setVolume(0);
+    this.isMute = true;
+    return this.isMute;
   }
 }

@@ -1,11 +1,12 @@
-import * as Phaser from "phaser";
+import { Phaser } from "@/game/phaser";
 import { PlazaScene } from "@/game/scenes/plaza-scene";
 
-export function initializeGame(width: number, height: number) {
+export function initializeGame(width: number, height: number, parent?: string) {
   return new Phaser.Game({
     type: Phaser.AUTO,
     width,
     height,
+    parent: parent || "game-containter",
     scene: PlazaScene,
     physics: {
       default: "matter",
