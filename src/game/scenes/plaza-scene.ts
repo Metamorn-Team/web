@@ -3,6 +3,7 @@ import { defineAnimation } from "@/game/animations/define-animation";
 import { Player } from "@/game/entities/players/player";
 import { Warrior } from "@/game/entities/players/warrior";
 import { Sheep } from "@/game/entities/sheep";
+import { EventBus } from "@/game/event/EventBus";
 import { Mine } from "@/game/objects/mine";
 import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io";
 import * as Phaser from "phaser";
@@ -99,6 +100,7 @@ export class PlazaScene extends Phaser.Scene {
     });
 
     this.listenEvents();
+    EventBus.emit("current-scene-ready", this);
   }
 
   update(): void {
@@ -228,10 +230,11 @@ export class PlazaScene extends Phaser.Scene {
     this.matter.world.setBounds(0, 0, this.mapWidth, this.mapHeight);
 
     // this.sound.play("town", { volume: 0.05 });
-    this.sound.play("woodland-fantasy", { volume: 0.1 });
+    this.sound.play("woodland-fantasy");
+    this.sound.setVolume(0.15);
 
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
-    this.cameras.main.setZoom(1.1);
+    this.cameras.main.setZoom(1.5);
   }
 
   spwanMyPlayer() {
@@ -269,7 +272,7 @@ export class PlazaScene extends Phaser.Scene {
 
   mute() {
     if (this.isMute) {
-      this.sound.setVolume(0.1);
+      this.sound.setVolume(0.15);
       this.isMute = false;
       return this.isMute;
     }
