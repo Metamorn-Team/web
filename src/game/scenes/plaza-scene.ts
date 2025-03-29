@@ -234,7 +234,7 @@ export class PlazaScene extends Phaser.Scene {
     this.sound.setVolume(0.15);
 
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
-    this.cameras.main.setZoom(1.5);
+    this.cameras.main.setZoom(1.1);
   }
 
   spwanMyPlayer() {
@@ -270,7 +270,7 @@ export class PlazaScene extends Phaser.Scene {
     });
   }
 
-  mute() {
+  muteToggle() {
     if (this.isMute) {
       this.sound.setVolume(0.15);
       this.isMute = false;
