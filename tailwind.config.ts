@@ -21,6 +21,12 @@ export default {
       },
       backgroundImage: {
         homeBg: "url(/images/background.png)",
+        modalBg: "url(/images/ui/paper.png)",
+        paperLongBg: "url(/images/ui/paper-long.png)",
+        paperSmall: "url(/images/ui/paper-small.png)",
+        yellowBtn: "url(/images/ui/button-yellow.png)",
+        yellowPressedBtn: "url(/images/ui/button-yellow-pressed.png)",
+        ribonYellow: "url(/images/ui/ribon-yellow.png)",
       },
       fontSize: {
         xs: "0.75rem", // 12px
@@ -47,14 +53,20 @@ export default {
       },
       animation: {
         fire: "fireAnim 0.6s steps(7) infinite", // steps(7) → 7개의 프레임을 순차적으로 표시
+        fadeIn: "fadeIn 0.3s",
       },
       keyframes: {
         fireAnim: {
           from: { backgroundPosition: "0% 0" },
           to: { backgroundPosition: "-700% 0" },
         },
+        fadeIn: {
+          from: { opacity: "0.5", transform: "translateY(-10px)" },
+          to: { opacity: "1", transform: "translateY(0px)" },
+        },
       },
     },
   },
-  plugins: [],
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  plugins: [require("tailwind-scrollbar-hide")],
 } satisfies Config;
