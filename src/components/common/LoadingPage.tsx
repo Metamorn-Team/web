@@ -1,4 +1,4 @@
-import FireLoader from "@/components/FireLoader";
+import FireLoader from "@/components/common/FireLoader";
 import { useEffect, useState } from "react";
 
 export default function LoadingPage() {
@@ -13,7 +13,7 @@ export default function LoadingPage() {
   }, []);
 
   return (
-    <div className="w-screen h-screen bg-darkBg flex flex-col justify-center items-center">
+    <div className="absolute w-screen h-screen bg-darkBg flex flex-col justify-center items-center -z-50">
       <FireLoader />
       <p className="text-4xl text-white font-bold mt-4">로딩 중{dots}</p>
     </div>
