@@ -27,6 +27,10 @@ export default {
         yellowBtn: "url(/images/ui/button-yellow.png)",
         yellowPressedBtn: "url(/images/ui/button-yellow-pressed.png)",
         ribonYellow: "url(/images/ui/ribon-yellow.png)",
+        squareBlueBtn: "url(/images/ui/square-blue.png)",
+        squareBluePressedBtn: "url(/images/ui/square-blue-pressed.png)",
+        squareRedBtn: "url(/images/ui/square-red.png)",
+        squareRedPressedBtn: "url(/images/ui/square-red-pressed.png)",
       },
       fontSize: {
         xs: "0.75rem", // 12px
