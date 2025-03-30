@@ -11,8 +11,12 @@ export const metadata: Metadata = {
   },
 };
 
-const BMJUA = localFont({
-  src: "../fonts/BMJUA_otf.otf",
+// const BMJUA = localFont({
+//   src: "../fonts/BMJUA_otf.otf",
+// });
+
+const CookiRun = localFont({
+  src: "../fonts/CookieRun_Regular.otf",
 });
 
 const RootLayout = ({
@@ -22,7 +26,7 @@ const RootLayout = ({
 }>) => {
   return (
     <html>
-      <body className={BMJUA.className}>
+      <body className={CookiRun.className}>
         <GoogleOAuthProvider clientId="643620098305-m4javmkthiki8jciimaloh1hj14g18ap.apps.googleusercontent.com">
           {children}
         </GoogleOAuthProvider>
