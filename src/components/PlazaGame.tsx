@@ -1,7 +1,6 @@
 "use client";
 
-import { EventBus } from "@/game/event/EventBus";
-import { RefObject, useEffect, useLayoutEffect, useRef } from "react";
+import { RefObject, useLayoutEffect, useRef } from "react";
 
 interface GameProps {
   ref: RefObject<GameRef | null>;
@@ -47,31 +46,5 @@ export default function PlazaGame({ currentActiveScene, ref }: GameProps) {
     initialize();
   }, [ref]);
 
-  useEffect(() => {
-    EventBus.on("current-scene-ready", (currentScene: Phaser.Scene) => {
-      if (currentActiveScene instanceof Function) {
-        currentActiveScene(currentScene);
-      }
-      if (ref.current) {
-        ref.current.scene = currentScene;
-      }
-    });
-
-    const handleResize = () => {
-      if (gameRef.current) {
-        gameRef.current.scale.resize(window.innerWidth, window.innerHeight);
-        gameRef.current.scene.scenes.forEach((scene) => {
-          scene.cameras.main.setSize(window.innerWidth, window.innerHeight);
-        });
-      }
-    };
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      EventBus.removeListener("current-scene-ready");
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [currentActiveScene, ref]);
-
-  return <div id="game-container" className="z-0"></div>;
+  return <div id="game-container" className="z-40"></div>;
 }

@@ -1,13 +1,19 @@
 import Image from "next/image";
+import { FiUser } from "react-icons/fi";
 
 interface MenuHeaderProps {
   isMute: boolean;
   muteToggle: () => void;
+  changeFriendModalOpen: (state: boolean) => void;
 }
 
-export default function MenuHeader({ isMute, muteToggle }: MenuHeaderProps) {
+export default function MenuHeader({
+  isMute,
+  muteToggle,
+  changeFriendModalOpen,
+}: MenuHeaderProps) {
   return (
-    <div className="absolute flex justify-center items-center top-0 h-14 w-screen bg-white bg-opacity-40 z-40">
+    <header className="absolute flex justify-center items-center top-0 h-14 w-screen bg-white bg-opacity-40 z-40">
       <button
         className="round w-[fit-content] h-[fit-content] focus:outline-none z-50"
         onClick={muteToggle}
@@ -28,6 +34,9 @@ export default function MenuHeader({ isMute, muteToggle }: MenuHeaderProps) {
           />
         )}
       </button>
-    </div>
+      <button onClick={() => changeFriendModalOpen(true)}>
+        <FiUser width={64} height={64} />
+      </button>
+    </header>
   );
 }

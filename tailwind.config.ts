@@ -56,13 +56,18 @@ export default {
         black: "900",
       },
       animation: {
-        fire: "fireAnim 0.6s steps(7) infinite", // steps(7) → 7개의 프레임을 순차적으로 표시
+        fire: "fireAnim 0.6s steps(7) infinite",
+        goblinTorch: "goblinTorchAnim 0.6s step(7) infinite",
         fadeIn: "fadeIn 0.3s",
       },
       keyframes: {
         fireAnim: {
           from: { backgroundPosition: "0% 0" },
           to: { backgroundPosition: "-700% 0" },
+        },
+        goblinTorchAnim: {
+          from: { backgroundPosition: "0% 40%" },
+          to: { backgroundPosition: "-700% 40%" },
         },
         fadeIn: {
           from: { opacity: "0.5", transform: "translateY(-10px)" },
