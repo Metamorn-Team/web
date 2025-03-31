@@ -11,7 +11,7 @@ import FriendModal from "@/components/FriendModal";
 export default function PlazaGameWrapper() {
   const gameRef = useRef<GameRef | null>(null);
   const [isMute, setIsMute] = useState(false);
-  const { isModalOpen, changeModalOpen, close } = useModal();
+  const { isModalOpen, changeModalOpen, onClose } = useModal();
 
   const muteToggle = useCallback(() => {
     if (gameRef.current) {
@@ -58,7 +58,7 @@ export default function PlazaGameWrapper() {
       />
       <PlazaGame ref={gameRef} currentActiveScene={() => {}} />
 
-      {isModalOpen ? <FriendModal onClose={close} /> : null}
+      {isModalOpen ? <FriendModal onClose={onClose} /> : null}
     </div>
   );
 }
