@@ -1,9 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import LoadingPage from "@/components/LoadingPage";
+import LoadingPage from "@/components/common/LoadingPage";
 
-// PlazaGameWrapper 컴포넌트를 동적으로 임포트
 const DynamicPlazaGameWrapper = dynamic(
   () => import("@/components/PlazaGameWrapper"),
   {
@@ -14,8 +13,8 @@ const DynamicPlazaGameWrapper = dynamic(
 
 export default function MainPage() {
   return (
-    <div>
+    <main>
       <DynamicPlazaGameWrapper />
-    </div>
+    </main>
   );
 }

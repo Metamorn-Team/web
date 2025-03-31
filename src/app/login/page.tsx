@@ -1,6 +1,6 @@
 "use client";
-import Card from "@/components/Card";
-import Logo from "@/components/Logo";
+import Card from "@/components/common/Card";
+import Logo from "@/components/common/Logo";
 import OauthButton from "@/components/OauthButton";
 import { useGoogleLogin } from "@react-oauth/google";
 
