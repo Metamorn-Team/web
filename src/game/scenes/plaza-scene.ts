@@ -100,7 +100,6 @@ export class PlazaScene extends Phaser.Scene {
     });
 
     this.listenEvents();
-    EventBus.emit("current-scene-ready", this);
   }
 
   update(): void {
@@ -235,6 +234,8 @@ export class PlazaScene extends Phaser.Scene {
 
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
     this.cameras.main.setZoom(1.1);
+
+    EventBus.emit("current-scene-ready", this);
   }
 
   spwanMyPlayer() {
