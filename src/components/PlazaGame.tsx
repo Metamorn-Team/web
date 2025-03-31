@@ -12,7 +12,7 @@ export interface GameRef {
   scene: Phaser.Scene | null;
 }
 
-export default function PlazaGame({ currentActiveScene, ref }: GameProps) {
+export default function PlazaGame({ ref }: GameProps) {
   const gameRef = useRef<Phaser.Game | null>(null);
 
   useLayoutEffect(() => {

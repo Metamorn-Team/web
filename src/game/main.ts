@@ -6,6 +6,7 @@ export function initializeGame(width: number, height: number, parent?: string) {
     type: Phaser.AUTO,
     width,
     height,
+    canvasStyle: "display: none",
     parent: parent || "game-containter",
     scene: PlazaScene,
     physics: {

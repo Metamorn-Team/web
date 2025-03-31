@@ -8,7 +8,15 @@ import { EventBus } from "@/game/event/EventBus";
 import { useModal } from "@/hook/useModal";
 import FriendModal from "@/components/FriendModal";
 
-export default function PlazaGameWrapper() {
+interface PlazaGameWrapperProps {
+  isLoading: boolean;
+  changeIsLoading: (stat: boolean) => void;
+}
+
+export default function PlazaGameWrapper({
+  isLoading,
+  changeIsLoading,
+}: PlazaGameWrapperProps) {
   const gameRef = useRef<GameRef | null>(null);
   const [isMute, setIsMute] = useState(false);
   const { isModalOpen, changeModalOpen, onClose } = useModal();
@@ -24,7 +32,8 @@ export default function PlazaGameWrapper() {
   useEffect(() => {
     const handleSceneReady = () => {
       if (gameRef.current !== null) {
-        console.log("ready!");
+        changeIsLoading(false);
+        gameRef.current.game.canvas.style.display = "block";
       }
     };
 
@@ -47,15 +56,18 @@ export default function PlazaGameWrapper() {
       EventBus.removeListener("current-scene-ready", handleSceneReady);
       window.removeEventListener("resize", handleResize);
     };
-  }, [gameRef.current?.game]);
+  }, [gameRef]);
 
   return (
     <div>
-      <MenuHeader
-        isMute={isMute}
-        muteToggle={muteToggle}
-        changeFriendModalOpen={changeModalOpen}
-      />
+      {!isLoading ? (
+        <MenuHeader
+          isMute={isMute}
+          muteToggle={muteToggle}
+          changeFriendModalOpen={changeModalOpen}
+        />
+      ) : null}
+
       <PlazaGame ref={gameRef} currentActiveScene={() => {}} />
 
       {isModalOpen ? <FriendModal onClose={onClose} /> : null}
