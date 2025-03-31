@@ -2,13 +2,29 @@
 
 import FireLoader from "@/components/common/FireLoader";
 import GoblinTorch from "@/components/common/GoblinTorch";
-import { useEffect, useMemo, useState } from "react";
-
-const Loaders = [FireLoader, GoblinTorch];
+import { useEffect, useState } from "react";
 
 export default function LoadingPage() {
+  const loaders = [FireLoader, GoblinTorch] as const;
+  const [Loader, setLoader] = useState<(typeof loaders)[number] | null>(null);
+
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * loaders.length);
+    setLoader(loaders[randomIndex]);
+  }, []);
+
+  if (!Loader) return null;
+
+  return (
+    <div className="absolute w-screen h-screen bg-darkBg flex flex-col justify-center items-center -z-50">
+      <Loader />
+      <Dots />
+    </div>
+  );
+}
+
+const Dots = () => {
   const [dots, setDots] = useState(".");
-  const Loader = useMemo(() => Loaders[Math.round(Math.random())], []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -18,10 +34,5 @@ export default function LoadingPage() {
     return () => clearInterval(interval);
   }, []);
 
-  return (
-    <div className="absolute w-screen h-screen bg-darkBg flex flex-col justify-center items-center -z-50">
-      <Loader />
-      <p className="text-4xl text-white font-bold mt-4">로딩 중{dots}</p>
-    </div>
-  );
-}
+  return <p className="text-4xl text-white font-bold mt-4">로딩 중{dots}</p>;
+};
