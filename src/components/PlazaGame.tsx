@@ -18,15 +18,11 @@ export default function PlazaGame({ ref }: GameProps) {
   useLayoutEffect(() => {
     const initialize = async () => {
       const mod = await import("@/game/main");
-      const initializeGame = mod.initializeGame;
+      const { GameSingleton } = mod;
       let game: Phaser.Game;
 
       if (!gameRef.current) {
-        game = initializeGame(
-          window.innerWidth,
-          window.innerHeight,
-          "game-containter"
-        );
+        game = GameSingleton.getInstance(window.innerWidth, window.innerHeight);
         gameRef.current = game;
 
         if (ref) {
