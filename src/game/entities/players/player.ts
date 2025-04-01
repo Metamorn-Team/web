@@ -3,10 +3,12 @@ import * as Phaser from "phaser";
 import type { Socket } from "socket.io-client";
 
 export abstract class Player extends Phaser.Physics.Matter.Sprite {
+  private isControllable: boolean;
+  protected isAttack = false;
+
   private playerNameText: Phaser.GameObjects.Text;
   private cursor?: Phaser.Types.Input.Keyboard.CursorKeys;
   protected speed = 1;
-  protected isAttack: boolean = false;
   private nickname: string;
 
   public targetPosition: { x: number; y: number } = { x: 0, y: 0 };
@@ -20,20 +22,21 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     y: number,
     texture: string,
     nickname: string,
+    isControllable = false,
     io?: Socket
   ) {
     super(scene.matter.world, x, y, texture);
 
     scene.add.existing(this);
 
+    this.isControllable = isControllable;
     this.io = io;
     this.targetPosition.x = x;
     this.targetPosition.y = y;
     this.nickname = nickname;
     this.setNickname(scene);
 
-    this.setCollisionCategory(0x0001);
-    this.setCollidesWith(0);
+    this.setCollisionGroup(-1);
 
     // if (io) {
     //   this.io = io;
@@ -44,10 +47,11 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   }
 
   update(): void {
-    if (this.io) {
+    if (this.isControllable) {
       this.move();
     }
     this.setNicknamePosition(this.x, this.y);
+    this.setDepth(this.y);
   }
 
   move() {
@@ -97,6 +101,10 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
     if (velocityX === 0 && velocityY === 0) {
       this.idle();
+      return;
+    }
+
+    if (!this.io) {
       return;
     }
 
