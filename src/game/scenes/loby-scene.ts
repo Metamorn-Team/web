@@ -3,7 +3,6 @@ import { Player } from "@/game/entities/players/player";
 import { Warrior } from "@/game/entities/players/warrior";
 import { Sheep } from "@/game/entities/sheep";
 import { EventBus } from "@/game/event/EventBus";
-import { assetManager } from "@/game/managers/asset-manager";
 import { spawnManager } from "@/game/managers/spawn-manager";
 import { Mine } from "@/game/objects/mine";
 import { Phaser } from "@/game/phaser";
@@ -31,9 +30,7 @@ export class LobyScene extends MetamornScene {
     super("LobyScene");
   }
 
-  preload() {
-    assetManager.preloadCommonAsset(this);
-  }
+  preload() {}
 
   create() {
     this.initWorld();

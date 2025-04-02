@@ -9,6 +9,8 @@ import { useModal } from "@/hook/useModal";
 import FriendModal from "@/components/FriendModal";
 import Modal from "@/components/common/Modal";
 import Button from "@/components/common/Button";
+import { Phaser } from "@/game/phaser";
+import { persistItem } from "@/utils/persistence";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -32,15 +34,17 @@ export default function GameWrapper({
     if (gameRef.current) {
       const scene = gameRef.current.game.scene.getScene<LobyScene>("LobyScene");
       scene.setBgmPlay(!isPlayBgm);
-      setIsPlayBgm((curr) => !curr);
+      setIsPlayBgm((state) => !state);
     }
   }, [gameRef, isPlayBgm]);
 
   useEffect(() => {
-    const handleSceneReady = () => {
-      if (gameRef.current !== null) {
-        changeIsLoading(false);
+    const handleSceneReady = (scene: Phaser.Scene) => {
+      if (gameRef.current) {
+        persistItem("current_scene", scene.scene.key);
         gameRef.current.game.canvas.style.display = "block";
+        gameRef.current.currnetScene = scene;
+        changeIsLoading(false);
       }
     };
 
@@ -78,9 +82,6 @@ export default function GameWrapper({
           window.innerWidth,
           window.innerHeight
         );
-        gameRef.current.game.scene.scenes.forEach((scene) => {
-          scene.cameras.main.setSize(window.innerWidth, window.innerHeight);
-        });
       }
     };
     window.addEventListener("resize", handleResize);

@@ -5,7 +5,6 @@ import { MetamornScene } from "@/game/scenes/meramorn-scene";
 import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io";
 import { spawnManager } from "@/game/managers/spawn-manager";
 import { Player } from "@/game/entities/players/player";
-import { assetManager } from "@/game/managers/asset-manager";
 
 export class ZoneScene extends MetamornScene {
   protected override player: Warrior;
@@ -22,7 +21,6 @@ export class ZoneScene extends MetamornScene {
   }
 
   preload() {
-    assetManager.preloadCommonAsset(this);
     this.load.image("ground", "/game/tiles/tiny-sward/ground.png");
 
     this.load.tilemapTiledJSON("zone", "/game/maps/portal.json");
@@ -32,7 +30,7 @@ export class ZoneScene extends MetamornScene {
     console.log(this.game);
     this.initWorld();
 
-    this.io = io("http://localhost:4000/game");
+    this.io = io("http://localhost:4000/game/zone");
     this.spwanMyPlayer();
 
     this.io.emit("playerJoin", {
@@ -50,6 +48,10 @@ export class ZoneScene extends MetamornScene {
 
   update(): void {
     this.player.update();
+
+    Object.values(this.otherPlayers).forEach((player) => {
+      player.update();
+    });
   }
 
   createTileMapLayers(map: Phaser.Tilemaps.Tilemap) {

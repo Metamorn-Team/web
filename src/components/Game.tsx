@@ -10,6 +10,7 @@ interface GameProps {
 
 export interface GameRef {
   game: Phaser.Game;
+  currnetScene: Phaser.Scene | null;
 }
 
 export default function Game({ ref }: GameProps) {
@@ -26,7 +27,7 @@ export default function Game({ ref }: GameProps) {
         gameRef.current = game;
 
         if (ref) {
-          ref.current = { game };
+          ref.current = { game, currnetScene: null };
         }
       }
 
