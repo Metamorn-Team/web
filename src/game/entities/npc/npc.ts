@@ -95,9 +95,11 @@ export abstract class Npc extends Phaser.Physics.Matter.Sprite {
 
   private setupInput() {
     // E 키 입력 리스너 설정
-    this.interactKey = this.scene.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.E
-    );
+    if (this.scene.input.keyboard) {
+      this.interactKey = this.scene.input.keyboard.addKey(
+        Phaser.Input.Keyboard.KeyCodes.E
+      );
+    }
 
     // 키 입력 이벤트 핸들러
     this.scene.events.on("update", this.handleKeyInput, this);
