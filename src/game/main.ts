@@ -2,13 +2,13 @@ import { Phaser } from "@/game/phaser";
 import { PlazaScene } from "@/game/scenes/plaza-scene";
 import { ZoneScene } from "@/game/scenes/portal-scene";
 
-export function initializeGame(width: number, height: number, parent?: string) {
+export function initializeGame(width: number, height: number) {
   return new Phaser.Game({
     type: Phaser.AUTO,
     width,
     height,
     canvasStyle: "display: none",
-    parent: parent || "game-containter",
+    parent: "game-containter",
     scene: [PlazaScene, ZoneScene],
     physics: {
       default: "matter",
@@ -26,12 +26,15 @@ export class GameSingleton {
   private constructor() {}
 
   static getInstance(width: number, height: number) {
-    if (this.instance) {
-      this.instance.canvas.width = width;
-      this.instance.canvas.height = height;
-    } else {
-      this.instance = initializeGame(width, height);
-    }
+    this.destroy();
+    this.instance = initializeGame(width, height);
+
     return this.instance;
+  }
+
+  static destroy() {
+    if (this.instance) {
+      this.instance.destroy(true);
+    }
   }
 }

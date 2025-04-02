@@ -1,23 +1,27 @@
-import { WARRIOR } from "@/constants/entities";
 import { defineAnimation } from "@/game/animations/define-animation";
 import { Player } from "@/game/entities/players/player";
 import { Warrior } from "@/game/entities/players/warrior";
 import { Sheep } from "@/game/entities/sheep";
 import { EventBus } from "@/game/event/EventBus";
+import { assetManager } from "@/game/managers/asset-manager";
+import { spawnManager } from "@/game/managers/spawn-manager";
 import { Mine } from "@/game/objects/mine";
+import { Phaser } from "@/game/phaser";
 import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io";
-import * as Phaser from "phaser";
 import { io, Socket } from "socket.io-client";
 
 export class PlazaScene extends Phaser.Scene {
   private player: Player;
   private otherPlayers: { [playerId: string]: Player } = {};
+  private mine: Mine;
 
   private isMute = false;
 
   private mapWidth: number;
   private mapHeight: number;
   private centerOfMap: { x: number; y: number };
+
+  private isEnterPortal: boolean = false;
 
   public updateLoadingState: (state: boolean) => void;
 
@@ -28,64 +32,7 @@ export class PlazaScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.audio("town", "/game/sounds/town.mp3");
-    this.load.audio("woodland-fantasy", "/game/sounds/woodland-fantasy.mp3");
-
-    this.load.spritesheet("sheep", `/game/animal/sheep.png`, {
-      frameWidth: 128,
-      frameHeight: 128,
-    });
-
-    this.load.spritesheet(
-      WARRIOR("blue"),
-      `/game/player/${WARRIOR("blue")}.png`,
-      {
-        frameWidth: 192,
-        frameHeight: 192,
-      }
-    );
-    this.load.spritesheet(
-      WARRIOR("purple"),
-      `/game/player/${WARRIOR("purple")}.png`,
-      {
-        frameWidth: 192,
-        frameHeight: 192,
-      }
-    );
-
-    this.load.spritesheet(
-      WARRIOR("yellow"),
-      `/game/player/${WARRIOR("yellow")}.png`,
-      {
-        frameWidth: 192,
-        frameHeight: 192,
-      }
-    );
-
-    this.load.spritesheet(
-      WARRIOR("red"),
-      `/game/player/${WARRIOR("red")}.png`,
-      {
-        frameWidth: 192,
-        frameHeight: 192,
-      }
-    );
-
-    this.load.image("mine", "/game/object/mine.png");
-
-    this.load.image("water", "/game/tiles/tiny-sward/water.png");
-    this.load.image("elevation", "/game/tiles/tiny-sward/elevation.png");
-
-    this.load.image("mushroom-l", "/game/tiles/tiny-sward/mushroom-l.png");
-    this.load.image("mushroom-m", "/game/tiles/tiny-sward/mushroom-m.png");
-    this.load.image("mushroom-s", "/game/tiles/tiny-sward/mushroom-s.png");
-
-    this.load.image("bone1", "/game/tiles/tiny-sward/bone1.png");
-    this.load.image("bone2", "/game/tiles/tiny-sward/bone2.png");
-
-    this.load.image("bridge", "/game/tiles/tiny-sward/bridge.png");
-
-    this.load.tilemapTiledJSON("home", "/game/maps/tiny_sward.json");
+    assetManager.preloadCommonAsset(this);
   }
 
   create() {
@@ -98,6 +45,8 @@ export class PlazaScene extends Phaser.Scene {
       x: this.centerOfMap.x,
       y: this.centerOfMap.y,
     });
+
+    this.mine = new Mine(this, this.centerOfMap.x, this.centerOfMap.y - 200);
 
     this.listenEvents();
   }
@@ -116,6 +65,21 @@ export class PlazaScene extends Phaser.Scene {
         player.y = Phaser.Math.Linear(player.y, player.targetPosition.y, 0.1);
       }
     });
+
+    const distance = Phaser.Math.Distance.Between(
+      this.mine.x,
+      this.mine.y,
+      this.player.x,
+      this.player.y
+    );
+    if (distance < 80 && !this.isEnterPortal) {
+      EventBus.emit("in-portal", { category: "개발" });
+      this.isEnterPortal = true;
+    }
+    if (distance > 79 && this.isEnterPortal) {
+      EventBus.emit("out-portal");
+      this.isEnterPortal = false;
+    }
   }
 
   followPlayerCamera() {
@@ -151,8 +115,7 @@ export class PlazaScene extends Phaser.Scene {
         bodyA.gameObject instanceof Player &&
         bodyB.gameObject instanceof Mine
       ) {
-        this.sound.stopAll();
-        this.scene.start("PortalScene");
+        EventBus.emit("portal", { category: "개발" });
       }
 
       if (
@@ -162,19 +125,6 @@ export class PlazaScene extends Phaser.Scene {
         bodyA.gameObject.destroy();
       }
     });
-  }
-
-  spawnPlayer(playerId: string, x?: number, y?: number) {
-    if (this.otherPlayers.hasOwnProperty(playerId)) return;
-
-    const player = new Warrior(
-      this,
-      x ?? this.mapWidth / 2,
-      y ?? this.mapHeight / 2,
-      "blue",
-      playerId
-    );
-    this.otherPlayers[playerId] = player;
   }
 
   handlePlayerMove(playerId: string, x: number, y: number) {
@@ -204,7 +154,9 @@ export class PlazaScene extends Phaser.Scene {
     [playerId: string]: { x: number; y: number };
   }) {
     Object.keys(activeUsers).forEach((playerId) =>
-      this.spawnPlayer(
+      spawnManager.spawnPlayer(
+        this.otherPlayers,
+        this,
         playerId,
         activeUsers[playerId].x,
         activeUsers[playerId].y
@@ -245,6 +197,7 @@ export class PlazaScene extends Phaser.Scene {
       this.centerOfMap.y,
       "red",
       "Snail",
+      true,
       this.io
     );
     this.followPlayerCamera();
@@ -257,7 +210,13 @@ export class PlazaScene extends Phaser.Scene {
 
     this.io.on("playerJoin", (data) => {
       const playerId = data.playerId as string;
-      this.spawnPlayer(playerId);
+      spawnManager.spawnPlayer(
+        this.otherPlayers,
+        this,
+        playerId,
+        this.centerOfMap.x,
+        this.centerOfMap.y
+      );
     });
 
     this.io.on("playerLeft", (data) => {
@@ -269,16 +228,25 @@ export class PlazaScene extends Phaser.Scene {
     this.io.on("playerMoved", (data) => {
       this.handlePlayerMove(data.playerId, data.x, data.y);
     });
+
+    EventBus.on("move-to-zone", () => {
+      this.cameras.main.fadeOut(500);
+      this.disconnectSocket();
+
+      this.time.delayedCall(500, () => {
+        this.sound.stopAll();
+        EventBus.emit("start-change-scene");
+        this.scene.start("ZoneScene");
+      });
+    });
   }
 
-  muteToggle() {
-    if (this.isMute) {
-      this.sound.setVolume(0.15);
-      this.isMute = false;
-      return this.isMute;
-    }
-    this.sound.setVolume(0);
-    this.isMute = true;
-    return this.isMute;
+  setBgmPlay(state: boolean) {
+    this.sound.setVolume(state ? 0.15 : 0);
+    this.isMute = state;
+  }
+
+  disconnectSocket() {
+    this.io.disconnect();
   }
 }

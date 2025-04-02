@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 
 const DynamicPlazaGameWrapper = dynamic(
-  () => import("@/components/PlazaGameWrapper"),
+  () => import("@/components/GameWrapper"),
   {
     ssr: false,
   }

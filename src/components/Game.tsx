@@ -1,22 +1,24 @@
 "use client";
 
+import { Phaser } from "@/game/phaser";
 import { RefObject, useLayoutEffect, useRef } from "react";
 
-interface GameProps {
+interface PlazaGameProps {
   ref: RefObject<GameRef | null>;
   currentActiveScene: (scene: Phaser.Scene) => void;
 }
 
 export interface GameRef {
   game: Phaser.Game;
-  scene: Phaser.Scene | null;
 }
 
-export default function PlazaGame({ ref }: GameProps) {
+export default function Game({ ref }: PlazaGameProps) {
   const gameRef = useRef<Phaser.Game | null>(null);
 
   useLayoutEffect(() => {
+    console.log("햐이");
     const initialize = async () => {
+      console.log("이닛");
       const mod = await import("@/game/main");
       const { GameSingleton } = mod;
       let game: Phaser.Game;
@@ -26,21 +28,21 @@ export default function PlazaGame({ ref }: GameProps) {
         gameRef.current = game;
 
         if (ref) {
-          ref.current = { game, scene: null };
+          ref.current = { game };
         }
       }
 
       return () => {
         if (gameRef.current) {
           gameRef.current.destroy(true);
+          GameSingleton.destroy();
           gameRef.current = null;
         }
       };
     };
 
-    // 비동기적으로 초기화 시작
     initialize();
   }, [ref]);
 
-  return <div id="game-container" className="z-40"></div>;
+  return <div id="game-container" />;
 }
