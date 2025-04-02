@@ -1,7 +1,6 @@
-import { defineAnimation } from "@/game/animations/define-animation";
+import { TorchGoblin } from "@/game/entities/npc/torch-goblin";
 import { Player } from "@/game/entities/players/player";
 import { Warrior } from "@/game/entities/players/warrior";
-import { Sheep } from "@/game/entities/sheep";
 import { EventBus } from "@/game/event/EventBus";
 import { spawnManager } from "@/game/managers/spawn-manager";
 import { Mine } from "@/game/objects/mine";
@@ -12,6 +11,7 @@ import { io, Socket } from "socket.io-client";
 
 export class LobyScene extends MetamornScene {
   private otherPlayers: { [playerId: string]: Player } = {};
+  private npcGoblin: TorchGoblin;
   private mine: Mine;
 
   private isMute = false;
@@ -43,6 +43,12 @@ export class LobyScene extends MetamornScene {
       y: this.centerOfMap.y,
     });
 
+    this.npcGoblin = new TorchGoblin(
+      this,
+      this.centerOfMap.x - 200,
+      this.centerOfMap.y,
+      "red"
+    );
     this.mine = new Mine(this, this.centerOfMap.x, this.centerOfMap.y - 200);
 
     this.listenEvents();
@@ -56,15 +62,15 @@ export class LobyScene extends MetamornScene {
 
     const distance = Phaser.Math.Distance.Between(
       this.mine.x,
-      this.mine.y,
+      this.mine.y + 40,
       this.player.x,
       this.player.y
     );
-    if (distance < 80 && !this.isEnterPortal) {
+    if (distance < 30 && !this.isEnterPortal) {
       EventBus.emit("in-portal", { category: "개발" });
       this.isEnterPortal = true;
     }
-    if (distance > 79 && this.isEnterPortal) {
+    if (distance > 29 && this.isEnterPortal) {
       EventBus.emit("out-portal");
       this.isEnterPortal = false;
     }
@@ -93,21 +99,21 @@ export class LobyScene extends MetamornScene {
 
   setPortal() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.matter.world.on("collisionstart", (_: any, bodyA: any, bodyB: any) => {
-      if (
-        bodyA.gameObject instanceof Player &&
-        bodyB.gameObject instanceof Mine
-      ) {
-        EventBus.emit("portal", { category: "개발" });
-      }
-
-      if (
-        bodyA.gameObject instanceof Sheep &&
-        bodyB.gameObject instanceof Mine
-      ) {
-        bodyA.gameObject.destroy();
-      }
-    });
+    // this.matter.world.on("collisionstart", (_: any, bodyA: any, bodyB: any) => {
+    //   console.log(_);
+    //   if (
+    //     bodyA.gameObject instanceof Player &&
+    //     bodyB.gameObject instanceof Mine
+    //   ) {
+    //     EventBus.emit("portal", { category: "개발" });
+    //   }
+    //   if (
+    //     bodyA.gameObject instanceof Sheep &&
+    //     bodyB.gameObject instanceof Mine
+    //   ) {
+    //     bodyA.gameObject.destroy();
+    //   }
+    // });
   }
 
   handlePlayerMove(playerId: string, x: number, y: number) {
@@ -149,7 +155,6 @@ export class LobyScene extends MetamornScene {
 
   initWorld() {
     this.setPortal();
-    defineAnimation(this);
 
     const map = this.make.tilemap({ key: "home" });
     this.createTileMapLayers(map);
