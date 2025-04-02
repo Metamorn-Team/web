@@ -1,4 +1,5 @@
-import { WARRIOR, warriorColors } from "@/constants/entities";
+import { TORCH_GOBLIN, WARRIOR, warriorColors } from "@/constants/entities";
+import { TORCH_GOBLIN_IDLE } from "@/game/animations/keys/torch-goblin";
 import {
   WARRIOR_ATTACK,
   WARRIOR_IDLE,
@@ -35,5 +36,15 @@ export const defineAnimation = (scene: Phaser.Scene) => {
       }),
       frameRate: 13,
     });
+  });
+
+  scene.anims.create({
+    key: TORCH_GOBLIN_IDLE("red"),
+    frames: scene.anims.generateFrameNumbers(TORCH_GOBLIN("red"), {
+      start: 0,
+      end: 6,
+    }),
+    frameRate: 13,
+    repeat: -1,
   });
 };
