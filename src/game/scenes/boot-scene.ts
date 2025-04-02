@@ -1,7 +1,7 @@
 import { defineAnimation } from "@/game/animations/define-animation";
 import { assetManager } from "@/game/managers/asset-manager";
 import { Phaser } from "@/game/phaser";
-import { getItem } from "@/utils/persistence";
+import { getItem } from "@/utils/session-storage";
 
 export class BootScene extends Phaser.Scene {
   constructor() {

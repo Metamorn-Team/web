@@ -10,7 +10,10 @@ import FriendModal from "@/components/FriendModal";
 import Modal from "@/components/common/Modal";
 import Button from "@/components/common/Button";
 import { Phaser } from "@/game/phaser";
-import { persistItem } from "@/utils/persistence";
+import { setItem } from "@/utils/session-storage";
+import TalkModal from "@/components/common/TalkModal";
+import { Npc } from "@/game/entities/npc/npc";
+import GoblinTorch from "@/components/common/GoblinTorch";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -29,6 +32,11 @@ export default function GameWrapper({
     onOpen: onPortalModalOpen,
     onClose: onPortalModalClose,
   } = useModal();
+  const {
+    isModalOpen: isHelpModalOpen,
+    onOpen: onHelpOpen,
+    onClose: onHelpClose,
+  } = useModal();
 
   const playBgmToggle = useCallback(() => {
     if (gameRef.current) {
@@ -41,7 +49,7 @@ export default function GameWrapper({
   useEffect(() => {
     const handleSceneReady = (scene: Phaser.Scene) => {
       if (gameRef.current) {
-        persistItem("current_scene", scene.scene.key);
+        setItem("current_scene", scene.scene.key);
         gameRef.current.game.canvas.style.display = "block";
         gameRef.current.currnetScene = scene;
         changeIsLoading(false);
@@ -70,11 +78,19 @@ export default function GameWrapper({
       }
     };
 
+    const handleNpcInteraction = (data: { npc: Npc; type: "guide" }) => {
+      if (data.type === "guide") {
+        onHelpOpen();
+      }
+    };
+
     EventBus.on("current-scene-ready", handleSceneReady);
     EventBus.on("in-portal", handleInPortal);
     EventBus.on("out-portal", handleOutPortal);
     EventBus.on("start-change-scene", handleStartChangeScene);
     EventBus.on("finish-change-scene", handleFinishChangeScene);
+    EventBus.on("npc-interaction-started", handleNpcInteraction);
+    EventBus.on("npc-interaction-started", handleNpcInteraction);
 
     const handleResize = () => {
       if (gameRef.current) {
@@ -109,6 +125,11 @@ export default function GameWrapper({
 
       <Game ref={gameRef} currentActiveScene={() => {}} />
 
+      {isHelpModalOpen ? (
+        <TalkModal onClose={onHelpClose} avatar={<GoblinTorch />}>
+          <div>안녕 스넬 메타몬은 처음인가? 그렇다면 자신에게 응찍을 해라</div>
+        </TalkModal>
+      ) : null}
       {isModalOpen ? <FriendModal onClose={onClose} /> : null}
       {isPortalModalOpen ? (
         <Modal onClose={onPortalModalClose}>
