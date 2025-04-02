@@ -10,7 +10,7 @@ import { Phaser } from "@/game/phaser";
 import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io";
 import { io, Socket } from "socket.io-client";
 
-export class PlazaScene extends Phaser.Scene {
+export class LobyScene extends Phaser.Scene {
   private player: Player;
   private otherPlayers: { [playerId: string]: Player } = {};
   private mine: Mine;
@@ -28,7 +28,7 @@ export class PlazaScene extends Phaser.Scene {
   private io: Socket<ServerToClientEvents, ClientToServerEvents>;
 
   constructor() {
-    super({ key: "PlazaScene" });
+    super({ key: "LobyScene" });
   }
 
   preload() {
@@ -38,7 +38,7 @@ export class PlazaScene extends Phaser.Scene {
   create() {
     this.initWorld();
 
-    this.io = io("http://localhost:4000/game");
+    this.io = io("http://localhost:4000/game/loby");
     this.spwanMyPlayer();
 
     this.io.emit("playerJoin", {

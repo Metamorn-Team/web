@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import Game, { GameRef } from "@/components/Game";
-import { PlazaScene } from "@/game/scenes/plaza-scene";
+import { LobyScene } from "@/game/scenes/loby-scene";
 import MenuHeader from "@/components/MenuHeader";
 import { EventBus } from "@/game/event/EventBus";
 import { useModal } from "@/hook/useModal";
@@ -10,7 +10,7 @@ import FriendModal from "@/components/FriendModal";
 import Modal from "@/components/common/Modal";
 import Button from "@/components/common/Button";
 
-interface PlazaGameWrapperProps {
+interface GameWrapperProps {
   isLoading: boolean;
   changeIsLoading: (state: boolean) => void;
 }
@@ -18,7 +18,7 @@ interface PlazaGameWrapperProps {
 export default function GameWrapper({
   isLoading,
   changeIsLoading,
-}: PlazaGameWrapperProps) {
+}: GameWrapperProps) {
   const gameRef = useRef<GameRef | null>(null);
   const [isPlayBgm, setIsPlayBgm] = useState(true);
   const { isModalOpen, changeModalOpen, onClose } = useModal();
@@ -30,8 +30,7 @@ export default function GameWrapper({
 
   const playBgmToggle = useCallback(() => {
     if (gameRef.current) {
-      const scene =
-        gameRef.current.game.scene.getScene<PlazaScene>("PlazaScene");
+      const scene = gameRef.current.game.scene.getScene<LobyScene>("LobyScene");
       scene.setBgmPlay(!isPlayBgm);
       setIsPlayBgm((curr) => !curr);
     }

@@ -1,9 +1,9 @@
 "use client";
 
-import { Phaser } from "@/game/phaser";
 import { RefObject, useLayoutEffect, useRef } from "react";
+import { Phaser } from "@/game/phaser";
 
-interface PlazaGameProps {
+interface GameProps {
   ref: RefObject<GameRef | null>;
   currentActiveScene: (scene: Phaser.Scene) => void;
 }
@@ -12,13 +12,11 @@ export interface GameRef {
   game: Phaser.Game;
 }
 
-export default function Game({ ref }: PlazaGameProps) {
+export default function Game({ ref }: GameProps) {
   const gameRef = useRef<Phaser.Game | null>(null);
 
   useLayoutEffect(() => {
-    console.log("햐이");
     const initialize = async () => {
-      console.log("이닛");
       const mod = await import("@/game/main");
       const { GameSingleton } = mod;
       let game: Phaser.Game;

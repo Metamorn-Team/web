@@ -1,5 +1,5 @@
 import { Phaser } from "@/game/phaser";
-import { PlazaScene } from "@/game/scenes/plaza-scene";
+import { LobyScene } from "@/game/scenes/loby-scene";
 import { ZoneScene } from "@/game/scenes/portal-scene";
 
 export function initializeGame(width: number, height: number) {
@@ -9,7 +9,7 @@ export function initializeGame(width: number, height: number) {
     height,
     canvasStyle: "display: none",
     parent: "game-containter",
-    scene: [PlazaScene, ZoneScene],
+    scene: [LobyScene, ZoneScene],
     physics: {
       default: "matter",
       matter: {
