@@ -4,12 +4,9 @@ import LoadingPage from "@/components/common/LoadingPage";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
-const DynamicPlazaGameWrapper = dynamic(
-  () => import("@/components/GameWrapper"),
-  {
-    ssr: false,
-  }
-);
+const DynamicGameWrapper = dynamic(() => import("@/components/GameWrapper"), {
+  ssr: false,
+});
 
 export default function MainPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -17,7 +14,7 @@ export default function MainPage() {
   return (
     <main>
       {isLoading ? <LoadingPage /> : null}
-      <DynamicPlazaGameWrapper
+      <DynamicGameWrapper
         isLoading={isLoading}
         changeIsLoading={(state: boolean) => setIsLoading(state)}
       />
