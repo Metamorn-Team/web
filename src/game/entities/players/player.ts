@@ -49,7 +49,19 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   update(): void {
     if (this.isControllable) {
       this.move();
+    } else {
+      if (this.targetPosition) {
+        if (
+          Math.abs(this.x - this.targetPosition.x) < 1 &&
+          Math.abs(this.y - this.targetPosition.y) < 1
+        ) {
+          this.idle();
+        }
+        this.x = Phaser.Math.Linear(this.x, this.targetPosition.x, 0.1);
+        this.y = Phaser.Math.Linear(this.y, this.targetPosition.y, 0.1);
+      }
     }
+
     this.setNicknamePosition(this.x, this.y);
     this.setDepth(this.y);
   }
@@ -85,11 +97,14 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     //   return;
     // }
 
+    // const x = this.x + velocityX;
+    // const y = this.y + velocityY;
+
     // if (Date.now() - this.currentMove > 100) {
     //   if (this.io) {
     //     this.io.emit("playerMoved", {
-    //       x: this.x + velocityX,
-    //       y: this.y + velocityY,
+    //       x,
+    //       y,
     //     });
     //   }
     //   this.currentMove = Date.now();

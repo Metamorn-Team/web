@@ -12,4 +12,8 @@ export class MetamornScene extends Phaser.Scene {
     this.cameras.main = this.cameras.main;
     this.cameras.main.startFollow(this.player);
   }
+
+  setZoom(weight: number) {
+    this.cameras.main.setZoom(weight);
+  }
 }

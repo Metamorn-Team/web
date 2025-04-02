@@ -7,11 +7,11 @@ import { assetManager } from "@/game/managers/asset-manager";
 import { spawnManager } from "@/game/managers/spawn-manager";
 import { Mine } from "@/game/objects/mine";
 import { Phaser } from "@/game/phaser";
+import { MetamornScene } from "@/game/scenes/meramorn-scene";
 import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io";
 import { io, Socket } from "socket.io-client";
 
-export class LobyScene extends Phaser.Scene {
-  private player: Player;
+export class LobyScene extends MetamornScene {
   private otherPlayers: { [playerId: string]: Player } = {};
   private mine: Mine;
 
@@ -28,7 +28,7 @@ export class LobyScene extends Phaser.Scene {
   private io: Socket<ServerToClientEvents, ClientToServerEvents>;
 
   constructor() {
-    super({ key: "LobyScene" });
+    super("LobyScene");
   }
 
   preload() {
@@ -54,16 +54,7 @@ export class LobyScene extends Phaser.Scene {
   update(): void {
     this.player.update();
     Object.values(this.otherPlayers).forEach((player) => {
-      if (player.targetPosition) {
-        if (
-          Math.abs(player.x - player.targetPosition.x) < 1 &&
-          Math.abs(player.y - player.targetPosition.y) < 1
-        ) {
-          player.idle();
-        }
-        player.x = Phaser.Math.Linear(player.x, player.targetPosition.x, 0.1);
-        player.y = Phaser.Math.Linear(player.y, player.targetPosition.y, 0.1);
-      }
+      player.update();
     });
 
     const distance = Phaser.Math.Distance.Between(
@@ -80,11 +71,6 @@ export class LobyScene extends Phaser.Scene {
       EventBus.emit("out-portal");
       this.isEnterPortal = false;
     }
-  }
-
-  followPlayerCamera() {
-    this.cameras.main = this.cameras.main;
-    this.cameras.main.startFollow(this.player);
   }
 
   createTileMapLayers(map: Phaser.Tilemaps.Tilemap) {
