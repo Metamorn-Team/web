@@ -24,7 +24,7 @@ export class Warrior extends Player {
     this.color = color;
 
     this.setScale(0.7);
-    this.setRectangle(50, 50);
+    this.setRectangle(50, 50, { label: "PLAYER" });
     this.setFixedRotation();
     // this.setStatic(true);
 
