@@ -40,10 +40,8 @@ export class ZoneScene extends MetamornScene {
 
     this.listenEvents();
 
-    setTimeout(() => {
-      EventBus.emit("current-scene-ready", this);
-      this.playBgm();
-    }, 4000);
+    EventBus.emit("current-scene-ready", this);
+    this.playBgm();
   }
 
   update(): void {
