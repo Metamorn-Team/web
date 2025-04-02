@@ -140,11 +140,16 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   }
 
   private setNickname(scene: Phaser.Scene) {
-    this.playerNameText = scene.add.text(this.x, this.y - 45, this.nickname, {
-      fontSize: "14px",
-      color: "#000000",
-      strokeThickness: 3,
-    });
+    this.playerNameText = scene.add
+      .text(this.x, this.y - 45, this.nickname, {
+        fontFamily: "CookieRun",
+        fontSize: "16px",
+        color: "#FFFFFF",
+        padding: { left: 10, right: 10, top: 5, bottom: 5 },
+        stroke: "#000000",
+        strokeThickness: 2,
+      })
+      .setScale(1);
     this.playerNameText.setOrigin(0.5, 0.5);
   }
 
