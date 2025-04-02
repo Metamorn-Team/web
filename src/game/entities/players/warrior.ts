@@ -16,16 +16,17 @@ export class Warrior extends Player {
     y: number,
     color: WarriorColor,
     nickname: string,
+    isControllable?: boolean,
     io?: Socket
   ) {
-    super(scene, x, y, WARRIOR(color), nickname, io);
+    super(scene, x, y, WARRIOR(color), nickname, isControllable, io);
     this.speed = 1;
     this.color = color;
 
     this.setScale(0.7);
     this.setRectangle(50, 50);
     this.setFixedRotation();
-    this.setStatic(true);
+    // this.setStatic(true);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.on(Phaser.Animations.Events.ANIMATION_COMPLETE, (animation: any) => {

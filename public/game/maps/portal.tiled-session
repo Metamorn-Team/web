@@ -1,0 +1,51 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "portal.json",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "portal.json": {
+            "scale": 0.390390625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 979.7878727236342,
+                "y": 659.5957574544727
+            }
+        },
+        "portal.json#ground": {
+            "scaleInDock": 1
+        },
+        "portal.tmj": {
+            "scale": 0.552,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1085.1449275362318,
+                "y": 639.4927536231884
+            }
+        },
+        "portal.tmj#ground": {
+            "scaleInDock": 1
+        }
+    },
+    "last.imagePath": "/Users/ganghaeseong/Documents/mmorn-web/public/game/tiles/tiny-sward",
+    "map.lastUsedFormat": "json",
+    "map.tileHeight": 64,
+    "map.tileWidth": 64,
+    "openFiles": [
+        "portal.json"
+    ],
+    "project": "portal.tiled-project",
+    "recentFiles": [
+        "portal.json",
+        "portal.tmj"
+    ],
+    "tileset.embedInMap": true,
+    "tileset.tileSize": {
+        "height": 64,
+        "width": 64
+    }
+}
