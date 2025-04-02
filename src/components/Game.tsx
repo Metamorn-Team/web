@@ -15,15 +15,25 @@ export interface GameRef {
 
 export default function Game({ ref }: GameProps) {
   const gameRef = useRef<Phaser.Game | null>(null);
+  // const socketRef = useRef<Socket | null>(null);
 
   useLayoutEffect(() => {
     const initialize = async () => {
+      // const socket = io("http://localhost:4000/game/loby", {
+      //   autoConnect: false,
+      // });
+      // socketRef.current = socket;
+
       const mod = await import("@/game/main");
       const { GameSingleton } = mod;
       let game: Phaser.Game;
 
       if (!gameRef.current) {
-        game = GameSingleton.getInstance(window.innerWidth, window.innerHeight);
+        game = GameSingleton.getInstance(
+          window.innerWidth,
+          window.innerHeight
+          // { socket }
+        );
         gameRef.current = game;
 
         if (ref) {
