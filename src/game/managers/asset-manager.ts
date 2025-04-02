@@ -1,4 +1,4 @@
-import { WARRIOR } from "@/constants/entities";
+import { TORCH_GOBLIN, WARRIOR } from "@/constants/entities";
 import { Phaser } from "@/game/phaser";
 
 export class AssetManager {
@@ -10,6 +10,15 @@ export class AssetManager {
       frameWidth: 128,
       frameHeight: 128,
     });
+
+    scene.load.spritesheet(
+      TORCH_GOBLIN("red"),
+      `/game/enemy/${TORCH_GOBLIN("red")}.png`,
+      {
+        frameWidth: 192,
+        frameHeight: 192,
+      }
+    );
 
     scene.load.spritesheet(
       WARRIOR("blue"),
@@ -46,6 +55,7 @@ export class AssetManager {
       }
     );
 
+    scene.load.image("paper-small", "/images/ui/paper-small.png");
     scene.load.image("mine", "/game/object/mine.png");
 
     scene.load.image("water", "/game/tiles/tiny-sward/water.png");
