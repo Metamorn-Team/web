@@ -1,13 +1,14 @@
 import { TorchGoblin } from "@/game/entities/npc/torch-goblin";
+import { Pawn } from "@/game/entities/players/pawn";
 import { Player } from "@/game/entities/players/player";
-import { Warrior } from "@/game/entities/players/warrior";
 import { EventBus } from "@/game/event/EventBus";
+import { socketManager } from "@/game/managers/socket-manager";
 import { spawnManager } from "@/game/managers/spawn-manager";
 import { Mine } from "@/game/objects/mine";
 import { Phaser } from "@/game/phaser";
 import { MetamornScene } from "@/game/scenes/meramorn-scene";
 import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io";
-import { io, Socket } from "socket.io-client";
+import { Socket } from "socket.io-client";
 
 export class LobyScene extends MetamornScene {
   private otherPlayers: { [playerId: string]: Player } = {};
@@ -25,6 +26,7 @@ export class LobyScene extends MetamornScene {
   public updateLoadingState: (state: boolean) => void;
 
   private io: Socket<ServerToClientEvents, ClientToServerEvents>;
+  private socketNsp = "loby";
 
   constructor() {
     super("LobyScene");
@@ -35,7 +37,7 @@ export class LobyScene extends MetamornScene {
   create() {
     this.initWorld();
 
-    this.io = io("http://localhost:4000/game/loby");
+    this.io = socketManager.connect(this.socketNsp)!;
     this.spwanMyPlayer();
 
     this.io.emit("playerJoin", {
@@ -169,17 +171,20 @@ export class LobyScene extends MetamornScene {
     this.matter.world.setBounds(0, 0, this.mapWidth, this.mapHeight);
 
     // this.sound.play("town", { volume: 0.05 });
-    this.sound.play("woodland-fantasy");
+    // this.sound.play("woodland-fantasy");
     this.sound.setVolume(0.15);
 
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
     this.cameras.main.setZoom(1.1);
 
-    EventBus.emit("current-scene-ready", this);
+    EventBus.emit("current-scene-ready", {
+      scene: this,
+      socketNsp: this.socketNsp,
+    });
   }
 
   spwanMyPlayer() {
-    this.player = new Warrior(
+    this.player = new Pawn(
       this,
       this.centerOfMap.x,
       this.centerOfMap.y,
@@ -193,6 +198,7 @@ export class LobyScene extends MetamornScene {
 
   listenEvents() {
     this.io.on("activeUsers", (activeUsers) => {
+      console.log(activeUsers);
       this.spawnActiveUsers(activeUsers);
     });
 
@@ -219,7 +225,7 @@ export class LobyScene extends MetamornScene {
 
     EventBus.on("move-to-zone", () => {
       this.cameras.main.fadeOut(500);
-      this.disconnectSocket();
+      socketManager.disconnect(this.socketNsp);
 
       this.time.delayedCall(500, () => {
         this.sound.stopAll();
@@ -232,9 +238,5 @@ export class LobyScene extends MetamornScene {
   setBgmPlay(state: boolean) {
     this.sound.setVolume(state ? 0.15 : 0);
     this.isMute = state;
-  }
-
-  disconnectSocket() {
-    this.io.disconnect();
   }
 }

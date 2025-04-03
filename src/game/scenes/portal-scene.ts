@@ -1,10 +1,11 @@
-import { io, Socket } from "socket.io-client";
+import { Socket } from "socket.io-client";
 import { Warrior } from "@/game/entities/players/warrior";
 import { EventBus } from "@/game/event/EventBus";
 import { MetamornScene } from "@/game/scenes/meramorn-scene";
 import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io";
 import { spawnManager } from "@/game/managers/spawn-manager";
 import { Player } from "@/game/entities/players/player";
+import { socketManager } from "@/game/managers/socket-manager";
 
 export class ZoneScene extends MetamornScene {
   protected override player: Warrior;
@@ -15,6 +16,7 @@ export class ZoneScene extends MetamornScene {
   private centerOfMap: { x: number; y: number };
 
   private io: Socket<ServerToClientEvents, ClientToServerEvents>;
+  private socketNsp = "zone";
 
   constructor() {
     super("ZoneScene");
@@ -30,7 +32,7 @@ export class ZoneScene extends MetamornScene {
     console.log(this.game);
     this.initWorld();
 
-    this.io = io("http://localhost:4000/game/zone");
+    this.io = socketManager.connect(this.socketNsp)!;
     this.spwanMyPlayer();
 
     this.io.emit("playerJoin", {
@@ -40,7 +42,10 @@ export class ZoneScene extends MetamornScene {
 
     this.listenEvents();
 
-    EventBus.emit("current-scene-ready", this);
+    EventBus.emit("current-scene-ready", {
+      scene: this,
+      socketNsp: this.socketNsp,
+    });
     this.playBgm();
   }
 
