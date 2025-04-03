@@ -144,6 +144,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
       .text(this.x, this.y - 45, this.nickname, {
         fontFamily: "CookieRun",
         fontSize: "16px",
+        resolution: 2,
         color: "#FFFFFF",
         padding: { left: 10, right: 10, top: 5, bottom: 5 },
         stroke: "#000000",

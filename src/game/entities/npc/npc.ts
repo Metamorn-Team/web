@@ -29,7 +29,8 @@ export abstract class Npc extends Phaser.Physics.Matter.Sprite {
     this.interactionIndicator = this.scene.add
       .text(this.x, this.y + 40, "[E] 대화하기", {
         fontFamily: "CookieRun",
-        fontSize: "16px",
+        fontSize: "18px",
+        resolution: 2,
         color: "#FFFFFF",
         padding: { left: 10, right: 10, top: 5, bottom: 5 },
         stroke: "#000000",
