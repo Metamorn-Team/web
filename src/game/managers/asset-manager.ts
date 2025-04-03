@@ -1,4 +1,9 @@
-import { TORCH_GOBLIN, WARRIOR } from "@/constants/entities";
+import {
+  TORCH_GOBLIN,
+  torchGoblinColors,
+  WARRIOR,
+  warriorColors,
+} from "@/constants/entities";
 import { Phaser } from "@/game/phaser";
 
 export class AssetManager {
@@ -11,49 +16,27 @@ export class AssetManager {
       frameHeight: 128,
     });
 
-    scene.load.spritesheet(
-      TORCH_GOBLIN("red"),
-      `/game/enemy/${TORCH_GOBLIN("red")}.png`,
-      {
-        frameWidth: 192,
-        frameHeight: 192,
-      }
-    );
+    torchGoblinColors.forEach((color) => {
+      scene.load.spritesheet(
+        TORCH_GOBLIN(color),
+        `/game/enemy/${TORCH_GOBLIN(color)}.png`,
+        {
+          frameWidth: 192,
+          frameHeight: 192,
+        }
+      );
+    });
 
-    scene.load.spritesheet(
-      WARRIOR("blue"),
-      `/game/player/${WARRIOR("blue")}.png`,
-      {
-        frameWidth: 192,
-        frameHeight: 192,
-      }
-    );
-    scene.load.spritesheet(
-      WARRIOR("purple"),
-      `/game/player/${WARRIOR("purple")}.png`,
-      {
-        frameWidth: 192,
-        frameHeight: 192,
-      }
-    );
-
-    scene.load.spritesheet(
-      WARRIOR("yellow"),
-      `/game/player/${WARRIOR("yellow")}.png`,
-      {
-        frameWidth: 192,
-        frameHeight: 192,
-      }
-    );
-
-    scene.load.spritesheet(
-      WARRIOR("red"),
-      `/game/player/${WARRIOR("red")}.png`,
-      {
-        frameWidth: 192,
-        frameHeight: 192,
-      }
-    );
+    warriorColors.forEach((color) => {
+      scene.load.spritesheet(
+        WARRIOR(color),
+        `/game/player/${WARRIOR(color)}.png`,
+        {
+          frameWidth: 192,
+          frameHeight: 192,
+        }
+      );
+    });
 
     scene.load.image("paper-small", "/images/ui/paper-small.png");
     scene.load.image("mine", "/game/object/mine.png");
