@@ -4,6 +4,12 @@ export type WarriorColor = (typeof warriorColors)[number];
 
 export const WARRIOR = (color: WarriorColor) => `${color}_warrior`;
 
+// Pawn
+export const pawnColors = ["blue", "purple", "yellow", "red"] as const;
+export type PawnColor = (typeof pawnColors)[number];
+
+export const PAWN = (color: PawnColor) => `${color}_pawn`;
+
 // Goblin Torch
 export const torchGoblinColors = ["red", "blue", "purple"] as const;
 export type TorchGoblinColor = (typeof torchGoblinColors)[number];

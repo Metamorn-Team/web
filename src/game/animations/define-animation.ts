@@ -1,9 +1,12 @@
 import {
+  PAWN,
+  pawnColors,
   TORCH_GOBLIN,
   torchGoblinColors,
   WARRIOR,
   warriorColors,
 } from "@/constants/entities";
+import { PAWN_ATTACK, PAWN_IDLE, PAWN_WALK } from "@/game/animations/keys/pawn";
 import { TORCH_GOBLIN_IDLE } from "@/game/animations/keys/torch-goblin";
 import {
   WARRIOR_ATTACK,
@@ -36,6 +39,37 @@ export const defineAnimation = (scene: Phaser.Scene) => {
     scene.anims.create({
       key: WARRIOR_ATTACK(color),
       frames: scene.anims.generateFrameNumbers(WARRIOR(color), {
+        start: 12,
+        end: 17,
+      }),
+      frameRate: 13,
+    });
+  });
+
+  pawnColors.forEach((color) => {
+    scene.anims.create({
+      key: PAWN_IDLE(color),
+      frames: scene.anims.generateFrameNumbers(PAWN(color), {
+        start: 0,
+        end: 5,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    scene.anims.create({
+      key: PAWN_WALK(color),
+      frames: scene.anims.generateFrameNumbers(PAWN(color), {
+        start: 6,
+        end: 11,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    scene.anims.create({
+      key: PAWN_ATTACK(color),
+      frames: scene.anims.generateFrameNumbers(PAWN(color), {
         start: 12,
         end: 17,
       }),

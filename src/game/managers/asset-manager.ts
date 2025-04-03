@@ -1,4 +1,6 @@
 import {
+  PAWN,
+  pawnColors,
   TORCH_GOBLIN,
   torchGoblinColors,
   WARRIOR,
@@ -31,6 +33,17 @@ export class AssetManager {
       scene.load.spritesheet(
         WARRIOR(color),
         `/game/player/${WARRIOR(color)}.png`,
+        {
+          frameWidth: 192,
+          frameHeight: 192,
+        }
+      );
+    });
+
+    pawnColors.forEach((color) => {
+      scene.load.spritesheet(
+        PAWN(color),
+        `/game/player/pawn/${PAWN(color)}.png`,
         {
           frameWidth: 192,
           frameHeight: 192,
