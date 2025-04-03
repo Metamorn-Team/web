@@ -4,6 +4,7 @@ interface TalkModalProps {
   children: React.ReactElement;
   onClose: () => void;
   className?: string;
+  name: string;
   avatar: React.ReactNode;
 }
 
@@ -11,6 +12,7 @@ const TalkModal = ({
   children,
   onClose,
   className,
+  name,
   avatar,
 }: TalkModalProps) => {
   return (
@@ -27,7 +29,7 @@ const TalkModal = ({
         <div className="absolute" style={{ top: -160, left: -50 }}>
           {avatar}
         </div>
-        <p className="text-2xl mb-3">착한 토치 고블린</p>
+        <p className="text-2xl mb-3">{name}</p>
         {children}
       </div>
     </div>
