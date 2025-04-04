@@ -39,6 +39,11 @@ export class Warrior extends Player {
     this.idle();
   }
 
+  protected setBodyConfig(): void {
+    this.setScale(0.7);
+    this.setRectangle(50, 50, { label: "PLAYER" });
+  }
+
   update(): void {
     super.update();
   }

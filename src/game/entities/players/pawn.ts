@@ -6,6 +6,7 @@ import { Socket } from "socket.io-client";
 
 export class Pawn extends Player {
   private readonly color: PawnColor;
+  private hitArea: Phaser.Geom.Rectangle;
 
   constructor(
     scene: Phaser.Scene,
@@ -20,11 +21,6 @@ export class Pawn extends Player {
     this.speed = 1;
     this.color = color;
 
-    this.setScale(0.7);
-    this.setRectangle(50, 50, { label: "PLAYER" });
-    this.setFixedRotation();
-    // this.setStatic(true);
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.on(Phaser.Animations.Events.ANIMATION_COMPLETE, (animation: any) => {
       if (animation.key === PAWN_ATTACK(color)) {
@@ -33,6 +29,11 @@ export class Pawn extends Player {
     });
 
     this.idle();
+  }
+
+  protected setBodyConfig(): void {
+    this.setScale(0.7);
+    this.setRectangle(50, 50, { label: "PLAYER" });
   }
 
   update(): void {

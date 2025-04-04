@@ -1,3 +1,4 @@
+import { COLLISION_CATEGORIES } from "@/constants/collision-categories";
 import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io";
 import { UserInfo } from "@/types/socket-io/response";
 import * as Phaser from "phaser";
@@ -12,7 +13,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   private playerNameText: Phaser.GameObjects.Text;
   private cursor?: Phaser.Types.Input.Keyboard.CursorKeys;
   protected speed = 1;
-  private nickname: string;
+  protected effect: Phaser.FX.Controller | undefined;
 
   public targetPosition: { x: number; y: number } = { x: 0, y: 0 };
 
@@ -38,16 +39,33 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.targetPosition.y = y;
     this.userInfo = userInfo;
     this.setNickname(scene);
-
-    this.setCollisionGroup(-1);
-
-    // if (io) {
-    //   this.io = io;
-    //   this.io.emit("playerJoin");
-    // }
-
     this.cursor = scene.input.keyboard?.createCursorKeys();
+
+    this.setInteractive();
+    this.on("pointerover", () => {
+      this.effect = this.preFX?.addGlow();
+      console.log(this.userInfo);
+    });
+
+    this.on("pointerout", () => {
+      if (this.effect) {
+        this.preFX?.remove(this.effect);
+        this.effect = undefined;
+      }
+    });
+
+    this.setBodyConfig();
+    this.playerCommonBodyConfig();
   }
+
+  private playerCommonBodyConfig() {
+    this.setCollisionCategory(COLLISION_CATEGORIES.PLAYER);
+    this.setCollidesWith(COLLISION_CATEGORIES.WORLD);
+
+    this.setFixedRotation();
+  }
+
+  protected abstract setBodyConfig(): void;
 
   update(): void {
     if (this.isControllable) {
@@ -153,7 +171,8 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
         stroke: "#000000",
         strokeThickness: 2,
       })
-      .setScale(1);
+      .setScale(1)
+      .setDepth(999999);
     this.playerNameText.setOrigin(0.5, 0.5);
   }
 
