@@ -1,14 +1,14 @@
+import { UserInfo } from "@/types/socket-io/response";
+
 export interface ServerToClientEvents {
-  playerJoin: (data: { playerId: string }) => void;
-  playerLeft: (data: { playerId: string }) => void;
-  playerMoved: (data: { playerId: string; x: number; y: number }) => void;
-  activeUsers: (activeUsers: {
-    [playerId: string]: { x: number; y: number };
-  }) => void;
+  playerJoin: (data: UserInfo & { x: number; y: number }) => void;
+  playerLeft: (data: { id: string }) => void;
+  playerMoved: (data: UserInfo & { x: number; y: number }) => void;
+  activeUsers: (activeUsers: (UserInfo & { x: number; y: number })[]) => void;
 }
 
 export interface ClientToServerEvents {
-  playerJoin: (data: { x: number; y: number }) => void;
+  playerJoin: (data: { type?: "dev" | "design"; x: number; y: number }) => void;
   playerMoved: (data: { x: number; y: number }) => void;
 }
 
