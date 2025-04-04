@@ -5,6 +5,7 @@ import {
   WARRIOR_WALK,
 } from "@/game/animations/keys/warrior";
 import { Player } from "@/game/entities/players/player";
+import { UserInfo } from "@/types/socket-io/response";
 import type { Socket } from "socket.io-client";
 
 export class Warrior extends Player {
@@ -15,11 +16,11 @@ export class Warrior extends Player {
     x: number,
     y: number,
     color: WarriorColor,
-    nickname: string,
+    userInfo: UserInfo,
     isControllable?: boolean,
     io?: Socket
   ) {
-    super(scene, x, y, WARRIOR(color), nickname, isControllable, io);
+    super(scene, x, y, WARRIOR(color), userInfo, isControllable, io);
     this.speed = 1;
     this.color = color;
 

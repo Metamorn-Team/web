@@ -1,8 +1,11 @@
 import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io";
+import { UserInfo } from "@/types/socket-io/response";
 import * as Phaser from "phaser";
 import type { Socket } from "socket.io-client";
 
 export abstract class Player extends Phaser.Physics.Matter.Sprite {
+  private userInfo: UserInfo;
+
   private isControllable: boolean;
   protected isAttack = false;
 
@@ -21,7 +24,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     x: number,
     y: number,
     texture: string,
-    nickname: string,
+    userInfo: UserInfo,
     isControllable = false,
     io?: Socket
   ) {
@@ -33,7 +36,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.io = io;
     this.targetPosition.x = x;
     this.targetPosition.y = y;
-    this.nickname = nickname;
+    this.userInfo = userInfo;
     this.setNickname(scene);
 
     this.setCollisionGroup(-1);
@@ -141,7 +144,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   private setNickname(scene: Phaser.Scene) {
     this.playerNameText = scene.add
-      .text(this.x, this.y - 45, this.nickname, {
+      .text(this.x, this.y - 45, this.userInfo.nickname, {
         fontFamily: "CookieRun",
         fontSize: "16px",
         resolution: 2,

@@ -1,6 +1,7 @@
 import { PAWN, PawnColor } from "@/constants/entities";
 import { PAWN_ATTACK, PAWN_IDLE, PAWN_WALK } from "@/game/animations/keys/pawn";
 import { Player } from "@/game/entities/players/player";
+import { UserInfo } from "@/types/socket-io/response";
 import { Socket } from "socket.io-client";
 
 export class Pawn extends Player {
@@ -11,11 +12,11 @@ export class Pawn extends Player {
     x: number,
     y: number,
     color: PawnColor,
-    nickname: string,
+    userInfo: UserInfo,
     isControllable?: boolean,
     io?: Socket
   ) {
-    super(scene, x, y, PAWN(color), nickname, isControllable, io);
+    super(scene, x, y, PAWN(color), userInfo, isControllable, io);
     this.speed = 1;
     this.color = color;
 
