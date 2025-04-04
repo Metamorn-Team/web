@@ -1,25 +1,41 @@
 import { Socket } from "socket.io-client";
-import { Warrior } from "@/game/entities/players/warrior";
 import { EventBus } from "@/game/event/EventBus";
 import { MetamornScene } from "@/game/scenes/meramorn-scene";
 import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io";
 import { spawnManager } from "@/game/managers/spawn-manager";
 import { Player } from "@/game/entities/players/player";
 import { socketManager } from "@/game/managers/socket-manager";
+import { getItem, setItem } from "@/utils/session-storage";
+import { UserInfo } from "@/types/socket-io/response";
+import { Pawn } from "@/game/entities/players/pawn";
 
 export class ZoneScene extends MetamornScene {
-  protected override player: Warrior;
-  private otherPlayers: { [playerId: string]: Player } = {};
+  protected override player: Player;
+  private otherPlayers: Map<string, Player> = new Map();
+  // { [playerId: string]: Player } = {};
 
   private mapWidth: number;
   private mapHeight: number;
   private centerOfMap: { x: number; y: number };
 
   private io: Socket<ServerToClientEvents, ClientToServerEvents>;
+  private zoneType: "dev" | "design";
   private socketNsp = "zone";
 
   constructor() {
     super("ZoneScene");
+  }
+
+  init(data?: { type: "dev" | "design" }) {
+    if (data?.type) {
+      this.zoneType = data.type;
+      setItem("zone_type", data.type);
+    } else {
+      this.zoneType = getItem("zone_type") || "design";
+    }
+
+    console.log("init");
+    console.log(this.zoneType);
   }
 
   preload() {
@@ -29,13 +45,13 @@ export class ZoneScene extends MetamornScene {
   }
 
   create() {
-    console.log(this.game);
     this.initWorld();
 
     this.io = socketManager.connect(this.socketNsp)!;
-    this.spwanMyPlayer();
 
-    this.io.emit("playerJoin", {
+    this.spwanMyPlayer({
+      id: "my",
+      nickname: "ME",
       x: this.centerOfMap.x,
       y: this.centerOfMap.y,
     });
@@ -46,13 +62,15 @@ export class ZoneScene extends MetamornScene {
       scene: this,
       socketNsp: this.socketNsp,
     });
-    this.playBgm();
+    // this.playBgm();
   }
 
   update(): void {
-    this.player.update();
+    if (this.player) {
+      this.player.update();
+    }
 
-    Object.values(this.otherPlayers).forEach((player) => {
+    this.otherPlayers.values().forEach((player) => {
       player.update();
     });
   }
@@ -82,65 +100,67 @@ export class ZoneScene extends MetamornScene {
     this.cameras.main.setZoom(1.1);
   }
 
-  spwanMyPlayer() {
-    this.player = new Warrior(
-      this,
-      this.centerOfMap.x,
-      this.centerOfMap.y,
-      "red",
-      "Snail",
-      true,
-      this.io
-    );
+  spwanMyPlayer(data: UserInfo & { x: number; y: number }) {
+    const { x, y, ...userInfo } = data;
+    this.player = new Pawn(this, x, y, "red", userInfo, true, this.io);
     this.followPlayerCamera();
   }
 
-  spawnActiveUsers(activeUsers: {
-    [playerId: string]: { x: number; y: number };
-  }) {
-    Object.keys(activeUsers).forEach((playerId) =>
+  spawnActiveUsers(activeUsers: (UserInfo & { x: number; y: number })[]) {
+    activeUsers.forEach((activeUser) =>
       spawnManager.spawnPlayer(
         this.otherPlayers,
         this,
-        playerId,
-        activeUsers[playerId].x,
-        activeUsers[playerId].y
+        { id: activeUser.id, nickname: activeUser.nickname },
+        activeUser.x,
+        activeUser.y
       )
     );
   }
 
   listenEvents() {
-    this.io.on("activeUsers", (activeUsers) => {
-      this.spawnActiveUsers(activeUsers);
+    this.io.on("connect", () => {
+      console.log("on connect");
+      this.io.emit("playerJoin", {
+        type: this.zoneType,
+        x: this.centerOfMap.x,
+        y: this.centerOfMap.y,
+      });
     });
 
+    this.io.on(
+      "activeUsers",
+      (activeUsers: (UserInfo & { x: number; y: number })[]) => {
+        console.log(`online users: ${JSON.stringify(activeUsers, null, 2)}`);
+        this.spawnActiveUsers(activeUsers);
+      }
+    );
+
     this.io.on("playerJoin", (data) => {
-      const playerId = data.playerId as string;
-      spawnManager.spawnPlayer(
-        this.otherPlayers,
-        this,
-        playerId,
-        this.centerOfMap.x,
-        this.centerOfMap.y
-      );
+      console.log(`on playerJoin: ${JSON.stringify(data, null, 2)}`);
+      const { x, y, ...userInfo } = data;
+      spawnManager.spawnPlayer(this.otherPlayers, this, userInfo, x, y);
+      console.log(this.otherPlayers);
     });
 
     this.io.on("playerLeft", (data) => {
-      const playerId = data.playerId as string;
-      this.otherPlayers[playerId].destroy();
-      delete this.otherPlayers[playerId];
+      console.log(`on playerLeft: ${JSON.stringify(data, null, 2)}`);
+      const player = this.otherPlayers.get(data.id);
+      player?.destroy();
+      this.otherPlayers.delete(data.id);
     });
 
     this.io.on("playerMoved", (data) => {
-      this.handlePlayerMove(data.playerId, data.x, data.y);
+      console.log(`on playerMoved: ${JSON.stringify(data, null, 2)}`);
+      this.handlePlayerMove(data.id, data.x, data.y);
     });
   }
 
   handlePlayerMove(playerId: string, x: number, y: number) {
-    const player = this.otherPlayers[playerId];
+    const player = this.otherPlayers.get(playerId);
     if (player) {
-      const dx = this.otherPlayers[playerId].x - x;
-      const dy = this.otherPlayers[playerId].y - y;
+      const dx = player.x - x;
+      const dy = player.y - y;
 
       if (dx > 0) {
         player.walk("left");
