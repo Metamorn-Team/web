@@ -2,7 +2,7 @@ import { FontSize } from "@/types/style/font.type";
 
 interface ButtonProps {
   title: string;
-  width: number;
+  width: string;
   color: "yellow";
   onClick: () => void;
   isActive?: boolean;
