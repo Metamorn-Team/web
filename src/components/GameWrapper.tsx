@@ -14,6 +14,10 @@ import { setItem } from "@/utils/session-storage";
 import TalkModal from "@/components/common/TalkModal";
 import { Npc } from "@/game/entities/npc/npc";
 import GoblinTorch from "@/components/common/GoblinTorch";
+import { Socket } from "socket.io-client";
+import { socketManager } from "@/game/managers/socket-manager";
+import { UserInfo } from "@/types/socket-io/response";
+import PlayerInfoModal from "@/components/PlayerInfoModal";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -25,6 +29,13 @@ export default function GameWrapper({
   changeIsLoading,
 }: GameWrapperProps) {
   const gameRef = useRef<GameRef | null>(null);
+  const socketRef = useRef<Socket | null>(null);
+
+  const [playerInfo, setPlayerInfo] = useState<UserInfo>({
+    id: "",
+    nickname: "",
+  });
+
   const [isPlayBgm, setIsPlayBgm] = useState(true);
   const { isModalOpen, changeModalOpen, onClose } = useModal();
   const {
@@ -37,21 +48,32 @@ export default function GameWrapper({
     onOpen: onHelpOpen,
     onClose: onHelpClose,
   } = useModal();
+  const {
+    isModalOpen: isPlayerModalOpen,
+    onClose: onPlayerModalClose,
+    onOpen: onPlayerModalOpen,
+  } = useModal();
 
   const playBgmToggle = useCallback(() => {
     if (gameRef.current) {
       const scene = gameRef.current.game.scene.getScene<LobyScene>("LobyScene");
-      scene.setBgmPlay(!isPlayBgm);
+      // scene.setBgmPlay(!isPlayBgm);
+      scene.setBgmPlay(false);
       setIsPlayBgm((state) => !state);
     }
   }, [gameRef, isPlayBgm]);
 
   useEffect(() => {
-    const handleSceneReady = (scene: Phaser.Scene) => {
+    const handleSceneReady = (data: {
+      scene: Phaser.Scene;
+      socketNsp: string;
+    }) => {
       if (gameRef.current) {
-        setItem("current_scene", scene.scene.key);
+        setItem("current_scene", data.scene.scene.key);
+        socketRef.current = socketManager.connect(data.socketNsp)!;
         gameRef.current.game.canvas.style.display = "block";
-        gameRef.current.currnetScene = scene;
+        gameRef.current.currnetScene = data.scene;
+
         changeIsLoading(false);
       }
     };
@@ -84,13 +106,19 @@ export default function GameWrapper({
       }
     };
 
+    const handlePlayerClick = (userInfo: UserInfo) => {
+      console.log(userInfo);
+      setPlayerInfo(userInfo);
+      onPlayerModalOpen();
+    };
+
     EventBus.on("current-scene-ready", handleSceneReady);
     EventBus.on("in-portal", handleInPortal);
     EventBus.on("out-portal", handleOutPortal);
     EventBus.on("start-change-scene", handleStartChangeScene);
     EventBus.on("finish-change-scene", handleFinishChangeScene);
     EventBus.on("npc-interaction-started", handleNpcInteraction);
-    EventBus.on("npc-interaction-started", handleNpcInteraction);
+    EventBus.on("player-click", handlePlayerClick);
 
     const handleResize = () => {
       if (gameRef.current) {
@@ -126,23 +154,33 @@ export default function GameWrapper({
       <Game ref={gameRef} currentActiveScene={() => {}} />
 
       {isHelpModalOpen ? (
-        <TalkModal onClose={onHelpClose} avatar={<GoblinTorch />}>
-          <div>안녕 스넬 메타몬은 처음인가? 그렇다면 자신에게 응찍을 해라</div>
+        <TalkModal
+          onClose={onHelpClose}
+          avatar={<GoblinTorch />}
+          name="친절한 토치 고블린"
+        >
+          <div>안녕 스넬 메타몬은 처음인가?</div>
         </TalkModal>
       ) : null}
+
       {isModalOpen ? <FriendModal onClose={onClose} /> : null}
+
       {isPortalModalOpen ? (
-        <Modal onClose={onPortalModalClose}>
+        <Modal onClose={onPortalModalClose} className="w-2/6">
           <div className="flex flex-col justify-between">
             <div>이동 하실?</div>
             <Button
               onClick={moveToZone}
               color="yellow"
               title="이동"
-              width={200}
+              width={"50%"}
             />
           </div>
         </Modal>
+      ) : null}
+
+      {isPlayerModalOpen ? (
+        <PlayerInfoModal onClose={onPlayerModalClose} playerInfo={playerInfo} />
       ) : null}
     </div>
   );
