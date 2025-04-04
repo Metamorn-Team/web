@@ -45,13 +45,13 @@ const FriendModal = ({ onClose }: FriendModalProps) => {
             {renderContents()}
           </Suspense>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 w-full justify-between">
           {Object.keys(menus).map((menu) => (
             <Button
               key={menu}
               title={menu}
               color="yellow"
-              width={130}
+              width={"30%"}
               fontSize="text-sm"
               isActive={menu === selected}
               onClick={() => setSelected(menu as Menu)}
