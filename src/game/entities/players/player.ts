@@ -1,11 +1,12 @@
-import { COLLISION_CATEGORIES } from "@/constants/collision-categories";
-import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io";
-import { UserInfo } from "@/types/socket-io/response";
 import * as Phaser from "phaser";
 import type { Socket } from "socket.io-client";
+import { COLLISION_CATEGORIES } from "@/constants/collision-categories";
+import { EventBus } from "@/game/event/EventBus";
+import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io";
+import { UserInfo } from "@/types/socket-io/response";
 
 export abstract class Player extends Phaser.Physics.Matter.Sprite {
-  private userInfo: UserInfo;
+  private playerInfo: UserInfo;
 
   private isControllable: boolean;
   protected isAttack = false;
@@ -25,7 +26,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     x: number,
     y: number,
     texture: string,
-    userInfo: UserInfo,
+    playerInfo: UserInfo,
     isControllable = false,
     io?: Socket
   ) {
@@ -37,25 +38,14 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.io = io;
     this.targetPosition.x = x;
     this.targetPosition.y = y;
-    this.userInfo = userInfo;
+    this.playerInfo = playerInfo;
     this.setNickname(scene);
     this.cursor = scene.input.keyboard?.createCursorKeys();
 
-    this.setInteractive();
-    this.on("pointerover", () => {
-      this.effect = this.preFX?.addGlow();
-      console.log(this.userInfo);
-    });
-
-    this.on("pointerout", () => {
-      if (this.effect) {
-        this.preFX?.remove(this.effect);
-        this.effect = undefined;
-      }
-    });
-
     this.setBodyConfig();
     this.playerCommonBodyConfig();
+
+    this.listenInteractionEvent();
   }
 
   private playerCommonBodyConfig() {
@@ -162,7 +152,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   private setNickname(scene: Phaser.Scene) {
     this.playerNameText = scene.add
-      .text(this.x, this.y - 45, this.userInfo.nickname, {
+      .text(this.x, this.y - 45, this.playerInfo.nickname, {
         fontFamily: "CookieRun",
         fontSize: "16px",
         resolution: 2,
@@ -181,5 +171,27 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
       this.playerNameText.destroy();
     }
     super.destroy(fromScene);
+  }
+
+  listenInteractionEvent() {
+    this.setInteractive();
+    this.on("pointerover", () => {
+      this.effect = this.preFX?.addGlow();
+      console.log(this.playerInfo);
+    });
+
+    this.on("pointerout", () => {
+      if (this.effect) {
+        this.preFX?.remove(this.effect);
+        this.effect = undefined;
+      }
+    });
+
+    this.on("pointerdown", () => {
+      EventBus.emit("player-click", {
+        ...this.playerInfo,
+        texture: this.texture.key,
+      });
+    });
   }
 }
