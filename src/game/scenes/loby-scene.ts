@@ -8,6 +8,7 @@ import { Mine } from "@/game/objects/mine";
 import { Phaser } from "@/game/phaser";
 import { MetamornScene } from "@/game/scenes/meramorn-scene";
 import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io";
+import { setItem } from "@/utils/session-storage";
 import { Socket } from "socket.io-client";
 
 export class LobyScene extends MetamornScene {
@@ -230,7 +231,9 @@ export class LobyScene extends MetamornScene {
       this.time.delayedCall(500, () => {
         this.sound.stopAll();
         EventBus.emit("start-change-scene");
-        this.scene.start("ZoneScene");
+        const type = "dev";
+        this.scene.start("ZoneScene", { type });
+        setItem("zone_type", type);
       });
     });
   }
