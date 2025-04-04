@@ -128,6 +128,11 @@ export class ZoneScene extends MetamornScene {
       });
     });
 
+    this.io.on("disconnect", () => {
+      console.log("on disconnect");
+      this.clearAllPlayer();
+    });
+
     this.io.on(
       "activeUsers",
       (activeUsers: (UserInfo & { x: number; y: number })[]) => {
@@ -140,14 +145,11 @@ export class ZoneScene extends MetamornScene {
       console.log(`on playerJoin: ${JSON.stringify(data, null, 2)}`);
       const { x, y, ...userInfo } = data;
       spawnManager.spawnPlayer(this.otherPlayers, this, userInfo, x, y);
-      console.log(this.otherPlayers);
     });
 
     this.io.on("playerLeft", (data) => {
       console.log(`on playerLeft: ${JSON.stringify(data, null, 2)}`);
-      const player = this.otherPlayers.get(data.id);
-      player?.destroy();
-      this.otherPlayers.delete(data.id);
+      this.destroyPlayer(data.id);
     });
 
     this.io.on("playerMoved", (data) => {
@@ -182,5 +184,18 @@ export class ZoneScene extends MetamornScene {
   playBgm() {
     this.sound.play("town");
     this.sound.setVolume(0.15);
+  }
+
+  clearAllPlayer() {
+    this.otherPlayers.values().forEach((player) => {
+      player.destroy();
+    });
+    this.otherPlayers.clear();
+  }
+
+  destroyPlayer(playerId: string) {
+    const player = this.otherPlayers.get(playerId);
+    player?.destroy();
+    this.otherPlayers.delete(playerId);
   }
 }
