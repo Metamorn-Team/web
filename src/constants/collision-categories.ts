@@ -1,0 +1,4 @@
+export const COLLISION_CATEGORIES = {
+  WORLD: 0x0001,
+  PLAYER: 0x0002,
+};
