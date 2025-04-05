@@ -6,6 +6,7 @@ import {
   WARRIOR,
   warriorColors,
 } from "@/constants/entities";
+import { DEAD } from "@/game/animations/keys/common";
 import { Phaser } from "@/game/phaser";
 
 export class AssetManager {
@@ -14,6 +15,11 @@ export class AssetManager {
     scene.load.audio("woodland-fantasy", "/game/sounds/woodland-fantasy.mp3");
 
     scene.load.spritesheet("sheep", `/game/animal/sheep.png`, {
+      frameWidth: 128,
+      frameHeight: 128,
+    });
+
+    scene.load.spritesheet(DEAD, `/game/player/dead.png`, {
       frameWidth: 128,
       frameHeight: 128,
     });

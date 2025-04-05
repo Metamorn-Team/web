@@ -4,6 +4,7 @@ import { COLLISION_CATEGORIES } from "@/constants/collision-categories";
 import { EventBus } from "@/game/event/EventBus";
 import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io";
 import { UserInfo } from "@/types/socket-io/response";
+import { DEAD } from "@/game/animations/keys/common";
 
 export abstract class Player extends Phaser.Physics.Matter.Sprite {
   private playerInfo: UserInfo;
@@ -167,8 +168,26 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   }
 
   destroy(fromScene?: boolean): void {
+    this.free(fromScene);
+  }
+
+  destroyWithAnimation(fromScene?: boolean) {
+    this.play(DEAD);
+    this.once("animationcomplete", () => {
+      this.destroy(fromScene);
+    });
+  }
+
+  free(fromScene?: boolean) {
     if (this.playerNameText) {
-      this.playerNameText.destroy();
+      this.playerNameText.destroy(fromScene);
+    }
+    if (this.effect) {
+      this.preFX?.remove(this.effect);
+      this.effect.destroy();
+    }
+    if (this.preFX) {
+      this.preFX.destroy();
     }
     super.destroy(fromScene);
   }

@@ -12,7 +12,6 @@ import { Pawn } from "@/game/entities/players/pawn";
 export class ZoneScene extends MetamornScene {
   protected override player: Player;
   private otherPlayers: Map<string, Player> = new Map();
-  // { [playerId: string]: Player } = {};
 
   private mapWidth: number;
   private mapHeight: number;
@@ -195,7 +194,7 @@ export class ZoneScene extends MetamornScene {
 
   destroyPlayer(playerId: string) {
     const player = this.otherPlayers.get(playerId);
-    player?.destroy();
+    player?.destroyWithAnimation(true);
     this.otherPlayers.delete(playerId);
   }
 }
