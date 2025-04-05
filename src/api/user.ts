@@ -10,10 +10,23 @@ export interface UserInfo {
   readonly provider: Provider;
 }
 
-export interface NotRegisteredUserInfo {
-  readonly email: string;
+export interface NotRegisteredUserResponse {
+  readonly message: string;
+  readonly statusCode: number;
+  readonly error: string;
   readonly name: string;
+  readonly email: string;
   readonly provider: Provider;
+}
+
+export interface BaseRegisterDate {
+  readonly email: string;
+  readonly provider: Provider;
+}
+
+export interface AdditionalRegisterData {
+  readonly nickname: string;
+  readonly tag: string;
 }
 
 export async function getMyProfile(): Promise<UserInfo> {
