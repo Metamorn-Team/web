@@ -58,6 +58,7 @@ export default {
       animation: {
         fire: "fireAnim 0.6s steps(7) infinite",
         goblinTorch: "goblinTorchAnim 0.6s step(7) infinite",
+        pawn: "pawnAnim 0.6s steps(6) infinite",
         fadeIn: "fadeIn 0.3s",
       },
       keyframes: {
@@ -72,6 +73,10 @@ export default {
         fadeIn: {
           from: { opacity: "0.5", transform: "translateY(-10px)" },
           to: { opacity: "1", transform: "translateY(0px)" },
+        },
+        pawnAnim: {
+          from: { backgroundPosition: "0% 0%" },
+          to: { backgroundPosition: "-600% 0%" },
         },
       },
     },
