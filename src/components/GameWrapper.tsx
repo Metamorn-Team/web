@@ -7,8 +7,6 @@ import MenuHeader from "@/components/MenuHeader";
 import { EventBus } from "@/game/event/EventBus";
 import { useModal } from "@/hook/useModal";
 import FriendModal from "@/components/FriendModal";
-import Modal from "@/components/common/Modal";
-import Button from "@/components/common/Button";
 import { Phaser } from "@/game/phaser";
 import { setItem } from "@/utils/session-storage";
 import TalkModal from "@/components/common/TalkModal";
@@ -38,11 +36,6 @@ export default function GameWrapper({
 
   const [isPlayBgm, setIsPlayBgm] = useState(true);
   const { isModalOpen, changeModalOpen, onClose } = useModal();
-  const {
-    isModalOpen: isPortalModalOpen,
-    onOpen: onPortalModalOpen,
-    onClose: onPortalModalClose,
-  } = useModal();
   const {
     isModalOpen: isHelpModalOpen,
     onOpen: onHelpOpen,
@@ -78,14 +71,6 @@ export default function GameWrapper({
       }
     };
 
-    const handleInPortal = () => {
-      onPortalModalOpen();
-    };
-
-    const handleOutPortal = () => {
-      onPortalModalClose();
-    };
-
     const handleStartChangeScene = () => {
       if (gameRef.current) {
         changeIsLoading(true);
@@ -113,8 +98,6 @@ export default function GameWrapper({
     };
 
     EventBus.on("current-scene-ready", handleSceneReady);
-    EventBus.on("in-portal", handleInPortal);
-    EventBus.on("out-portal", handleOutPortal);
     EventBus.on("start-change-scene", handleStartChangeScene);
     EventBus.on("finish-change-scene", handleFinishChangeScene);
     EventBus.on("npc-interaction-started", handleNpcInteraction);
@@ -136,11 +119,6 @@ export default function GameWrapper({
     };
   }, [gameRef]);
 
-  const moveToZone = () => {
-    onPortalModalClose();
-    EventBus.emit("move-to-zone");
-  };
-
   return (
     <div>
       {!isLoading ? (
@@ -158,26 +136,20 @@ export default function GameWrapper({
           onClose={onHelpClose}
           avatar={<GoblinTorch />}
           name="친절한 토치 고블린"
-        >
-          <div>안녕 스넬 메타몬은 처음인가?</div>
-        </TalkModal>
+          comments={[
+            "크크, 반갑구나! 혹시... 메타몬은 처음이지? 킁킁, 냄새가 새롭군그래!",
+            "여긴 메타몬의 로비야~ 이곳에선 몇 가지... *절대로* 잊으면 안 될 것들이 있지. 알려줄까 말까?",
+            "저기 있는 여러 관심사의 광산으로 들어가서 친구를 사귀고, 다양한 활동을 할 수 있지.",
+            "저기 보이는 광산들 말이야, 다 다른 관심사를 가진 녀석들로 가득하지. 거기로 들어가면 친구도 사귈 수 있고, 신나는 일들이 펑펑 터질 거야!",
+            "근데 말이지... 한 번 만난 친구는 광산을 떠나면 다시는 못 만날 수도 있어. 마음에 드는 친구는 꼭, 아주 꼭! 친구 신청을 하라고~ 내 말 듣고 후회하진 않을 걸?",
+            "나도... 소중한 친구를 잃어봤거든. 으흐흐... 아직도 그때 생각하면 심장이 꼬물꼬물해...",
+            "광산 앞에 가면... E키를 눌러봐! 그냥 누르지 말고, 살짝 긴장하면서 눌러야 제맛이야~",
+            "흐흐, 내가 도와줄 수 있는 건 여기까지야. 그래도 걱정 마~ 로비에 오면 언제든지 나를 다시 볼 수 있을 테니까! 안녕~ 크크큭!",
+          ]}
+        />
       ) : null}
 
       {isModalOpen ? <FriendModal onClose={onClose} /> : null}
-
-      {isPortalModalOpen ? (
-        <Modal onClose={onPortalModalClose} className="w-2/6">
-          <div className="flex flex-col justify-between">
-            <div>이동 하실?</div>
-            <Button
-              onClick={moveToZone}
-              color="yellow"
-              title="이동"
-              width={"50%"}
-            />
-          </div>
-        </Modal>
-      ) : null}
 
       {isPlayerModalOpen ? (
         <PlayerInfoModal onClose={onPlayerModalClose} playerInfo={playerInfo} />
