@@ -22,7 +22,7 @@ export const defineAnimation = (scene: Phaser.Scene) => {
       start: 0,
       end: 13,
     }),
-    frameRate: 15,
+    frameRate: 20,
   });
 
   scene.anims.create({
@@ -31,7 +31,7 @@ export const defineAnimation = (scene: Phaser.Scene) => {
       start: 13,
       end: 0,
     }),
-    frameRate: 15,
+    frameRate: 20,
   });
 
   warriorColors.forEach((color) => {
