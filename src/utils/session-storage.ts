@@ -1,29 +1,30 @@
-export const setItem = <T>(key: string, value: T): void => {
+import { SessionStorageData } from "@/types/storage/session-storage";
+
+export const setItem = <T extends SessionStorageData, K extends keyof T>(
+  key: K,
+  value: T[K]
+): void => {
   try {
     const serializedValue =
       typeof value === "string" ? value : JSON.stringify(value);
-    sessionStorage.setItem(key, serializedValue);
+    sessionStorage.setItem(String(key), serializedValue);
   } catch (error) {
-    console.error(`LocalStorage 저장 실패 - key: ${key}`, error);
+    console.error(`LocalStorage 저장 실패 - key: ${String(key)}`, error);
   }
 };
 
-export const getItem = <T>(key: string) => {
+export const getItem = <K extends keyof SessionStorageData>(key: K) => {
+  const item = sessionStorage.getItem(key);
+
   try {
-    const item = sessionStorage.getItem(key);
-
-    try {
-      if (!item) throw new Error("no item");
-      return JSON.parse(item) as T;
-    } catch {
-      return item as unknown as T;
-    }
-  } catch (error) {
-    console.error(`LocalStorage 읽기 실패 - key: ${key}`, error);
+    if (!item) throw new Error("no item");
+    return (JSON.parse(item) as SessionStorageData[K]) || null;
+  } catch {
+    return (item as SessionStorageData[K]) || null;
   }
 };
 
-export const removeItem = (key: string): void => {
+export const removeItem = (key: keyof SessionStorageData): void => {
   try {
     sessionStorage.removeItem(key);
   } catch (error) {
