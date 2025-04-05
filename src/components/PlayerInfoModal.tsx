@@ -16,11 +16,7 @@ const PlayerInfoModal = ({
   className,
 }: PlayerInfoModalProps) => {
   return (
-    <SquareModal
-      onClose={onClose}
-      width={"30%"}
-      className={`${className} min-w-[350px]`}
-    >
+    <SquareModal onClose={onClose} width={"30%"} className={`${className}`}>
       <div className="w-full h-full flex flex-col items-center justify-between py-6 px-2">
         <div className="flex flex-col items-center gap-4">
           <div>
@@ -42,6 +38,7 @@ const PlayerInfoModal = ({
           onClick={() => {}}
           title="친구 요청"
           width={"40%"}
+          fontSize={"text-sm"}
         />
       </div>
     </SquareModal>

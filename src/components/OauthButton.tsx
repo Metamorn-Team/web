@@ -5,13 +5,15 @@ import { SiNaver } from "react-icons/si";
 
 interface OauthButtonProps {
   type: "GOOGLE" | "KAKAO" | "NAVER";
+  width: string;
   onClick: () => void;
 }
 
-const OauthButton: React.FC<OauthButtonProps> = ({ type, onClick }) => {
+const OauthButton: React.FC<OauthButtonProps> = ({ type, width, onClick }) => {
   return (
     <button
       className={`${commonStyles.button} ${buttonStyles[type].button}`}
+      style={{ width, maxWidth: 300 }}
       onClick={onClick}
     >
       {icons[type]}
