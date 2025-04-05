@@ -1,22 +1,20 @@
-import { Pixelify_Sans } from "next/font/google";
 import Image from "next/image";
 
-const Pixelify = Pixelify_Sans({
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-});
-
-export const Logo = () => {
+export const Logo = ({ width }: { width: string }) => {
   return (
-    <div className="flex justify-center items-center gap-2">
-      <div className="relative w-16 h-12">
+    <div
+      className="flex flex-col justify-center items-center"
+      style={{ width }}
+    >
+      <div className="relative w-12 h-12">
         <Image
-          src={"/images/slime.png"}
+          src={"/images/avatar/purple_pawn_avatar.png"}
           alt="메타몬"
+          priority
           fill
         />
       </div>
-      <p className={`${Pixelify.className} text-4xl`}>Metamorn</p>
+      <p className="text-3xl">메타몬</p>
     </div>
   );
 };
