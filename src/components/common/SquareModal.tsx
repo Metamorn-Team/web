@@ -15,8 +15,17 @@ const SquareModal = ({
 }: SquareModalProps) => {
   useEffect(() => {
     document.body.style.overflow = "hidden";
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+
     return () => {
       document.body.style.overflow = "auto";
+      window.removeEventListener("keydown", handleKeyPress);
     };
   }, []);
 
@@ -28,7 +37,7 @@ const SquareModal = ({
       ></div>
 
       <div
-        className={`relative bg-modalBg bg-cover p-10 animate-fadeIn rounded-3xl ${className}`}
+        className={`flex flex-col relative bg-modalBg bg-cover p-10 animate-fadeIn rounded-3xl min-w-[350px] ${className}`}
         style={{ aspectRatio: "1/1", width, height: "auto" }}
       >
         {children}

@@ -17,21 +17,26 @@ const TalkModal = ({
 }: TalkModalProps) => {
   const [index, setIndex] = useState(0);
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.code === "Space") {
-      e.preventDefault();
-
-      if (index < comments.length - 1) {
-        setIndex(index + 1);
-      } else {
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
         onClose();
       }
-    }
-  };
+      if (e.code === "Space") {
+        e.preventDefault();
 
-  useEffect(() => {
+        if (index < comments.length - 1) {
+          setIndex(index + 1);
+        } else {
+          onClose();
+        }
+      }
+    };
     window.addEventListener("keydown", handleKeyDown);
+
     return () => {
+      document.body.style.overflow = "auto";
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [index]);
