@@ -1,3 +1,4 @@
+import { getItem } from "@/utils/persistence";
 import { io, Socket } from "socket.io-client";
 
 class SocketManager {
@@ -5,7 +6,12 @@ class SocketManager {
 
   connect(nsp: string) {
     if (!this.store.has(nsp)) {
-      const socket = io(`http://localhost:4000/game/${nsp}`);
+      const accessToken = getItem("access_token");
+      const socket = io(`http://localhost:4000/game/${nsp}`, {
+        auth: {
+          authorization: accessToken,
+        },
+      });
       socket.connect();
       this.store.set(nsp, socket);
     }
