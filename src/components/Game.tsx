@@ -1,6 +1,6 @@
 "use client";
 
-import { RefObject, useLayoutEffect, useRef } from "react";
+import React, { RefObject, useLayoutEffect, useRef } from "react";
 import { Phaser } from "@/game/phaser";
 
 interface GameProps {
@@ -13,7 +13,7 @@ export interface GameRef {
   currnetScene: Phaser.Scene | null;
 }
 
-export default function Game({ ref }: GameProps) {
+const Game = ({ ref }: GameProps) => {
   const gameRef = useRef<Phaser.Game | null>(null);
 
   useLayoutEffect(() => {
@@ -44,4 +44,6 @@ export default function Game({ ref }: GameProps) {
   }, [ref]);
 
   return <div id="game-container" />;
-}
+};
+
+export default React.memo(Game);
