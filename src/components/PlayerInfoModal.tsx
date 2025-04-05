@@ -29,7 +29,7 @@ const PlayerInfoModal = ({
           </div>
           <div className="flex flex-col items-center">
             <div className="text-base font-bold">{playerInfo.nickname}</div>
-            <div className="text-sm text-gray-500">{playerInfo.id}</div>
+            <div className="text-sm text-gray-500">{playerInfo.tag}</div>
           </div>
         </div>
 
