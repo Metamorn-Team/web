@@ -17,6 +17,10 @@ import { socketManager } from "@/game/managers/socket-manager";
 import { UserInfo } from "@/types/socket-io/response";
 import PlayerInfoModal from "@/components/PlayerInfoModal";
 import { 친절한_토치_고블린 } from "@/constants/talk-scripts";
+import LoginModal from "@/components/login/LoginModal";
+import { getMyProfile } from "@/api/user";
+import { persistItem } from "@/utils/persistence";
+import { AxiosError } from "axios";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -32,10 +36,16 @@ export default function GameWrapper({
 
   const [playerInfo, setPlayerInfo] = useState<UserInfo>({
     id: "",
+    tag: "",
     nickname: "",
   });
 
   const [isPlayBgm, setIsPlayBgm] = useState(true);
+  const {
+    isModalOpen: isLoginModalOpen,
+    onClose: onLoginModalClose,
+    onOpen: onLoginModalOpen,
+  } = useModal();
   const { isModalOpen, changeModalOpen, onClose } = useModal();
   const {
     isModalOpen: isHelpModalOpen,
@@ -98,11 +108,25 @@ export default function GameWrapper({
       onPlayerModalOpen();
     };
 
+    const handleRequestJoinZone = async (data: { type: "dev" | "design" }) => {
+      try {
+        const userInfo = await getMyProfile();
+        persistItem("profile", userInfo);
+
+        EventBus.emit("join-zone", data);
+      } catch (e: unknown) {
+        if (e instanceof AxiosError && e.status === 401) {
+          onLoginModalOpen();
+        }
+      }
+    };
+
     EventBus.on("current-scene-ready", handleSceneReady);
     EventBus.on("start-change-scene", handleStartChangeScene);
     EventBus.on("finish-change-scene", handleFinishChangeScene);
     EventBus.on("npc-interaction-started", handleNpcInteraction);
     EventBus.on("player-click", handlePlayerClick);
+    EventBus.on("request-join-zone", handleRequestJoinZone);
 
     const handleResize = () => {
       if (gameRef.current) {
@@ -119,6 +143,22 @@ export default function GameWrapper({
       window.removeEventListener("resize", handleResize);
     };
   }, [gameRef]);
+
+  // 로그인 모달 떠 있을 떄 phaser 키 이벤트 비활성화
+  useEffect(() => {
+    if (
+      !gameRef.current?.game.input.keyboard ||
+      !gameRef.current?.game.input.mouse
+    )
+      return;
+    if (isLoginModalOpen) {
+      gameRef.current.game.input.keyboard.enabled = false;
+      gameRef.current.game.input.mouse.enabled = false;
+    } else {
+      gameRef.current.game.input.keyboard.enabled = true;
+      gameRef.current.game.input.mouse.enabled = true;
+    }
+  }, [isLoginModalOpen]);
 
   return (
     <div>
@@ -146,6 +186,8 @@ export default function GameWrapper({
       {isPlayerModalOpen ? (
         <PlayerInfoModal onClose={onPlayerModalClose} playerInfo={playerInfo} />
       ) : null}
+
+      {isLoginModalOpen ? <LoginModal onClose={onLoginModalClose} /> : null}
     </div>
   );
 }
