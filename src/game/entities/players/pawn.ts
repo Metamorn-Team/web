@@ -1,4 +1,5 @@
 import { PAWN, PawnColor } from "@/constants/entities";
+import { BORN } from "@/game/animations/keys/common";
 import { PAWN_ATTACK, PAWN_IDLE, PAWN_WALK } from "@/game/animations/keys/pawn";
 import { Player } from "@/game/entities/players/player";
 import { UserInfo } from "@/types/socket-io/response";
@@ -6,7 +7,7 @@ import { Socket } from "socket.io-client";
 
 export class Pawn extends Player {
   private readonly color: PawnColor;
-  private hitArea: Phaser.Geom.Rectangle;
+  private isBeingBorn = true;
 
   constructor(
     scene: Phaser.Scene,
@@ -28,7 +29,10 @@ export class Pawn extends Player {
       }
     });
 
-    this.idle();
+    this.play(BORN);
+    this.once("animationcomplete", () => {
+      this.isBeingBorn = false;
+    });
   }
 
   protected setBodyConfig(): void {
@@ -37,6 +41,7 @@ export class Pawn extends Player {
   }
 
   update(): void {
+    if (this.isBeingBorn) return;
     super.update();
   }
 

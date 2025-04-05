@@ -6,7 +6,7 @@ import {
   WARRIOR,
   warriorColors,
 } from "@/constants/entities";
-import { DEAD } from "@/game/animations/keys/common";
+import { BORN, DEAD } from "@/game/animations/keys/common";
 import { PAWN_ATTACK, PAWN_IDLE, PAWN_WALK } from "@/game/animations/keys/pawn";
 import { TORCH_GOBLIN_IDLE } from "@/game/animations/keys/torch-goblin";
 import {
@@ -21,6 +21,15 @@ export const defineAnimation = (scene: Phaser.Scene) => {
     frames: scene.anims.generateFrameNumbers(DEAD, {
       start: 0,
       end: 13,
+    }),
+    frameRate: 15,
+  });
+
+  scene.anims.create({
+    key: BORN,
+    frames: scene.anims.generateFrameNumbers(DEAD, {
+      start: 13,
+      end: 0,
     }),
     frameRate: 15,
   });
