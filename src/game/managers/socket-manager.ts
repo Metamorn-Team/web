@@ -25,6 +25,13 @@ class SocketManager {
       this.store.delete(nsp);
     }
   }
+
+  clear() {
+    for (const socket of this.store.values()) {
+      socket.disconnect();
+    }
+    this.store.clear();
+  }
 }
 
 export const socketManager = new SocketManager();
