@@ -4,6 +4,7 @@ import LoginStep from "@/components/login/steps/LoginStep";
 import RegisterStep from "@/components/login/steps/RegisterStep";
 import { persistItem } from "@/utils/persistence";
 import { RegisterResponse } from "@/api/auth";
+import SelectAvatarStep from "@/components/login/steps/SelectAvatarStep";
 
 interface LoginModalProps {
   onClose: () => void;
@@ -22,12 +23,15 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
     window.location.reload();
   };
 
+  const nextStep = () => setStep((curr) => curr + 1);
+
   const StepComponents = [
     <LoginStep
       key={"login"}
-      plusStep={() => setStep((curr) => curr + 1)}
+      nextStep={nextStep}
       onSuccessLogin={onSuccessLogin}
     />,
+    <SelectAvatarStep key={"avatar"} nextStep={nextStep} />,
     <RegisterStep key={"register"} onSuccessLogin={onSuccessLogin} />,
   ];
 

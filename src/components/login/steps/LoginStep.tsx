@@ -8,11 +8,11 @@ import { useGoogleLogin } from "@react-oauth/google";
 import useRegisterPayloadStore from "@/stores/useRegisterPayloadStore";
 
 interface LoginStepProps {
-  plusStep: () => void;
+  nextStep: () => void;
   onSuccessLogin: (response: RegisterResponse) => void;
 }
 
-const LoginStep = ({ plusStep, onSuccessLogin }: LoginStepProps) => {
+const LoginStep = ({ nextStep, onSuccessLogin }: LoginStepProps) => {
   const router = useRouter();
   const { updatePayload } = useRegisterPayloadStore();
 
@@ -29,7 +29,7 @@ const LoginStep = ({ plusStep, onSuccessLogin }: LoginStepProps) => {
           if (isErrorUserInfo(body)) {
             const { email, provider } = body;
             updatePayload({ email, provider });
-            plusStep();
+            nextStep();
           }
         }
       }
