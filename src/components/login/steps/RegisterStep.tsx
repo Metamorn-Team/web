@@ -1,25 +1,31 @@
 import { register, RegisterResponse } from "@/api/auth";
-import { BaseRegisterDate } from "@/api/user";
+import Button from "@/components/common/Button";
+import useRegisterPayloadStore from "@/stores/useRegisterPayloadStore";
 import { AxiosError } from "axios";
+import Image from "next/image";
 import React, { useState, useEffect } from "react";
 
 interface RegisterStepProps {
-  baseRegisterData: BaseRegisterDate | null;
   onSuccessLogin: (response: RegisterResponse) => void;
 }
 
-const RegisterStep = ({
-  baseRegisterData,
-  onSuccessLogin,
-}: RegisterStepProps) => {
-  const [nickname, setNickname] = useState("");
-  const [tag, setTag] = useState("");
+const RegisterStep = ({ onSuccessLogin }: RegisterStepProps) => {
+  const { updatePayload, clear, nickname, tag, ...restPayload } =
+    useRegisterPayloadStore();
+
   const [error, setError] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState({
     nickname: "",
     tag: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const onChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
+    updatePayload({ nickname: e.target.value });
+  };
+  const onChangeTag = (e: React.ChangeEvent<HTMLInputElement>) => {
+    updatePayload({ tag: e.target.value });
+  };
 
   const validateInputs = () => {
     const errors = {
@@ -28,7 +34,7 @@ const RegisterStep = ({
     };
 
     if (nickname.length < 2 || nickname.length > 20) {
-      errors.nickname = "닉네임은 2~20자 사이로 입력해주세요";
+      errors.nickname = "이름은 2~20자 사이로 입력해주세요";
     }
 
     if (tag.length < 4 || tag.length > 15) {
@@ -53,16 +59,13 @@ const RegisterStep = ({
     }
 
     try {
-      if (baseRegisterData) {
-        const payload = {
-          ...baseRegisterData,
-          nickname,
-          tag,
-        };
-
-        const response = await register(payload);
-        onSuccessLogin(response);
-      }
+      const response = await register({
+        ...restPayload,
+        nickname,
+        tag,
+      });
+      onSuccessLogin(response);
+      clear();
     } catch (e) {
       if (e instanceof AxiosError) {
         setError(e.response?.data.message || "가입 실패");
@@ -74,17 +77,33 @@ const RegisterStep = ({
 
   return (
     <div className="flex flex-col items-center gap-6 w-full">
-      <h2 className="text-xl font-bold">추가 정보 입력</h2>
+      <h2 className="text-xl font-bold">캐릭터 생성</h2>
+      <div className="relative w-12 h-12 text-lg">
+        <p className="absolute -top-2 -right-1 z-50 animate-ping">
+          {validationErrors.nickname.length || validationErrors.tag.length
+            ? "💢"
+            : "💚"}
+        </p>
+        <Image
+          src={"/images/avatar/purple_pawn_avatar.png"}
+          alt="메타몬"
+          priority
+          fill
+        />
+      </div>
 
-      <form onSubmit={handleSubmit} className="w-full max-w-xs space-y-4">
-        <div>
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col items-center w-full max-w-xs space-y-4"
+      >
+        <div className="w-full">
           <label className="block text-sm font-medium mb-1">
-            닉네임 (2~20자)
+            이름을 지어주세요!
           </label>
           <input
             type="text"
             value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
+            onChange={onChangeNickname}
             className={`w-full p-2 border rounded ${
               validationErrors.nickname ? "border-red-500" : "border-gray-300"
             }`}
@@ -92,21 +111,20 @@ const RegisterStep = ({
             minLength={2}
             maxLength={20}
           />
-          {validationErrors.nickname && (
-            <p className="text-red-500 text-xs mt-1">
-              {validationErrors.nickname}
-            </p>
-          )}
+
+          <p className="text-red-500 text-xs mt-1">
+            {validationErrors.nickname}
+          </p>
         </div>
 
-        <div>
+        <div className="w-full">
           <label className="block text-sm font-medium mb-1">
-            태그 (4~15자)
+            친구가 나를 찾을 떄 사용하는 태그에요!
           </label>
           <input
             type="text"
             value={tag}
-            onChange={(e) => setTag(e.target.value)}
+            onChange={onChangeTag}
             className={`w-full p-2 border rounded ${
               validationErrors.tag ? "border-red-500" : "border-gray-300"
             }`}
@@ -114,14 +132,25 @@ const RegisterStep = ({
             minLength={4}
             maxLength={15}
           />
-          {validationErrors.tag && (
-            <p className="text-red-500 text-xs mt-1">{validationErrors.tag}</p>
-          )}
+
+          <p className="text-red-500 text-xs mt-1">{validationErrors.tag}</p>
         </div>
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        <p className="text-red-500 text-sm">{error}</p>
 
-        <button
+        <Button
+          title={"시작하기"}
+          color="yellow"
+          onClick={() => {}}
+          fontSize="text-lg"
+          width="60%"
+          disabled={
+            isSubmitting ||
+            !!validationErrors.nickname ||
+            !!validationErrors.tag
+          }
+        />
+        {/* <button
           type="submit"
           className={`w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 ${
             isSubmitting ? "opacity-50 cursor-not-allowed" : ""
@@ -133,7 +162,7 @@ const RegisterStep = ({
           }
         >
           {isSubmitting ? "처리 중..." : "가입 완료"}
-        </button>
+        </button> */}
       </form>
     </div>
   );

@@ -2,23 +2,19 @@ import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { login, RegisterResponse } from "@/api/auth";
 import { isErrorUserInfo } from "@/api/guard/is-user-info";
-import { BaseRegisterDate } from "@/api/user";
 import Logo from "@/components/common/Logo";
 import OauthButton from "@/components/OauthButton";
 import { useGoogleLogin } from "@react-oauth/google";
+import useRegisterPayloadStore from "@/stores/useRegisterPayloadStore";
 
 interface LoginStepProps {
-  changeUserInfo: (userInfo: BaseRegisterDate) => void;
   plusStep: () => void;
   onSuccessLogin: (response: RegisterResponse) => void;
 }
 
-const LoginStep = ({
-  changeUserInfo,
-  plusStep,
-  onSuccessLogin,
-}: LoginStepProps) => {
+const LoginStep = ({ plusStep, onSuccessLogin }: LoginStepProps) => {
   const router = useRouter();
+  const { updatePayload } = useRegisterPayloadStore();
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (code) => {
@@ -32,7 +28,7 @@ const LoginStep = ({
           const body = e.response?.data;
           if (isErrorUserInfo(body)) {
             const { email, provider } = body;
-            changeUserInfo({ email, provider });
+            updatePayload({ email, provider });
             plusStep();
           }
         }

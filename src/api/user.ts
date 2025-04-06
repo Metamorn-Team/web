@@ -1,6 +1,5 @@
 import { http } from "@/api/http";
-
-type Provider = "GOOGLE" | "KAKAO";
+import { Provider } from "@/types/client/unions";
 
 export interface UserInfo {
   readonly id: string;
@@ -27,6 +26,7 @@ export interface BaseRegisterDate {
 export interface AdditionalRegisterData {
   readonly nickname: string;
   readonly tag: string;
+  readonly avatarKey: string;
 }
 
 export async function getMyProfile(): Promise<UserInfo> {
