@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import { AxiosError } from "axios";
 import Game, { GameRef } from "@/components/Game";
 import { LobyScene } from "@/game/scenes/loby-scene";
 import MenuHeader from "@/components/MenuHeader";
@@ -20,7 +21,6 @@ import { 친절한_토치_고블린 } from "@/constants/talk-scripts";
 import LoginModal from "@/components/login/LoginModal";
 import { getMyProfile } from "@/api/user";
 import { persistItem } from "@/utils/persistence";
-import { AxiosError } from "axios";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -140,6 +140,11 @@ export default function GameWrapper({
 
     return () => {
       EventBus.removeListener("current-scene-ready", handleSceneReady);
+      EventBus.removeListener("start-change-scene", handleStartChangeScene);
+      EventBus.removeListener("finish-change-scene", handleFinishChangeScene);
+      EventBus.removeListener("npc-interaction-started", handleNpcInteraction);
+      EventBus.removeListener("player-click", handlePlayerClick);
+      EventBus.removeListener("request-join-zone", handleRequestJoinZone);
       window.removeEventListener("resize", handleResize);
     };
   }, [gameRef]);

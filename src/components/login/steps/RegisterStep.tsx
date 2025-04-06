@@ -1,9 +1,9 @@
+import React, { useState, useEffect } from "react";
+import { AxiosError } from "axios";
+import Image from "next/image";
 import { register, RegisterResponse } from "@/api/auth";
 import Button from "@/components/common/Button";
 import useRegisterPayloadStore from "@/stores/useRegisterPayloadStore";
-import { AxiosError } from "axios";
-import Image from "next/image";
-import React, { useState, useEffect } from "react";
 
 interface RegisterStepProps {
   onSuccessLogin: (response: RegisterResponse) => void;
@@ -41,7 +41,7 @@ const RegisterStep = ({ onSuccessLogin }: RegisterStepProps) => {
       tag: !isValidTag,
     }));
 
-    setAvatarEmotion(isValidNickname && isValidTag ? "💚" : "💢");
+    setAvatarEmotion(isValidNickname && isValidTag ? "💜" : "💢");
   };
 
   useEffect(() => {
@@ -119,7 +119,7 @@ const RegisterStep = ({ onSuccessLogin }: RegisterStepProps) => {
 
           <div className="w-full max-w-[305px]">
             <label className="block text-sm font-medium mb-1">
-              친구가 나를 찾을 떄 사용하는 태그에요!
+              친구가 나를 찾을 때 사용하는 태그에요!
             </label>
             <input
               type="text"
