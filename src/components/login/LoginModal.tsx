@@ -5,20 +5,27 @@ import RegisterStep from "@/components/login/steps/RegisterStep";
 import { persistItem } from "@/utils/persistence";
 import { RegisterResponse } from "@/api/auth";
 import SelectAvatarStep from "@/components/login/steps/SelectAvatarStep";
+import useRegisterPayloadStore from "@/stores/useRegisterPayloadStore";
 
 interface LoginModalProps {
   onClose: () => void;
 }
 
 const LoginModal = ({ onClose }: LoginModalProps) => {
+  const { clear } = useRegisterPayloadStore();
   const [step, setStep] = useState(0);
+
+  const onCloseWithStateClear = () => {
+    onClose();
+    clear();
+  };
 
   const onSuccessLogin = (response: RegisterResponse) => {
     const { accessToken, ...user } = response;
     persistItem("access_token", accessToken);
     persistItem("profile", user);
 
-    onClose();
+    onCloseWithStateClear();
 
     window.location.reload();
   };
@@ -36,7 +43,11 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
   ];
 
   return (
-    <SquareModal onClose={onClose} width="30%" className="min-w-[365px]">
+    <SquareModal
+      onClose={onCloseWithStateClear}
+      width="30%"
+      className="min-w-[365px]"
+    >
       {StepComponents[step]}
     </SquareModal>
   );
