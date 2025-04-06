@@ -26,7 +26,7 @@ export default function SquareButton({
       style={{
         aspectRatio: "1/1",
         width: width || "fit-content",
-        height: "auth",
+        height: "auto",
         fontSize: fontSize || 14,
       }}
       onClick={onClick}

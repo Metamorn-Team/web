@@ -37,7 +37,7 @@ const SquareModal = ({
       ></div>
 
       <div
-        className={`flex flex-col relative bg-modalBg bg-cover p-10 animate-fadeIn rounded-3xl min-w-[350px] ${className}`}
+        className={`flex flex-col relative bg-modalBg bg-cover p-8 animate-fadeIn rounded-3xl min-w-[400px] ${className}`}
         style={{ aspectRatio: "1/1", width, height: "auto" }}
       >
         {children}
