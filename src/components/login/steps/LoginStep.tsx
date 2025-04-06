@@ -1,31 +1,32 @@
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { login } from "@/api/auth";
+import { login, RegisterResponse } from "@/api/auth";
 import { isErrorUserInfo } from "@/api/guard/is-user-info";
 import { BaseRegisterDate } from "@/api/user";
 import Logo from "@/components/common/Logo";
 import OauthButton from "@/components/OauthButton";
-import { persistItem } from "@/utils/persistence";
 import { useGoogleLogin } from "@react-oauth/google";
+
+interface LoginStepProps {
+  changeUserInfo: (userInfo: BaseRegisterDate) => void;
+  plusStep: () => void;
+  onSuccessLogin: (response: RegisterResponse) => void;
+}
 
 const LoginStep = ({
   changeUserInfo,
   plusStep,
-}: {
-  changeUserInfo: (userInfo: BaseRegisterDate) => void;
-  plusStep: () => void;
-}) => {
+  onSuccessLogin,
+}: LoginStepProps) => {
   const router = useRouter();
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (code) => {
       try {
-        const data = await login("GOOGLE", { accessToken: code.access_token });
-        const { accessToken, ...user } = data;
-        persistItem("access_token", accessToken);
-        persistItem("profile", user);
-
-        window.location.reload();
+        const response = await login("GOOGLE", {
+          accessToken: code.access_token,
+        });
+        onSuccessLogin(response);
       } catch (e: unknown) {
         if (e instanceof AxiosError) {
           const body = e.response?.data;

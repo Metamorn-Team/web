@@ -3,36 +3,42 @@ import SquareModal from "@/components/common/SquareModal";
 import { BaseRegisterDate } from "@/api/user";
 import LoginStep from "@/components/login/steps/LoginStep";
 import RegisterStep from "@/components/login/steps/RegisterStep";
-import { RegisterResponse } from "@/api/auth";
 import { persistItem } from "@/utils/persistence";
+import { RegisterResponse } from "@/api/auth";
 
 interface LoginModalProps {
   onClose: () => void;
 }
 
 const LoginModal = ({ onClose }: LoginModalProps) => {
-  const [baseRegisterDate, setBaseRegisterDate] =
+  const [baseRegisterData, setBaseRegisterData] =
     useState<BaseRegisterDate | null>(null);
   const [step, setStep] = useState(0);
 
-  const changeUserInfo = (baseData: BaseRegisterDate) =>
-    setBaseRegisterDate(baseData);
+  const changeBaseData = (baseData: BaseRegisterDate) =>
+    setBaseRegisterData(baseData);
 
-  const onRegisterComplete = (user: RegisterResponse) => {
+  const onSuccessLogin = (response: RegisterResponse) => {
+    const { accessToken, ...user } = response;
+    persistItem("access_token", accessToken);
     persistItem("profile", user);
+
+    onClose();
+
+    window.location.reload();
   };
 
   const StepComponents = [
     <LoginStep
       key={"login"}
-      changeUserInfo={changeUserInfo}
+      changeUserInfo={changeBaseData}
       plusStep={() => setStep((curr) => curr + 1)}
+      onSuccessLogin={onSuccessLogin}
     />,
     <RegisterStep
       key={"register"}
-      baseRegisterDate={baseRegisterDate}
-      onRegisterComplete={onRegisterComplete}
-      onModalClose={onClose}
+      baseRegisterData={baseRegisterData}
+      onSuccessLogin={onSuccessLogin}
     />,
   ];
 

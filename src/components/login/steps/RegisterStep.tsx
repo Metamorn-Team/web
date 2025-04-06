@@ -4,15 +4,13 @@ import { AxiosError } from "axios";
 import React, { useState, useEffect } from "react";
 
 interface RegisterStepProps {
-  baseRegisterDate: BaseRegisterDate | null;
-  onRegisterComplete: (user: RegisterResponse) => void;
-  onModalClose: () => void;
+  baseRegisterData: BaseRegisterDate | null;
+  onSuccessLogin: (response: RegisterResponse) => void;
 }
 
 const RegisterStep = ({
-  baseRegisterDate,
-  onRegisterComplete,
-  onModalClose,
+  baseRegisterData,
+  onSuccessLogin,
 }: RegisterStepProps) => {
   const [nickname, setNickname] = useState("");
   const [tag, setTag] = useState("");
@@ -55,16 +53,15 @@ const RegisterStep = ({
     }
 
     try {
-      if (baseRegisterDate) {
+      if (baseRegisterData) {
         const payload = {
-          ...baseRegisterDate,
+          ...baseRegisterData,
           nickname,
           tag,
         };
 
         const response = await register(payload);
-        onRegisterComplete(response);
-        onModalClose();
+        onSuccessLogin(response);
       }
     } catch (e) {
       if (e instanceof AxiosError) {
