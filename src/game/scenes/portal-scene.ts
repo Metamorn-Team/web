@@ -5,9 +5,20 @@ import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io";
 import { spawnManager } from "@/game/managers/spawn-manager";
 import { Player } from "@/game/entities/players/player";
 import { socketManager } from "@/game/managers/socket-manager";
-import { getItem, setItem } from "@/utils/session-storage";
+import { getItem, removeItem, setItem } from "@/utils/session-storage";
+import {
+  getItem as getPersistenceItem,
+  persistItem,
+} from "@/utils/persistence";
 import { UserInfo } from "@/types/socket-io/response";
 import { Pawn } from "@/game/entities/players/pawn";
+import { getMyProfile } from "@/api/user";
+
+interface PlayerProfile {
+  id: string;
+  tag: string;
+  nickname: string;
+}
 
 export class ZoneScene extends MetamornScene {
   protected override player: Player;
@@ -48,12 +59,7 @@ export class ZoneScene extends MetamornScene {
 
     this.io = socketManager.connect(this.socketNsp)!;
 
-    this.spwanMyPlayer({
-      id: "my",
-      nickname: "ME",
-      x: this.centerOfMap.x,
-      y: this.centerOfMap.y,
-    });
+    this.spawnMyPlayer();
 
     this.listenEvents();
 
@@ -61,7 +67,7 @@ export class ZoneScene extends MetamornScene {
       scene: this,
       socketNsp: this.socketNsp,
     });
-    // this.playBgm();
+    this.playBgm();
   }
 
   update(): void {
@@ -99,10 +105,42 @@ export class ZoneScene extends MetamornScene {
     this.cameras.main.setZoom(1.1);
   }
 
-  spwanMyPlayer(data: UserInfo & { x: number; y: number }) {
-    const { x, y, ...userInfo } = data;
-    this.player = new Pawn(this, x, y, "red", userInfo, true, this.io);
-    this.followPlayerCamera();
+  async spawnMyPlayer() {
+    try {
+      const playerInfo = await this.getPlayerInfo();
+      this.initializePlayer(playerInfo);
+      this.followPlayerCamera();
+    } catch (e: unknown) {
+      // TODO 토큰 재발급 추가하면 401시 그쪽에서 처리
+      console.log(e);
+
+      removeItem("current_scene");
+      window.location.reload();
+    }
+  }
+
+  private async getPlayerInfo() {
+    const storedProfile = getPersistenceItem("profile");
+    return storedProfile || this.fetchFreshPlayerInfo();
+  }
+
+  private async fetchFreshPlayerInfo() {
+    const user = await getMyProfile();
+    persistItem("profile", user);
+
+    return user;
+  }
+
+  private initializePlayer(profile: PlayerProfile) {
+    this.player = new Pawn(
+      this,
+      this.centerOfMap.x,
+      this.centerOfMap.y,
+      "red",
+      profile,
+      true,
+      this.io
+    );
   }
 
   spawnActiveUsers(activeUsers: (UserInfo & { x: number; y: number })[]) {
@@ -110,7 +148,7 @@ export class ZoneScene extends MetamornScene {
       spawnManager.spawnPlayer(
         this.otherPlayers,
         this,
-        { id: activeUser.id, nickname: activeUser.nickname },
+        { id: activeUser.id, nickname: activeUser.nickname, tag: "test" },
         activeUser.x,
         activeUser.y
       )
