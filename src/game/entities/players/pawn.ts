@@ -37,7 +37,6 @@ export class Pawn extends Player {
 
   protected setBodyConfig(): void {
     this.setScale(0.7);
-    this.setRectangle(50, 50, { label: "PLAYER" });
   }
 
   update(): void {

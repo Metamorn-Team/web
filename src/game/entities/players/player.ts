@@ -8,6 +8,7 @@ import { DEAD } from "@/game/animations/keys/common";
 
 export abstract class Player extends Phaser.Physics.Matter.Sprite {
   private playerInfo: UserInfo;
+  private label = "PLAYER";
 
   private isControllable: boolean;
   protected isAttack = false;
@@ -54,6 +55,13 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.setCollidesWith(COLLISION_CATEGORIES.WORLD);
 
     this.setFixedRotation();
+
+    if (this.body) {
+      (this.body as typeof this.body & { label: string }).label = this
+        .isControllable
+        ? "MY_PLAYER"
+        : "PLAYER";
+    }
   }
 
   protected abstract setBodyConfig(): void;
@@ -74,7 +82,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
       }
     }
 
-    this.setNicknamePosition(this.x, this.y);
+    this.setNicknamePosition();
     this.setDepth(this.y);
   }
 
@@ -147,18 +155,18 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   abstract idle(): void;
   abstract attack(): void;
 
-  setNicknamePosition(x: number, y: number) {
-    this.playerNameText.setPosition(x, y - 45);
+  setNicknamePosition() {
+    this.playerNameText.setPosition(this.x, this.y - this.displayHeight / 2);
   }
 
   private setNickname(scene: Phaser.Scene) {
     this.playerNameText = scene.add
-      .text(this.x, this.y - 45, this.playerInfo.nickname, {
+      .text(this.x, this.y - this.displayHeight / 2, this.playerInfo.nickname, {
         fontFamily: "CookieRun",
         fontSize: "16px",
         resolution: 2,
+        padding: { bottom: 14 },
         color: "#FFFFFF",
-        padding: { left: 10, right: 10, top: 5, bottom: 5 },
         stroke: "#000000",
         strokeThickness: 2,
       })
