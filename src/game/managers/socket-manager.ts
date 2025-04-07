@@ -1,8 +1,10 @@
 import { getItem } from "@/utils/persistence";
 import { io, Socket } from "socket.io-client";
+import { ClientToServer, ServerToClient } from "mmorn-type";
 
 class SocketManager {
-  private store: Map<string, Socket> = new Map();
+  private store: Map<string, Socket<ClientToServer, ServerToClient>> =
+    new Map();
 
   connect(nsp: string) {
     if (!this.store.has(nsp)) {
