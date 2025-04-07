@@ -10,7 +10,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   private playerInfo: UserInfo;
   private label = "PLAYER";
 
-  private isControllable: boolean;
+  protected isControllable: boolean;
   protected isAttack = false;
 
   private playerNameText: Phaser.GameObjects.Text;
@@ -156,7 +156,9 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   abstract attack(): void;
 
   setNicknamePosition() {
-    this.playerNameText.setPosition(this.x, this.y - this.displayHeight / 2);
+    if (this.playerNameText) {
+      this.playerNameText.setPosition(this.x, this.y - this.displayHeight / 2);
+    }
   }
 
   private setNickname(scene: Phaser.Scene) {
