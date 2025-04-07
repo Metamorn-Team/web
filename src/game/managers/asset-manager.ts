@@ -51,10 +51,10 @@ export class AssetManager {
         PAWN(color),
         `/game/player/pawn/${PAWN(color)}.png`,
         {
-          frameWidth: 64,
-          frameHeight: 64,
-          spacing: 128,
-          margin: 64,
+          frameWidth: 144,
+          frameHeight: 144,
+          spacing: 48,
+          margin: 24,
         }
       );
     });
