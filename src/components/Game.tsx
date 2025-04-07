@@ -1,7 +1,14 @@
 "use client";
 
-import React, { RefObject, useLayoutEffect, useRef } from "react";
+import React, {
+  RefObject,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { Phaser } from "@/game/phaser";
+import FontFaceObserver from "fontfaceobserver";
 
 interface GameProps {
   ref: RefObject<GameRef | null>;
@@ -15,8 +22,27 @@ export interface GameRef {
 
 const Game = ({ ref }: GameProps) => {
   const gameRef = useRef<Phaser.Game | null>(null);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    const checkFonts = async () => {
+      try {
+        const font = new FontFaceObserver("CookieRun");
+        await font.load();
+
+        setFontsLoaded(true);
+      } catch (err) {
+        console.error("폰트 로드 실패:", err);
+        setFontsLoaded(true);
+      }
+    };
+
+    checkFonts();
+  }, []);
 
   useLayoutEffect(() => {
+    if (!fontsLoaded) return;
+
     const initialize = async () => {
       const mod = await import("@/game/main");
       const { GameSingleton } = mod;
@@ -41,7 +67,7 @@ const Game = ({ ref }: GameProps) => {
     };
 
     initialize();
-  }, [ref]);
+  }, [ref, fontsLoaded]);
 
   return <div id="game-container" />;
 };
