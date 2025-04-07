@@ -18,7 +18,7 @@ const PlayerInfoModal = ({
   return (
     <SquareModal onClose={onClose} width={"30%"} className={`${className}`}>
       <div className="w-full h-full flex flex-col items-center justify-between py-6 px-2">
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-3">
           <div>
             <Image
               src={`/images/avatar/${
@@ -30,8 +30,15 @@ const PlayerInfoModal = ({
             />
           </div>
           <div className="flex flex-col items-center">
-            <div className="text-base font-bold">{playerInfo.nickname}</div>
-            <div className="text-sm text-gray-500">{playerInfo.tag}</div>
+            <div className="text-xl font-bold">{playerInfo.nickname}</div>
+
+            <div className="text-sm text-[#5c4b32] bg-[#f9f5ec] border border-[#d6c6aa]  rounded-full px-3 py-1">
+              @{playerInfo.tag}
+            </div>
+          </div>
+
+          <div className="w-full bg-[#f9f5ec] border border-[#d6c6aa] rounded-md px-5 py-5 text-sm text-[#5c4b32] text-center shadow-inner max-w-[340px]">
+            💬 {"자기소개가 아직 없어요!"}
           </div>
         </div>
 
