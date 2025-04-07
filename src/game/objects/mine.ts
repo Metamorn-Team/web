@@ -96,8 +96,8 @@ export class Mine extends Phaser.Physics.Matter.Sprite {
 
   private isInteractionPair(labelA: string, labelB: string): boolean {
     return (
-      (labelA === "PLAYER" && labelB === "PORTAL_INTERACTION") ||
-      (labelA === "PORTAL_INTERACTION" && labelB === "PLAYER")
+      (labelA === "MY_PLAYER" && labelB === "PORTAL_INTERACTION") ||
+      (labelA === "PORTAL_INTERACTION" && labelB === "MY_PLAYER")
     );
   }
 

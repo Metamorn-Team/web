@@ -89,8 +89,8 @@ export abstract class Npc extends Phaser.Physics.Matter.Sprite {
 
   private isInteractionPair(labelA: string, labelB: string): boolean {
     return (
-      (labelA === "PLAYER" && labelB === "NPC_INTERACTION") ||
-      (labelA === "NPC_INTERACTION" && labelB === "PLAYER")
+      (labelA === "MY_PLAYER" && labelB === "NPC_INTERACTION") ||
+      (labelA === "NPC_INTERACTION" && labelB === "MY_PLAYER")
     );
   }
 
