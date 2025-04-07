@@ -21,7 +21,9 @@ const PlayerInfoModal = ({
         <div className="flex flex-col items-center gap-4">
           <div>
             <Image
-              src={"/images/avatar/purple_pawn_avatar.png"}
+              src={`/images/avatar/${
+                playerInfo.avatarKey || "purple_pawn"
+              }.png`}
               width={64}
               height={64}
               alt="avatar"

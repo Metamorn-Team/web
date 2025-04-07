@@ -37,6 +37,7 @@ export default function GameWrapper({
   const [playerInfo, setPlayerInfo] = useState<UserInfo>({
     id: "",
     tag: "",
+    avatarKey: "",
     nickname: "",
   });
 
