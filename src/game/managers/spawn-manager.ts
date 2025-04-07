@@ -1,21 +1,40 @@
+import { Socket } from "socket.io-client";
 import { Pawn } from "@/game/entities/players/pawn";
-import { Player } from "@/game/entities/players/player";
 import { Phaser } from "@/game/phaser";
 import { UserInfo } from "@/types/socket-io/response";
+import { PawnColor, pawnColors } from "@/constants/entities";
 
 class SpawnManager {
   spawnPlayer(
-    store: Map<string, Player>,
     scene: Phaser.Scene,
     userInfo: UserInfo,
     x: number,
-    y: number
+    y: number,
+    isMe = false,
+    io?: Socket
   ) {
     console.log(userInfo.id);
-    if (store.hasOwnProperty(userInfo.id)) return;
+    const { avatarKey } = userInfo;
+    const avatarInfo = avatarKey.split("_");
 
-    const player = new Pawn(scene, x, y, "blue", userInfo);
-    store.set(userInfo.id, player);
+    const avatarName = avatarInfo[1];
+
+    if (avatarName === "pawn") {
+      const color = avatarInfo[0] as PawnColor;
+
+      const hasColor = pawnColors.includes(color);
+      return new Pawn(
+        scene,
+        x,
+        y,
+        hasColor ? color : "blue",
+        userInfo,
+        isMe,
+        io
+      );
+    }
+
+    return new Pawn(scene, x, y, "blue", userInfo, isMe, io);
   }
 }
 

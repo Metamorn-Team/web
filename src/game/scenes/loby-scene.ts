@@ -108,7 +108,9 @@ export class LobyScene extends MetamornScene {
       this.centerOfMap.x,
       this.centerOfMap.y,
       "red",
-      player ? player : { id: "", tag: "", nickname: "" },
+      player
+        ? player
+        : { id: "", tag: "", nickname: "", avatarKey: "red_pawn" },
       true
     );
     this.followPlayerCamera();

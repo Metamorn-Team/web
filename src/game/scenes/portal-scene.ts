@@ -1,7 +1,6 @@
 import { Socket } from "socket.io-client";
 import { EventBus } from "@/game/event/EventBus";
 import { MetamornScene } from "@/game/scenes/meramorn-scene";
-import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io";
 import { spawnManager } from "@/game/managers/spawn-manager";
 import { Player } from "@/game/entities/players/player";
 import { socketManager } from "@/game/managers/socket-manager";
@@ -10,14 +9,18 @@ import {
   getItem as getPersistenceItem,
   persistItem,
 } from "@/utils/persistence";
-import { UserInfo } from "@/types/socket-io/response";
-import { Pawn } from "@/game/entities/players/pawn";
 import { getMyProfile } from "@/api/user";
+import {
+  ActivePlayerResponse,
+  ClientToServer,
+  ServerToClient,
+} from "mmorn-type";
 
 interface PlayerProfile {
   id: string;
-  tag: string;
   nickname: string;
+  tag: string;
+  avatarKey: string;
 }
 
 export class ZoneScene extends MetamornScene {
@@ -28,7 +31,7 @@ export class ZoneScene extends MetamornScene {
   private mapHeight: number;
   private centerOfMap: { x: number; y: number };
 
-  private io: Socket<ServerToClientEvents, ClientToServerEvents>;
+  private io: Socket<ServerToClient, ClientToServer>;
   private zoneType: "dev" | "design";
   private socketNsp = "zone";
 
@@ -67,7 +70,7 @@ export class ZoneScene extends MetamornScene {
       scene: this,
       socketNsp: this.socketNsp,
     });
-    this.playBgm();
+    // this.playBgm();
   }
 
   update(): void {
@@ -132,34 +135,27 @@ export class ZoneScene extends MetamornScene {
   }
 
   private initializePlayer(profile: PlayerProfile) {
-    this.player = new Pawn(
+    this.player = spawnManager.spawnPlayer(
       this,
+      profile,
       this.centerOfMap.x,
       this.centerOfMap.y,
-      "red",
-      profile,
       true,
       this.io
     );
   }
 
-  spawnActiveUsers(activeUsers: (UserInfo & { x: number; y: number })[]) {
-    activeUsers.forEach((activeUser) =>
-      spawnManager.spawnPlayer(
-        this.otherPlayers,
-        this,
-        { id: activeUser.id, nickname: activeUser.nickname, tag: "test" },
-        activeUser.x,
-        activeUser.y
-      )
-    );
+  spawnActiveUsers(activeUsers: ActivePlayerResponse) {
+    activeUsers.forEach((activeUser) => {
+      this.addPlayer(activeUser);
+    });
   }
 
   listenEvents() {
     this.io.on("connect", () => {
       console.log("on connect");
       this.io.emit("playerJoin", {
-        type: this.zoneType,
+        roomType: this.zoneType,
         x: this.centerOfMap.x,
         y: this.centerOfMap.y,
       });
@@ -170,18 +166,14 @@ export class ZoneScene extends MetamornScene {
       this.clearAllPlayer();
     });
 
-    this.io.on(
-      "activeUsers",
-      (activeUsers: (UserInfo & { x: number; y: number })[]) => {
-        console.log(`online users: ${JSON.stringify(activeUsers, null, 2)}`);
-        this.spawnActiveUsers(activeUsers);
-      }
-    );
+    this.io.on("activePlayers", (activeUsers) => {
+      console.log(`online users: ${JSON.stringify(activeUsers, null, 2)}`);
+      this.spawnActiveUsers(activeUsers);
+    });
 
     this.io.on("playerJoin", (data) => {
       console.log(`on playerJoin: ${JSON.stringify(data, null, 2)}`);
-      const { x, y, ...userInfo } = data;
-      spawnManager.spawnPlayer(this.otherPlayers, this, userInfo, x, y);
+      this.addPlayer(data);
     });
 
     this.io.on("playerLeft", (data) => {
@@ -234,5 +226,21 @@ export class ZoneScene extends MetamornScene {
     const player = this.otherPlayers.get(playerId);
     player?.destroyWithAnimation(true);
     this.otherPlayers.delete(playerId);
+  }
+
+  addPlayer(data: {
+    readonly id: string;
+    readonly nickname: string;
+    readonly tag: string;
+    readonly avatarKey: string;
+    readonly x: number;
+    readonly y: number;
+  }) {
+    const { x, y, ...userInfo } = data;
+    if (this.otherPlayers.has(userInfo.id)) return;
+
+    const player = spawnManager.spawnPlayer(this, userInfo, x, y);
+
+    this.otherPlayers.set(userInfo.id, player);
   }
 }
