@@ -1,13 +1,6 @@
 import { http } from "@/api/http";
 import { Provider } from "@/types/client/unions";
-
-export interface UserInfo {
-  readonly id: string;
-  readonly email: string;
-  readonly nickname: string;
-  readonly tag: string;
-  readonly provider: Provider;
-}
+import { GetUserResponse } from "mmorn-type";
 
 export interface NotRegisteredUserResponse {
   readonly message: string;
@@ -29,7 +22,7 @@ export interface AdditionalRegisterData {
   readonly avatarKey: string;
 }
 
-export async function getMyProfile(): Promise<UserInfo> {
-  const response = await http.get<UserInfo>(`/users/my`);
+export async function getMyProfile(): Promise<GetUserResponse> {
+  const response = await http.get<GetUserResponse>(`/users/my`);
   return response.data;
 }

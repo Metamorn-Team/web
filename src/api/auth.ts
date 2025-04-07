@@ -1,15 +1,8 @@
 import { http } from "@/api/http";
 import { AdditionalRegisterData, BaseRegisterDate } from "@/api/user";
+import { RegisterRequest, RegisterResponse } from "mmorn-type";
 
 export type RegisterPayload = BaseRegisterDate & AdditionalRegisterData;
-
-export interface RegisterResponse {
-  readonly id: string;
-  readonly accessToken: string;
-  readonly email: string;
-  readonly nickname: string;
-  readonly tag: string;
-}
 
 export async function login(
   provider: "GOOGLE",
@@ -25,7 +18,7 @@ export async function login(
 }
 
 export async function register(
-  body: RegisterPayload
+  body: RegisterRequest
 ): Promise<RegisterResponse> {
   const response = await http.post<RegisterResponse>("/auth/register", body);
   return response.data;
