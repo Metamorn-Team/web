@@ -15,6 +15,7 @@ import {
   ClientToServer,
   ServerToClient,
 } from "mmorn-type";
+import { playerStore } from "@/game/managers/player-store";
 
 interface PlayerProfile {
   id: string;
@@ -25,7 +26,6 @@ interface PlayerProfile {
 
 export class ZoneScene extends MetamornScene {
   protected override player: Player;
-  private otherPlayers: Map<string, Player> = new Map();
 
   private mapWidth: number;
   private mapHeight: number;
@@ -78,9 +78,12 @@ export class ZoneScene extends MetamornScene {
       this.player.update();
     }
 
-    this.otherPlayers.values().forEach((player) => {
-      player.update();
-    });
+    playerStore
+      .getAllPlayers()
+      .values()
+      .forEach((player) => {
+        player.update();
+      });
   }
 
   createTileMapLayers(map: Phaser.Tilemaps.Tilemap) {
@@ -152,13 +155,19 @@ export class ZoneScene extends MetamornScene {
   }
 
   listenEvents() {
+    const playerJoinParam = {
+      roomType: this.zoneType,
+      x: this.centerOfMap.x,
+      y: this.centerOfMap.y,
+    };
+
+    if (this.io.connected) {
+      this.io.emit("playerJoin", playerJoinParam);
+    }
+
     this.io.on("connect", () => {
       console.log("on connect");
-      this.io.emit("playerJoin", {
-        roomType: this.zoneType,
-        x: this.centerOfMap.x,
-        y: this.centerOfMap.y,
-      });
+      this.io.emit("playerJoin", playerJoinParam);
     });
 
     this.io.on("disconnect", () => {
@@ -169,16 +178,19 @@ export class ZoneScene extends MetamornScene {
     this.io.on("activePlayers", (activeUsers) => {
       console.log(`online users: ${JSON.stringify(activeUsers, null, 2)}`);
       this.spawnActiveUsers(activeUsers);
+      EventBus.emit("activePlayers", activeUsers);
     });
 
     this.io.on("playerJoin", (data) => {
       console.log(`on playerJoin: ${JSON.stringify(data, null, 2)}`);
       this.addPlayer(data);
+      EventBus.emit("newPlayer", data);
     });
 
     this.io.on("playerLeft", (data) => {
       console.log(`on playerLeft: ${JSON.stringify(data, null, 2)}`);
       this.destroyPlayer(data.id);
+      EventBus.emit("playerLeft", data);
     });
 
     this.io.on("playerMoved", (data) => {
@@ -188,7 +200,7 @@ export class ZoneScene extends MetamornScene {
   }
 
   handlePlayerMove(playerId: string, x: number, y: number) {
-    const player = this.otherPlayers.get(playerId);
+    const player = playerStore.getPlayer(playerId);
     if (player) {
       const dx = player.x - x;
       const dy = player.y - y;
@@ -216,16 +228,19 @@ export class ZoneScene extends MetamornScene {
   }
 
   clearAllPlayer() {
-    this.otherPlayers.values().forEach((player) => {
-      player.destroy();
-    });
-    this.otherPlayers.clear();
+    playerStore
+      .getAllPlayers()
+      .values()
+      .forEach((player) => {
+        player.destroy();
+      });
+    playerStore.clear();
   }
 
   destroyPlayer(playerId: string) {
-    const player = this.otherPlayers.get(playerId);
+    const player = playerStore.getPlayer(playerId);
     player?.destroyWithAnimation(true);
-    this.otherPlayers.delete(playerId);
+    playerStore.deletePlayer(playerId);
   }
 
   addPlayer(data: {
@@ -237,10 +252,10 @@ export class ZoneScene extends MetamornScene {
     readonly y: number;
   }) {
     const { x, y, ...userInfo } = data;
-    if (this.otherPlayers.has(userInfo.id)) return;
+    if (playerStore.has(userInfo.id)) return;
 
     const player = spawnManager.spawnPlayer(this, userInfo, x, y);
 
-    this.otherPlayers.set(userInfo.id, player);
+    playerStore.addPlayer(userInfo.id, player);
   }
 }
