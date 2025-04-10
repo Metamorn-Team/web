@@ -3,18 +3,18 @@ import FriendItem from "@/components/FriendItem";
 import { Friend } from "@/types/client/friend.types";
 
 interface FriendItemListProps {
-  friends: Friend[];
+  users: Friend[];
   className?: string;
 }
 
 export default function FriendItmeList({
-  friends,
+  users,
   className,
 }: FriendItemListProps) {
   return (
     <ScrollView className={className}>
-      {friends.map((friend) => (
-        <FriendItem key={friend.id} friend={friend} />
+      {users.map((user) => (
+        <FriendItem key={user.id} friend={user} />
       ))}
     </ScrollView>
   );

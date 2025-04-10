@@ -22,7 +22,7 @@ export default function FriendItem({ friend }: FriendItem) {
       <div className="flex flex-col gap-1 flex-grow-[2] basis-0">
         <p className="text-base">{friend.nickname}</p>
         <p className="text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out">
-          {friend.tag}
+          @{friend.tag}
         </p>
       </div>
       <div className="flex items-center justify-center flex-grow-[1] basis-0">

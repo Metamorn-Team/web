@@ -22,18 +22,8 @@ const FriendModal = ({ onClose }: FriendModalProps) => {
   const [selected, setSelected] = useState<Menu>("친구 목록");
 
   const renderContents = useCallback(() => {
-    if (selected === "친구 목록") {
-      const Component = menus[selected];
-      return <Component friends={friends} />;
-    }
-    if (selected === "받은 요청") {
-      const Component = menus[selected];
-      return <Component users={friends} />;
-    }
-    if (selected === "보낸 요청") {
-      const Component = menus[selected];
-      return <Component users={friends} />;
-    }
+    const Component = menus[selected];
+    return <Component users={friends} />;
   }, [selected]);
 
   return (
@@ -69,61 +59,61 @@ const friends = [
   {
     id: "1",
     profileImageUrl: "/images/slime.png",
-    tag: "Magik#19191919",
-    nickname: "magik",
+    tag: "magik",
+    nickname: "매직",
   },
   {
     id: "2",
     profileImageUrl: "/images/slime.png",
-    tag: "Magik#19191919",
-    nickname: "magik",
+    tag: "snai",
+    nickname: "달패이",
   },
   {
     id: "3",
     profileImageUrl: "/images/slime.png",
-    tag: "Magik#19191919",
-    nickname: "magik",
+    tag: "kokiri",
+    nickname: "코기리",
   },
   {
     id: "4",
     profileImageUrl: "/images/slime.png",
-    tag: "Magik#19191919",
-    nickname: "magik",
+    tag: "kokiri",
+    nickname: "코기리",
   },
   {
     id: "5",
     profileImageUrl: "/images/slime.png",
-    tag: "Magik#19191919",
-    nickname: "magik",
+    tag: "kokiri",
+    nickname: "코기리",
   },
   {
     id: "6",
     profileImageUrl: "/images/slime.png",
-    tag: "Magik#19191919",
-    nickname: "magik",
+    tag: "kokiri",
+    nickname: "코기리",
   },
   {
     id: "7",
     profileImageUrl: "/images/slime.png",
-    tag: "Magik#19191919",
-    nickname: "magik",
+    tag: "kokiri",
+    nickname: "코기리",
   },
   {
     id: "8",
     profileImageUrl: "/images/slime.png",
-    tag: "Magik#19191919",
-    nickname: "magik",
+    tag: "kokiri",
+    nickname: "코기리",
   },
   {
     id: "9",
     profileImageUrl: "/images/slime.png",
-    tag: "Magik#19191919",
-    nickname: "magik",
+    tag: "kokiri",
+    nickname: "코기리",
   },
   {
     id: "10",
     profileImageUrl: "/images/slime.png",
-    tag: "Magik#19191919",
-    nickname: "magik",
+    tag: "kokiri",
+    nickname: "코기리",
   },
 ];
