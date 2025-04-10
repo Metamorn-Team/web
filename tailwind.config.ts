@@ -22,6 +22,7 @@ export default {
       backgroundImage: {
         homeBg: "url(/images/background.png)",
         modalBg: "url(/images/ui/paper.png)",
+        paperBg: "url(/images/ui/paper-bg.png)",
         paperLongBg: "url(/images/ui/paper-long.png)",
         paperSmall: "url(/images/ui/paper-small.png)",
         yellowBtn: "url(/images/ui/button-yellow.png)",
