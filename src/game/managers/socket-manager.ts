@@ -1,6 +1,7 @@
 import { getItem } from "@/utils/persistence";
 import { io, Socket } from "socket.io-client";
 import { ClientToServer, ServerToClient } from "mmorn-type";
+import { API_BASE_URL } from "@/constants/constants";
 
 class SocketManager {
   private store: Map<string, Socket<ServerToClient, ClientToServer>> =
@@ -9,7 +10,7 @@ class SocketManager {
   connect(nsp: string) {
     if (!this.store.has(nsp)) {
       const accessToken = getItem("access_token");
-      const socket = io(`http://localhost:4000/game/${nsp}`, {
+      const socket = io(`${API_BASE_URL}/game/${nsp}`, {
         auth: {
           authorization: accessToken,
         },

@@ -1,8 +1,9 @@
+import { API_BASE_URL } from "@/constants/constants";
 import { getItem } from "@/utils/persistence";
 import axios from "axios";
 
 export const http = axios.create({
-  baseURL: "http://localhost:4000",
+  baseURL: API_BASE_URL,
   timeout: 5000,
 });
 
