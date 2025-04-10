@@ -50,6 +50,10 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.listenInteractionEvent();
   }
 
+  getPlayerInfo() {
+    return this.playerInfo;
+  }
+
   private playerCommonBodyConfig() {
     this.setCollisionCategory(COLLISION_CATEGORIES.PLAYER);
     this.setCollidesWith(COLLISION_CATEGORIES.WORLD);
