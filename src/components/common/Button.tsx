@@ -29,7 +29,7 @@ export default function Button({
 }: ButtonProps) {
   const styles = isActive
     ? "bg-yellowPressedBtn pb-1"
-    : `${buttonBgs[color]} pb-2`;
+    : `${buttonBgs[color]} pb-2 active:bg-yellowPressedBtn active:pb-1`;
 
   return (
     <button
