@@ -1,11 +1,12 @@
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { login, RegisterResponse } from "@/api/auth";
+import { login } from "@/api/auth";
 import { isErrorUserInfo } from "@/api/guard/is-user-info";
 import Logo from "@/components/common/Logo";
 import OauthButton from "@/components/OauthButton";
 import { useGoogleLogin } from "@react-oauth/google";
 import useRegisterPayloadStore from "@/stores/useRegisterPayloadStore";
+import { RegisterResponse } from "mmorn-type";
 
 interface LoginStepProps {
   nextStep: () => void;
