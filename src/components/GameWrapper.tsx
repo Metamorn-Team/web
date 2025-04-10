@@ -21,6 +21,7 @@ import { 친절한_토치_고블린 } from "@/constants/talk-scripts";
 import LoginModal from "@/components/login/LoginModal";
 import { getMyProfile } from "@/api/user";
 import { persistItem } from "@/utils/persistence";
+import ChatPanel from "@/components/ChatPanel";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -146,6 +147,7 @@ export default function GameWrapper({
       EventBus.removeListener("npc-interaction-started", handleNpcInteraction);
       EventBus.removeListener("player-click", handlePlayerClick);
       EventBus.removeListener("request-join-zone", handleRequestJoinZone);
+
       window.removeEventListener("resize", handleResize);
     };
   }, [gameRef]);
@@ -194,6 +196,8 @@ export default function GameWrapper({
       ) : null}
 
       {isLoginModalOpen ? <LoginModal onClose={onLoginModalClose} /> : null}
+
+      <ChatPanel />
     </div>
   );
 }

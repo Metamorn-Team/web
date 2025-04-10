@@ -3,7 +3,7 @@ import { io, Socket } from "socket.io-client";
 import { ClientToServer, ServerToClient } from "mmorn-type";
 
 class SocketManager {
-  private store: Map<string, Socket<ClientToServer, ServerToClient>> =
+  private store: Map<string, Socket<ServerToClient, ClientToServer>> =
     new Map();
 
   connect(nsp: string) {
