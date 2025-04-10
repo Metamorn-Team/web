@@ -1,0 +1,85 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "island.json",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "island.json": {
+            "scale": 0.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 895,
+                "y": 755
+            }
+        },
+        "island.json#elevation": {
+            "scaleInDock": 1
+        },
+        "island.json#ground": {
+            "scaleInDock": 1
+        },
+        "island.json#shadow": {
+            "scaleInDock": 1
+        },
+        "island.json#water": {
+            "scaleInDock": 1
+        },
+        "island.tmj": {
+            "scale": 0.4869,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 947.8332306428424,
+                "y": 781.4746354487575
+            }
+        },
+        "island.tmj#elevation": {
+            "scaleInDock": 1
+        },
+        "island.tmj#ground": {
+            "scaleInDock": 1
+        },
+        "island.tmj#shadow": {
+            "scaleInDock": 1
+        },
+        "island.tmj#water": {
+            "scaleInDock": 1
+        },
+        "portal.json": {
+            "scale": 0.5333854166666666,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 960.8436676105849,
+                "y": 640.2499755883215
+            }
+        },
+        "portal.json#ground": {
+            "scaleInDock": 1
+        }
+    },
+    "last.imagePath": "/Users/ganghaeseong/Documents/mmorn-web/public/game/tiles/tiny-sward",
+    "map.lastUsedFormat": "json",
+    "map.tileHeight": 64,
+    "map.tileWidth": 64,
+    "openFiles": [
+        "island.json"
+    ],
+    "project": "island.tiled-project",
+    "property.type": "bool",
+    "recentFiles": [
+        "island.json",
+        "portal.json",
+        "island.tmj"
+    ],
+    "tileset.embedInMap": true,
+    "tileset.tileSize": {
+        "height": 64,
+        "width": 64
+    }
+}

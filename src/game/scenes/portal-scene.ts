@@ -54,9 +54,8 @@ export class ZoneScene extends MetamornScene {
   }
 
   preload() {
-    this.load.image("ground", "/game/tiles/tiny-sward/ground.png");
-
     this.load.tilemapTiledJSON("zone", "/game/maps/portal.json");
+    this.load.tilemapTiledJSON("island", "/game/maps/island.json");
   }
 
   create() {
@@ -73,7 +72,7 @@ export class ZoneScene extends MetamornScene {
       scene: this,
       socketNsp: this.socketNsp,
     });
-    // this.playBgm();
+    this.playBgm();
   }
 
   update(): void {
@@ -90,15 +89,60 @@ export class ZoneScene extends MetamornScene {
   }
 
   createTileMapLayers(map: Phaser.Tilemaps.Tilemap) {
+    const seaTileset = map.addTilesetImage("water", "water");
+    const elevationTileset = map.addTilesetImage("elevation", "elevation");
     const groundTileset = map.addTilesetImage("ground", "ground");
+    const shadowTileset = map.addTilesetImage("shadow", "shadow");
+    const bridgeTileset = map.addTilesetImage("bridge", "bridge");
+    const mushroomLTileset = map.addTilesetImage("mushroom-l", "mushroom-l");
 
-    if (groundTileset) {
+    if (
+      seaTileset &&
+      elevationTileset &&
+      groundTileset &&
+      shadowTileset &&
+      bridgeTileset &&
+      mushroomLTileset
+    ) {
+      map.createLayer("sea", seaTileset);
+      map.createLayer("shadow", shadowTileset);
+      map.createLayer("sand", groundTileset);
+      map.createLayer("elevation", elevationTileset);
+      map.createLayer("sand-deco", groundTileset);
       map.createLayer("ground", groundTileset);
+      map.createLayer("hill-shadow", shadowTileset);
+      map.createLayer("hill", elevationTileset);
+      map.createLayer("grass-deco", groundTileset);
+      map.createLayer("hill-ground", groundTileset);
+      map.createLayer("bridge", bridgeTileset);
+      map.createLayer("deco", mushroomLTileset);
+
+      const collisionLines = map.getObjectLayer("collision")?.objects;
+      if (collisionLines && collisionLines?.length > 0) {
+        collisionLines!.forEach((line) => {
+          if (line.rectangle) {
+            if (line.x && line.y && line.width && line.height) {
+              this.matter.add.rectangle(
+                line.x + line.width / 2,
+                line.y + line.height / 2,
+                line.width,
+                line.height,
+                {
+                  isStatic: true,
+                  collisionFilter: {
+                    category: 0x0001,
+                  },
+                }
+              );
+            }
+          }
+        });
+      }
     }
   }
 
   initWorld() {
-    const map = this.make.tilemap({ key: "zone" });
+    const map = this.make.tilemap({ key: "island" });
     this.createTileMapLayers(map);
 
     this.mapWidth = map.widthInPixels;

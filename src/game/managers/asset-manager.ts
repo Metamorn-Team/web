@@ -64,6 +64,8 @@ export class AssetManager {
 
     scene.load.image("water", "/game/tiles/tiny-sward/water.png");
     scene.load.image("elevation", "/game/tiles/tiny-sward/elevation.png");
+    scene.load.image("ground", "/game/tiles/tiny-sward/ground.png");
+    scene.load.image("shadow", "/game/tiles/tiny-sward/shadow.png");
 
     scene.load.image("mushroom-l", "/game/tiles/tiny-sward/mushroom-l.png");
     scene.load.image("mushroom-m", "/game/tiles/tiny-sward/mushroom-m.png");

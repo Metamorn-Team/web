@@ -14,7 +14,7 @@ export class BootScene extends Phaser.Scene {
 
   create() {
     defineAnimation(this);
-    const currentSceneKey = getItem<string>("current_scene") || "LobyScene";
+    const currentSceneKey = getItem("current_scene") || "LobyScene";
     this.scene.start(currentSceneKey);
   }
 }
