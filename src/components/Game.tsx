@@ -27,8 +27,10 @@ const Game = ({ ref }: GameProps) => {
   useEffect(() => {
     const checkFonts = async () => {
       try {
-        const font = new FontFaceObserver("CookieRun");
-        await font.load();
+        const cookieRun = new FontFaceObserver("CookieRun");
+        const pretendard = new FontFaceObserver("Pretendard");
+        await cookieRun.load();
+        await pretendard.load();
 
         setFontsLoaded(true);
       } catch (err) {
