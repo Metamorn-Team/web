@@ -49,10 +49,13 @@ export default function ChatPanel() {
 
     const handleMessageSent = (data: MessageSent) => {
       const { messageId, message } = data;
+
       setMessages((prev) => [
         ...prev,
         { id: messageId, sender: "나", message, avatarKey: "purple_pawn" },
       ]);
+
+      EventBus.emit("mySpeechBubble", data);
     };
 
     const handleReceiveMessage = (data: ReceiveMessage) => {
@@ -71,6 +74,8 @@ export default function ChatPanel() {
           avatarKey: avatarKey,
         },
       ]);
+
+      EventBus.emit("otherSpeechBubble", data);
     };
 
     socket.on("messageSent", handleMessageSent);

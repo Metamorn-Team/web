@@ -13,6 +13,8 @@ import { getMyProfile } from "@/api/user";
 import {
   ActivePlayerResponse,
   ClientToServer,
+  MessageSent,
+  ReceiveMessage,
   ServerToClient,
 } from "mmorn-type";
 import { playerStore } from "@/game/managers/player-store";
@@ -64,7 +66,8 @@ export class ZoneScene extends MetamornScene {
 
     this.spawnMyPlayer();
 
-    this.listenEvents();
+    this.listenLocalEvents();
+    this.listenSocketEvents();
 
     EventBus.emit("current-scene-ready", {
       scene: this,
@@ -154,7 +157,18 @@ export class ZoneScene extends MetamornScene {
     });
   }
 
-  listenEvents() {
+  listenLocalEvents() {
+    EventBus.on("mySpeechBubble", async (data: MessageSent) => {
+      const me = await this.getPlayerInfo();
+      this.showSpeechBubble(me.id, data.message, true);
+    });
+
+    EventBus.on("otherSpeechBubble", async (data: ReceiveMessage) => {
+      this.showSpeechBubble(data.senderId, data.message);
+    });
+  }
+
+  listenSocketEvents() {
     const playerJoinParam = {
       roomType: this.zoneType,
       x: this.centerOfMap.x,
@@ -257,5 +271,79 @@ export class ZoneScene extends MetamornScene {
     const player = spawnManager.spawnPlayer(this, userInfo, x, y);
 
     playerStore.addPlayer(userInfo.id, player);
+  }
+
+  showSpeechBubble(playerId: string, message: string, isMe = false) {
+    const player = isMe ? this.player : playerStore.getPlayer(playerId);
+    if (!player) return;
+
+    const currBubble = player.getSpeechBubble();
+    if (currBubble) {
+      if (currBubble) {
+        currBubble.destroy();
+      }
+      player.setSpeechBubble(null);
+    }
+
+    const container = this.add.container(
+      player.x,
+      player.y - player.displayHeight / 2 - 10
+    );
+    container.setDepth(99999);
+
+    const text = this.add.text(0, 0, message, {
+      fontFamily: "Pretendard",
+      fontSize: "14px",
+      color: "#000000",
+      wordWrap: { width: 150, useAdvancedWrap: true },
+      align: "center",
+      resolution: 3,
+    });
+    text.setOrigin(0.5, 0.5);
+
+    const bubble = this.add.graphics();
+    const padding = 10;
+    const cornerRadius = 15;
+    const tailHeight = 10;
+
+    // 말풍선 크기 계산
+    const bubbleWidth = text.width + padding * 2;
+    const bubbleHeight = text.height + padding * 2;
+
+    text.y = -bubbleHeight / 2 - tailHeight;
+
+    bubble.fillStyle(0xffffff, 1);
+    // bubble.lineStyle(2, 0x000000, 1);
+
+    bubble.fillRoundedRect(
+      -bubbleWidth / 2,
+      -bubbleHeight - tailHeight,
+      bubbleWidth,
+      bubbleHeight,
+      cornerRadius
+    );
+    bubble.strokeRoundedRect(
+      -bubbleWidth / 2,
+      -bubbleHeight - tailHeight,
+      bubbleWidth,
+      bubbleHeight,
+      cornerRadius
+    );
+
+    bubble.fillTriangle(-10, -tailHeight, 10, -tailHeight, 0, 0);
+    // bubble.strokeTriangle(-10, -tailHeight, 10, -tailHeight, 0, 0);
+
+    // 컨테이너에 요소 추가
+    container.add(bubble);
+    container.add(text);
+
+    player.setSpeechBubble(container);
+
+    this.time.delayedCall(5000, () => {
+      if (container && container.active) {
+        container.destroy();
+        player.setSpeechBubble(null);
+      }
+    });
   }
 }

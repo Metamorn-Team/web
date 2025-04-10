@@ -13,6 +13,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   protected isControllable: boolean;
   protected isAttack = false;
 
+  private speechBubble: Phaser.GameObjects.Container | null = null;
   private playerNameText: Phaser.GameObjects.Text;
   private cursor?: Phaser.Types.Input.Keyboard.CursorKeys;
   protected speed = 1;
@@ -85,7 +86,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
         this.y = Phaser.Math.Linear(this.y, this.targetPosition.y, 0.1);
       }
     }
-
+    this.setSpeechBubblePosition();
     this.setNicknamePosition();
     this.setDepth(this.y);
   }
@@ -161,7 +162,10 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   setNicknamePosition() {
     if (this.playerNameText) {
-      this.playerNameText.setPosition(this.x, this.y - this.displayHeight / 2);
+      this.playerNameText.setPosition(
+        this.x,
+        this.y - this.displayHeight / 2 + 20
+      );
     }
   }
 
@@ -226,5 +230,19 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
         texture: this.texture.key,
       });
     });
+  }
+
+  private setSpeechBubblePosition() {
+    if (this.speechBubble && this.speechBubble.active) {
+      this.speechBubble.setPosition(this.x, this.y - this.displayHeight / 2);
+    }
+  }
+
+  getSpeechBubble() {
+    return this.speechBubble;
+  }
+
+  setSpeechBubble(bubble: Phaser.GameObjects.Container | null) {
+    this.speechBubble = bubble;
   }
 }
