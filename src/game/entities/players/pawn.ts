@@ -19,7 +19,7 @@ export class Pawn extends Player {
     io?: Socket
   ) {
     super(scene, x, y, PAWN(color), userInfo, isControllable, io);
-    this.speed = 1;
+    // this.speed = 1;
     this.color = color;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -42,9 +42,9 @@ export class Pawn extends Player {
     });
   }
 
-  update(): void {
+  update(delta: number): void {
     if (this.isBeingBorn) return;
-    super.update();
+    super.update(delta);
   }
 
   walk(side: "right" | "left" | "up" | "down"): number {

@@ -37,6 +37,8 @@ export class ZoneScene extends MetamornScene {
   private zoneType: "dev" | "design";
   private socketNsp = "zone";
 
+  lastTime = Date.now();
+
   constructor() {
     super("ZoneScene");
   }
@@ -75,16 +77,16 @@ export class ZoneScene extends MetamornScene {
     this.playBgm();
   }
 
-  update(): void {
+  update(time: number, delta: number): void {
     if (this.player) {
-      this.player.update();
+      this.player.update(delta);
     }
 
     playerStore
       .getAllPlayers()
       .values()
       .forEach((player) => {
-        player.update();
+        player.update(delta);
       });
   }
 

@@ -49,8 +49,8 @@ export class LobyScene extends MetamornScene {
     this.listenEvents();
   }
 
-  update(): void {
-    this.player.update();
+  update(time: number, delta: number): void {
+    this.player.update(delta);
   }
 
   createTileMapLayers(map: Phaser.Tilemaps.Tilemap) {

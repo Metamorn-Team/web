@@ -9,6 +9,7 @@ import { DEAD } from "@/game/animations/keys/common";
 export abstract class Player extends Phaser.Physics.Matter.Sprite {
   private playerInfo: UserInfo;
   private label = "PLAYER";
+  protected speed = 0.12; // 픽셀/초 (모든 플레이어 동일)
 
   protected isControllable: boolean;
   protected isAttack = false;
@@ -16,7 +17,6 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   private speechBubble: Phaser.GameObjects.Container | null = null;
   private playerNameText: Phaser.GameObjects.Text;
   private cursor?: Phaser.Types.Input.Keyboard.CursorKeys;
-  protected speed = 1;
   protected effect: Phaser.FX.Controller | undefined;
 
   public targetPosition: { x: number; y: number } = { x: 0, y: 0 };
@@ -71,9 +71,9 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   protected abstract setBodyConfig(): void;
 
-  update(): void {
+  update(delta: number): void {
     if (this.isControllable) {
-      this.move();
+      this.move(delta);
     } else {
       if (this.targetPosition) {
         if (
@@ -91,7 +91,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.setDepth(this.y);
   }
 
-  move() {
+  move(delta: number) {
     let velocityX = 0;
     let velocityY = 0;
 
@@ -105,16 +105,23 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     }
 
     if (this.cursor?.left.isDown) {
-      velocityX = this.walk("left");
+      velocityX = this.walk("left") * delta;
     }
     if (this.cursor?.right.isDown) {
-      velocityX = this.walk("right");
+      velocityX = this.walk("right") * delta;
     }
     if (this.cursor?.up.isDown) {
-      velocityY = this.walk("up");
+      velocityY = this.walk("up") * delta;
     }
     if (this.cursor?.down.isDown) {
-      velocityY = this.walk("down");
+      velocityY = this.walk("down") * delta;
+    }
+
+    if (velocityX !== 0 && velocityY !== 0) {
+      const factor =
+        (this.speed * delta) / Math.sqrt(velocityX ** 2 + velocityY ** 2);
+      velocityX *= factor;
+      velocityY *= factor;
     }
 
     // 자신의 좌표도 서버 기반으로
