@@ -3,15 +3,27 @@
 @tailwind utilities;
 
 @font-face {
+  font-family: "Dunggunmo";
+  src: url("../fonts/NeoDunggeunmoPro-Regular.woff");
+  font-display: swap;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
   font-family: "CookieRun";
   src: url("../fonts/CookieRun_Regular.otf");
   font-display: swap;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @font-face {
   font-family: "Pretendard";
   src: url("../fonts/Pretendard-Regular.otf");
   font-display: swap;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 :root {
