@@ -6,6 +6,7 @@ interface RibonProps {
   width: number;
   fontSize?: number;
   paddingBottom?: number;
+  className?: string;
 }
 
 export default function Ribon({
@@ -14,6 +15,7 @@ export default function Ribon({
   width,
   fontSize,
   paddingBottom,
+  className,
 }: RibonProps) {
   const ribons = {
     yellow: "bg-ribonYellow",
@@ -21,7 +23,7 @@ export default function Ribon({
 
   return (
     <div
-      className={`${ribons[color]} bg-cover flex justify-center items-center`}
+      className={`${ribons[color]} bg-cover flex justify-center items-center ${className}`}
       style={{
         width,
         height: width / 3,

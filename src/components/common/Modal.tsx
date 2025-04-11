@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 interface ModalProps {
-  children: React.ReactElement;
+  children: React.ReactNode;
   onClose: () => void;
   className?: string;
 }
@@ -30,7 +30,7 @@ export default function Modal({ children, onClose, className }: ModalProps) {
       ></div>
 
       <div
-        className={`relative bg-paperBg bg-cover p-10 z-10 animate-fadeIn rounded-3xl ${className}`}
+        className={`relative flex flex-col bg-paperBg bg-cover p-6 z-10 animate-fadeIn rounded-3xl ${className}`}
         style={{ aspectRatio: "1/1.3" }}
       >
         {children}

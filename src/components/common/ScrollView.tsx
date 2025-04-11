@@ -8,7 +8,7 @@ interface ScrollViewProps {
 const ScrollView = ({ children, className }: ScrollViewProps) => {
   return (
     <div
-      className={`flex flex-col items-center w-full overflow-scroll scrollbar-hide ${className}`}
+      className={`flex flex-col items-center w-full h-full overflow-scroll scrollbar-hide ${className}`}
     >
       {children}
     </div>
