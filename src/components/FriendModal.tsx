@@ -1,10 +1,13 @@
+"use client";
+
+import React, { Suspense, useCallback, useState } from "react";
 import Button from "@/components/common/Button";
 import Modal from "@/components/common/Modal";
 import Ribon from "@/components/common/Ribon";
 import ReceivedFriendRequestItemList from "@/components/friend/ReceivedFriendRequestItemList";
+import SearchFriendList from "@/components/friend/SearchFriendList";
 import SentFriendRequestItemList from "@/components/friend/SentFriendRequestItemList";
 import FriendItmeList from "@/components/FriendItemList";
-import React, { Suspense, useCallback, useState } from "react";
 
 interface FriendModalProps {
   onClose: () => void;
@@ -12,6 +15,7 @@ interface FriendModalProps {
 
 const menus = {
   "친구 목록": FriendItmeList,
+  "회원 검색": SearchFriendList,
   "받은 요청": ReceivedFriendRequestItemList,
   "보낸 요청": SentFriendRequestItemList,
 };
@@ -23,19 +27,40 @@ const FriendModal = ({ onClose }: FriendModalProps) => {
 
   const renderContents = useCallback(() => {
     const Component = menus[selected];
-    return <Component users={friends} />;
+
+    return (
+      <div className="flex-1 min-h-0">
+        <Component users={friends} />
+      </div>
+    );
   }, [selected]);
 
   return (
-    <Modal onClose={onClose} className="h-3/4">
-      <div className="flex flex-col justify-between items-center gap-2 h-full">
-        <Ribon title="친구" color="yellow" width={130} fontSize={20} />
-        <div className="w-full overflow-scroll my-4 scrollbar-hide">
-          <Suspense fallback={<div>로딩 랄라~</div>}>
+    <Modal
+      onClose={onClose}
+      className="relative h-[80vh] max-h-[800px] w-[90vw] max-w-[500px]"
+    >
+      <div className="flex flex-col h-full">
+        {/* 헤더 부분 */}
+        <div className="relative w-full flex justify-center items-center mb-3">
+          <Ribon title="친구" color="yellow" width={130} fontSize={20} />
+        </div>
+
+        {/* 컨텐츠 영역 */}
+        <div className="flex-1 min-h-0 flex flex-col px-4 pb-4">
+          <Suspense
+            fallback={
+              <div className="flex-1 flex items-center justify-center">
+                로딩 중...
+              </div>
+            }
+          >
             {renderContents()}
           </Suspense>
         </div>
-        <div className="flex gap-2 w-full justify-between">
+
+        {/* 하단 메뉴 버튼 */}
+        <div className="flex gap-2 w-full justify-between px-4 pb-4">
           {Object.keys(menus).map((menu) => (
             <Button
               key={menu}
