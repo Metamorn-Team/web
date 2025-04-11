@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "island.json",
+    "activeFile": "",
     "expandedProjectPaths": [
         "."
     ],
@@ -12,17 +12,23 @@
             "scaleInDock": 1
         },
         "island.json": {
-            "scale": 0.5,
-            "selectedLayer": 0,
+            "scale": 10.2658,
+            "selectedLayer": 11,
             "viewCenter": {
-                "x": 895,
-                "y": 755
+                "x": 1518.098930429192,
+                "y": 1051.4523953320736
             }
+        },
+        "island.json#bridge": {
+            "scaleInDock": 1
         },
         "island.json#elevation": {
             "scaleInDock": 1
         },
         "island.json#ground": {
+            "scaleInDock": 1
+        },
+        "island.json#mushroom-l": {
             "scaleInDock": 1
         },
         "island.json#shadow": {
@@ -68,7 +74,6 @@
     "map.tileHeight": 64,
     "map.tileWidth": 64,
     "openFiles": [
-        "island.json"
     ],
     "project": "island.tiled-project",
     "property.type": "bool",
