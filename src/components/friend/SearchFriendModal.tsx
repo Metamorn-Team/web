@@ -48,7 +48,7 @@ const SearchFriendModal: React.FC<SearchFriendModalProps> = ({ onClose }) => {
 
         {/* 검색 결과 리스트 */}
         <div className="flex-1 w-full">
-          <SearchFriendList searchType={searchType} />
+          <SearchFriendList />
         </div>
       </div>
     </Modal>

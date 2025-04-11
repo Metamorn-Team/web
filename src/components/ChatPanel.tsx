@@ -3,7 +3,7 @@
 import { EventBus } from "@/game/event/EventBus";
 import { playerStore } from "@/game/managers/player-store";
 import { socketManager } from "@/game/managers/socket-manager";
-import { MessageSent, PlayerJoinResponse, ReceiveMessage } from "mmorn-type";
+import { MessageSent, PlayerJoinResponse, ReceiveMessage } from "mmorntype";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { FiSend, FiChevronDown, FiChevronUp } from "react-icons/fi";

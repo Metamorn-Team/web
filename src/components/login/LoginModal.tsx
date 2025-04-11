@@ -5,7 +5,7 @@ import RegisterStep from "@/components/login/steps/RegisterStep";
 import { persistItem } from "@/utils/persistence";
 import SelectAvatarStep from "@/components/login/steps/SelectAvatarStep";
 import useRegisterPayloadStore from "@/stores/useRegisterPayloadStore";
-import { RegisterResponse } from "mmorn-type";
+import { RegisterResponse } from "mmorntype";
 
 interface LoginModalProps {
   onClose: () => void;

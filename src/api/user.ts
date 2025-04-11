@@ -1,6 +1,6 @@
 import { http } from "@/api/http";
 import { Provider } from "@/types/client/unions";
-import { GetUserResponse, SearchUserResponse } from "mmorn-type";
+import { GetUserResponse, SearchUserResponse } from "mmorntype";
 
 export interface NotRegisteredUserResponse {
   readonly message: string;

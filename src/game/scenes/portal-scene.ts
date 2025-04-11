@@ -16,7 +16,7 @@ import {
   MessageSent,
   ReceiveMessage,
   ServerToClient,
-} from "mmorn-type";
+} from "mmorntype";
 import { playerStore } from "@/game/managers/player-store";
 
 interface PlayerProfile {

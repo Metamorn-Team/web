@@ -1,6 +1,6 @@
 import { http } from "@/api/http";
 import { AdditionalRegisterData, BaseRegisterDate } from "@/api/user";
-import { RegisterRequest, RegisterResponse } from "mmorn-type";
+import { RegisterRequest, RegisterResponse } from "mmorntype";
 
 export type RegisterPayload = BaseRegisterDate & AdditionalRegisterData;
 

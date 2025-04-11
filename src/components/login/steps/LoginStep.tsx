@@ -6,7 +6,7 @@ import Logo from "@/components/common/Logo";
 import OauthButton from "@/components/OauthButton";
 import { useGoogleLogin } from "@react-oauth/google";
 import useRegisterPayloadStore from "@/stores/useRegisterPayloadStore";
-import { RegisterResponse } from "mmorn-type";
+import { RegisterResponse } from "mmorntype";
 
 interface LoginStepProps {
   nextStep: () => void;

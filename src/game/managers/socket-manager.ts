@@ -1,6 +1,6 @@
 import { getItem } from "@/utils/persistence";
 import { io, Socket } from "socket.io-client";
-import { ClientToServer, ServerToClient } from "mmorn-type";
+import { ClientToServer, ServerToClient } from "mmorntype";
 import { API_BASE_URL } from "@/constants/constants";
 
 class SocketManager {

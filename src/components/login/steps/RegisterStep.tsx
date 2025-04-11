@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { AxiosError } from "axios";
 import Image from "next/image";
-import { RegisterResponse } from "mmorn-type";
+import { RegisterResponse } from "mmorntype";
 import { register } from "@/api/auth";
 import Button from "@/components/common/Button";
 import useRegisterPayloadStore from "@/stores/useRegisterPayloadStore";
