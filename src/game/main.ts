@@ -22,8 +22,9 @@ export class GameSingleton {
       //   autoCenter: Phaser.Scale.CENTER_BOTH,
       // },
       render: {
-        antialias: true,
-        pixelArt: false,
+        antialias: false,
+        pixelArt: true,
+        roundPixels: true,
       },
       physics: {
         default: "matter",
