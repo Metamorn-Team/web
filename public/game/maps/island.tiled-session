@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "island.json",
     "expandedProjectPaths": [
         "."
     ],
@@ -12,11 +12,11 @@
             "scaleInDock": 1
         },
         "island.json": {
-            "scale": 10.2658,
+            "scale": 0.9108,
             "selectedLayer": 11,
             "viewCenter": {
-                "x": 1518.098930429192,
-                "y": 1051.4523953320736
+                "x": 1051.8225735617038,
+                "y": 1001.8664909969257
             }
         },
         "island.json#bridge": {
@@ -74,6 +74,7 @@
     "map.tileHeight": 64,
     "map.tileWidth": 64,
     "openFiles": [
+        "island.json"
     ],
     "project": "island.tiled-project",
     "property.type": "bool",
