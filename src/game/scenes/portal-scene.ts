@@ -65,8 +65,6 @@ export class ZoneScene extends MetamornScene {
 
     this.io = socketManager.connect(this.socketNsp)!;
 
-    this.spawnMyPlayer();
-
     this.listenLocalEvents();
     this.listenSocketEvents();
 
@@ -160,10 +158,10 @@ export class ZoneScene extends MetamornScene {
     this.cameras.main.setZoom(1.1);
   }
 
-  async spawnMyPlayer() {
+  async spawnMyPlayer(x: number, y: number) {
     try {
       const playerInfo = await this.getPlayerInfo();
-      this.initializePlayer(playerInfo);
+      this.initializePlayer(playerInfo, x, y);
       this.followPlayerCamera();
     } catch (e: unknown) {
       // TODO 토큰 재발급 추가하면 401시 그쪽에서 처리
@@ -186,12 +184,12 @@ export class ZoneScene extends MetamornScene {
     return user;
   }
 
-  private initializePlayer(profile: PlayerProfile) {
+  private initializePlayer(profile: PlayerProfile, x: number, y: number) {
     this.player = spawnManager.spawnPlayer(
       this,
       profile,
-      this.centerOfMap.x,
-      this.centerOfMap.y,
+      x ?? this.centerOfMap.x,
+      y ?? this.centerOfMap.y,
       true,
       this.io
     );
@@ -245,6 +243,11 @@ export class ZoneScene extends MetamornScene {
       console.log(`on playerJoin: ${JSON.stringify(data, null, 2)}`);
       this.addPlayer(data);
       EventBus.emit("newPlayer", data);
+    });
+
+    this.io.on("playerJoinSuccess", (data: { x: number; y: number }) => {
+      console.log("참여 성공");
+      this.spawnMyPlayer(data.x, data.y);
     });
 
     this.io.on("playerLeft", (data) => {
