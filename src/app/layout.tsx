@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import Providers from "@/app/provider";
 
 export const metadata: Metadata = {
   title: "메타몬",
@@ -27,9 +27,7 @@ const RootLayout = ({
   return (
     <html>
       <body className={CookiRun.className}>
-        <GoogleOAuthProvider clientId="643620098305-m4javmkthiki8jciimaloh1hj14g18ap.apps.googleusercontent.com">
-          {children}
-        </GoogleOAuthProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
