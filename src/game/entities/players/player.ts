@@ -13,6 +13,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   protected isControllable: boolean;
   protected isAttack = false;
+  protected isBeingBorn = true;
 
   private speechBubble: Phaser.GameObjects.Container | null = null;
   private playerNameText: Phaser.GameObjects.Text;
@@ -49,6 +50,10 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.playerCommonBodyConfig();
 
     this.listenInteractionEvent();
+  }
+
+  getIsBeingBorn() {
+    return this.isBeingBorn;
   }
 
   getPlayerInfo() {
@@ -181,11 +186,11 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
       .text(this.x, this.y - this.displayHeight / 2, this.playerInfo.nickname, {
         fontFamily: "CookieRun",
         fontSize: "16px",
-        resolution: 2,
         padding: { bottom: 14 },
         color: "#FFFFFF",
         stroke: "#000000",
         strokeThickness: 2,
+        resolution: 10,
       })
       .setScale(1)
       .setDepth(999999);

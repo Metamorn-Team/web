@@ -261,9 +261,13 @@ export class ZoneScene extends MetamornScene {
 
   handlePlayerMove(playerId: string, x: number, y: number) {
     const player = playerStore.getPlayer(playerId);
-    if (player) {
+    const isBeingBorn = player?.getIsBeingBorn();
+    if (player && !isBeingBorn) {
       const dx = player.x - x;
       const dy = player.y - y;
+
+      player.targetPosition.x = x;
+      player.targetPosition.y = y;
 
       if (dx > 0) {
         player.walk("left");
@@ -276,9 +280,6 @@ export class ZoneScene extends MetamornScene {
       } else {
         player.idle();
       }
-
-      player.targetPosition.x = x;
-      player.targetPosition.y = y;
     }
   }
 
@@ -338,12 +339,12 @@ export class ZoneScene extends MetamornScene {
     container.setDepth(99999);
 
     const text = this.add.text(0, 0, message, {
-      fontFamily: "Pretendard",
+      fontFamily: "CookieRun",
       fontSize: "14px",
       color: "#000000",
       wordWrap: { width: 150, useAdvancedWrap: true },
       align: "center",
-      resolution: 3,
+      resolution: 10,
     });
     text.setOrigin(0.5, 0.5);
 

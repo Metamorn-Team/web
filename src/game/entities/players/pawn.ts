@@ -7,7 +7,6 @@ import { Socket } from "socket.io-client";
 
 export class Pawn extends Player {
   private readonly color: PawnColor;
-  private isBeingBorn = true;
 
   constructor(
     scene: Phaser.Scene,
@@ -29,10 +28,14 @@ export class Pawn extends Player {
       }
     });
 
-    this.play(BORN);
-    this.once("animationcomplete", () => {
+    if (this.isControllable) {
+      this.play(BORN);
+      this.once("animationcomplete", () => {
+        this.isBeingBorn = false;
+      });
+    } else {
       this.isBeingBorn = false;
-    });
+    }
   }
 
   protected setBodyConfig(): void {
