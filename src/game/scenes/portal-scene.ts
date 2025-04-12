@@ -1,6 +1,6 @@
 import { Socket } from "socket.io-client";
 import { EventBus } from "@/game/event/EventBus";
-import { MetamornScene } from "@/game/scenes/meramorn-scene";
+import { MetamornScene } from "@/game/scenes/metamorn-scene";
 import { spawnManager } from "@/game/managers/spawn-manager";
 import { Player } from "@/game/entities/players/player";
 import { socketManager } from "@/game/managers/socket-manager";
@@ -63,6 +63,7 @@ export class ZoneScene extends MetamornScene {
   }
 
   create() {
+    super.create();
     this.initWorld();
 
     this.io = socketManager.connect(this.socketNsp)!;
@@ -193,6 +194,7 @@ export class ZoneScene extends MetamornScene {
       x ?? this.centerOfMap.x,
       y ?? this.centerOfMap.y,
       true,
+      this.inputManager,
       this.io
     );
   }

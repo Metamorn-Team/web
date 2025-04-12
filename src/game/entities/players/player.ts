@@ -7,11 +7,24 @@ import { DEAD } from "@/game/animations/keys/common";
 import { TypedSocket } from "@/types/socket-io";
 import { AttackType } from "@/types/game/enum/state";
 import { PlayerAnimationState } from "@/types/game/enum/animation";
+import { InputManager } from "@/game/managers/input-manager";
+import { Keys } from "@/types/game/enum/key";
+
+enum MoveDirection {
+  UP,
+  DOWN,
+  LEFT,
+  RIGHT,
+}
 
 export abstract class Player extends Phaser.Physics.Matter.Sprite {
+  private inputManager?: InputManager;
+
   private playerInfo: UserInfo;
   private label = "PLAYER";
   protected speed = 0.12; // 픽셀/초 (모든 플레이어 동일)
+  private velocityX = 0;
+  private velocityY = 0;
 
   protected currAnimationState: PlayerAnimationState =
     PlayerAnimationState.IDLE;
@@ -36,6 +49,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     texture: string,
     playerInfo: UserInfo,
     isControllable = false,
+    inputManager?: InputManager,
     io?: Socket
   ) {
     super(scene.matter.world, x, y, texture);
@@ -43,6 +57,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     scene.add.existing(this);
 
     this.isControllable = isControllable;
+    this.inputManager = inputManager;
     this.io = io;
     this.targetPosition.x = x;
     this.targetPosition.y = y;
@@ -101,7 +116,28 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     }
 
     if (this.isControllable) {
-      this.move(delta);
+      const keys = this.inputManager?.getPressedKeys() ?? [];
+
+      if (keys.length === 0) {
+        this.idle();
+      }
+
+      if (keys.includes(Keys.SPACE)) {
+        this.attack();
+      }
+
+      if (keys.includes(Keys.UP)) {
+        this.move(delta, MoveDirection.UP);
+      }
+      if (keys.includes(Keys.DOWN)) {
+        this.move(delta, MoveDirection.DOWN);
+      }
+      if (keys.includes(Keys.LEFT)) {
+        this.move(delta, MoveDirection.LEFT);
+      }
+      if (keys.includes(Keys.RIGHT)) {
+        this.move(delta, MoveDirection.RIGHT);
+      }
     } else {
       if (this.targetPosition) {
         if (
@@ -119,69 +155,39 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.setDepth(this.y);
   }
 
-  move(delta: number) {
-    let velocityX = 0;
-    let velocityY = 0;
-
-    if (this.cursor?.space.isDown) {
-      this.attack();
-    }
-
-    console.log("무비");
+  move(delta: number, direaction: MoveDirection) {
     if (this.currAnimationState === PlayerAnimationState.ATTACK) {
       this.setVelocity(0, 0);
-      console.log("gkdl");
       return;
     }
 
-    if (this.cursor?.left.isDown) {
-      velocityX = this.walk("left") * delta;
+    if (direaction === MoveDirection.LEFT) {
+      this.velocityX = this.walk("left") * delta;
     }
-    if (this.cursor?.right.isDown) {
-      velocityX = this.walk("right") * delta;
+    if (direaction === MoveDirection.RIGHT) {
+      this.velocityX = this.walk("right") * delta;
     }
-    if (this.cursor?.up.isDown) {
-      velocityY = this.walk("up") * delta;
+    if (direaction === MoveDirection.UP) {
+      this.velocityY = this.walk("up") * delta;
     }
-    if (this.cursor?.down.isDown) {
-      velocityY = this.walk("down") * delta;
+    if (direaction === MoveDirection.DOWN) {
+      this.velocityY = this.walk("down") * delta;
     }
 
-    if (velocityX !== 0 && velocityY !== 0) {
+    if (this.velocityX !== 0 && this.velocityY !== 0) {
       const factor =
-        (this.speed * delta) / Math.sqrt(velocityX ** 2 + velocityY ** 2);
-      velocityX *= factor;
-      velocityY *= factor;
+        (this.speed * delta) /
+        Math.sqrt(this.velocityX ** 2 + this.velocityY ** 2);
+      this.velocityX *= factor;
+      this.velocityY *= factor;
     }
 
-    // 자신의 좌표도 서버 기반으로
-    // if (velocityX === 0 && velocityY === 0) {
-    //   return;
-    // }
-
-    // const x = this.x + velocityX;
-    // const y = this.y + velocityY;
-
-    // if (Date.now() - this.currentMove > 100) {
-    //   if (this.io) {
-    //     this.io.emit("playerMoved", {
-    //       x,
-    //       y,
-    //     });
-    //   }
-    //   this.currentMove = Date.now();
-    // }
-
-    // 자신의 좌표는 클라이언트 기반으로
-    this.x += velocityX;
-    this.y += velocityY;
-
-    if (velocityX === 0 && velocityY === 0) {
-      this.idle();
-      return;
-    }
+    this.x += this.velocityX;
+    this.y += this.velocityY;
 
     if (!this.io) {
+      this.velocityX = 0;
+      this.velocityY = 0;
       return;
     }
 
@@ -191,6 +197,8 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
       }
       this.currentMove = Date.now();
     }
+    this.velocityX = 0;
+    this.velocityY = 0;
   }
 
   abstract walk(side: "right" | "left" | "up" | "down"): number;

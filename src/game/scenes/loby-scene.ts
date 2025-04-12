@@ -4,7 +4,7 @@ import { EventBus } from "@/game/event/EventBus";
 import { socketManager } from "@/game/managers/socket-manager";
 import { Mine } from "@/game/objects/mine";
 import { Phaser } from "@/game/phaser";
-import { MetamornScene } from "@/game/scenes/meramorn-scene";
+import { MetamornScene } from "@/game/scenes/metamorn-scene";
 import { getItem } from "@/utils/persistence";
 import { setItem } from "@/utils/session-storage";
 
@@ -29,6 +29,7 @@ export class LobyScene extends MetamornScene {
   preload() {}
 
   create() {
+    super.create();
     this.initWorld();
 
     this.spwanMyPlayer();
@@ -111,7 +112,8 @@ export class LobyScene extends MetamornScene {
       player
         ? player
         : { id: "", tag: "", nickname: "", avatarKey: "red_pawn" },
-      true
+      true,
+      this.inputManager
     );
     this.followPlayerCamera();
   }

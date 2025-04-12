@@ -2,6 +2,7 @@ import { PAWN, PawnColor } from "@/constants/entities";
 import { BORN } from "@/game/animations/keys/common";
 import { PAWN_ATTACK, PAWN_IDLE, PAWN_WALK } from "@/game/animations/keys/pawn";
 import { Player } from "@/game/entities/players/player";
+import { InputManager } from "@/game/managers/input-manager";
 import { PlayerAnimationState } from "@/types/game/enum/animation";
 import { AttackType } from "@/types/game/enum/state";
 import { TypedSocket } from "@/types/socket-io";
@@ -17,9 +18,10 @@ export class Pawn extends Player {
     color: PawnColor,
     userInfo: UserInfo,
     isControllable?: boolean,
+    inputManager?: InputManager,
     io?: TypedSocket
   ) {
-    super(scene, x, y, PAWN(color), userInfo, isControllable, io);
+    super(scene, x, y, PAWN(color), userInfo, isControllable, inputManager, io);
     this.color = color;
 
     if (this.isControllable) {
@@ -79,13 +81,11 @@ export class Pawn extends Player {
 
   attack(attackType: AttackType): void {
     if (this.currAnimationState === PlayerAnimationState.ATTACK) return;
-    console.log("일단 들어옴");
     this.currAnimationState = PlayerAnimationState.ATTACK;
 
     this.play(PAWN_ATTACK(this.color), true).once(
       Phaser.Animations.Events.ANIMATION_COMPLETE,
       () => {
-        console.log("공격 오ㅓㅏㄴ");
         this.currAnimationState = PlayerAnimationState.IDLE;
       }
     );
