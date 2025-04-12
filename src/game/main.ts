@@ -26,6 +26,10 @@ export class GameSingleton {
         pixelArt: true,
         roundPixels: true,
       },
+      fps: {
+        target: 60,
+        forceSetTimeOut: true,
+      },
       physics: {
         default: "matter",
         matter: {
