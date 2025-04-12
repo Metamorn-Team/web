@@ -20,7 +20,7 @@ export class TorchGoblin extends Npc {
       this.y - 40,
       150,
       100,
-      "반가워 친구~! 메타몬 월드에 온 걸 환영해~"
+      "메타몬에 온 걸 환영해~"
     );
   }
 
