@@ -1,4 +1,5 @@
 import { WARRIOR, WarriorColor } from "@/constants/entities";
+import { BORN } from "@/game/animations/keys/common";
 import {
   WARRIOR_ATTACK,
   WARRIOR_IDLE,
@@ -21,22 +22,16 @@ export class Warrior extends Player {
     io?: Socket
   ) {
     super(scene, x, y, WARRIOR(color), userInfo, isControllable, io);
-    this.speed = 1;
     this.color = color;
 
-    this.setScale(0.7);
-    this.setRectangle(50, 50, { label: "PLAYER" });
-    this.setFixedRotation();
-    // this.setStatic(true);
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.on(Phaser.Animations.Events.ANIMATION_COMPLETE, (animation: any) => {
-      if (animation.key === WARRIOR_ATTACK(color)) {
-        this.isAttack = false;
-      }
-    });
-
-    this.idle();
+    if (this.isControllable) {
+      this.play(BORN);
+      this.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+        this.isBeingBorn = false;
+      });
+    } else {
+      this.isBeingBorn = false;
+    }
   }
 
   protected setBodyConfig(): void {
@@ -80,5 +75,30 @@ export class Warrior extends Player {
     if (this.isAttack) return;
     this.isAttack = true;
     this.play(WARRIOR_ATTACK(this.color), true);
+  }
+
+  hit(): void {
+    this.setTint(0xffffff);
+
+    // this.scene.time.delayedCall(1000, () => {
+    //   this.clearTint();
+    // });
+
+    const originalX = this.x;
+
+    this.scene.tweens.add({
+      targets: this,
+      x: {
+        from: originalX - 1,
+        to: originalX + 1,
+      },
+      duration: 50,
+      yoyo: true,
+      repeat: 2,
+      ease: "Sine.easeInOut",
+      onComplete: () => {
+        this.x = originalX;
+      },
+    });
   }
 }

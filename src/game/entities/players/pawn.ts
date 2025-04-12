@@ -20,7 +20,6 @@ export class Pawn extends Player {
     io?: TypedSocket
   ) {
     super(scene, x, y, PAWN(color), userInfo, isControllable, io);
-    // this.speed = 1;
     this.color = color;
 
     if (this.isControllable) {
