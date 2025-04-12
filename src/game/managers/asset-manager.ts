@@ -11,9 +11,14 @@ import { Phaser } from "@/game/phaser";
 
 export class AssetManager {
   preloadCommonAsset(scene: Phaser.Scene) {
-    scene.load.audio("town", "/game/sounds/town.mp3");
-    scene.load.audio("woodland-fantasy", "/game/sounds/woodland-fantasy.mp3");
+    this.loadSprites(scene);
+    this.loadAudios(scene);
+    this.loadMaps(scene);
+    this.loadTileImages(scene);
+    this.loadImages(scene);
+  }
 
+  loadSprites(scene: Phaser.Scene) {
     scene.load.spritesheet("sheep", `/game/animal/sheep.png`, {
       frameWidth: 128,
       frameHeight: 128,
@@ -58,10 +63,13 @@ export class AssetManager {
         }
       );
     });
+  }
 
-    scene.load.image("paper-small", "/images/ui/paper-small.png");
-    scene.load.image("mine", "/game/object/mine.png");
+  loadMaps(scene: Phaser.Scene) {
+    scene.load.tilemapTiledJSON("loby", "/game/maps/tiny_sward.json");
+  }
 
+  loadTileImages(scene: Phaser.Scene) {
     scene.load.image("water", "/game/tiles/tiny-sward/water.png");
     scene.load.image("elevation", "/game/tiles/tiny-sward/elevation.png");
     scene.load.image("ground", "/game/tiles/tiny-sward/ground.png");
@@ -75,8 +83,16 @@ export class AssetManager {
     scene.load.image("bone2", "/game/tiles/tiny-sward/bone2.png");
 
     scene.load.image("bridge", "/game/tiles/tiny-sward/bridge.png");
+  }
 
-    scene.load.tilemapTiledJSON("loby", "/game/maps/tiny_sward.json");
+  loadImages(scene: Phaser.Scene) {
+    scene.load.image("paper-small", "/images/ui/paper-small.png");
+    scene.load.image("mine", "/game/object/mine.png");
+  }
+
+  loadAudios(scene: Phaser.Scene) {
+    scene.load.audio("town", "/game/sounds/town.mp3");
+    scene.load.audio("woodland-fantasy", "/game/sounds/woodland-fantasy.mp3");
   }
 }
 
