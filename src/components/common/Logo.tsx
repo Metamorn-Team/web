@@ -8,7 +8,7 @@ export const Logo = ({ width }: { width: string }) => {
     >
       <div className="relative w-12 h-12">
         <Image
-          src={"/images/avatar/purple_pawn_avatar.png"}
+          src={"/images/avatar/purple_pawn.png"}
           alt="메타몬"
           priority
           fill
