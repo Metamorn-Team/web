@@ -23,8 +23,6 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   private playerInfo: UserInfo;
   private label = "PLAYER";
   protected speed = 0.12; // 픽셀/초 (모든 플레이어 동일)
-  private velocityX = 0;
-  private velocityY = 0;
 
   protected currAnimationState: PlayerAnimationState =
     PlayerAnimationState.IDLE;
@@ -39,6 +37,9 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   public targetPosition: { x: number; y: number } = { x: 0, y: 0 };
 
   protected currentMove = 0;
+
+  private prevX: number;
+  private prevY: number;
   io?: TypedSocket;
 
   constructor(
@@ -109,6 +110,9 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     if (this.isControllable) {
       const keys = this.inputManager?.getPressedKeys() ?? [];
 
+      this.prevX = this.x;
+      this.prevY = this.y;
+
       if (keys.length === 0) {
         this.idle();
       }
@@ -129,18 +133,44 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
       if (keys.includes(Keys.RIGHT)) {
         this.move(delta, MoveDirection.RIGHT);
       }
+
+      if (this.io && (this.prevX !== this.x || this.prevY !== this.y)) {
+        this.io.emit("playerMoved", { x: this.x, y: this.y });
+      }
     } else {
-      if (this.targetPosition) {
-        if (
-          Math.abs(this.x - this.targetPosition.x) < 1 &&
-          Math.abs(this.y - this.targetPosition.y) < 1
-        ) {
+      const dx = this.x - this.targetPosition.x;
+      const dy = this.y - this.targetPosition.y;
+
+      const distance = Phaser.Math.Distance.Between(
+        this.x,
+        this.y,
+        this.targetPosition.x,
+        this.targetPosition.y
+      );
+
+      if (distance > 0.5) {
+        console.log("x: " + this.x);
+        console.log("taget: " + this.targetPosition.x);
+
+        if (dx > 0) {
+          this.walk("left");
+        } else if (dx < 0) {
+          this.walk("right");
+        } else if (dy > 0) {
+          this.walk("up");
+        } else if (dy < 0) {
+          this.walk("down");
+        } else {
           this.idle();
         }
+
         this.x = Phaser.Math.Linear(this.x, this.targetPosition.x, 0.1);
         this.y = Phaser.Math.Linear(this.y, this.targetPosition.y, 0.1);
+      } else {
+        this.idle();
       }
     }
+
     this.setSpeechBubblePosition();
     this.setNicknamePosition();
     this.setDepth(this.y);
@@ -152,44 +182,31 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
       return;
     }
 
+    let velocityX = 0;
+    let velocityY = 0;
+
     if (direaction === MoveDirection.LEFT) {
-      this.velocityX = this.walk("left") * delta;
+      velocityX = this.walk("left") * delta;
     }
     if (direaction === MoveDirection.RIGHT) {
-      this.velocityX = this.walk("right") * delta;
+      velocityX = this.walk("right") * delta;
     }
     if (direaction === MoveDirection.UP) {
-      this.velocityY = this.walk("up") * delta;
+      velocityY = this.walk("up") * delta;
     }
     if (direaction === MoveDirection.DOWN) {
-      this.velocityY = this.walk("down") * delta;
+      velocityY = this.walk("down") * delta;
     }
 
-    if (this.velocityX !== 0 && this.velocityY !== 0) {
+    if (velocityX !== 0 && velocityY !== 0) {
       const factor =
-        (this.speed * delta) /
-        Math.sqrt(this.velocityX ** 2 + this.velocityY ** 2);
-      this.velocityX *= factor;
-      this.velocityY *= factor;
+        (this.speed * delta) / Math.sqrt(velocityX ** 2 + velocityY ** 2);
+      velocityX *= factor;
+      velocityY *= factor;
     }
 
-    this.x += this.velocityX;
-    this.y += this.velocityY;
-
-    if (!this.io) {
-      this.velocityX = 0;
-      this.velocityY = 0;
-      return;
-    }
-
-    if (Date.now() - this.currentMove > 100) {
-      if (this.io) {
-        this.io.emit("playerMoved", { x: this.x, y: this.y });
-      }
-      this.currentMove = Date.now();
-    }
-    this.velocityX = 0;
-    this.velocityY = 0;
+    this.x = this.x + velocityX;
+    this.y = this.y + velocityY;
   }
 
   abstract walk(side: "right" | "left" | "up" | "down"): number;
@@ -208,8 +225,8 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.scene.tweens.add({
       targets: this,
       x: {
-        from: originalX - 1,
-        to: originalX + 1,
+        from: originalX - 0.8,
+        to: originalX + 0.8,
       },
       duration: 50,
       yoyo: true,

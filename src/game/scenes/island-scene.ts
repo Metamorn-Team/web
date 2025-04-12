@@ -210,7 +210,7 @@ export class IslandScene extends MetamornScene {
 
     this.io.on("playerMoved", (data) => {
       console.log(`on playerMoved: ${JSON.stringify(data, null, 2)}`);
-      this.handlePlayerMove(data.id, data.x, data.y);
+      this.handleSetTargetPosition(data.id, data.x, data.y);
     });
 
     this.io.on("attacked", (data) => {
@@ -238,28 +238,13 @@ export class IslandScene extends MetamornScene {
     });
   }
 
-  handlePlayerMove(playerId: string, x: number, y: number) {
+  handleSetTargetPosition(playerId: string, x: number, y: number) {
     const player = playerStore.getPlayer(playerId);
     const isBeingBorn = player?.getIsBeingBorn();
 
     if (player && !isBeingBorn) {
-      const dx = player.x - x;
-      const dy = player.y - y;
-
       player.targetPosition.x = x;
       player.targetPosition.y = y;
-
-      if (dx > 0) {
-        player.walk("left");
-      } else if (dx < 0) {
-        player.walk("right");
-      } else if (dy > 0) {
-        player.walk("up");
-      } else if (dy < 0) {
-        player.walk("down");
-      } else {
-        player.idle();
-      }
     }
   }
 
