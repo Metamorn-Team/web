@@ -2,15 +2,19 @@ import * as Phaser from "phaser";
 import type { Socket } from "socket.io-client";
 import { COLLISION_CATEGORIES } from "@/constants/collision-categories";
 import { EventBus } from "@/game/event/EventBus";
-import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-io";
 import { UserInfo } from "@/types/socket-io/response";
 import { DEAD } from "@/game/animations/keys/common";
+import { TypedSocket } from "@/types/socket-io";
+import { AttackType } from "@/types/game/enum/state";
+import { PlayerAnimationState } from "@/types/game/enum/animation";
 
 export abstract class Player extends Phaser.Physics.Matter.Sprite {
   private playerInfo: UserInfo;
   private label = "PLAYER";
   protected speed = 0.12; // 픽셀/초 (모든 플레이어 동일)
 
+  protected currAnimationState: PlayerAnimationState =
+    PlayerAnimationState.IDLE;
   protected isControllable: boolean;
   protected isAttack = false;
   protected isBeingBorn = true;
@@ -23,7 +27,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   public targetPosition: { x: number; y: number } = { x: 0, y: 0 };
 
   protected currentMove = 0;
-  io?: Socket<ServerToClientEvents, ClientToServerEvents>;
+  io?: TypedSocket;
 
   constructor(
     scene: Phaser.Scene,
@@ -50,10 +54,21 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.playerCommonBodyConfig();
 
     this.listenInteractionEvent();
+    // this.scene.tweens.add({
+    //   targets: this,
+    //   x: this.x + 10,
+    //   y: this.y + 10,
+    //   duration: 100,
+    //   yoyo: true,
+    // });
 
     if (this.playerInfo.id === "b3e8da90-bd3c-44a8-9d1a-5aa9dc6f336b") {
       this.effect = this.preFX?.addGlow(0x181818);
     }
+  }
+
+  getCurrneAnimationState() {
+    return this.currAnimationState;
   }
 
   getIsBeingBorn() {
@@ -81,6 +96,10 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   protected abstract setBodyConfig(): void;
 
   update(delta: number): void {
+    if (this.currAnimationState === PlayerAnimationState.ATTACK) {
+      return;
+    }
+
     if (this.isControllable) {
       this.move(delta);
     } else {
@@ -108,8 +127,10 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
       this.attack();
     }
 
-    if (this.isAttack) {
+    console.log("무비");
+    if (this.currAnimationState === PlayerAnimationState.ATTACK) {
       this.setVelocity(0, 0);
+      console.log("gkdl");
       return;
     }
 
@@ -174,7 +195,8 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   abstract walk(side: "right" | "left" | "up" | "down"): number;
   abstract idle(): void;
-  abstract attack(): void;
+  abstract attack(attackTtype?: AttackType): void;
+  abstract hit(): void;
 
   setNicknamePosition() {
     if (this.playerNameText) {

@@ -2,8 +2,10 @@ import { PAWN, PawnColor } from "@/constants/entities";
 import { BORN } from "@/game/animations/keys/common";
 import { PAWN_ATTACK, PAWN_IDLE, PAWN_WALK } from "@/game/animations/keys/pawn";
 import { Player } from "@/game/entities/players/player";
+import { PlayerAnimationState } from "@/types/game/enum/animation";
+import { AttackType } from "@/types/game/enum/state";
+import { TypedSocket } from "@/types/socket-io";
 import { UserInfo } from "@/types/socket-io/response";
-import { Socket } from "socket.io-client";
 
 export class Pawn extends Player {
   private readonly color: PawnColor;
@@ -15,27 +17,24 @@ export class Pawn extends Player {
     color: PawnColor,
     userInfo: UserInfo,
     isControllable?: boolean,
-    io?: Socket
+    io?: TypedSocket
   ) {
     super(scene, x, y, PAWN(color), userInfo, isControllable, io);
     // this.speed = 1;
     this.color = color;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.on(Phaser.Animations.Events.ANIMATION_COMPLETE, (animation: any) => {
-      if (animation.key === PAWN_ATTACK(color)) {
-        this.isAttack = false;
-      }
-    });
-
     if (this.isControllable) {
       this.play(BORN);
-      this.once("animationcomplete", () => {
+      this.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
         this.isBeingBorn = false;
       });
     } else {
       this.isBeingBorn = false;
     }
+  }
+
+  getColor() {
+    return this.color;
   }
 
   protected setBodyConfig(): void {
@@ -47,6 +46,7 @@ export class Pawn extends Player {
 
   update(delta: number): void {
     if (this.isBeingBorn) return;
+
     super.update(delta);
   }
 
@@ -78,9 +78,45 @@ export class Pawn extends Player {
     this.play(PAWN_IDLE(this.color), true);
   }
 
-  attack(): void {
-    if (this.isAttack) return;
-    this.isAttack = true;
-    this.play(PAWN_ATTACK(this.color), true);
+  attack(attackType: AttackType): void {
+    if (this.currAnimationState === PlayerAnimationState.ATTACK) return;
+    console.log("일단 들어옴");
+    this.currAnimationState = PlayerAnimationState.ATTACK;
+
+    this.play(PAWN_ATTACK(this.color), true).once(
+      Phaser.Animations.Events.ANIMATION_COMPLETE,
+      () => {
+        console.log("공격 오ㅓㅏㄴ");
+        this.currAnimationState = PlayerAnimationState.IDLE;
+      }
+    );
+
+    if (attackType === AttackType.VISUAL) return;
+    this.io?.emit("attack");
+  }
+
+  hit(): void {
+    this.setTint(0xffffff);
+
+    // this.scene.time.delayedCall(1000, () => {
+    //   this.clearTint();
+    // });
+
+    const originalX = this.x;
+
+    this.scene.tweens.add({
+      targets: this,
+      x: {
+        from: originalX - 1,
+        to: originalX + 1,
+      },
+      duration: 50,
+      yoyo: true,
+      repeat: 2,
+      ease: "Sine.easeInOut",
+      onComplete: () => {
+        this.x = originalX;
+      },
+    });
   }
 }

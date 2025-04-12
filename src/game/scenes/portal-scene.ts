@@ -18,6 +18,8 @@ import {
   ServerToClient,
 } from "mmorntype";
 import { playerStore } from "@/game/managers/player-store";
+import { Pawn } from "@/game/entities/players/pawn";
+import { AttackType } from "@/types/game/enum/state";
 
 interface PlayerProfile {
   id: string;
@@ -260,11 +262,36 @@ export class ZoneScene extends MetamornScene {
       console.log(`on playerMoved: ${JSON.stringify(data, null, 2)}`);
       this.handlePlayerMove(data.id, data.x, data.y);
     });
+
+    this.io.on("attacked", (data) => {
+      console.log(`on attacked: ${JSON.stringify(data, null, 2)}`);
+      this.handleAttacked(data.attackerId, data.attackedPlayerIds);
+    });
+  }
+
+  handleAttacked(attackerId: string, attackedPlayerIds: string[]) {
+    const player = playerStore.getPlayer(attackerId);
+    if (!player && attackerId !== this.player.getPlayerInfo().id) return;
+
+    if (player instanceof Pawn) {
+      player.attack(AttackType.VISUAL);
+    }
+
+    this.time.delayedCall(200, () => {
+      if (attackedPlayerIds.includes(this.player.getPlayerInfo().id)) {
+        this.player.hit();
+      }
+
+      attackedPlayerIds
+        .map((id) => playerStore.getPlayer(id))
+        .forEach((player) => player?.hit());
+    });
   }
 
   handlePlayerMove(playerId: string, x: number, y: number) {
     const player = playerStore.getPlayer(playerId);
     const isBeingBorn = player?.getIsBeingBorn();
+
     if (player && !isBeingBorn) {
       const dx = player.x - x;
       const dy = player.y - y;
