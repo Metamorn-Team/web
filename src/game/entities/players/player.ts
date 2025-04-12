@@ -34,7 +34,6 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   private speechBubble: Phaser.GameObjects.Container | null = null;
   private playerNameText: Phaser.GameObjects.Text;
-  private cursor?: Phaser.Types.Input.Keyboard.CursorKeys;
   protected effect: Phaser.FX.Controller | undefined;
 
   public targetPosition: { x: number; y: number } = { x: 0, y: 0 };
@@ -63,19 +62,11 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.targetPosition.y = y;
     this.playerInfo = playerInfo;
     this.setNickname(scene);
-    this.cursor = scene.input.keyboard?.createCursorKeys();
 
     this.setBodyConfig();
     this.playerCommonBodyConfig();
 
     this.listenInteractionEvent();
-    // this.scene.tweens.add({
-    //   targets: this,
-    //   x: this.x + 10,
-    //   y: this.y + 10,
-    //   duration: 100,
-    //   yoyo: true,
-    // });
 
     if (this.playerInfo.id === "b3e8da90-bd3c-44a8-9d1a-5aa9dc6f336b") {
       this.effect = this.preFX?.addGlow(0x181818);
