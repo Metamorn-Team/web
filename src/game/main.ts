@@ -1,7 +1,7 @@
 import { Phaser } from "@/game/phaser";
 import { BootScene } from "@/game/scenes/boot-scene";
 import { LobyScene } from "@/game/scenes/loby-scene";
-import { ZoneScene } from "@/game/scenes/portal-scene";
+import { IslandScene } from "@/game/scenes/island-scene";
 
 export class GameSingleton {
   private static instance: Phaser.Game | null = null;
@@ -16,7 +16,7 @@ export class GameSingleton {
       height,
       canvasStyle: "display: none",
       parent: "game-containter",
-      scene: [BootScene, LobyScene, ZoneScene],
+      scene: [BootScene, LobyScene, IslandScene],
       // scale: {
       //   mode: Phaser.Scale.RESIZE,
       //   autoCenter: Phaser.Scale.CENTER_BOTH,

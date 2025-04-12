@@ -131,7 +131,7 @@ export class LobyScene extends MetamornScene {
       this.time.delayedCall(500, () => {
         this.sound.stopAll();
         EventBus.emit("start-change-scene");
-        this.scene.start("ZoneScene", data);
+        this.scene.start("IslandScene", data);
         setItem("zone_type", data.type);
       });
     });

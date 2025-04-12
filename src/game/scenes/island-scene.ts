@@ -28,7 +28,7 @@ interface PlayerProfile {
   avatarKey: string;
 }
 
-export class ZoneScene extends MetamornScene {
+export class IslandScene extends MetamornScene {
   protected override player: Player;
 
   private mapWidth: number;
@@ -42,7 +42,7 @@ export class ZoneScene extends MetamornScene {
   lastTime = Date.now();
 
   constructor() {
-    super("ZoneScene");
+    super("IslandScene");
   }
 
   init(data?: { type: "dev" | "design" }) {
