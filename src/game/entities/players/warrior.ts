@@ -6,6 +6,9 @@ import {
   WARRIOR_WALK,
 } from "@/game/animations/keys/warrior";
 import { Player } from "@/game/entities/players/player";
+import { InputManager } from "@/game/managers/input-manager";
+import { PlayerAnimationState } from "@/types/game/enum/animation";
+import { AttackType } from "@/types/game/enum/state";
 import { UserInfo } from "@/types/socket-io/response";
 import type { Socket } from "socket.io-client";
 
@@ -19,9 +22,19 @@ export class Warrior extends Player {
     color: WarriorColor,
     userInfo: UserInfo,
     isControllable?: boolean,
+    inputManager?: InputManager,
     io?: Socket
   ) {
-    super(scene, x, y, WARRIOR(color), userInfo, isControllable, io);
+    super(
+      scene,
+      x,
+      y,
+      WARRIOR(color),
+      userInfo,
+      isControllable,
+      inputManager,
+      io
+    );
     this.color = color;
 
     if (this.isControllable) {
@@ -71,34 +84,18 @@ export class Warrior extends Player {
     this.play(WARRIOR_IDLE(this.color), true);
   }
 
-  attack(): void {
-    if (this.isAttack) return;
-    this.isAttack = true;
-    this.play(WARRIOR_ATTACK(this.color), true);
-  }
+  attack(attackType: AttackType): void {
+    if (this.currAnimationState === PlayerAnimationState.ATTACK) return;
+    this.currAnimationState = PlayerAnimationState.ATTACK;
 
-  hit(): void {
-    this.setTint(0xffffff);
+    this.play(WARRIOR_ATTACK(this.color), true).once(
+      Phaser.Animations.Events.ANIMATION_COMPLETE,
+      () => {
+        this.currAnimationState = PlayerAnimationState.IDLE;
+      }
+    );
 
-    // this.scene.time.delayedCall(1000, () => {
-    //   this.clearTint();
-    // });
-
-    const originalX = this.x;
-
-    this.scene.tweens.add({
-      targets: this,
-      x: {
-        from: originalX - 1,
-        to: originalX + 1,
-      },
-      duration: 50,
-      yoyo: true,
-      repeat: 2,
-      ease: "Sine.easeInOut",
-      onComplete: () => {
-        this.x = originalX;
-      },
-    });
+    if (attackType === AttackType.VISUAL) return;
+    this.io?.emit("attack");
   }
 }
