@@ -93,29 +93,4 @@ export class Pawn extends Player {
     if (attackType === AttackType.VISUAL) return;
     this.io?.emit("attack");
   }
-
-  hit(): void {
-    this.setTint(0xffffff);
-
-    // this.scene.time.delayedCall(1000, () => {
-    //   this.clearTint();
-    // });
-
-    const originalX = this.x;
-
-    this.scene.tweens.add({
-      targets: this,
-      x: {
-        from: originalX - 1,
-        to: originalX + 1,
-      },
-      duration: 50,
-      yoyo: true,
-      repeat: 2,
-      ease: "Sine.easeInOut",
-      onComplete: () => {
-        this.x = originalX;
-      },
-    });
-  }
 }

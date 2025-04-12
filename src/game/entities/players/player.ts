@@ -204,7 +204,31 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   abstract walk(side: "right" | "left" | "up" | "down"): number;
   abstract idle(): void;
   abstract attack(attackTtype?: AttackType): void;
-  abstract hit(): void;
+
+  hit() {
+    this.setTintFill(0xffffff);
+
+    this.scene.time.delayedCall(100, () => {
+      this.clearTint();
+    });
+
+    const originalX = this.x;
+
+    this.scene.tweens.add({
+      targets: this,
+      x: {
+        from: originalX - 1,
+        to: originalX + 1,
+      },
+      duration: 50,
+      yoyo: true,
+      repeat: 2,
+      ease: "Sine.easeInOut",
+      onComplete: () => {
+        this.x = originalX;
+      },
+    });
+  }
 
   setNicknamePosition() {
     if (this.playerNameText) {
