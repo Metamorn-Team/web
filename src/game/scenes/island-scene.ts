@@ -20,6 +20,7 @@ import {
 import { playerStore } from "@/game/managers/player-store";
 import { Pawn } from "@/game/entities/players/pawn";
 import { AttackType } from "@/types/game/enum/state";
+import { tileMapManager } from "@/game/managers/tile-map-manager";
 
 interface PlayerProfile {
   id: string;
@@ -31,6 +32,7 @@ interface PlayerProfile {
 export class IslandScene extends MetamornScene {
   protected override player: Player;
 
+  private map: Phaser.Tilemaps.Tilemap;
   private mapWidth: number;
   private mapHeight: number;
   private centerOfMap: { x: number; y: number };
@@ -91,65 +93,11 @@ export class IslandScene extends MetamornScene {
       });
   }
 
-  createTileMapLayers(map: Phaser.Tilemaps.Tilemap) {
-    const seaTileset = map.addTilesetImage("water", "water");
-    const elevationTileset = map.addTilesetImage("elevation", "elevation");
-    const groundTileset = map.addTilesetImage("ground", "ground");
-    const shadowTileset = map.addTilesetImage("shadow", "shadow");
-    const bridgeTileset = map.addTilesetImage("bridge", "bridge");
-    const mushroomLTileset = map.addTilesetImage("mushroom-l", "mushroom-l");
-
-    if (
-      seaTileset &&
-      elevationTileset &&
-      groundTileset &&
-      shadowTileset &&
-      bridgeTileset &&
-      mushroomLTileset
-    ) {
-      map.createLayer("sea", seaTileset);
-      map.createLayer("shadow", shadowTileset);
-      map.createLayer("sand", groundTileset);
-      map.createLayer("elevation", elevationTileset);
-      map.createLayer("sand-deco", groundTileset);
-      map.createLayer("ground", groundTileset);
-      map.createLayer("hill-shadow", shadowTileset);
-      map.createLayer("hill", elevationTileset);
-      map.createLayer("grass-deco", groundTileset);
-      map.createLayer("hill-ground", groundTileset);
-      map.createLayer("bridge", bridgeTileset);
-      map.createLayer("deco", mushroomLTileset);
-
-      const collisionLines = map.getObjectLayer("collision")?.objects;
-      if (collisionLines && collisionLines?.length > 0) {
-        collisionLines!.forEach((line) => {
-          if (line.rectangle) {
-            if (line.x && line.y && line.width && line.height) {
-              this.matter.add.rectangle(
-                line.x + line.width / 2,
-                line.y + line.height / 2,
-                line.width,
-                line.height,
-                {
-                  isStatic: true,
-                  collisionFilter: {
-                    category: 0x0001,
-                  },
-                }
-              );
-            }
-          }
-        });
-      }
-    }
-  }
-
   initWorld() {
-    const map = this.make.tilemap({ key: "island" });
-    this.createTileMapLayers(map);
+    this.map = tileMapManager.registerTileMap(this, "island");
 
-    this.mapWidth = map.widthInPixels;
-    this.mapHeight = map.heightInPixels;
+    this.mapWidth = this.map.widthInPixels;
+    this.mapHeight = this.map.heightInPixels;
     this.centerOfMap = {
       x: this.mapWidth / 2,
       y: this.mapHeight / 2,

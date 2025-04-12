@@ -76,7 +76,7 @@ export class AssetManager {
 
     scene.load.image("bridge", "/game/tiles/tiny-sward/bridge.png");
 
-    scene.load.tilemapTiledJSON("home", "/game/maps/tiny_sward.json");
+    scene.load.tilemapTiledJSON("loby", "/game/maps/tiny_sward.json");
   }
 }
 

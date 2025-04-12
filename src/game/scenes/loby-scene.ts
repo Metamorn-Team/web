@@ -2,6 +2,7 @@ import { TorchGoblin } from "@/game/entities/npc/torch-goblin";
 import { Pawn } from "@/game/entities/players/pawn";
 import { EventBus } from "@/game/event/EventBus";
 import { socketManager } from "@/game/managers/socket-manager";
+import { tileMapManager } from "@/game/managers/tile-map-manager";
 import { Mine } from "@/game/objects/mine";
 import { Phaser } from "@/game/phaser";
 import { MetamornScene } from "@/game/scenes/metamorn-scene";
@@ -14,6 +15,7 @@ export class LobyScene extends MetamornScene {
 
   private isMute = false;
 
+  private map: Phaser.Tilemaps.Tilemap;
   private mapWidth: number;
   private mapHeight: number;
   private centerOfMap: { x: number; y: number };
@@ -54,33 +56,11 @@ export class LobyScene extends MetamornScene {
     this.player.update(delta);
   }
 
-  createTileMapLayers(map: Phaser.Tilemaps.Tilemap) {
-    const waterTileset = map.addTilesetImage("water", "water");
-    const stonTileset = map.addTilesetImage("elevation", "elevation");
-    const bone1Tileset = map.addTilesetImage("bone1", "bone1");
-    const bone2ileset = map.addTilesetImage("bone2", "bone2");
-    const bridgeileset = map.addTilesetImage("bridge", "bridge");
-    const mushroomLTileset = map.addTilesetImage("mushroom-l", "mushroom-l");
-    const mushroomMTileset = map.addTilesetImage("mushroom-m", "mushroom-m");
-    const mushroomSTileset = map.addTilesetImage("mushroom-s", "mushroom-s");
-
-    map.createLayer("water", waterTileset!);
-    map.createLayer("ston", stonTileset!);
-    map.createLayer("bone", [bone1Tileset!, bone2ileset!]);
-    map.createLayer("bridge", bridgeileset!);
-    map.createLayer("mushroom", [
-      mushroomLTileset!,
-      mushroomMTileset!,
-      mushroomSTileset!,
-    ]);
-  }
-
   initWorld() {
-    const map = this.make.tilemap({ key: "home" });
-    this.createTileMapLayers(map);
+    this.map = tileMapManager.registerTileMap(this, "loby");
 
-    this.mapWidth = map.widthInPixels;
-    this.mapHeight = map.heightInPixels;
+    this.mapWidth = this.map.widthInPixels;
+    this.mapHeight = this.map.heightInPixels;
     this.centerOfMap = {
       x: this.mapWidth / 2,
       y: this.mapHeight / 2,
