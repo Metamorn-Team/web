@@ -4,6 +4,7 @@ import Button from "@/components/common/Button";
 import SquareModal from "@/components/common/SquareModal";
 import { UserInfo } from "@/types/socket-io/response";
 import { useSendFriendRequest } from "@/hook/queries/useSendFriendRequest";
+import { getItem } from "@/utils/persistence";
 
 interface PlayerInfoModalProps {
   playerInfo: UserInfo;
@@ -17,6 +18,8 @@ const PlayerInfoModal = ({
   className,
 }: PlayerInfoModalProps) => {
   const { mutate } = useSendFriendRequest();
+  const myProfile = getItem("profile");
+  const isMe = myProfile?.id === playerInfo.id;
 
   const onSendRequest = () => {
     mutate({ targetUserId: playerInfo.id });
@@ -49,13 +52,15 @@ const PlayerInfoModal = ({
           </div>
         </div>
 
-        <Button
-          color="yellow"
-          onClick={onSendRequest}
-          title="친구 요청"
-          width={"40%"}
-          fontSize={"text-sm"}
-        />
+        {!isMe ? (
+          <Button
+            color="yellow"
+            onClick={onSendRequest}
+            title="친구 요청"
+            width={"40%"}
+            fontSize={"text-sm"}
+          />
+        ) : null}
       </div>
     </SquareModal>
   );
