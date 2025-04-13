@@ -1,6 +1,7 @@
 import { TorchGoblin } from "@/game/entities/npc/torch-goblin";
 import { Pawn } from "@/game/entities/players/pawn";
 import { EventBus } from "@/game/event/EventBus";
+import { socketManager } from "@/game/managers/socket-manager";
 import { tileMapManager } from "@/game/managers/tile-map-manager";
 import { Mine } from "@/game/objects/mine";
 import { Phaser } from "@/game/phaser";
@@ -114,9 +115,9 @@ export class LobyScene extends MetamornScene {
     this.cameras.main.fadeOut(500, 0, 0, 0);
 
     this.time.delayedCall(500, () => {
-      this.cleanupBeforeLeft();
-
       EventBus.emit("start-change-scene");
+
+      this.cleanupBeforeLeft();
 
       this.scene.start("IslandScene", data);
       setItem("zone_type", data.type);
@@ -124,10 +125,11 @@ export class LobyScene extends MetamornScene {
   }
 
   private cleanupBeforeLeft() {
-    this.player?.destroy();
+    socketManager.disconnect(this.socketNsp);
     this.npcGoblin?.destroy();
     this.mine?.destroy();
     this.sound.stopAll();
     this.map.destroy();
+    // this.player?.destroy();
   }
 }

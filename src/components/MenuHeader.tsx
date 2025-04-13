@@ -12,7 +12,7 @@ import {
 import { BsMusicNoteBeamed } from "react-icons/bs";
 import { RiBookOpenLine } from "react-icons/ri";
 import { GiSailboat } from "react-icons/gi";
-import { getItem } from "@/utils/session-storage";
+import { getItem, setItem } from "@/utils/session-storage";
 import { EventBus } from "@/game/event/EventBus";
 import { removeItem } from "@/utils/persistence";
 
@@ -38,6 +38,8 @@ export default function MenuHeader({
   const onLogout = () => {
     removeItem("access_token");
     removeItem("profile");
+
+    setItem("current_scene", "LobyScene");
 
     window.location.reload();
   };

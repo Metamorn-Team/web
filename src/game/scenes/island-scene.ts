@@ -162,7 +162,7 @@ export class IslandScene extends MetamornScene {
     });
 
     EventBus.on("left-island", () => {
-      this.cleanupBeforeLeft();
+      this.changeToLoby();
     });
   }
 
@@ -367,27 +367,13 @@ export class IslandScene extends MetamornScene {
     });
   }
 
-  handleLeftIsland() {
-    this.cameras.main.fadeOut(500);
-    socketManager.disconnect(this.socketNsp);
-
-    this.time.delayedCall(500, () => {
-      this.sound.stopAll();
-      EventBus.emit("start-change-scene");
-      this.scene.start("LobyScene");
-      removeItem("zone_type");
-    });
-  }
-
   private changeToLoby() {
     this.cameras.main.fadeOut(500, 0, 0, 0);
 
-    this.time.delayedCall(500, () => {
+    this.time.delayedCall(500, async () => {
       EventBus.emit("start-change-scene");
 
-      console.log(this.children);
       this.cleanupBeforeLeft();
-      console.log(this.children);
 
       this.scene.start("LobyScene");
       removeItem("zone_type");
@@ -399,7 +385,7 @@ export class IslandScene extends MetamornScene {
     socketManager.disconnect(this.socketNsp);
 
     // 2. 플레이어 정리
-    this.player?.destroy();
+    // this.player?.destroy();
     playerStore.clear();
 
     // 3. 맵 및 물리엔진 정리
