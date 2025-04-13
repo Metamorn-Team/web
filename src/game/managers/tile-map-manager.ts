@@ -49,27 +49,7 @@ export class TileMapManager {
       map.createLayer("bridge", bridgeTileset);
       map.createLayer("deco", mushroomLTileset);
 
-      const collisionLines = map.getObjectLayer("collision")?.objects;
-      if (collisionLines && collisionLines?.length > 0) {
-        collisionLines!.forEach((line) => {
-          if (line.rectangle) {
-            if (line.x && line.y && line.width && line.height) {
-              this.scene.matter.add.rectangle(
-                line.x + line.width / 2,
-                line.y + line.height / 2,
-                line.width,
-                line.height,
-                {
-                  isStatic: true,
-                  collisionFilter: {
-                    category: 0x0001,
-                  },
-                }
-              );
-            }
-          }
-        });
-      }
+      this.setRectanleCollisionObjects(map);
     }
   }
 
@@ -92,6 +72,32 @@ export class TileMapManager {
       mushroomMTileset!,
       mushroomSTileset!,
     ]);
+
+    this.setRectanleCollisionObjects(map);
+  }
+
+  setRectanleCollisionObjects(map: Phaser.Tilemaps.Tilemap) {
+    const collisionLines = map.getObjectLayer("collision")?.objects;
+    if (collisionLines && collisionLines?.length > 0) {
+      collisionLines!.forEach((line) => {
+        if (line.rectangle) {
+          if (line.x && line.y && line.width && line.height) {
+            this.scene.matter.add.rectangle(
+              line.x + line.width / 2,
+              line.y + line.height / 2,
+              line.width,
+              line.height,
+              {
+                isStatic: true,
+                collisionFilter: {
+                  category: 0x0001,
+                },
+              }
+            );
+          }
+        }
+      });
+    }
   }
 }
 
