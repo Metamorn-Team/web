@@ -1,12 +1,15 @@
+import { getMyProfile } from "@/api/user";
+import { initialProfile } from "@/constants/game/initial-profile";
 import { TorchGoblin } from "@/game/entities/npc/torch-goblin";
-import { Pawn } from "@/game/entities/players/pawn";
 import { EventBus } from "@/game/event/EventBus";
+import { controllablePlayerManager } from "@/game/managers/controllable-player-manager";
 import { socketManager } from "@/game/managers/socket-manager";
 import { tileMapManager } from "@/game/managers/tile-map-manager";
 import { Mine } from "@/game/objects/mine";
 import { Phaser } from "@/game/phaser";
 import { MetamornScene } from "@/game/scenes/metamorn-scene";
-import { getItem } from "@/utils/persistence";
+import { UserInfo } from "@/types/socket-io/response";
+import { getItem, persistItem } from "@/utils/persistence";
 import { setItem } from "@/utils/session-storage";
 
 export class LobyScene extends MetamornScene {
@@ -53,7 +56,9 @@ export class LobyScene extends MetamornScene {
   }
 
   update(time: number, delta: number): void {
-    this.player.update(delta);
+    if (this.player) {
+      this.player.update(delta);
+    }
   }
 
   initWorld() {
@@ -68,8 +73,7 @@ export class LobyScene extends MetamornScene {
 
     this.matter.world.setBounds(0, 0, this.mapWidth, this.mapHeight);
 
-    // this.sound.play("town", { volume: 0.05 });
-    // this.sound.play("woodland-fantasy");
+    this.sound.play("woodland-fantasy");
     this.sound.setVolume(0.15);
 
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
@@ -81,21 +85,35 @@ export class LobyScene extends MetamornScene {
     });
   }
 
-  spwanMyPlayer() {
-    const player = getItem("profile");
+  async spwanMyPlayer() {
+    let userInfo: UserInfo;
 
-    this.player = new Pawn(
+    try {
+      userInfo = await this.getPlayerInfo();
+    } catch (e: unknown) {
+      console.log(e);
+      userInfo = initialProfile;
+    }
+
+    this.player = await controllablePlayerManager.spawnControllablePlayer(
       this,
+      userInfo,
       this.centerOfMap.x,
       this.centerOfMap.y,
-      "red",
-      player
-        ? player
-        : { id: "", tag: "", nickname: "", avatarKey: "red_pawn" },
-      true,
       this.inputManager
     );
-    this.followPlayerCamera();
+  }
+
+  async getPlayerInfo() {
+    const storedProfile = getItem("profile");
+    return storedProfile || this.fetchFreshPlayerInfo();
+  }
+
+  private async fetchFreshPlayerInfo() {
+    const user = await getMyProfile();
+    persistItem("profile", user);
+
+    return user;
   }
 
   setBgmPlay(state: boolean) {

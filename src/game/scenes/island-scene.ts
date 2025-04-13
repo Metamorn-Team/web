@@ -4,12 +4,11 @@ import { MetamornScene } from "@/game/scenes/metamorn-scene";
 import { spawnManager } from "@/game/managers/spawn-manager";
 import { Player } from "@/game/entities/players/player";
 import { socketManager } from "@/game/managers/socket-manager";
-import { getItem, removeItem, setItem } from "@/utils/session-storage";
 import {
-  getItem as getPersistenceItem,
-  persistItem,
-} from "@/utils/persistence";
-import { getMyProfile } from "@/api/user";
+  getItem as getSessionItem,
+  removeItem as removeSessionItem,
+  setItem as setSessionItem,
+} from "@/utils/session-storage";
 import {
   ActivePlayerResponse,
   ClientToServer,
@@ -21,13 +20,9 @@ import { playerStore } from "@/game/managers/player-store";
 import { Pawn } from "@/game/entities/players/pawn";
 import { AttackType } from "@/types/game/enum/state";
 import { tileMapManager } from "@/game/managers/tile-map-manager";
-
-interface PlayerProfile {
-  id: string;
-  nickname: string;
-  tag: string;
-  avatarKey: string;
-}
+import { controllablePlayerManager } from "@/game/managers/controllable-player-manager";
+import { getItem, persistItem } from "@/utils/persistence";
+import { getMyProfile } from "@/api/user";
 
 export class IslandScene extends MetamornScene {
   protected override player: Player;
@@ -48,9 +43,9 @@ export class IslandScene extends MetamornScene {
   init(data?: { type: "dev" | "design" }) {
     if (data?.type) {
       this.zoneType = data.type;
-      setItem("zone_type", data.type);
+      setSessionItem("zone_type", data.type);
     } else {
-      this.zoneType = getItem("zone_type") || "design";
+      this.zoneType = getSessionItem("zone_type") || "design";
     }
 
     console.log("init");
@@ -107,48 +102,6 @@ export class IslandScene extends MetamornScene {
     this.cameras.main.setZoom(1.1);
   }
 
-  async spawnMyPlayer(x: number, y: number) {
-    try {
-      const playerInfo = await this.getPlayerInfo();
-      this.initializePlayer(playerInfo, x, y);
-      this.followPlayerCamera();
-    } catch (e: unknown) {
-      // TODO 토큰 재발급 추가하면 401시 그쪽에서 처리
-      console.log(e);
-
-      removeItem("current_scene");
-      window.location.reload();
-    }
-  }
-
-  private async getPlayerInfo() {
-    const storedProfile = getPersistenceItem("profile");
-    return storedProfile || this.fetchFreshPlayerInfo();
-  }
-
-  private async fetchFreshPlayerInfo() {
-    const user = await getMyProfile();
-    persistItem("profile", user);
-
-    return user;
-  }
-
-  private initializePlayer(profile: PlayerProfile, x: number, y: number) {
-    if (this.player) {
-      this.player.destroy();
-    }
-
-    this.player = spawnManager.spawnPlayer(
-      this,
-      profile,
-      x ?? this.centerOfMap.x,
-      y ?? this.centerOfMap.y,
-      true,
-      this.inputManager,
-      this.io
-    );
-  }
-
   spawnActiveUsers(activeUsers: ActivePlayerResponse) {
     activeUsers.forEach((activeUser) => {
       this.addPlayer(activeUser);
@@ -203,9 +156,25 @@ export class IslandScene extends MetamornScene {
       EventBus.emit("newPlayer", data);
     });
 
-    this.io.on("playerJoinSuccess", (data: { x: number; y: number }) => {
+    this.io.on("playerJoinSuccess", async (data: { x: number; y: number }) => {
       console.log("참여 성공");
-      this.spawnMyPlayer(data.x, data.y);
+      try {
+        const userInfo = await this.getPlayerInfo();
+        this.player = await controllablePlayerManager.spawnControllablePlayer(
+          this,
+          userInfo,
+          data.x,
+          data.y,
+          this.inputManager,
+          this.io
+        );
+      } catch (e: unknown) {
+        // TODO 토큰 재발급 추가하면 401시 그쪽에서 처리
+        console.log(e);
+
+        removeSessionItem("current_scene");
+        window.location.reload();
+      }
     });
 
     this.io.on("playerKicked", () => {
@@ -229,6 +198,18 @@ export class IslandScene extends MetamornScene {
       console.log(`on attacked: ${JSON.stringify(data, null, 2)}`);
       this.handleAttacked(data.attackerId, data.attackedPlayerIds);
     });
+  }
+
+  async getPlayerInfo() {
+    const storedProfile = getItem("profile");
+    return storedProfile || this.fetchFreshPlayerInfo();
+  }
+
+  private async fetchFreshPlayerInfo() {
+    const user = await getMyProfile();
+    persistItem("profile", user);
+
+    return user;
   }
 
   handleAttacked(attackerId: string, attackedPlayerIds: string[]) {
@@ -380,7 +361,7 @@ export class IslandScene extends MetamornScene {
       this.cleanupBeforeLeft();
 
       this.scene.start("LobyScene");
-      removeItem("zone_type");
+      removeSessionItem("zone_type");
       console.log("딜레이콜 완료");
     });
   }
