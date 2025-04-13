@@ -149,9 +149,6 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
       );
 
       if (distance > 0.5) {
-        console.log("x: " + this.x);
-        console.log("taget: " + this.targetPosition.x);
-
         if (dx > 0) {
           this.walk("left");
         } else if (dx < 0) {
