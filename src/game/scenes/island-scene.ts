@@ -79,9 +79,9 @@ export class IslandScene extends MetamornScene {
   }
 
   update(time: number, delta: number): void {
-    if (this.player) {
-      this.player.update(delta);
-    }
+    if (!this.player) return;
+
+    this.player.update(delta);
 
     playerStore
       .getAllPlayers()
@@ -374,7 +374,7 @@ export class IslandScene extends MetamornScene {
   private changeToLoby() {
     this.cameras.main.fadeOut(500, 0, 0, 0);
 
-    this.time.delayedCall(500, async () => {
+    this.time.delayedCall(500, () => {
       EventBus.emit("start-change-scene");
 
       this.cleanupBeforeLeft();
@@ -407,6 +407,6 @@ export class IslandScene extends MetamornScene {
     EventBus.off("left-island");
 
     // 6. 모든 게임 객체 제거 - 이건 더 알아봐야할듯
-    // this.children.each((child) => child.destroy());
+    this.children.each((child) => child.destroy());
   }
 }
