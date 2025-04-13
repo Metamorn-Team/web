@@ -162,15 +162,7 @@ export class IslandScene extends MetamornScene {
     });
 
     EventBus.on("left-island", () => {
-      this.cameras.main.fadeOut(500);
-      socketManager.disconnect(this.socketNsp);
-
-      this.time.delayedCall(500, () => {
-        this.sound.stopAll();
-        EventBus.emit("start-change-scene");
-        this.scene.start("LobyScene");
-        removeItem("zone_type");
-      });
+      this.cleanupBeforeLeft();
     });
   }
 
@@ -210,6 +202,12 @@ export class IslandScene extends MetamornScene {
     this.io.on("playerJoinSuccess", (data: { x: number; y: number }) => {
       console.log("참여 성공");
       this.spawnMyPlayer(data.x, data.y);
+    });
+
+    this.io.on("playerKicked", () => {
+      console.log("on Kicked");
+      alert("다른 곳에서 로그인 되었어요.. 😢");
+      this.changeToLoby();
     });
 
     this.io.on("playerLeft", (data) => {
@@ -367,5 +365,58 @@ export class IslandScene extends MetamornScene {
         player.setSpeechBubble(null);
       }
     });
+  }
+
+  handleLeftIsland() {
+    this.cameras.main.fadeOut(500);
+    socketManager.disconnect(this.socketNsp);
+
+    this.time.delayedCall(500, () => {
+      this.sound.stopAll();
+      EventBus.emit("start-change-scene");
+      this.scene.start("LobyScene");
+      removeItem("zone_type");
+    });
+  }
+
+  private changeToLoby() {
+    this.cameras.main.fadeOut(500, 0, 0, 0);
+
+    this.time.delayedCall(500, () => {
+      EventBus.emit("start-change-scene");
+
+      console.log(this.children);
+      this.cleanupBeforeLeft();
+      console.log(this.children);
+
+      this.scene.start("LobyScene");
+      removeItem("zone_type");
+    });
+  }
+
+  private cleanupBeforeLeft(): void {
+    // 1. 소켓 정리
+    socketManager.disconnect(this.socketNsp);
+
+    // 2. 플레이어 정리
+    this.player?.destroy();
+    playerStore.clear();
+
+    // 3. 맵 및 물리엔진 정리
+    this.map?.destroy();
+    // tileMapManager.unregisterTileMap("island");
+    this.matter.world.setBounds(0, 0, 0, 0);
+
+    // 4. 사운드/이펙트 정리
+    this.sound.stopAll();
+    this.tweens.killAll();
+
+    // 5. 이벤트 리스너 정리
+    EventBus.off("mySpeechBubble");
+    EventBus.off("otherSpeechBubble");
+    EventBus.off("left-island");
+
+    // 6. 모든 게임 객체 제거 - 이건 더 알아봐야할듯
+    // this.children.each((child) => child.destroy());
   }
 }

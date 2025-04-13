@@ -14,6 +14,7 @@ import { RiBookOpenLine } from "react-icons/ri";
 import { GiSailboat } from "react-icons/gi";
 import { getItem } from "@/utils/session-storage";
 import { EventBus } from "@/game/event/EventBus";
+import { removeItem } from "@/utils/persistence";
 
 interface MenuHeaderProps {
   isPlayBgm: boolean;
@@ -33,6 +34,13 @@ export default function MenuHeader({
   const onLeftIsland = useCallback(() => {
     EventBus.emit("left-island");
   }, []);
+
+  const onLogout = () => {
+    removeItem("access_token");
+    removeItem("profile");
+
+    window.location.reload();
+  };
 
   useEffect(() => {
     const currentScene = getItem("current_scene");
@@ -97,7 +105,11 @@ export default function MenuHeader({
         {menuOpen && (
           <div className="absolute right-0 top-full mt-2 w-40 bg-[#f9f5ec] border border-[#d6c6aa] rounded-md shadow-lg p-2 flex flex-col gap-1 text-sm text-[#5c4b32] animate-fadeIn">
             <DropdownItem icon={<FiEdit2 />} label="정보 수정" />
-            <DropdownItem icon={<FiLogOut />} label="로그아웃" />
+            <DropdownItem
+              icon={<FiLogOut />}
+              label="로그아웃"
+              onClick={onLogout}
+            />
             <DropdownItem icon={<RiBookOpenLine />} label="내 로그 보기" />
             <DropdownItem icon={<FiSettings />} label="환경 설정" />
             <DropdownItem icon={<FiUser />} label="프로필 보기" />

@@ -2,8 +2,8 @@ import { EventBus } from "@/game/event/EventBus";
 import { CollisionBody } from "@/types/game/matter";
 
 export class Mine extends Phaser.Physics.Matter.Sprite {
-  private interactionSensor: MatterJS.BodyType;
-  private interactionIndicator: Phaser.GameObjects.Text;
+  private interactionSensor: MatterJS.BodyType; // free 대상
+  private interactionIndicator: Phaser.GameObjects.Text; // free 대상
   private isPlayerInRange = false;
   private isInteractedWithPlayer = false;
   private interactKey: Phaser.Input.Keyboard.Key;
@@ -125,5 +125,10 @@ export class Mine extends Phaser.Physics.Matter.Sprite {
   protected startInteraction() {
     this.isInteractedWithPlayer = true;
     EventBus.emit("request-join-island", { type: this.zoneType });
+  }
+
+  destroy(fromScene?: boolean): void {
+    this.interactionIndicator.destroy();
+    super.destroy(fromScene);
   }
 }

@@ -1,7 +1,6 @@
 import { TorchGoblin } from "@/game/entities/npc/torch-goblin";
 import { Pawn } from "@/game/entities/players/pawn";
 import { EventBus } from "@/game/event/EventBus";
-import { socketManager } from "@/game/managers/socket-manager";
 import { tileMapManager } from "@/game/managers/tile-map-manager";
 import { Mine } from "@/game/objects/mine";
 import { Phaser } from "@/game/phaser";
@@ -104,16 +103,31 @@ export class LobyScene extends MetamornScene {
   }
 
   listenEvents() {
-    EventBus.on("join-island", (data: { type: "dev" | "design" }) => {
-      this.cameras.main.fadeOut(500);
-      socketManager.disconnect(this.socketNsp);
+    EventBus.off("join-island");
 
-      this.time.delayedCall(500, () => {
-        this.sound.stopAll();
-        EventBus.emit("start-change-scene");
-        this.scene.start("IslandScene", data);
-        setItem("zone_type", data.type);
-      });
+    EventBus.on("join-island", (data: { type: "dev" | "design" }) => {
+      this.changeToIsland(data);
     });
+  }
+
+  private changeToIsland(data: { type: "dev" | "design" }) {
+    this.cameras.main.fadeOut(500, 0, 0, 0);
+
+    this.time.delayedCall(500, () => {
+      this.cleanupBeforeLeft();
+
+      EventBus.emit("start-change-scene");
+
+      this.scene.start("IslandScene", data);
+      setItem("zone_type", data.type);
+    });
+  }
+
+  private cleanupBeforeLeft() {
+    this.player?.destroy();
+    this.npcGoblin?.destroy();
+    this.mine?.destroy();
+    this.sound.stopAll();
+    this.map.destroy();
   }
 }
