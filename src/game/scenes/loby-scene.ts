@@ -104,7 +104,7 @@ export class LobyScene extends MetamornScene {
   }
 
   listenEvents() {
-    EventBus.on("join-zone", (data: { type: "dev" | "design" }) => {
+    EventBus.on("join-island", (data: { type: "dev" | "design" }) => {
       this.cameras.main.fadeOut(500);
       socketManager.disconnect(this.socketNsp);
 

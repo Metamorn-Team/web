@@ -41,8 +41,6 @@ export class IslandScene extends MetamornScene {
   private zoneType: "dev" | "design";
   private socketNsp = "zone";
 
-  lastTime = Date.now();
-
   constructor() {
     super("IslandScene");
   }
@@ -161,6 +159,18 @@ export class IslandScene extends MetamornScene {
 
     EventBus.on("otherSpeechBubble", async (data: ReceiveMessage) => {
       this.showSpeechBubble(data.senderId, data.message);
+    });
+
+    EventBus.on("left-island", () => {
+      this.cameras.main.fadeOut(500);
+      socketManager.disconnect(this.socketNsp);
+
+      this.time.delayedCall(500, () => {
+        this.sound.stopAll();
+        EventBus.emit("start-change-scene");
+        this.scene.start("LobyScene");
+        removeItem("zone_type");
+      });
     });
   }
 

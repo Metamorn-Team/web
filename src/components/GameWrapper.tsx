@@ -110,12 +110,14 @@ export default function GameWrapper({
       onPlayerModalOpen();
     };
 
-    const handleRequestJoinZone = async (data: { type: "dev" | "design" }) => {
+    const handleRequestJoinIsland = async (data: {
+      type: "dev" | "design";
+    }) => {
       try {
         const userInfo = await getMyProfile();
         persistItem("profile", userInfo);
 
-        EventBus.emit("join-zone", data);
+        EventBus.emit("join-island", data);
       } catch (e: unknown) {
         if (e instanceof AxiosError && e.status === 401) {
           onLoginModalOpen();
@@ -128,7 +130,7 @@ export default function GameWrapper({
     EventBus.on("finish-change-scene", handleFinishChangeScene);
     EventBus.on("npc-interaction-started", handleNpcInteraction);
     EventBus.on("player-click", handlePlayerClick);
-    EventBus.on("request-join-zone", handleRequestJoinZone);
+    EventBus.on("request-join-island", handleRequestJoinIsland);
 
     const handleResize = () => {
       if (gameRef.current) {
@@ -146,7 +148,7 @@ export default function GameWrapper({
       EventBus.removeListener("finish-change-scene", handleFinishChangeScene);
       EventBus.removeListener("npc-interaction-started", handleNpcInteraction);
       EventBus.removeListener("player-click", handlePlayerClick);
-      EventBus.removeListener("request-join-zone", handleRequestJoinZone);
+      EventBus.removeListener("request-join-island", handleRequestJoinIsland);
 
       window.removeEventListener("resize", handleResize);
     };

@@ -124,6 +124,6 @@ export class Mine extends Phaser.Physics.Matter.Sprite {
 
   protected startInteraction() {
     this.isInteractedWithPlayer = true;
-    EventBus.emit("request-join-zone", { type: this.zoneType });
+    EventBus.emit("request-join-island", { type: this.zoneType });
   }
 }

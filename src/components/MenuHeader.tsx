@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+"use client";
+
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   FiUser,
   FiSettings,
@@ -9,6 +11,9 @@ import {
 } from "react-icons/fi";
 import { BsMusicNoteBeamed } from "react-icons/bs";
 import { RiBookOpenLine } from "react-icons/ri";
+import { GiSailboat } from "react-icons/gi";
+import { getItem } from "@/utils/session-storage";
+import { EventBus } from "@/game/event/EventBus";
 
 interface MenuHeaderProps {
   isPlayBgm: boolean;
@@ -23,8 +28,18 @@ export default function MenuHeader({
 }: MenuHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [isVisibleExit, setIsVisibleExit] = useState(true);
+
+  const onLeftIsland = useCallback(() => {
+    EventBus.emit("left-island");
+  }, []);
 
   useEffect(() => {
+    const currentScene = getItem("current_scene");
+    if (currentScene === "LobyScene" || !currentScene) {
+      setIsVisibleExit(false);
+    }
+
     const handleClickOutside = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setMenuOpen(false);
@@ -65,7 +80,15 @@ export default function MenuHeader({
         />
       </div>
 
-      <div className="relative" ref={menuRef}>
+      <div className="relative flex gap-3" ref={menuRef}>
+        {isVisibleExit ? (
+          <MenuItem
+            icon={<GiSailboat size={18} />}
+            label="섬 떠나기"
+            onClick={onLeftIsland}
+          />
+        ) : null}
+
         <MenuItem
           icon={<FiMenu size={18} />}
           label="메뉴"
