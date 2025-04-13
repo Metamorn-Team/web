@@ -2,7 +2,7 @@ import { Socket } from "socket.io-client";
 import { Pawn } from "@/game/entities/players/pawn";
 import { Phaser } from "@/game/phaser";
 import { UserInfo } from "@/types/socket-io/response";
-import { PawnColor, pawnColors } from "@/constants/entities";
+import { PawnColor, pawnColors } from "@/constants/game/entities";
 import { InputManager } from "@/game/managers/input-manager";
 
 class SpawnManager {

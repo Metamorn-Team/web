@@ -17,7 +17,7 @@ import { Socket } from "socket.io-client";
 import { socketManager } from "@/game/managers/socket-manager";
 import { UserInfo } from "@/types/socket-io/response";
 import PlayerInfoModal from "@/components/PlayerInfoModal";
-import { 친절한_토치_고블린 } from "@/constants/talk-scripts";
+import { 친절한_토치_고블린 } from "@/constants/game/talk-scripts";
 import LoginModal from "@/components/login/LoginModal";
 import { getMyProfile } from "@/api/user";
 import { persistItem } from "@/utils/persistence";

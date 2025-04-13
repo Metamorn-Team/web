@@ -5,7 +5,7 @@ import {
   torchGoblinColors,
   WARRIOR,
   warriorColors,
-} from "@/constants/entities";
+} from "@/constants/game/entities";
 import { DEAD } from "@/game/animations/keys/common";
 import { Phaser } from "@/game/phaser";
 

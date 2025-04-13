@@ -1,4 +1,4 @@
-import { PAWN, PawnColor } from "@/constants/entities";
+import { PAWN, PawnColor } from "@/constants/game/entities";
 import { BORN } from "@/game/animations/keys/common";
 import { PAWN_ATTACK, PAWN_IDLE, PAWN_WALK } from "@/game/animations/keys/pawn";
 import { Player } from "@/game/entities/players/player";

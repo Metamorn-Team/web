@@ -5,7 +5,7 @@ import {
   torchGoblinColors,
   WARRIOR,
   warriorColors,
-} from "@/constants/entities";
+} from "@/constants/game/entities";
 import { BORN, DEAD } from "@/game/animations/keys/common";
 import { PAWN_ATTACK, PAWN_IDLE, PAWN_WALK } from "@/game/animations/keys/pawn";
 import { TORCH_GOBLIN_IDLE } from "@/game/animations/keys/torch-goblin";

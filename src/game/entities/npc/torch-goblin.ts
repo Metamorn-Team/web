@@ -1,4 +1,4 @@
-import { TORCH_GOBLIN, TorchGoblinColor } from "@/constants/entities";
+import { TORCH_GOBLIN, TorchGoblinColor } from "@/constants/game/entities";
 import { TORCH_GOBLIN_IDLE } from "@/game/animations/keys/torch-goblin";
 import { Npc } from "@/game/entities/npc/npc";
 import { EventBus } from "@/game/event/EventBus";

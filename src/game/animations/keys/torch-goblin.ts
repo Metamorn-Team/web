@@ -1,4 +1,4 @@
-import { TorchGoblinColor } from "@/constants/entities";
+import { TorchGoblinColor } from "@/constants/game/entities";
 
 export const TORCH_GOBLIN_IDLE = (color: TorchGoblinColor) =>
   `${color}_torch_goblin_idle`;

@@ -1,4 +1,4 @@
-import { WARRIOR, WarriorColor } from "@/constants/entities";
+import { WARRIOR, WarriorColor } from "@/constants/game/entities";
 import { BORN } from "@/game/animations/keys/common";
 import {
   WARRIOR_ATTACK,

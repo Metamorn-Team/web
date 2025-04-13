@@ -1,6 +1,6 @@
 import * as Phaser from "phaser";
 import type { Socket } from "socket.io-client";
-import { COLLISION_CATEGORIES } from "@/constants/collision-categories";
+import { COLLISION_CATEGORIES } from "@/constants/game/collision-categories";
 import { EventBus } from "@/game/event/EventBus";
 import { UserInfo } from "@/types/socket-io/response";
 import { DEAD } from "@/game/animations/keys/common";

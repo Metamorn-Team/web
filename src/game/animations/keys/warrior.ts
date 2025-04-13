@@ -1,4 +1,4 @@
-import { WarriorColor } from "@/constants/entities";
+import { WarriorColor } from "@/constants/game/entities";
 
 export const WARRIOR_IDLE = (color: WarriorColor) => `${color}_warrior_idle`;
 export const WARRIOR_WALK = (color: WarriorColor) => `${color}_warrior_walk`;

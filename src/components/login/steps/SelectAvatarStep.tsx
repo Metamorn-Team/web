@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Button from "@/components/common/Button";
 import Pawn from "@/components/common/Pawn";
 import SquareButton from "@/components/common/SquareButton";
-import { PAWN, pawnColors } from "@/constants/entities";
+import { PAWN, pawnColors } from "@/constants/game/entities";
 import useRegisterPayloadStore from "@/stores/useRegisterPayloadStore";
 
 interface SelectAvatarStep {

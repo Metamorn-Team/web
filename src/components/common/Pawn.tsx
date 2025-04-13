@@ -1,4 +1,4 @@
-import { PawnColor } from "@/constants/entities";
+import { PawnColor } from "@/constants/game/entities";
 import React from "react";
 
 const Pawn = ({
