@@ -48,7 +48,11 @@ export default function GameWrapper({
     onClose: onLoginModalClose,
     onOpen: onLoginModalOpen,
   } = useModal();
-  const { isModalOpen, changeModalOpen, onClose } = useModal();
+  const {
+    isModalOpen: isFriendModalOpen,
+    changeModalOpen: changeFriendModalOpen,
+    onClose: onFriendClose,
+  } = useModal();
   const {
     isModalOpen: isHelpModalOpen,
     onOpen: onHelpOpen,
@@ -67,7 +71,7 @@ export default function GameWrapper({
       scene.setBgmPlay(false);
       setIsPlayBgm((state) => !state);
     }
-  }, [gameRef, isPlayBgm]);
+  }, [gameRef]);
 
   useEffect(() => {
     const handleSceneReady = (data: {
@@ -161,14 +165,19 @@ export default function GameWrapper({
       !gameRef.current?.game.input.mouse
     )
       return;
-    if (isLoginModalOpen) {
+    if (
+      isHelpModalOpen ||
+      isFriendModalOpen ||
+      isPlayerModalOpen ||
+      isLoginModalOpen
+    ) {
       gameRef.current.game.input.keyboard.enabled = false;
       gameRef.current.game.input.mouse.enabled = false;
     } else {
       gameRef.current.game.input.keyboard.enabled = true;
       gameRef.current.game.input.mouse.enabled = true;
     }
-  }, [isLoginModalOpen]);
+  }, [isFriendModalOpen, isHelpModalOpen, isLoginModalOpen, isPlayerModalOpen]);
 
   return (
     <div>
@@ -176,7 +185,7 @@ export default function GameWrapper({
         <MenuHeader
           isPlayBgm={isPlayBgm}
           playBgmToggle={playBgmToggle}
-          changeFriendModalOpen={changeModalOpen}
+          changeFriendModalOpen={changeFriendModalOpen}
         />
       ) : null}
 
@@ -191,7 +200,7 @@ export default function GameWrapper({
         />
       ) : null}
 
-      {isModalOpen ? <FriendModal onClose={onClose} /> : null}
+      {isFriendModalOpen ? <FriendModal onClose={onFriendClose} /> : null}
 
       {isPlayerModalOpen ? (
         <PlayerInfoModal onClose={onPlayerModalClose} playerInfo={playerInfo} />
