@@ -134,6 +134,10 @@ export class IslandScene extends MetamornScene {
   }
 
   private initializePlayer(profile: PlayerProfile, x: number, y: number) {
+    if (this.player) {
+      this.player.destroy();
+    }
+
     this.player = spawnManager.spawnPlayer(
       this,
       profile,
