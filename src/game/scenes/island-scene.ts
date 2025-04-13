@@ -79,6 +79,8 @@ export class IslandScene extends MetamornScene {
   }
 
   update(time: number, delta: number): void {
+    console.log("아일랜드 업댓");
+
     if (!this.player) return;
 
     this.player.update(delta);
@@ -381,6 +383,7 @@ export class IslandScene extends MetamornScene {
 
       this.scene.start("LobyScene");
       removeItem("zone_type");
+      console.log("딜레이콜 완료");
     });
   }
 
