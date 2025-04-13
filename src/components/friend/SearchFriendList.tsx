@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import FriendItem from "@/components/FriendItem";
 import ScrollView from "@/components/common/ScrollView";
 import SquareButton from "@/components/common/SquareButton";
 import { useInfiniteUserSearch } from "@/hook/queries/useInfiniteUserSearch";
+import SearchUserItem from "@/components/friend/SearchUserItem";
 
 type SearchType = "NICKNAME" | "TAG";
 
@@ -24,7 +24,7 @@ const SearchFriendList = () => {
 
   return (
     <div className="flex flex-col gap-4 w-full h-full">
-      <div className="flex gap-2 mt-2 px-4">
+      <div className="flex justify-center gap-2 mt-2 px-4">
         {types.map((type) => (
           <button
             key={type}
@@ -41,18 +41,25 @@ const SearchFriendList = () => {
       </div>
 
       {/* 검색 입력 영역 */}
-      <div className="flex gap-2 sticky top-0 z-10">
-        <input
-          type="text"
-          placeholder={`${
-            searchType === "NICKNAME" ? "닉네임" : "태그"
-          }으로 검색`}
-          value={query}
-          onKeyUp={(e) => e.key === "Enter" && refetch()}
-          onChange={(e) => setQuery(e.target.value)}
-          className="h-12 px-4 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 flex-1"
-        />
-        <SquareButton onClick={refetch} color="blue" width={48} title="검색" />
+      <div className="flex sticky top-0 z-10 w-full justify-center">
+        <div className="flex w-9/12 gap-2">
+          <input
+            type="text"
+            placeholder={`${
+              searchType === "NICKNAME" ? "닉네임" : "태그"
+            }으로 검색`}
+            value={query}
+            onKeyUp={(e) => e.key === "Enter" && refetch()}
+            onChange={(e) => setQuery(e.target.value)}
+            className="h-12 px-4 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 flex-1"
+          />
+          <SquareButton
+            onClick={refetch}
+            color="blue"
+            width={48}
+            title="검색"
+          />
+        </div>
       </div>
 
       {/* 검색 결과 영역 */}
@@ -67,7 +74,7 @@ const SearchFriendList = () => {
           ) : users && users.length > 0 ? (
             <>
               {users.map((user) => (
-                <FriendItem
+                <SearchUserItem
                   key={user.id}
                   friend={{
                     ...user,

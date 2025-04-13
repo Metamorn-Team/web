@@ -3,6 +3,7 @@ import Image from "next/image";
 import Button from "@/components/common/Button";
 import SquareModal from "@/components/common/SquareModal";
 import { UserInfo } from "@/types/socket-io/response";
+import { useSendFriendRequest } from "@/hook/queries/useSendFriendRequest";
 
 interface PlayerInfoModalProps {
   playerInfo: UserInfo;
@@ -15,6 +16,12 @@ const PlayerInfoModal = ({
   playerInfo,
   className,
 }: PlayerInfoModalProps) => {
+  const { mutate } = useSendFriendRequest();
+
+  const onSendRequest = () => {
+    mutate({ targetUserId: playerInfo.id });
+  };
+
   return (
     <SquareModal onClose={onClose} width={"30%"} className={`${className}`}>
       <div className="w-full h-full flex flex-col items-center justify-between py-6 px-2">
@@ -44,7 +51,7 @@ const PlayerInfoModal = ({
 
         <Button
           color="yellow"
-          onClick={() => {}}
+          onClick={onSendRequest}
           title="친구 요청"
           width={"40%"}
           fontSize={"text-sm"}
