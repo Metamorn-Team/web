@@ -130,6 +130,5 @@ export class LobyScene extends MetamornScene {
     this.mine?.destroy();
     this.sound.stopAll();
     this.map.destroy();
-    this.player?.destroy();
   }
 }

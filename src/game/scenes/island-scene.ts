@@ -81,9 +81,9 @@ export class IslandScene extends MetamornScene {
   update(time: number, delta: number): void {
     console.log("아일랜드 업댓");
 
-    if (!this.player) return;
-
-    this.player.update(delta);
+    if (this.player) {
+      this.player.update(delta);
+    }
 
     playerStore
       .getAllPlayers()
