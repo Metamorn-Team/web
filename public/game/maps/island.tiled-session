@@ -12,11 +12,11 @@
             "scaleInDock": 1
         },
         "island.json": {
-            "scale": 0.9108,
+            "scale": 0.4528,
             "selectedLayer": 11,
             "viewCenter": {
-                "x": 1051.8225735617038,
-                "y": 1001.8664909969257
+                "x": 1139.575971731449,
+                "y": 745.362190812721
             }
         },
         "island.json#bridge": {

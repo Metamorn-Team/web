@@ -69,8 +69,13 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
     this.listenInteractionEvent();
 
+    // 나
+    if (this.playerInfo.id === "d1bb044d-e7a0-4159-93cf-754f490e7525") {
+      this.effect = this.preFX?.addGlow(0x48aba9);
+    }
+
     if (this.playerInfo.id === "b3e8da90-bd3c-44a8-9d1a-5aa9dc6f336b") {
-      this.effect = this.preFX?.addGlow(0x181818);
+      this.effect = this.preFX?.addGlow(0xfabb43);
     }
   }
 
