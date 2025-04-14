@@ -6,6 +6,8 @@ import {
   WARRIOR,
   warriorColors,
 } from "@/constants/game/entities";
+import { TREE } from "@/constants/game/sprites/nature";
+import { FOAM } from "@/constants/game/sprites/tile";
 import { DEAD } from "@/game/animations/keys/common";
 import { Phaser } from "@/game/phaser";
 
@@ -62,6 +64,18 @@ export class AssetManager {
           margin: 24,
         }
       );
+    });
+
+    scene.load.spritesheet(FOAM, `/game/tiles/tiny-sward/sprites/foam.png`, {
+      frameWidth: 96,
+      frameHeight: 96,
+      spacing: 96,
+      margin: 48,
+    });
+
+    scene.load.spritesheet(TREE, `/game/object/sprites/tree.png`, {
+      frameWidth: 192,
+      frameHeight: 192,
     });
   }
 

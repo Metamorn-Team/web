@@ -6,7 +6,10 @@ import {
   WARRIOR,
   warriorColors,
 } from "@/constants/game/entities";
+import { TREE } from "@/constants/game/sprites/nature";
+import { FOAM } from "@/constants/game/sprites/tile";
 import { BORN, DEAD } from "@/game/animations/keys/common";
+import { TREE_IDLE } from "@/game/animations/keys/objects/tree";
 import { PAWN_ATTACK, PAWN_IDLE, PAWN_WALK } from "@/game/animations/keys/pawn";
 import { TORCH_GOBLIN_IDLE } from "@/game/animations/keys/torch-goblin";
 import {
@@ -93,6 +96,26 @@ export const defineAnimation = (scene: Phaser.Scene) => {
         end: 17,
       }),
       frameRate: 13,
+    });
+
+    scene.anims.create({
+      key: FOAM,
+      frames: scene.anims.generateFrameNumbers(FOAM, {
+        start: 0,
+        end: 7,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    scene.anims.create({
+      key: TREE_IDLE,
+      frames: scene.anims.generateFrameNumbers(TREE, {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 6,
+      repeat: -1,
     });
   });
 
