@@ -3,7 +3,12 @@
 import { EventBus } from "@/game/event/EventBus";
 import { playerStore } from "@/game/managers/player-store";
 import { socketManager } from "@/game/managers/socket-manager";
-import { MessageSent, PlayerJoinResponse, ReceiveMessage } from "mmorntype";
+import {
+  MessageSent,
+  PlayerJoinResponse,
+  PlayerLeftResponse,
+  ReceiveMessage,
+} from "mmorntype";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { FiSend, FiChevronDown, FiChevronUp } from "react-icons/fi";
@@ -37,12 +42,29 @@ export default function ChatPanel() {
         {
           id: `system-${Date.now()}`,
           sender: "",
-          message: `${data.nickname} 님이 입장하셨습니다.`,
+          message: `${data.nickname} 님이 입장했어요!`,
           isSystem: true,
         },
       ]);
     };
+
+    const handlePlayerLeftChat = (data: PlayerLeftResponse) => {
+      const player = playerStore.getPlayer(data.id);
+      const info = player?.getPlayerInfo();
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `system-${Date.now()}`,
+          sender: "",
+          message: `${info?.nickname ?? "알 수 없음"} 님이 떠났어요..`,
+          isSystem: true,
+        },
+      ]);
+    };
+
     EventBus.on("newPlayer", handleNewPlayer);
+    EventBus.on("playerLeftChat", handlePlayerLeftChat);
 
     const socket = socketManager.connect(nsp);
     if (!socket) return;
@@ -85,6 +107,7 @@ export default function ChatPanel() {
       socket.off("messageSent", handleMessageSent);
       socket.off("receiveMessage", handleReceiveMessage);
       EventBus.off("newPlayer", handleNewPlayer);
+      EventBus.off("playerLeftChat", handlePlayerLeftChat);
     };
   }, []);
 

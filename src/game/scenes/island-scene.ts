@@ -185,8 +185,9 @@ export class IslandScene extends MetamornScene {
 
     this.io.on("playerLeft", (data) => {
       console.log(`on playerLeft: ${JSON.stringify(data, null, 2)}`);
-      this.destroyPlayer(data.id);
       EventBus.emit("playerLeft", data);
+      EventBus.emit("playerLeftChat", data);
+      this.destroyPlayer(data.id);
     });
 
     this.io.on("playerMoved", (data) => {
