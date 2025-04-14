@@ -157,8 +157,11 @@ export class IslandScene extends MetamornScene {
     });
 
     this.io.on("playerJoinSuccess", async (data: { x: number; y: number }) => {
-      console.log("참여 성공");
       try {
+        if (this.player) {
+          this.player.destroy(true);
+        }
+
         const userInfo = await this.getPlayerInfo();
         this.player = await controllablePlayerManager.spawnControllablePlayer(
           this,
