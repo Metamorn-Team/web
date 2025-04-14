@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Providers from "@/app/provider";
+import AlertProvider from "@/components/common/AlertProvider";
 
 export const metadata: Metadata = {
   title: "메타몬",
@@ -27,6 +28,7 @@ const RootLayout = ({
   return (
     <html>
       <body className={CookiRun.className}>
+        <AlertProvider />
         <Providers>{children}</Providers>
       </body>
     </html>

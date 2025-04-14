@@ -14,6 +14,7 @@
     "@types/fontfaceobserver": "^2.1.3",
     "axios": "^1.8.4",
     "fontfaceobserver": "^2.3.0",
+    "framer-motion": "^12.7.2",
     "mmorntype": "^1.0.3",
     "next": "15.1.6",
     "phaser": "^3.87.0",

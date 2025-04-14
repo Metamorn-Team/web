@@ -3,6 +3,7 @@
 import { EventWrapper } from "@/game/event/EventBus";
 import { playerStore } from "@/game/managers/player-store";
 import { socketManager } from "@/game/managers/socket-manager";
+import Alert from "@/utils/alert";
 import {
   MessageSent,
   PlayerJoinResponse,
@@ -37,12 +38,15 @@ export default function ChatPanel() {
 
   useEffect(() => {
     const handleNewPlayer = (data: PlayerJoinResponse) => {
+      const message = `${data.nickname} 님이 입장했어요!`;
+      Alert.info(message);
+
       setMessages((prev) => [
         ...prev,
         {
           id: `system-${Date.now()}`,
           sender: "",
-          message: `${data.nickname} 님이 입장했어요!`,
+          message,
           isSystem: true,
         },
       ]);
@@ -52,12 +56,15 @@ export default function ChatPanel() {
       const player = playerStore.getPlayer(data.id);
       const info = player?.getPlayerInfo();
 
+      const message = `${info?.nickname ?? "알 수 없음"} 님이 떠났어요..`;
+      Alert.info(message);
+
       setMessages((prev) => [
         ...prev,
         {
           id: `system-${Date.now()}`,
           sender: "",
-          message: `${info?.nickname ?? "알 수 없음"} 님이 떠났어요..`,
+          message,
           isSystem: true,
         },
       ]);
