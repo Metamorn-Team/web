@@ -13,8 +13,6 @@ import { setItem } from "@/utils/session-storage";
 import TalkModal from "@/components/common/TalkModal";
 import { Npc } from "@/game/entities/npc/npc";
 import GoblinTorch from "@/components/common/GoblinTorch";
-import { Socket } from "socket.io-client";
-import { socketManager } from "@/game/managers/socket-manager";
 import { UserInfo } from "@/types/socket-io/response";
 import PlayerInfoModal from "@/components/PlayerInfoModal";
 import { 친절한_토치_고블린 } from "@/constants/game/talk-scripts";
@@ -22,6 +20,7 @@ import LoginModal from "@/components/login/LoginModal";
 import { getMyProfile } from "@/api/user";
 import { persistItem } from "@/utils/persistence";
 import ChatPanel from "@/components/ChatPanel";
+import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -33,7 +32,6 @@ export default function GameWrapper({
   changeIsLoading,
 }: GameWrapperProps) {
   const gameRef = useRef<GameRef | null>(null);
-  const socketRef = useRef<Socket | null>(null);
 
   const [playerInfo, setPlayerInfo] = useState<UserInfo>({
     id: "",
@@ -63,6 +61,7 @@ export default function GameWrapper({
     onClose: onPlayerModalClose,
     onOpen: onPlayerModalOpen,
   } = useModal();
+  const [isVisibleChat, setIsVisibleChat] = useState(false);
 
   const playBgmToggle = useCallback(() => {
     if (gameRef.current) {
@@ -78,13 +77,20 @@ export default function GameWrapper({
       scene: Phaser.Scene;
       socketNsp: string;
     }) => {
+      const { socketNsp } = data;
+
       if (gameRef.current) {
         setItem("current_scene", data.scene.scene.key);
-        socketRef.current = socketManager.connect(data.socketNsp)!;
         gameRef.current.game.canvas.style.display = "block";
         gameRef.current.currnetScene = data.scene;
 
         changeIsLoading(false);
+
+        if (socketNsp === SOCKET_NAMESPACES.ISLAND) {
+          setIsVisibleChat(true);
+        } else {
+          setIsVisibleChat(false);
+        }
       }
     };
 
@@ -163,8 +169,10 @@ export default function GameWrapper({
     if (
       !gameRef.current?.game.input.keyboard ||
       !gameRef.current?.game.input.mouse
-    )
+    ) {
       return;
+    }
+
     if (
       isHelpModalOpen ||
       isFriendModalOpen ||
@@ -208,7 +216,7 @@ export default function GameWrapper({
 
       {isLoginModalOpen ? <LoginModal onClose={onLoginModalClose} /> : null}
 
-      <ChatPanel />
+      {isVisibleChat ? <ChatPanel /> : null}
     </div>
   );
 }
