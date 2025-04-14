@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Npc } from "@/game/entities/npc/npc";
 import { Phaser } from "@/game/phaser";
 import { UserInfo } from "@/types/socket-io/response";
