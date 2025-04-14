@@ -1,5 +1,6 @@
 import { getMyProfile } from "@/api/user";
 import { initialProfile } from "@/constants/game/initial-profile";
+import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { TorchGoblin } from "@/game/entities/npc/torch-goblin";
 import { EventWrapper } from "@/game/event/EventBus";
 import { controllablePlayerManager } from "@/game/managers/controllable-player-manager";
@@ -25,7 +26,7 @@ export class LobyScene extends MetamornScene {
 
   public updateLoadingState: (state: boolean) => void;
 
-  private socketNsp = "loby";
+  private socketNsp = SOCKET_NAMESPACES.LOBY;
 
   constructor() {
     super("LobyScene");

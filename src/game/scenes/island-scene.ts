@@ -23,6 +23,7 @@ import { tileMapManager } from "@/game/managers/tile-map-manager";
 import { controllablePlayerManager } from "@/game/managers/controllable-player-manager";
 import { getItem, persistItem } from "@/utils/persistence";
 import { getMyProfile } from "@/api/user";
+import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 
 export class IslandScene extends MetamornScene {
   protected override player: Player;
@@ -34,7 +35,7 @@ export class IslandScene extends MetamornScene {
 
   private io: Socket<ServerToClient, ClientToServer>;
   private zoneType: "dev" | "design";
-  private socketNsp = "zone";
+  private socketNsp = SOCKET_NAMESPACES.ISLAND;
 
   constructor() {
     super("IslandScene");
