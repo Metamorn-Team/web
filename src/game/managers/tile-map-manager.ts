@@ -1,4 +1,6 @@
+import { Tree } from "@/game/entities/nature/tree";
 import { Phaser } from "@/game/phaser";
+import { getPositionCenterByCell } from "@/game/utils/calc-cell";
 
 type MapKeys = "island" | "loby";
 
@@ -49,7 +51,27 @@ export class TileMapManager {
       map.createLayer("bridge", bridgeTileset);
       map.createLayer("deco", mushroomLTileset);
 
+      // const foamLayer = map.createLayer("foam", seaTileset);
+      // const foams = foamLayer?.createFromTiles(1, -1, {
+      //   key: FOAM,
+      //   origin: 0,
+      // });
+
+      // if (foams) {
+      //   this.scene.anims.staggerPlay(FOAM_ANIM_KEY, foams, 50);
+      // }
+
+      // console.log(foamLayer);
+      // console.log(foams);
+
       this.setRectanleCollisionObjects(map);
+
+      const position1 = getPositionCenterByCell(25, 4);
+      const position2 = getPositionCenterByCell(22, 5);
+      const position3 = getPositionCenterByCell(24, 6);
+      new Tree(this.scene, position1.x, position1.y);
+      new Tree(this.scene, position2.x, position2.y);
+      new Tree(this.scene, position3.x, position3.y);
     }
   }
 
