@@ -1,7 +1,7 @@
 import * as Phaser from "phaser";
 import type { Socket } from "socket.io-client";
 import { COLLISION_CATEGORIES } from "@/constants/game/collision-categories";
-import { EventBus } from "@/game/event/EventBus";
+import { EventWrapper } from "@/game/event/EventBus";
 import { UserInfo } from "@/types/socket-io/response";
 import { DEAD } from "@/game/animations/keys/common";
 import { TypedSocket } from "@/types/socket-io";
@@ -305,9 +305,8 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     });
 
     this.on("pointerdown", () => {
-      EventBus.emit("player-click", {
+      EventWrapper.emitToUi("player-click", {
         ...this.playerInfo,
-        texture: this.texture.key,
       });
     });
   }

@@ -13,7 +13,7 @@ import { BsMusicNoteBeamed } from "react-icons/bs";
 import { RiBookOpenLine } from "react-icons/ri";
 import { GiSailboat } from "react-icons/gi";
 import { getItem, setItem } from "@/utils/session-storage";
-import { EventBus } from "@/game/event/EventBus";
+import { EventWrapper } from "@/game/event/EventBus";
 import { removeItem } from "@/utils/persistence";
 
 interface MenuHeaderProps {
@@ -32,7 +32,7 @@ export default function MenuHeader({
   const [isVisibleExit, setIsVisibleExit] = useState(true);
 
   const onLeftIsland = useCallback(() => {
-    EventBus.emit("left-island");
+    EventWrapper.emitToGame("left-island");
   }, []);
 
   const onLogout = () => {

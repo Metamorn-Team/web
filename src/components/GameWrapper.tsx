@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 import Game, { GameRef } from "@/components/Game";
 import { LobyScene } from "@/game/scenes/loby-scene";
 import MenuHeader from "@/components/MenuHeader";
-import { EventBus } from "@/game/event/EventBus";
+import { EventWrapper } from "@/game/event/EventBus";
 import { useModal } from "@/hook/useModal";
 import FriendModal from "@/components/FriendModal";
 import { Phaser } from "@/game/phaser";
@@ -121,7 +121,7 @@ export default function GameWrapper({
         const userInfo = await getMyProfile();
         persistItem("profile", userInfo);
 
-        EventBus.emit("join-island", data);
+        EventWrapper.emitToGame("join-island", data);
       } catch (e: unknown) {
         if (e instanceof AxiosError && e.status === 401) {
           onLoginModalOpen();
@@ -129,12 +129,12 @@ export default function GameWrapper({
       }
     };
 
-    EventBus.on("current-scene-ready", handleSceneReady);
-    EventBus.on("start-change-scene", handleStartChangeScene);
-    EventBus.on("finish-change-scene", handleFinishChangeScene);
-    EventBus.on("npc-interaction-started", handleNpcInteraction);
-    EventBus.on("player-click", handlePlayerClick);
-    EventBus.on("request-join-island", handleRequestJoinIsland);
+    EventWrapper.onUiEvent("current-scene-ready", handleSceneReady);
+    EventWrapper.onUiEvent("start-change-scene", handleStartChangeScene);
+    EventWrapper.onUiEvent("finish-change-scene", handleFinishChangeScene);
+    EventWrapper.onUiEvent("npc-interaction-started", handleNpcInteraction);
+    EventWrapper.onUiEvent("player-click", handlePlayerClick);
+    EventWrapper.onUiEvent("request-join-island", handleRequestJoinIsland);
 
     const handleResize = () => {
       if (gameRef.current) {
@@ -147,12 +147,12 @@ export default function GameWrapper({
     window.addEventListener("resize", handleResize);
 
     return () => {
-      EventBus.removeListener("current-scene-ready", handleSceneReady);
-      EventBus.removeListener("start-change-scene", handleStartChangeScene);
-      EventBus.removeListener("finish-change-scene", handleFinishChangeScene);
-      EventBus.removeListener("npc-interaction-started", handleNpcInteraction);
-      EventBus.removeListener("player-click", handlePlayerClick);
-      EventBus.removeListener("request-join-island", handleRequestJoinIsland);
+      EventWrapper.offUiEvent("current-scene-ready", handleSceneReady);
+      EventWrapper.offUiEvent("start-change-scene", handleStartChangeScene);
+      EventWrapper.offUiEvent("finish-change-scene", handleFinishChangeScene);
+      EventWrapper.offUiEvent("npc-interaction-started", handleNpcInteraction);
+      EventWrapper.offUiEvent("player-click", handlePlayerClick);
+      EventWrapper.offUiEvent("request-join-island", handleRequestJoinIsland);
 
       window.removeEventListener("resize", handleResize);
     };

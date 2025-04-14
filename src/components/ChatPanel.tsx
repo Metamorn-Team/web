@@ -1,6 +1,6 @@
 "use client";
 
-import { EventBus } from "@/game/event/EventBus";
+import { EventWrapper } from "@/game/event/EventBus";
 import { playerStore } from "@/game/managers/player-store";
 import { socketManager } from "@/game/managers/socket-manager";
 import {
@@ -63,8 +63,8 @@ export default function ChatPanel() {
       ]);
     };
 
-    EventBus.on("newPlayer", handleNewPlayer);
-    EventBus.on("playerLeftChat", handlePlayerLeftChat);
+    EventWrapper.onUiEvent("newPlayer", handleNewPlayer);
+    EventWrapper.onUiEvent("playerLeftChat", handlePlayerLeftChat);
 
     const socket = socketManager.connect(nsp);
     if (!socket) return;
@@ -77,7 +77,7 @@ export default function ChatPanel() {
         { id: messageId, sender: "나", message, avatarKey: "purple_pawn" },
       ]);
 
-      EventBus.emit("mySpeechBubble", data);
+      EventWrapper.emitToGame("mySpeechBubble", data);
     };
 
     const handleReceiveMessage = (data: ReceiveMessage) => {
@@ -97,7 +97,7 @@ export default function ChatPanel() {
         },
       ]);
 
-      EventBus.emit("otherSpeechBubble", data);
+      EventWrapper.emitToGame("otherSpeechBubble", data);
     };
 
     socket.on("messageSent", handleMessageSent);
@@ -106,8 +106,9 @@ export default function ChatPanel() {
     return () => {
       socket.off("messageSent", handleMessageSent);
       socket.off("receiveMessage", handleReceiveMessage);
-      EventBus.off("newPlayer", handleNewPlayer);
-      EventBus.off("playerLeftChat", handlePlayerLeftChat);
+
+      EventWrapper.offUiEvent("newPlayer", handleNewPlayer);
+      EventWrapper.offUiEvent("playerLeftChat", handlePlayerLeftChat);
     };
   }, []);
 
@@ -163,7 +164,6 @@ export default function ChatPanel() {
       transition-all duration-300 ease-in-out 
       z-30 flex flex-col overflow-hidden"
     >
-      {/* 드래그 핸들 */}
       {!isCollapsed && (
         <div
           onMouseDown={handleMouseDown}
@@ -172,7 +172,6 @@ export default function ChatPanel() {
         />
       )}
 
-      {/* 상단 헤더 */}
       <div className="p-4 border-b border-[#d6c6aa] text-[#2a1f14] font-bold text-lg flex justify-between items-center">
         채팅
         <button
@@ -187,15 +186,14 @@ export default function ChatPanel() {
         </button>
       </div>
 
-      {/* 메시지 영역 */}
       {!isCollapsed && (
-        <div className="flex-1 overflow-y-auto p-4 pb-20 space-y-3 text-sm text-[#2a1f14] scrollbar-hide">
+        <div className="flex-1 overflow-y-auto p-4 space-y-3 text-sm text-[#2a1f14] scrollbar-hide">
           {messages.map((msg) => {
             if (msg.isSystem) {
               return (
                 <div
                   key={msg.id}
-                  className="text-center text-xs text-[#7c6f58]"
+                  className="text-center text-xs text-[#2a1f14]"
                 >
                   {msg.message}
                 </div>
@@ -206,7 +204,7 @@ export default function ChatPanel() {
             return (
               <div
                 key={msg.id}
-                className={`flex gap-2 max-w-[85%] ${
+                className={`flex gap-2 max-w-[85%] text-[#2a1f14] ${
                   isMine ? "ml-auto flex-row-reverse text-right" : ""
                 }`}
               >
@@ -223,7 +221,7 @@ export default function ChatPanel() {
                     isMine ? "bg-[#e8e0d0]" : "bg-[#f3ece1]"
                   }`}
                 >
-                  <div className="font-semibold">{msg.sender}</div>
+                  <div className="font-semibold opacity-80">{msg.sender}</div>
                   <div>{msg.message}</div>
                 </div>
               </div>

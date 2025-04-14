@@ -1,4 +1,4 @@
-import { EventBus } from "@/game/event/EventBus";
+import { EventWrapper } from "@/game/event/EventBus";
 import { CollisionBody } from "@/types/game/matter";
 
 export class Mine extends Phaser.Physics.Matter.Sprite {
@@ -102,14 +102,12 @@ export class Mine extends Phaser.Physics.Matter.Sprite {
   }
 
   private setupInput() {
-    // E 키 입력 리스너 설정
     if (this.scene.input.keyboard) {
       this.interactKey = this.scene.input.keyboard.addKey(
         Phaser.Input.Keyboard.KeyCodes.E
       );
     }
 
-    // 키 입력 이벤트 핸들러
     this.scene.events.on("update", this.handleKeyInput, this);
   }
 
@@ -124,7 +122,8 @@ export class Mine extends Phaser.Physics.Matter.Sprite {
 
   protected startInteraction() {
     this.isInteractedWithPlayer = true;
-    EventBus.emit("request-join-island", { type: this.zoneType });
+
+    EventWrapper.emitToUi("request-join-island", { type: this.zoneType });
   }
 
   destroy(fromScene?: boolean): void {

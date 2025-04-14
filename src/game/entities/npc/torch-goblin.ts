@@ -1,7 +1,7 @@
 import { TORCH_GOBLIN, TorchGoblinColor } from "@/constants/game/entities";
 import { TORCH_GOBLIN_IDLE } from "@/game/animations/keys/torch-goblin";
 import { Npc } from "@/game/entities/npc/npc";
-import { EventBus } from "@/game/event/EventBus";
+import { EventWrapper } from "@/game/event/EventBus";
 
 export class TorchGoblin extends Npc {
   constructor(
@@ -29,7 +29,10 @@ export class TorchGoblin extends Npc {
   }
 
   protected startInteraction(): void {
-    EventBus.emit("npc-interaction-started", { npc: this, type: "guide" });
+    EventWrapper.emitToUi("npc-interaction-started", {
+      npc: this,
+      type: "guide",
+    });
   }
 
   createSpeechBubble(

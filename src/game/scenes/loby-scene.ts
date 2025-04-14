@@ -1,7 +1,7 @@
 import { getMyProfile } from "@/api/user";
 import { initialProfile } from "@/constants/game/initial-profile";
 import { TorchGoblin } from "@/game/entities/npc/torch-goblin";
-import { EventBus } from "@/game/event/EventBus";
+import { EventWrapper } from "@/game/event/EventBus";
 import { controllablePlayerManager } from "@/game/managers/controllable-player-manager";
 import { socketManager } from "@/game/managers/socket-manager";
 import { tileMapManager } from "@/game/managers/tile-map-manager";
@@ -73,13 +73,13 @@ export class LobyScene extends MetamornScene {
 
     this.matter.world.setBounds(0, 0, this.mapWidth, this.mapHeight);
 
-    this.sound.play("woodland-fantasy");
-    this.sound.setVolume(0.15);
+    // this.sound.play("woodland-fantasy");
+    // this.sound.setVolume(0.15);
 
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
     this.cameras.main.setZoom(1.1);
 
-    EventBus.emit("current-scene-ready", {
+    EventWrapper.emitToUi("current-scene-ready", {
       scene: this,
       socketNsp: this.socketNsp,
     });
@@ -122,18 +122,20 @@ export class LobyScene extends MetamornScene {
   }
 
   listenEvents() {
-    EventBus.off("join-island");
-
-    EventBus.on("join-island", (data: { type: "dev" | "design" }) => {
-      this.changeToIsland(data);
-    });
+    EventWrapper.offGameEvent("join-island");
+    EventWrapper.onGameEvent(
+      "join-island",
+      (data: { type: "dev" | "design" }) => {
+        this.changeToIsland(data);
+      }
+    );
   }
 
   private changeToIsland(data: { type: "dev" | "design" }) {
     this.cameras.main.fadeOut(500, 0, 0, 0);
 
     this.time.delayedCall(500, () => {
-      EventBus.emit("start-change-scene");
+      EventWrapper.emitToUi("start-change-scene");
 
       this.cleanupBeforeLeft();
 

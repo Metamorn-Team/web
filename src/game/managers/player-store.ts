@@ -1,5 +1,4 @@
 import { Player } from "@/game/entities/players/player";
-import { EventBus } from "@/game/event/EventBus";
 
 type PlayerMap = Map<string, Player>;
 
@@ -26,7 +25,6 @@ class PlayerStore {
       return false;
     }
     this.players.set(id, player);
-    EventBus.emit("playerAdded", { id, player });
     return true;
   }
 

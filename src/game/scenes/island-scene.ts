@@ -1,5 +1,12 @@
 import { Socket } from "socket.io-client";
-import { EventBus } from "@/game/event/EventBus";
+import {
+  ActivePlayerResponse,
+  ClientToServer,
+  MessageSent,
+  ReceiveMessage,
+  ServerToClient,
+} from "mmorntype";
+import { EventWrapper } from "@/game/event/EventBus";
 import { MetamornScene } from "@/game/scenes/metamorn-scene";
 import { spawnManager } from "@/game/managers/spawn-manager";
 import { Player } from "@/game/entities/players/player";
@@ -9,13 +16,6 @@ import {
   removeItem as removeSessionItem,
   setItem as setSessionItem,
 } from "@/utils/session-storage";
-import {
-  ActivePlayerResponse,
-  ClientToServer,
-  MessageSent,
-  ReceiveMessage,
-  ServerToClient,
-} from "mmorntype";
 import { playerStore } from "@/game/managers/player-store";
 import { Pawn } from "@/game/entities/players/pawn";
 import { AttackType } from "@/types/game/enum/state";
@@ -47,9 +47,6 @@ export class IslandScene extends MetamornScene {
     } else {
       this.zoneType = getSessionItem("zone_type") || "design";
     }
-
-    console.log("init");
-    console.log(this.zoneType);
   }
 
   preload() {
@@ -66,11 +63,11 @@ export class IslandScene extends MetamornScene {
     this.listenLocalEvents();
     this.listenSocketEvents();
 
-    EventBus.emit("current-scene-ready", {
+    EventWrapper.emitToUi("current-scene-ready", {
       scene: this,
       socketNsp: this.socketNsp,
     });
-    this.playBgm();
+    // this.playBgm();
   }
 
   update(time: number, delta: number): void {
@@ -109,16 +106,19 @@ export class IslandScene extends MetamornScene {
   }
 
   listenLocalEvents() {
-    EventBus.on("mySpeechBubble", async (data: MessageSent) => {
+    EventWrapper.onGameEvent("mySpeechBubble", async (data: MessageSent) => {
       const me = await this.getPlayerInfo();
       this.showSpeechBubble(me.id, data.message, true);
     });
 
-    EventBus.on("otherSpeechBubble", async (data: ReceiveMessage) => {
-      this.showSpeechBubble(data.senderId, data.message);
-    });
+    EventWrapper.onGameEvent(
+      "otherSpeechBubble",
+      async (data: ReceiveMessage) => {
+        this.showSpeechBubble(data.senderId, data.message);
+      }
+    );
 
-    EventBus.on("left-island", () => {
+    EventWrapper.onGameEvent("left-island", () => {
       this.changeToLoby();
     });
   }
@@ -147,13 +147,12 @@ export class IslandScene extends MetamornScene {
     this.io.on("activePlayers", (activeUsers) => {
       console.log(`online users: ${JSON.stringify(activeUsers, null, 2)}`);
       this.spawnActiveUsers(activeUsers);
-      EventBus.emit("activePlayers", activeUsers);
     });
 
     this.io.on("playerJoin", (data) => {
       console.log(`on playerJoin: ${JSON.stringify(data, null, 2)}`);
       this.addPlayer(data);
-      EventBus.emit("newPlayer", data);
+      EventWrapper.emitToUi("newPlayer", data);
     });
 
     this.io.on("playerJoinSuccess", async (data: { x: number; y: number }) => {
@@ -185,8 +184,8 @@ export class IslandScene extends MetamornScene {
 
     this.io.on("playerLeft", (data) => {
       console.log(`on playerLeft: ${JSON.stringify(data, null, 2)}`);
-      EventBus.emit("playerLeft", data);
-      EventBus.emit("playerLeftChat", data);
+
+      EventWrapper.emitToUi("playerLeftChat", data);
       this.destroyPlayer(data.id);
     });
 
@@ -357,7 +356,7 @@ export class IslandScene extends MetamornScene {
     this.cameras.main.fadeOut(500, 0, 0, 0);
 
     this.time.delayedCall(500, () => {
-      EventBus.emit("start-change-scene");
+      EventWrapper.emitToUi("start-change-scene");
 
       this.cleanupBeforeLeft();
 
@@ -377,7 +376,6 @@ export class IslandScene extends MetamornScene {
 
     // 3. 맵 및 물리엔진 정리
     this.map?.destroy();
-    // tileMapManager.unregisterTileMap("island");
     this.matter.world.setBounds(0, 0, 0, 0);
 
     // 4. 사운드/이펙트 정리
@@ -385,9 +383,9 @@ export class IslandScene extends MetamornScene {
     this.tweens.killAll();
 
     // 5. 이벤트 리스너 정리
-    EventBus.off("mySpeechBubble");
-    EventBus.off("otherSpeechBubble");
-    EventBus.off("left-island");
+    EventWrapper.offGameEvent("mySpeechBubble");
+    EventWrapper.offGameEvent("otherSpeechBubble");
+    EventWrapper.offGameEvent("left-island");
 
     // 6. 모든 게임 객체 제거 - 이건 더 알아봐야할듯
     this.children.each((child) => child.destroy());
