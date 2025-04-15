@@ -4,4 +4,5 @@ export enum Keys {
   LEFT,
   RIGHT,
   SPACE,
+  ENTER,
 }
