@@ -248,6 +248,7 @@ export class IslandScene extends MetamornScene {
 
     this.time.delayedCall(200, () => {
       if (attackedPlayerIds.includes(this.player.getPlayerInfo().id)) {
+        EventWrapper.emitToUi("attacked");
         this.player.hit();
       }
 

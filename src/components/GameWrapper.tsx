@@ -21,6 +21,7 @@ import { getMyProfile } from "@/api/user";
 import { persistItem } from "@/utils/persistence";
 import ChatPanel from "@/components/ChatPanel";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
+import { useAttackedSound } from "@/hook/useAttackedSound";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -62,6 +63,7 @@ export default function GameWrapper({
     onOpen: onPlayerModalOpen,
   } = useModal();
   const [isVisibleChat, setIsVisibleChat] = useState(false);
+  useAttackedSound();
 
   const playBgmToggle = useCallback(() => {
     if (gameRef.current) {
