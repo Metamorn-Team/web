@@ -4,6 +4,7 @@ import { EventWrapper } from "@/game/event/EventBus";
 import { playerStore } from "@/game/managers/player-store";
 import { socketManager } from "@/game/managers/socket-manager";
 import Alert from "@/utils/alert";
+import { getItem } from "@/utils/persistence";
 import {
   MessageSent,
   PlayerJoinResponse,
@@ -85,10 +86,16 @@ export default function ChatPanel() {
 
     const handleMessageSent = (data: MessageSent) => {
       const { messageId, message } = data;
+      const profile = getItem("profile");
 
       setMessages((prev) => [
         ...prev,
-        { id: messageId, sender: "나", message, avatarKey: "purple_pawn" },
+        {
+          id: messageId,
+          sender: "나",
+          message,
+          avatarKey: profile?.avatarKey || "purple_pawn",
+        },
       ]);
 
       EventWrapper.emitToGame("mySpeechBubble", data);
