@@ -1,11 +1,10 @@
 import { useInfiniteQuery, QueryFunctionContext } from "@tanstack/react-query";
-import { searchUsers } from "@/api/user";
 import { useMemo } from "react";
+import { GetFriendRequestListRequest } from "mmorntype";
+import { getFriendRequests } from "@/api/friend";
 
-export const useInfiniteUserSearch = (
-  search: string,
-  varient: "NICKNAME" | "TAG",
-  limit: number = 10
+export const useInfiniteGetFriendRequests = (
+  query: GetFriendRequestListRequest
 ) => {
   const {
     data,
@@ -15,15 +14,13 @@ export const useInfiniteUserSearch = (
     isFetchingNextPage,
     refetch,
   } = useInfiniteQuery({
-    queryKey: ["userSearch", search, varient],
+    queryKey: ["friendRequests", query.direction],
     queryFn: async (
       context: QueryFunctionContext<string[], string | undefined>
     ) => {
-      const response = await searchUsers({
-        search,
-        varient,
+      const response = await getFriendRequests({
+        ...query,
         cursor: context.pageParam,
-        limit,
       });
       return response;
     },
@@ -31,16 +28,16 @@ export const useInfiniteUserSearch = (
       return lastPage.nextCursor ?? undefined;
     },
     initialPageParam: undefined,
-    enabled: false,
-    staleTime: 5 * 60 * 1000,
+    // enabled: false,
+    staleTime: 0,
   });
 
-  const users = useMemo(() => {
+  const friendRequests = useMemo(() => {
     return data?.pages.map((page) => page.data).flat();
   }, [data]);
 
   return {
-    users,
+    friendRequests,
     isLoading,
     isError,
     fetchNextPage,
