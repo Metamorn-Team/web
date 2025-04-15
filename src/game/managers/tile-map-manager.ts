@@ -1,6 +1,5 @@
-import { Tree } from "@/game/entities/nature/tree";
+import { treeSpawner } from "@/game/managers/tree-spawner";
 import { Phaser } from "@/game/phaser";
-import { getPositionCenterByCell } from "@/game/utils/calc-cell";
 
 type MapKeys = "island" | "loby";
 
@@ -66,12 +65,19 @@ export class TileMapManager {
 
       this.setRectanleCollisionObjects(map);
 
-      const position1 = getPositionCenterByCell(25, 4);
-      const position2 = getPositionCenterByCell(22, 5);
-      const position3 = getPositionCenterByCell(24, 6);
-      new Tree(this.scene, position1.x, position1.y);
-      new Tree(this.scene, position2.x, position2.y);
-      new Tree(this.scene, position3.x, position3.y);
+      const positions = [
+        { cellX: 25, cellY: 4 },
+        { cellX: 22, cellY: 5 },
+        { cellX: 24, cellY: 6 },
+        { cellX: 4, cellY: 12 },
+        { cellX: 5, cellY: 12 },
+        { cellX: 4, cellY: 13 },
+        { cellX: 5, cellY: 13 },
+      ];
+
+      positions.map((position) =>
+        treeSpawner.spawnTree(this.scene, position.cellX, position.cellY)
+      );
     }
   }
 
