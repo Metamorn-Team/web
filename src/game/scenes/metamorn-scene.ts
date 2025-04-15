@@ -14,12 +14,22 @@ export class MetamornScene extends Phaser.Scene {
     this.inputManager = new InputManager(this);
   }
 
-  followPlayerCamera() {
+  protected followPlayerCamera() {
     this.cameras.main = this.cameras.main;
     this.cameras.main.startFollow(this.player);
   }
 
-  setZoom(weight: number) {
+  protected setZoom(weight: number) {
     this.cameras.main.setZoom(weight);
+  }
+
+  protected setEnabledKeyboardInput(enabled: boolean) {
+    if (this.game.input.keyboard) {
+      this.game.input.keyboard.enabled = enabled;
+    }
+  }
+
+  protected getEnabledKeyboardInput() {
+    return this.game.input.keyboard?.enabled || false;
   }
 }
