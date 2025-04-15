@@ -30,6 +30,7 @@ export interface GameToUiEvent {
   newPlayer: (data: PlayerJoinResponse) => void;
   playerLeftChat: (data: PlayerLeftResponse) => void;
   activeChatInput: () => void;
+  attacked: () => void;
 }
 
 export interface UiToGameEvent {
