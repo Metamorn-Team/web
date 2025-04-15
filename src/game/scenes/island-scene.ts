@@ -39,6 +39,8 @@ export class IslandScene extends MetamornScene {
   private zoneType: "dev" | "design";
   private socketNsp = SOCKET_NAMESPACES.ISLAND;
 
+  private isIntentionalDisconnect = false;
+
   constructor() {
     super("IslandScene");
   }
@@ -70,6 +72,7 @@ export class IslandScene extends MetamornScene {
       scene: this,
       socketNsp: this.socketNsp,
     });
+    this.isIntentionalDisconnect = false;
     // this.playBgm();
   }
 
@@ -158,8 +161,10 @@ export class IslandScene extends MetamornScene {
 
     this.io.on("disconnect", () => {
       console.log("on disconnect");
-      Alert.error("서버와의 연결이 끊어졌어요..");
-      this.clearAllPlayer();
+      if (!this.isIntentionalDisconnect) {
+        Alert.error("서버와의 연결이 끊어졌어요..");
+        this.clearAllPlayer();
+      }
     });
 
     this.io.on("activePlayers", (activeUsers) => {
@@ -374,6 +379,7 @@ export class IslandScene extends MetamornScene {
   }
 
   private changeToLoby() {
+    this.isIntentionalDisconnect = true;
     this.cameras.main.fadeOut(500, 0, 0, 0);
 
     this.time.delayedCall(500, () => {
