@@ -24,6 +24,8 @@ import { controllablePlayerManager } from "@/game/managers/controllable-player-m
 import { getItem, persistItem } from "@/utils/persistence";
 import { getMyProfile } from "@/api/user";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
+import Alert from "@/utils/alert";
+import { Keys } from "@/types/game/enum/key";
 
 export class IslandScene extends MetamornScene {
   protected override player: Player;
@@ -76,6 +78,14 @@ export class IslandScene extends MetamornScene {
       this.player.update(delta);
     }
 
+    if (
+      this.getEnabledKeyboardInput() &&
+      this.inputManager.isKeyJustDown(Keys.ENTER)
+    ) {
+      EventWrapper.emitToUi("activeChatInput");
+      this.setEnabledKeyboardInput(false);
+    }
+
     playerStore
       .getAllPlayers()
       .values()
@@ -122,6 +132,12 @@ export class IslandScene extends MetamornScene {
     EventWrapper.onGameEvent("left-island", () => {
       this.changeToLoby();
     });
+
+    EventWrapper.onGameEvent("disabledChatInput", () => {
+      this.time.delayedCall(50, () => {
+        this.setEnabledKeyboardInput(true);
+      });
+    });
   }
 
   listenSocketEvents() {
@@ -142,6 +158,7 @@ export class IslandScene extends MetamornScene {
 
     this.io.on("disconnect", () => {
       console.log("on disconnect");
+      Alert.error("서버와의 연결이 끊어졌어요..");
       this.clearAllPlayer();
     });
 
@@ -390,6 +407,7 @@ export class IslandScene extends MetamornScene {
     EventWrapper.offGameEvent("mySpeechBubble");
     EventWrapper.offGameEvent("otherSpeechBubble");
     EventWrapper.offGameEvent("left-island");
+    EventWrapper.offGameEvent("disabledChatInput");
 
     // 6. 모든 게임 객체 제거 - 이건 더 알아봐야할듯
     this.children.each((child) => child.destroy());

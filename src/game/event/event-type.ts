@@ -29,6 +29,7 @@ export interface GameToUiEvent {
   "request-join-island": (data: { type: "dev" | "design" }) => void;
   newPlayer: (data: PlayerJoinResponse) => void;
   playerLeftChat: (data: PlayerLeftResponse) => void;
+  activeChatInput: () => void;
 }
 
 export interface UiToGameEvent {
@@ -36,4 +37,5 @@ export interface UiToGameEvent {
   otherSpeechBubble: (data: ReceiveMessage) => void;
   "left-island": () => void;
   "join-island": (data: { type: "dev" | "design" }) => void;
+  disabledChatInput: () => void;
 }
