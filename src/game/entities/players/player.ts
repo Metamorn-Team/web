@@ -22,7 +22,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   private playerInfo: UserInfo;
   private label = "PLAYER";
-  protected speed = 0.12; // 픽셀/초 (모든 플레이어 동일)
+  protected speed = 0.12;
 
   protected currAnimationState: PlayerAnimationState =
     PlayerAnimationState.IDLE;
@@ -38,8 +38,8 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   protected currentMove = 0;
 
-  private prevX: number;
-  private prevY: number;
+  private lastSentPosition = { x: 0, y: 0 };
+  private readonly POSITION_CHANGE_THRESHOLD = 3;
   io?: TypedSocket;
 
   constructor(
@@ -107,6 +107,15 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   protected abstract setBodyConfig(): void;
 
+  private hasPositionChangedSignificantly(): boolean {
+    const dx = Math.abs(this.x - this.lastSentPosition.x);
+    const dy = Math.abs(this.y - this.lastSentPosition.y);
+    return (
+      dx >= this.POSITION_CHANGE_THRESHOLD ||
+      dy >= this.POSITION_CHANGE_THRESHOLD
+    );
+  }
+
   update(delta: number): void {
     if (this.currAnimationState === PlayerAnimationState.ATTACK) {
       return;
@@ -114,9 +123,6 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
     if (this.isControllable) {
       const keys = this.inputManager?.getPressedKeys() ?? [];
-
-      this.prevX = this.x;
-      this.prevY = this.y;
 
       if (keys.length === 0) {
         this.idle();
@@ -139,8 +145,10 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
         this.move(delta, MoveDirection.RIGHT);
       }
 
-      if (this.io && (this.prevX !== this.x || this.prevY !== this.y)) {
+      if (this.io && this.hasPositionChangedSignificantly()) {
         this.io.emit("playerMoved", { x: this.x, y: this.y });
+        this.lastSentPosition.x = this.x;
+        this.lastSentPosition.y = this.y;
       }
     } else {
       const dx = this.x - this.targetPosition.x;
@@ -255,8 +263,8 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
         fontFamily: "CookieRun",
         fontSize: "16px",
         padding: { bottom: 14 },
-        color: "#FFFFFF",
-        stroke: "#000000",
+        color: this.isControllable ? "#000000" : "#FFFFFF",
+        stroke: this.isControllable ? "#FFFFFF" : "#000000",
         strokeThickness: 2,
         resolution: 10,
       })
