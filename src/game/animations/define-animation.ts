@@ -97,26 +97,6 @@ export const defineAnimation = (scene: Phaser.Scene) => {
       }),
       frameRate: 13,
     });
-
-    scene.anims.create({
-      key: FOAM,
-      frames: scene.anims.generateFrameNumbers(FOAM, {
-        start: 0,
-        end: 7,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    scene.anims.create({
-      key: TREE_IDLE,
-      frames: scene.anims.generateFrameNumbers(TREE, {
-        start: 0,
-        end: 3,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    });
   });
 
   torchGoblinColors.forEach((color) => {
@@ -129,5 +109,25 @@ export const defineAnimation = (scene: Phaser.Scene) => {
       frameRate: 13,
       repeat: -1,
     });
+  });
+
+  scene.anims.create({
+    key: FOAM,
+    frames: scene.anims.generateFrameNumbers(FOAM, {
+      start: 0,
+      end: 7,
+    }),
+    frameRate: 10,
+    repeat: -1,
+  });
+
+  scene.anims.create({
+    key: TREE_IDLE,
+    frames: scene.anims.generateFrameNumbers(TREE, {
+      start: 0,
+      end: 3,
+    }),
+    frameRate: 6,
+    repeat: -1,
   });
 };
