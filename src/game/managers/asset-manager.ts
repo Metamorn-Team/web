@@ -7,7 +7,13 @@ import {
   warriorColors,
 } from "@/constants/game/entities";
 import { TREE } from "@/constants/game/sprites/nature";
-import { FOAM } from "@/constants/game/sprites/tile";
+import {
+  FOAM,
+  ROCK_L,
+  ROCK_M,
+  ROCK_S,
+  ROCK_XL,
+} from "@/constants/game/sprites/tile";
 import { DEAD } from "@/game/animations/keys/common";
 import { Phaser } from "@/game/phaser";
 
@@ -66,11 +72,21 @@ export class AssetManager {
       );
     });
 
+    const ROCKS = [ROCK_S, ROCK_M, ROCK_L, ROCK_XL];
+    ROCKS.forEach((ROCK) =>
+      scene.load.spritesheet(
+        ROCK_S,
+        `/game/tiles/tiny-sward/sprites/${ROCK}.png`,
+        {
+          frameWidth: 128,
+          frameHeight: 128,
+        }
+      )
+    );
+
     scene.load.spritesheet(FOAM, `/game/tiles/tiny-sward/sprites/foam.png`, {
-      frameWidth: 96,
-      frameHeight: 96,
-      spacing: 96,
-      margin: 48,
+      frameWidth: 192,
+      frameHeight: 192,
     });
 
     scene.load.spritesheet(TREE, `/game/object/sprites/tree.png`, {

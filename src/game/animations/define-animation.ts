@@ -7,7 +7,13 @@ import {
   warriorColors,
 } from "@/constants/game/entities";
 import { TREE } from "@/constants/game/sprites/nature";
-import { FOAM } from "@/constants/game/sprites/tile";
+import {
+  FOAM,
+  ROCK_L,
+  ROCK_M,
+  ROCK_S,
+  ROCK_XL,
+} from "@/constants/game/sprites/tile";
 import { BORN, DEAD } from "@/game/animations/keys/common";
 import { TREE_IDLE } from "@/game/animations/keys/objects/tree";
 import { PAWN_ATTACK, PAWN_IDLE, PAWN_WALK } from "@/game/animations/keys/pawn";
@@ -130,4 +136,17 @@ export const defineAnimation = (scene: Phaser.Scene) => {
     frameRate: 6,
     repeat: -1,
   });
+
+  const rocks = [ROCK_S, ROCK_M, ROCK_L, ROCK_XL];
+  rocks.forEach((rock) =>
+    scene.anims.create({
+      key: rock,
+      frames: scene.anims.generateFrameNumbers(rock, {
+        start: 0,
+        end: 7,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    })
+  );
 };
