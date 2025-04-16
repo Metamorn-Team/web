@@ -15,11 +15,11 @@
             "expandedObjectLayers": [
                 12
             ],
-            "scale": 1.5,
+            "scale": 3,
             "selectedLayer": 11,
             "viewCenter": {
-                "x": 959.9999999999999,
-                "y": 636.3333333333333
+                "x": 960.1666666666666,
+                "y": 638
             }
         },
         "island.json#bridge": {
@@ -78,8 +78,8 @@
             "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 960,
-                "y": 640.25
+                "x": 960.25,
+                "y": 640
             }
         },
         "tiny_sward.json#bone1": {

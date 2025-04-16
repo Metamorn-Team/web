@@ -1,3 +1,4 @@
+import { FOAM, ROCK_L, ROCK_M, ROCK_S } from "@/constants/game/sprites/tile";
 import { treeSpawner } from "@/game/managers/tree-spawner";
 import { Phaser } from "@/game/phaser";
 
@@ -38,6 +39,17 @@ export class TileMapManager {
       mushroomLTileset
     ) {
       map.createLayer("sea", seaTileset);
+
+      const foamLayer = map.createLayer("foam", shadowTileset);
+      const foams = foamLayer?.createFromTiles(78, -1, {
+        key: FOAM,
+        origin: 0.33,
+      });
+
+      if (foams) {
+        this.scene.anims.staggerPlay(FOAM, foams, 50);
+      }
+
       map.createLayer("shadow", shadowTileset);
       map.createLayer("sand", groundTileset);
       map.createLayer("elevation", elevationTileset);
@@ -50,18 +62,30 @@ export class TileMapManager {
       map.createLayer("bridge", bridgeTileset);
       map.createLayer("deco", mushroomLTileset);
 
-      // const foamLayer = map.createLayer("foam", seaTileset);
-      // const foams = foamLayer?.createFromTiles(1, -1, {
-      //   key: FOAM,
-      //   origin: 0,
-      // });
+      const rockLayer = map.createLayer("rock", shadowTileset);
+      const sRocks = rockLayer?.createFromTiles([169], -1, {
+        key: ROCK_S,
+        origin: 0.2,
+      });
+      const mRocks = rockLayer?.createFromTiles([168], -1, {
+        key: ROCK_M,
+        origin: 0.2,
+      });
+      const lRocks = rockLayer?.createFromTiles([95], -1, {
+        key: ROCK_L,
+        origin: 0.2,
+      });
 
-      // if (foams) {
-      //   this.scene.anims.staggerPlay(FOAM_ANIM_KEY, foams, 50);
-      // }
-
-      // console.log(foamLayer);
-      // console.log(foams);
+      const rockMaps = [
+        { title: ROCK_S, value: sRocks },
+        { title: ROCK_M, value: mRocks },
+        { title: ROCK_L, value: lRocks },
+      ];
+      rockMaps.forEach((rock) => {
+        if (rock.value) {
+          this.scene.anims.staggerPlay(rock.title, rock.value, 50);
+        }
+      });
 
       this.setRectanleCollisionObjects(map);
 
