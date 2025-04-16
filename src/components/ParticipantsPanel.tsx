@@ -47,9 +47,11 @@ export default function ParticipantPanel() {
             </div>
             <div className="flex-1">
               <div className="font-semibold">{user.nickname}</div>
-              <div className={`text-xs text-green-600`}>{"온라인"}</div>
+              <div className={"text-xs text-green-600"}>{"온라인"}</div>
             </div>
-            <span className={`w-2 h-2 rounded-full bg-green-500`} />
+            <span
+              className={"w-2 h-2 rounded-full bg-green-500 animate-pulse"}
+            />
           </li>
         ))}
       </ul>
