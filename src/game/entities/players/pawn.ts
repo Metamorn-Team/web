@@ -1,5 +1,4 @@
 import { PAWN, PawnColor } from "@/constants/game/entities";
-import { BORN } from "@/game/animations/keys/common";
 import { PAWN_ATTACK, PAWN_IDLE, PAWN_WALK } from "@/game/animations/keys/pawn";
 import { Player } from "@/game/entities/players/player";
 import { InputManager } from "@/game/managers/input-manager";
@@ -24,14 +23,8 @@ export class Pawn extends Player {
     super(scene, x, y, PAWN(color), userInfo, isControllable, inputManager, io);
     this.color = color;
 
-    if (this.isControllable) {
-      this.play(BORN);
-      this.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-        this.isBeingBorn = false;
-      });
-    } else {
-      this.isBeingBorn = false;
-    }
+    // born 애니메이션 추가
+    this.isBeingBorn = false;
   }
 
   getColor() {
