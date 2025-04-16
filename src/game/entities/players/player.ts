@@ -132,16 +132,16 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
         this.attack();
       }
 
-      if (keys.includes(Keys.UP)) {
+      if (keys.includes(Keys.UP) || keys.includes(Keys.W)) {
         this.move(delta, MoveDirection.UP);
       }
-      if (keys.includes(Keys.DOWN)) {
+      if (keys.includes(Keys.DOWN) || keys.includes(Keys.S)) {
         this.move(delta, MoveDirection.DOWN);
       }
-      if (keys.includes(Keys.LEFT)) {
+      if (keys.includes(Keys.LEFT) || keys.includes(Keys.A)) {
         this.move(delta, MoveDirection.LEFT);
       }
-      if (keys.includes(Keys.RIGHT)) {
+      if (keys.includes(Keys.RIGHT) || keys.includes(Keys.D)) {
         this.move(delta, MoveDirection.RIGHT);
       }
 

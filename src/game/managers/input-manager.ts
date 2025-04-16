@@ -18,17 +18,34 @@ export class InputManager {
       scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP)
     );
     this.registerKey(
+      Keys.W,
+      scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
+    );
+    this.registerKey(
       Keys.DOWN,
       scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN)
+    );
+    this.registerKey(
+      Keys.S,
+      scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S)
     );
     this.registerKey(
       Keys.LEFT,
       scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT)
     );
     this.registerKey(
+      Keys.A,
+      scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
+    );
+    this.registerKey(
       Keys.RIGHT,
       scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT)
     );
+    this.registerKey(
+      Keys.D,
+      scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+    );
+
     this.registerKey(
       Keys.SPACE,
       scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
