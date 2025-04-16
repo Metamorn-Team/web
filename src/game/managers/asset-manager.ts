@@ -75,7 +75,7 @@ export class AssetManager {
     const ROCKS = [ROCK_S, ROCK_M, ROCK_L, ROCK_XL];
     ROCKS.forEach((ROCK) =>
       scene.load.spritesheet(
-        ROCK_S,
+        ROCK,
         `/game/tiles/tiny-sward/sprites/${ROCK}.png`,
         {
           frameWidth: 128,
