@@ -22,6 +22,7 @@ import { persistItem } from "@/utils/persistence";
 import ChatPanel from "@/components/ChatPanel";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { useAttackedSound } from "@/hook/useAttackedSound";
+import Alert from "@/utils/alert";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -131,8 +132,13 @@ export default function GameWrapper({
 
         EventWrapper.emitToGame("join-island", data);
       } catch (e: unknown) {
-        if (e instanceof AxiosError && e.status === 401) {
-          onLoginModalOpen();
+        if (e instanceof AxiosError) {
+          if (e.status === 401 || e.status === 404) {
+            onLoginModalOpen();
+            return;
+          }
+
+          Alert.error("서버에 문제가 생겼어요 🛠️ 잠시후 다시 시도해주세요..");
         }
       }
     };
