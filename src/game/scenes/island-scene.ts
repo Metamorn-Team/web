@@ -170,12 +170,16 @@ export class IslandScene extends MetamornScene {
     this.io.on("activePlayers", (activeUsers) => {
       console.log(`online users: ${JSON.stringify(activeUsers, null, 2)}`);
       this.spawnActiveUsers(activeUsers);
+
+      EventWrapper.emitToUi("updateParticipantsPanel");
     });
 
     this.io.on("playerJoin", (data) => {
       console.log(`on playerJoin: ${JSON.stringify(data, null, 2)}`);
       this.addPlayer(data);
+
       EventWrapper.emitToUi("newPlayer", data);
+      EventWrapper.emitToUi("updateParticipantsPanel");
     });
 
     this.io.on("playerJoinSuccess", async (data: { x: number; y: number }) => {
@@ -210,9 +214,10 @@ export class IslandScene extends MetamornScene {
 
     this.io.on("playerLeft", (data) => {
       console.log(`on playerLeft: ${JSON.stringify(data, null, 2)}`);
-
       EventWrapper.emitToUi("playerLeftChat", data);
       this.destroyPlayer(data.id);
+
+      EventWrapper.emitToUi("updateParticipantsPanel");
     });
 
     this.io.on("playerMoved", (data) => {

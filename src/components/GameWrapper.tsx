@@ -23,6 +23,7 @@ import ChatPanel from "@/components/ChatPanel";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { useAttackedSound } from "@/hook/useAttackedSound";
 import Alert from "@/utils/alert";
+import ParticipantPanel from "@/components/ParticipantsPanel";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -225,6 +226,7 @@ export default function GameWrapper({
       {isLoginModalOpen ? <LoginModal onClose={onLoginModalClose} /> : null}
 
       {isVisibleChat ? <ChatPanel /> : null}
+      {isVisibleChat ? <ParticipantPanel /> : null}
     </div>
   );
 }
