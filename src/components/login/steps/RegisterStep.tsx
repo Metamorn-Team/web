@@ -78,7 +78,9 @@ const RegisterStep = ({ onSuccessLogin }: RegisterStepProps) => {
             {avatarEmotion}
           </p>
           <Image
-            src={"/images/avatar/purple_pawn_avatar.png"}
+            src={`/images/avatar/${
+              restPayload.avatarKey || "purple_pawn_avatar"
+            }.png`}
             alt="메타몬"
             priority
             fill
