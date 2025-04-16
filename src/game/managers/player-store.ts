@@ -46,8 +46,8 @@ class PlayerStore {
     return this.players.has(id);
   }
 
-  getAllPlayers(): Readonly<PlayerMap> {
-    return this.players;
+  getAllPlayers(): Player[] {
+    return Array.from(this.players.values()).map((p) => p);
   }
 
   findPlayers(predicate: (player: Player) => boolean): Player[] {
