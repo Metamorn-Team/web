@@ -23,3 +23,11 @@ export const getFriendRequests = async (query: GetFriendRequestListRequest) => {
   );
   return response.data;
 };
+
+export const acceptFriend = async (requestId: string) => {
+  return await http.patch(`/friends/requests/${requestId}/accept`);
+};
+
+export const rejectFriend = async (requestId: string) => {
+  return await http.patch(`/friends/requests/${requestId}/reject`);
+};

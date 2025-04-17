@@ -1,8 +1,10 @@
+import React from "react";
 import { FriendRequestDirection } from "@/api/friend";
 import ScrollView from "@/components/common/ScrollView";
 import FriendRequestItem from "@/components/friend/FriendRequestItem";
+import { useAcceptFriendRequest } from "@/hook/queries/useAcceptFriendRequest";
 import { useInfiniteGetFriendRequests } from "@/hook/queries/useInfiniteGetFriendRequests";
-import React from "react";
+import { useRejectFriendRequest } from "@/hook/queries/useRejectFriendRequest";
 
 const ReceivedFriendRequestItemList = () => {
   const {
@@ -16,6 +18,20 @@ const ReceivedFriendRequestItemList = () => {
     limit: 10,
   });
 
+  const { mutate: acceptMutate } = useAcceptFriendRequest(
+    FriendRequestDirection.RECEIVED
+  );
+  const { mutate: rejectMutate } = useRejectFriendRequest(
+    FriendRequestDirection.RECEIVED
+  );
+
+  const onAccept = (requestId: string) => {
+    acceptMutate(requestId);
+  };
+  const onReject = (requestId: string) => {
+    rejectMutate(requestId);
+  };
+
   return (
     <ScrollView>
       {isLoading ? (
@@ -27,11 +43,14 @@ const ReceivedFriendRequestItemList = () => {
           {friendRequests.map((request) => (
             <FriendRequestItem
               key={request.id}
+              id={request.id}
               user={{
                 ...request.user,
                 profileImageUrl: `/images/avatar/${request.user.avatarKey}.png`,
               }}
               status={"RECEIVED"}
+              onAccept={onAccept}
+              onReject={onReject}
             />
           ))}
           {isFetchingNextPage && (

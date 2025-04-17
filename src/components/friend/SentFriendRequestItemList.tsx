@@ -2,6 +2,7 @@ import { FriendRequestDirection } from "@/api/friend";
 import ScrollView from "@/components/common/ScrollView";
 import FriendRequestItem from "@/components/friend/FriendRequestItem";
 import { useInfiniteGetFriendRequests } from "@/hook/queries/useInfiniteGetFriendRequests";
+import { useRejectFriendRequest } from "@/hook/queries/useRejectFriendRequest";
 import React from "react";
 
 export default function SentFriendRequestItemList() {
@@ -16,6 +17,14 @@ export default function SentFriendRequestItemList() {
     limit: 10,
   });
 
+  const { mutate: rejectMutate } = useRejectFriendRequest(
+    FriendRequestDirection.SENT
+  );
+
+  const onReject = (requestId: string) => {
+    rejectMutate(requestId);
+  };
+
   return (
     <ScrollView>
       {isLoading ? (
@@ -27,11 +36,13 @@ export default function SentFriendRequestItemList() {
           {friendRequests.map((request) => (
             <FriendRequestItem
               key={request.id}
+              id={request.id}
               user={{
                 ...request.user,
                 profileImageUrl: `/images/avatar/${request.user.avatarKey}.png`,
               }}
               status={"SENT"}
+              onReject={onReject}
             />
           ))}
           {isFetchingNextPage && (

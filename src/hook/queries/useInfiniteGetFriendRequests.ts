@@ -3,6 +3,8 @@ import { useMemo } from "react";
 import { GetFriendRequestListRequest } from "mmorntype";
 import { getFriendRequests } from "@/api/friend";
 
+export const QUERY_KEY = "friendRequests";
+
 export const useInfiniteGetFriendRequests = (
   query: GetFriendRequestListRequest
 ) => {
@@ -14,7 +16,7 @@ export const useInfiniteGetFriendRequests = (
     isFetchingNextPage,
     refetch,
   } = useInfiniteQuery({
-    queryKey: ["friendRequests", query.direction],
+    queryKey: [QUERY_KEY, query.direction],
     queryFn: async (
       context: QueryFunctionContext<string[], string | undefined>
     ) => {
