@@ -1,7 +1,7 @@
 import { http } from "@/api/http";
 import {
   GetFriendRequestListRequest,
-  GetFriendRequestsResponseDto,
+  GetFriendRequestsResponse,
   SendFriendRequest,
 } from "mmorntype";
 
@@ -15,7 +15,7 @@ export const sendFriendRequest = async (body: SendFriendRequest) => {
 };
 
 export const getFriendRequests = async (query: GetFriendRequestListRequest) => {
-  const response = await http.get<GetFriendRequestsResponseDto>(
+  const response = await http.get<GetFriendRequestsResponse>(
     "/friends/requests",
     {
       params: query,
