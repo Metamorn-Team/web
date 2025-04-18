@@ -15,11 +15,11 @@
             "expandedObjectLayers": [
                 12
             ],
-            "scale": 3,
-            "selectedLayer": 11,
+            "scale": 0.5,
+            "selectedLayer": 12,
             "viewCenter": {
-                "x": 960.1666666666666,
-                "y": 638
+                "x": 960,
+                "y": 628
             }
         },
         "island.json#bridge": {
@@ -28,10 +28,19 @@
         "island.json#elevation": {
             "scaleInDock": 1
         },
+        "island.json#foam": {
+            "scaleInDock": 1
+        },
         "island.json#ground": {
             "scaleInDock": 1
         },
         "island.json#mushroom-l": {
+            "scaleInDock": 1
+        },
+        "island.json#mushroom-m": {
+            "scaleInDock": 1
+        },
+        "island.json#mushroom-s": {
             "scaleInDock": 1
         },
         "island.json#shadow": {
@@ -78,7 +87,7 @@
             "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 960.25,
+                "x": 960,
                 "y": 640
             }
         },
