@@ -65,7 +65,7 @@ export default function ParticipantPanel() {
 
           const statusText = isOnline
             ? "온라인"
-            : `최근 활동 (${minutes}분 전)`;
+            : `${minutes < 5 ? "최근 활동" : "잠수"} (${minutes}분 전)`;
 
           return (
             <li key={user.id} className="flex items-center gap-3">
