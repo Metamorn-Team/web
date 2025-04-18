@@ -26,7 +26,6 @@ export default function ParticipantPanel() {
     };
 
     const handleUpdateOnlineStatus = (data: IslandHeartbeatResponse) => {
-      console.log(data);
       setLastActivities(data);
     };
 
@@ -43,7 +42,6 @@ export default function ParticipantPanel() {
     const activity = lastActivityies.find((activities) => activities.id === id);
     if (!activity) return Date.now();
 
-    console.log(Date.now() - activity.lastActivity);
     return Date.now() - activity.lastActivity;
   };
 
@@ -60,7 +58,6 @@ export default function ParticipantPanel() {
         {players.map((user) => {
           const duration = getInactivityDuration(user.id);
           const minutes = Math.floor(duration / 60000);
-          console.log(minutes);
           const isOnline = minutes < 1;
 
           const statusText = isOnline
