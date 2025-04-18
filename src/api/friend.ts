@@ -2,6 +2,8 @@ import { http } from "@/api/http";
 import {
   GetFriendRequestListRequest,
   GetFriendRequestsResponse,
+  GetFriendsRequest,
+  GetFriendsResponse,
   SendFriendRequest,
 } from "mmorntype";
 
@@ -30,4 +32,11 @@ export const acceptFriend = async (requestId: string) => {
 
 export const rejectFriend = async (requestId: string) => {
   return await http.patch(`/friends/requests/${requestId}/reject`);
+};
+
+export const getFriends = async (query: GetFriendsRequest) => {
+  const response = await http.get<GetFriendsResponse>("/friends", {
+    params: query,
+  });
+  return response.data;
 };

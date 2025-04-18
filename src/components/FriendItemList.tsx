@@ -1,79 +1,56 @@
 import ScrollView from "@/components/common/ScrollView";
 import FriendItem from "@/components/FriendItem";
+import { useInfiniteGetFriends } from "@/hook/queries/useInfiniteGetFriends";
+import { useEffect } from "react";
 
 interface FriendItemListProps {
   className?: string;
 }
 
 export default function FriendItmeList({ className }: FriendItemListProps) {
+  const { friends, fetchNextPage, isError, isFetchingNextPage, isLoading } =
+    useInfiniteGetFriends({ limit: 10 });
+
+  useEffect(() => {
+    console.log(friends);
+  }, []);
+
   return (
     <ScrollView className={className}>
-      {friends.map((user) => (
-        <FriendItem key={user.id} friend={user} />
-      ))}
+      {isLoading ? (
+        <p className="text-center text-sm mt-4">불러오는 중...</p>
+      ) : isError ? (
+        <p className="text-center text-sm text-red-500 mt-4">오류 발생</p>
+      ) : friends && friends.length > 0 ? (
+        <>
+          {friends.map((user) => (
+            <FriendItem
+              key={user.id}
+              friend={{
+                ...user,
+                profileImageUrl: `/images/avatar/${user.avatarKey}.png`,
+              }}
+            />
+          ))}
+          {isFetchingNextPage && (
+            <p className="text-center text-sm text-gray-500 py-2">
+              더 불러오는 중...
+            </p>
+          )}
+          {!isFetchingNextPage && (
+            <button
+              onClick={() => fetchNextPage()}
+              className="w-full text-sm text-blue-500 py-2"
+            >
+              더 보기
+            </button>
+          )}
+        </>
+      ) : (
+        <p className="text-sm text-center text-gray-500 mt-4">
+          섬으로 떠나 친구를 만들어봐요! 🏝️
+        </p>
+      )}
     </ScrollView>
   );
 }
-
-const friends = [
-  {
-    id: "1",
-    profileImageUrl: "/images/slime.png",
-    tag: "magik",
-    nickname: "매직",
-  },
-  {
-    id: "2",
-    profileImageUrl: "/images/slime.png",
-    tag: "snai",
-    nickname: "달패이",
-  },
-  {
-    id: "3",
-    profileImageUrl: "/images/slime.png",
-    tag: "kokiri",
-    nickname: "코기리",
-  },
-  {
-    id: "4",
-    profileImageUrl: "/images/slime.png",
-    tag: "kokiri",
-    nickname: "코기리",
-  },
-  {
-    id: "5",
-    profileImageUrl: "/images/slime.png",
-    tag: "kokiri",
-    nickname: "코기리",
-  },
-  {
-    id: "6",
-    profileImageUrl: "/images/slime.png",
-    tag: "kokiri",
-    nickname: "코기리",
-  },
-  {
-    id: "7",
-    profileImageUrl: "/images/slime.png",
-    tag: "kokiri",
-    nickname: "코기리",
-  },
-  {
-    id: "8",
-    profileImageUrl: "/images/slime.png",
-    tag: "kokiri",
-    nickname: "코기리",
-  },
-  {
-    id: "9",
-    profileImageUrl: "/images/slime.png",
-    tag: "kokiri",
-    nickname: "코기리",
-  },
-  {
-    id: "10",
-    profileImageUrl: "/images/slime.png",
-    tag: "kokiri",
-    nickname: "코기리",
-  },
-];

@@ -3,6 +3,7 @@ export interface Friend {
   profileImageUrl: string;
   tag: string;
   nickname: string;
+  isOnline: boolean;
 }
 
 export interface FriendRequest {
