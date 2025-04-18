@@ -184,6 +184,7 @@ export class IslandScene extends MetamornScene {
     });
 
     this.io.on("playerJoinSuccess", async (data: { x: number; y: number }) => {
+      this.io.emit("islandHearbeat");
       try {
         if (this.player) {
           this.player.destroy(true);
