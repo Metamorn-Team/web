@@ -298,8 +298,12 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     super.destroy(fromScene);
   }
 
-  listenInteractionEvent() {
-    this.setInteractive();
+  protected listenInteractionEvent(radius?: number) {
+    this.setInteractive(
+      new Phaser.Geom.Circle(this.width / 2, this.height / 2, radius || 30),
+      Phaser.Geom.Circle.Contains
+    );
+
     this.on("pointerover", () => {
       this.effect = this.preFX?.addGlow();
       console.log(this.playerInfo);
