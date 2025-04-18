@@ -3,6 +3,7 @@ import { Npc } from "@/game/entities/npc/npc";
 import { Phaser } from "@/game/phaser";
 import { UserInfo } from "@/types/socket-io/response";
 import {
+  IslandHeartbeatResponse,
   MessageSent,
   PlayerJoinResponse,
   PlayerLeftResponse,
@@ -32,6 +33,7 @@ export interface GameToUiEvent {
   playerLeftChat: (data: PlayerLeftResponse) => void;
   activeChatInput: () => void;
   attacked: () => void;
+  updateOnlineStatus: (data: IslandHeartbeatResponse) => void;
 }
 
 export interface UiToGameEvent {

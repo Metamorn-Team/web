@@ -72,6 +72,7 @@ export class IslandScene extends MetamornScene {
       scene: this,
       socketNsp: this.socketNsp,
     });
+    this.registerHearbeatCheck();
     this.isIntentionalDisconnect = false;
     // this.playBgm();
   }
@@ -228,6 +229,10 @@ export class IslandScene extends MetamornScene {
     this.io.on("attacked", (data) => {
       console.log(`on attacked: ${JSON.stringify(data, null, 2)}`);
       this.handleAttacked(data.attackerId, data.attackedPlayerIds);
+    });
+
+    this.io.on("islandHearbeat", (data) => {
+      EventWrapper.emitToUi("updateOnlineStatus", data);
     });
   }
 
@@ -423,5 +428,15 @@ export class IslandScene extends MetamornScene {
 
     // 6. 모든 게임 객체 제거 - 이건 더 알아봐야할듯
     this.children.each((child) => child.destroy());
+  }
+
+  private registerHearbeatCheck() {
+    this.time.addEvent({
+      delay: 1000 * 30,
+      loop: true,
+      callback: () => {
+        this.io.emit("islandHearbeat");
+      },
+    });
   }
 }
