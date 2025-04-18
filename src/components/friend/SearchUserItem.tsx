@@ -2,13 +2,19 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { Friend } from "@/types/client/friend.types";
 import PaperCard from "@/components/common/PaperCard";
 import SquareButton from "@/components/common/SquareButton";
 import { useSendFriendRequest } from "@/hook/queries/useSendFriendRequest";
 
+interface SearchedUser {
+  id: string;
+  profileImageUrl: string;
+  tag: string;
+  nickname: string;
+}
+
 interface SearchUserItemProps {
-  friend: Friend;
+  friend: SearchedUser;
 }
 
 const SearchUserItem = ({ friend }: SearchUserItemProps) => {
