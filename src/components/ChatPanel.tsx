@@ -24,10 +24,14 @@ interface ChatMessage {
 }
 
 export default function ChatPanel() {
+  const CHAT_THRESHOLD = 500;
+
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [height, setHeight] = useState(448);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [lastChat, setLastChat] = useState(Date.now());
+
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -182,8 +186,22 @@ export default function ChatPanel() {
       return;
     }
 
+    if (lastChat + CHAT_THRESHOLD > Date.now()) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `system-${Date.now()}`,
+          sender: "",
+          message: "잠시후 입력해주세요 🙂‍↔️",
+          isSystem: true,
+        },
+      ]);
+      return;
+    }
+
     const socket = socketManager.connect("zone");
     socket?.emit("sendMessage", { message: input });
+    setLastChat(Date.now());
     setInput("");
   };
 
