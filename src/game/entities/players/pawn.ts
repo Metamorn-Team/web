@@ -76,6 +76,10 @@ export class Pawn extends Player {
     if (this.currAnimationState === PlayerAnimationState.ATTACK) return;
     this.currAnimationState = PlayerAnimationState.ATTACK;
 
+    this.scene.time.delayedCall(250, () => {
+      this.scene.sound.play("hit");
+    });
+
     this.play(PAWN_ATTACK(this.color), true).once(
       Phaser.Animations.Events.ANIMATION_COMPLETE,
       () => {

@@ -121,6 +121,7 @@ export class AssetManager {
   loadAudios(scene: Phaser.Scene) {
     scene.load.audio("town", "/game/sounds/town.mp3");
     scene.load.audio("woodland-fantasy", "/game/sounds/woodland-fantasy.mp3");
+    scene.load.audio("hit", "/game/sounds/hit.wav");
   }
 }
 
