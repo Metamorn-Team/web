@@ -9,4 +9,5 @@ export enum Keys {
   A,
   S,
   D,
+  E,
 }

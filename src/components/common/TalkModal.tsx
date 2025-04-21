@@ -1,3 +1,4 @@
+import { EventWrapper } from "@/game/event/EventBus";
 import React, { useEffect, useState } from "react";
 
 interface TalkModalProps {
@@ -17,11 +18,16 @@ const TalkModal = ({
 }: TalkModalProps) => {
   const [index, setIndex] = useState(0);
 
+  const onCompleteTalk = () => {
+    EventWrapper.emitToGame("interactionComplete");
+    onClose();
+  };
+
   useEffect(() => {
     document.body.style.overflow = "hidden";
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        onClose();
+        onCompleteTalk();
       }
       if (e.code === "Space") {
         e.preventDefault();
@@ -29,7 +35,7 @@ const TalkModal = ({
         if (index < comments.length - 1) {
           setIndex(index + 1);
         } else {
-          onClose();
+          onCompleteTalk();
         }
       }
     };
@@ -45,7 +51,7 @@ const TalkModal = ({
     <div className="fixed inset-0 flex items-end justify-center z-50">
       <div
         className="absolute inset-0 bg-black bg-opacity-50"
-        onClick={onClose}
+        onClick={onCompleteTalk}
       ></div>
 
       <div

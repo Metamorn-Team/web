@@ -34,6 +34,7 @@ export interface GameToUiEvent {
   activeChatInput: () => void;
   attacked: () => void;
   updateOnlineStatus: (data: IslandHeartbeatResponse) => void;
+  initBgmStatus: (isPlay: boolean) => void;
 }
 
 export interface UiToGameEvent {
@@ -42,4 +43,6 @@ export interface UiToGameEvent {
   "left-island": () => void;
   "join-island": (data: { type: "dev" | "design" }) => void;
   disabledChatInput: () => void;
+  playBgmToggle: () => void;
+  interactionComplete: () => void;
 }
