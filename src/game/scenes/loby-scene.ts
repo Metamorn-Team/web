@@ -24,8 +24,6 @@ export class LobyScene extends MetamornScene {
 
   private npcs: Npc[] = [];
 
-  private isMute = false;
-
   private map: Phaser.Tilemaps.Tilemap;
   private mapWidth: number;
   private mapHeight: number;
@@ -58,9 +56,7 @@ export class LobyScene extends MetamornScene {
     this.listenEvents();
 
     SoundManager.init(this);
-    this.time.delayedCall(1500, () => {
-      SoundManager.getInstance().playBgm(this.bgmKey);
-    });
+    SoundManager.getInstance().playBgm(this.bgmKey);
   }
 
   update(time: number, delta: number): void {
@@ -148,11 +144,6 @@ export class LobyScene extends MetamornScene {
     persistItem("profile", user);
 
     return user;
-  }
-
-  setBgmPlay(state: boolean) {
-    this.sound.setVolume(state ? 0.15 : 0);
-    this.isMute = state;
   }
 
   listenEvents() {

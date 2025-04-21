@@ -78,9 +78,7 @@ export class IslandScene extends MetamornScene {
     this.isIntentionalDisconnect = false;
 
     SoundManager.init(this);
-    this.time.delayedCall(2000, () => {
-      SoundManager.getInstance().playBgm(this.bgmKey);
-    });
+    SoundManager.getInstance().playBgm(this.bgmKey);
   }
 
   update(time: number, delta: number): void {

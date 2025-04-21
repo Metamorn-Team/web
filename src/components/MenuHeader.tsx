@@ -58,14 +58,14 @@ export default function MenuHeader({ changeFriendModalOpen }: MenuHeaderProps) {
   };
 
   useEffect(() => {
-    const persisted = getPersistenceItem("play_bgm");
+    const isPlayBgm = getPersistenceItem("play_bgm") ?? true;
 
-    const isPlayBgm = persisted === null ? true : persisted;
-    setIsPlayBgm(isPlayBgm);
-
+    console.log(isPlayBgm);
     if (!isPlayBgm) {
       SoundManager.getInstance().pauseBgm();
     }
+
+    setIsPlayBgm(isPlayBgm);
 
     const currentScene = getItem("current_scene");
     if (currentScene === "LobyScene" || !currentScene) {
