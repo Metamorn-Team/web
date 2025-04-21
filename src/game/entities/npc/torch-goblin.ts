@@ -28,7 +28,7 @@ export class TorchGoblin extends Npc {
     this.setRectangle(55, 75);
   }
 
-  protected startInteraction(): void {
+  public startInteraction(): void {
     EventWrapper.emitToUi("npc-interaction-started", {
       npc: this,
       type: "guide",

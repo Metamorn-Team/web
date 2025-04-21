@@ -1,11 +1,8 @@
 import { Phaser } from "@/game/phaser";
-import { CollisionBody } from "@/types/game/matter";
 
 export abstract class Npc extends Phaser.Physics.Matter.Sprite {
-  private interactionSensor: MatterJS.BodyType;
   private interactionIndicator: Phaser.GameObjects.Text;
-  private isPlayerInRange = false;
-  private interactKey: Phaser.Input.Keyboard.Key;
+  public isInteractivePromptVisible = false;
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
     super(scene.matter.world, x, y, texture);
@@ -14,15 +11,7 @@ export abstract class Npc extends Phaser.Physics.Matter.Sprite {
     this.setBodyConfig();
     this.setDepth(this.y);
     this.setStatic(true);
-
-    this.interactionSensor = scene.matter.add.circle(x, y, 100, {
-      isSensor: true,
-      label: "NPC_INTERACTION",
-    });
-
     this.createInteractionUI();
-    this.setupInput();
-    this.setupSensorCollision();
   }
 
   private createInteractionUI() {
@@ -41,7 +30,9 @@ export abstract class Npc extends Phaser.Physics.Matter.Sprite {
   }
 
   showInteractionPrompt() {
-    this.isPlayerInRange = true;
+    if (this.isInteractivePromptVisible) return;
+
+    this.isInteractivePromptVisible = true;
     this.interactionIndicator.setVisible(true);
 
     this.scene.tweens.add({
@@ -54,7 +45,9 @@ export abstract class Npc extends Phaser.Physics.Matter.Sprite {
   }
 
   hideInteractionPrompt() {
-    this.isPlayerInRange = false;
+    if (!this.isInteractivePromptVisible) return;
+
+    this.isInteractivePromptVisible = false;
     this.scene.tweens.add({
       targets: this.interactionIndicator,
       scale: 0.5,
@@ -64,58 +57,7 @@ export abstract class Npc extends Phaser.Physics.Matter.Sprite {
     });
   }
 
-  private setupSensorCollision() {
-    const scene = this.scene;
-
-    scene.matter.world.on(
-      "collisionstart",
-      (_: unknown, bodyA: CollisionBody, bodyB: CollisionBody) => {
-        console.log(this.isInteractionPair(bodyA.label, bodyB.label));
-        if (this.isInteractionPair(bodyA.label, bodyB.label)) {
-          this.showInteractionPrompt();
-        }
-      }
-    );
-
-    scene.matter.world.on(
-      "collisionend",
-      (_: unknown, bodyA: CollisionBody, bodyB: CollisionBody) => {
-        if (this.isInteractionPair(bodyA.label, bodyB.label)) {
-          this.hideInteractionPrompt();
-        }
-      }
-    );
-  }
-
-  private isInteractionPair(labelA: string, labelB: string): boolean {
-    return (
-      (labelA === "MY_PLAYER" && labelB === "NPC_INTERACTION") ||
-      (labelA === "NPC_INTERACTION" && labelB === "MY_PLAYER")
-    );
-  }
-
-  private setupInput() {
-    // E 키 입력 리스너 설정
-    if (this.scene.input.keyboard) {
-      this.interactKey = this.scene.input.keyboard.addKey(
-        Phaser.Input.Keyboard.KeyCodes.E
-      );
-    }
-
-    // 키 입력 이벤트 핸들러
-    this.scene.events.on("update", this.handleKeyInput, this);
-  }
-
-  private handleKeyInput() {
-    if (
-      this.isPlayerInRange &&
-      Phaser.Input.Keyboard.JustDown(this.interactKey)
-    ) {
-      this.startInteraction();
-    }
-  }
-
-  protected abstract startInteraction(): void;
+  public abstract startInteraction(): void;
 
   protected abstract setBodyConfig(): void;
 }

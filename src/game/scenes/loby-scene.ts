@@ -1,21 +1,28 @@
 import { getMyProfile } from "@/api/user";
 import { initialProfile } from "@/constants/game/initial-profile";
+import { NPC_INTERACTABLE_DISTANCE } from "@/constants/game/threshold";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
+import { Npc } from "@/game/entities/npc/npc";
 import { TorchGoblin } from "@/game/entities/npc/torch-goblin";
 import { EventWrapper } from "@/game/event/EventBus";
 import { controllablePlayerManager } from "@/game/managers/controllable-player-manager";
 import { socketManager } from "@/game/managers/socket-manager";
+import { SoundManager } from "@/game/managers/sound-manager";
 import { tileMapManager } from "@/game/managers/tile-map-manager";
 import { Mine } from "@/game/objects/mine";
 import { Phaser } from "@/game/phaser";
 import { MetamornScene } from "@/game/scenes/metamorn-scene";
+import { Keys } from "@/types/game/enum/key";
 import { UserInfo } from "@/types/socket-io/response";
 import { getItem, persistItem } from "@/utils/persistence";
 import { setItem } from "@/utils/session-storage";
 
 export class LobyScene extends MetamornScene {
+  private bgmKey = "woodland-fantasy";
   private npcGoblin: TorchGoblin;
   private mine: Mine;
+
+  private npcs: Npc[] = [];
 
   private isMute = false;
 
@@ -40,12 +47,14 @@ export class LobyScene extends MetamornScene {
 
     this.spwanMyPlayer();
 
-    this.npcGoblin = new TorchGoblin(
+    const goblin = new TorchGoblin(
       this,
       this.centerOfMap.x - 200,
       this.centerOfMap.y,
       "red"
     );
+    this.npcs.push(goblin);
+
     this.mine = new Mine(
       this,
       this.centerOfMap.x,
@@ -54,12 +63,41 @@ export class LobyScene extends MetamornScene {
     );
 
     this.listenEvents();
+
+    SoundManager.init(this).playBgm(this.bgmKey);
   }
 
   update(time: number, delta: number): void {
     if (this.player) {
       this.player.update(delta);
+
+      this.checkNearNpc();
+      if (this.inputManager.isKeyJustDown(Keys.E)) {
+        this.npcs.forEach((npc) => {
+          if (npc.isInteractivePromptVisible) {
+            this.disableKeyboardInput();
+            npc.startInteraction();
+          }
+        });
+      }
     }
+  }
+
+  checkNearNpc() {
+    return this.npcs.forEach((npc) => {
+      const distance = Phaser.Math.Distance.Between(
+        this.player.x,
+        this.player.y,
+        npc.x,
+        npc.y
+      );
+
+      if (distance < NPC_INTERACTABLE_DISTANCE) {
+        npc.showInteractionPrompt();
+      } else {
+        npc.hideInteractionPrompt();
+      }
+    });
   }
 
   initWorld() {
@@ -73,9 +111,6 @@ export class LobyScene extends MetamornScene {
     };
 
     this.matter.world.setBounds(0, 0, this.mapWidth, this.mapHeight);
-
-    // this.sound.play("woodland-fantasy");
-    // this.sound.setVolume(0.15);
 
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
     this.cameras.main.setZoom(1.1);
@@ -124,6 +159,7 @@ export class LobyScene extends MetamornScene {
 
   listenEvents() {
     EventWrapper.offGameEvent("join-island");
+
     EventWrapper.onGameEvent(
       "join-island",
       (data: { type: "dev" | "design" }) => {
