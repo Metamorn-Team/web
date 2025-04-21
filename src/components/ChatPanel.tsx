@@ -156,7 +156,7 @@ export default function ChatPanel() {
     const handleEscapeDown = (e: KeyboardEvent) => {
       if (e.code === "Escape") {
         inputRef.current?.blur();
-        EventWrapper.emitToGame("disabledChatInput");
+        EventWrapper.emitToGame("enableGameKeyboardInput");
       }
     };
 
@@ -182,7 +182,7 @@ export default function ChatPanel() {
     if (!input.trim()) {
       inputRef.current?.blur();
 
-      EventWrapper.emitToGame("disabledChatInput");
+      EventWrapper.emitToGame("enableGameKeyboardInput");
       return;
     }
 

@@ -36,10 +36,10 @@ export class MetamornScene extends Phaser.Scene {
   }
 
   protected onInitialEvent() {
-    EventWrapper.offGameEvent("interactionComplete");
+    EventWrapper.offGameEvent("enableGameKeyboardInput");
 
-    EventWrapper.onGameEvent("interactionComplete", () => {
-      this.setEnabledKeyboardInput(false);
+    EventWrapper.onGameEvent("enableGameKeyboardInput", () => {
+      this.setEnabledKeyboardInput(true);
     });
   }
 }

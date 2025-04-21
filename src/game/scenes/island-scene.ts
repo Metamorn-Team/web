@@ -143,8 +143,10 @@ export class IslandScene extends MetamornScene {
       this.changeToLoby();
     });
 
-    EventWrapper.onGameEvent("disabledChatInput", () => {
-      this.time.delayedCall(50, () => {
+    EventWrapper.offGameEvent("enableGameKeyboardInput");
+
+    EventWrapper.onGameEvent("enableGameKeyboardInput", () => {
+      this.time.delayedCall(100, () => {
         this.setEnabledKeyboardInput(true);
       });
     });
@@ -431,7 +433,7 @@ export class IslandScene extends MetamornScene {
     EventWrapper.offGameEvent("mySpeechBubble");
     EventWrapper.offGameEvent("otherSpeechBubble");
     EventWrapper.offGameEvent("left-island");
-    EventWrapper.offGameEvent("disabledChatInput");
+    EventWrapper.offGameEvent("enableGameKeyboardInput");
 
     // 6. 모든 게임 객체 제거 - 이건 더 알아봐야할듯
     this.children.each((child) => child.destroy());

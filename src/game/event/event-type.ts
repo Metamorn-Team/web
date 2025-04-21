@@ -42,7 +42,6 @@ export interface UiToGameEvent {
   otherSpeechBubble: (data: ReceiveMessage) => void;
   "left-island": () => void;
   "join-island": (data: { type: "dev" | "design" }) => void;
-  disabledChatInput: () => void;
   playBgmToggle: () => void;
-  interactionComplete: () => void;
+  enableGameKeyboardInput: () => void;
 }
