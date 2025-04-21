@@ -15,11 +15,11 @@
             "expandedObjectLayers": [
                 12
             ],
-            "scale": 0.5,
+            "scale": 1,
             "selectedLayer": 12,
             "viewCenter": {
                 "x": 960,
-                "y": 628
+                "y": 634
             }
         },
         "island.json#bridge": {
