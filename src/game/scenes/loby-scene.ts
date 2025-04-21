@@ -46,14 +46,7 @@ export class LobyScene extends MetamornScene {
     this.initWorld();
 
     this.spwanMyPlayer();
-
-    const goblin = new TorchGoblin(
-      this,
-      this.centerOfMap.x - 200,
-      this.centerOfMap.y,
-      "red"
-    );
-    this.npcs.push(goblin);
+    this.spawnNpcs();
 
     this.mine = new Mine(
       this,
@@ -189,8 +182,20 @@ export class LobyScene extends MetamornScene {
   private cleanupBeforeLeft() {
     socketManager.disconnect(this.socketNsp);
     this.npcGoblin?.destroy();
+    this.npcs = [];
     this.mine?.destroy();
     this.sound.stopAll();
     this.map.destroy();
+  }
+
+  spawnNpcs() {
+    const goblin = new TorchGoblin(
+      this,
+      this.centerOfMap.x - 200,
+      this.centerOfMap.y,
+      "red"
+    );
+
+    this.npcs.push(goblin);
   }
 }
