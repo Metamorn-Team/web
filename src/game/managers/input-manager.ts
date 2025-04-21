@@ -95,15 +95,19 @@ export class InputManager {
 
   isKeyJustDown(key: Keys): boolean {
     const phaserKey = this.keyMap.get(key);
-    this.forceResetKey(key);
+    this.resetKey(key);
     return phaserKey ? Phaser.Input.Keyboard.JustDown(phaserKey) : false;
   }
 
-  forceResetKey(key: Keys): void {
+  resetKey(key: Keys): void {
     const phaserKey = this.keyMap.get(key);
     if (!phaserKey) return;
 
     phaserKey.isDown = false;
     phaserKey.timeDown = 0;
+  }
+
+  resetKeyAll(): void {
+    this.keyMap.forEach((_, key) => this.resetKey(key));
   }
 }

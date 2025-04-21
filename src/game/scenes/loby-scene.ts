@@ -73,6 +73,8 @@ export class LobyScene extends MetamornScene {
 
       this.checkNearNpc();
       if (this.inputManager.isKeyJustDown(Keys.E)) {
+        this.inputManager.resetKeyAll();
+
         this.npcs.forEach((npc) => {
           if (npc.isInteractivePromptVisible) {
             this.disableKeyboardInput();
