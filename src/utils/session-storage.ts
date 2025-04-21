@@ -18,9 +18,9 @@ export const getItem = <K extends keyof SessionStorageData>(key: K) => {
 
   try {
     if (!item) throw new Error("no item");
-    return (JSON.parse(item) as SessionStorageData[K]) || null;
+    return (JSON.parse(item) as SessionStorageData[K]) ?? null;
   } catch {
-    return (item as SessionStorageData[K]) || null;
+    return (item as SessionStorageData[K]) ?? null;
   }
 };
 
