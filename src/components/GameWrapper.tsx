@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { AxiosError } from "axios";
 import Game, { GameRef } from "@/components/Game";
-import { LobyScene } from "@/game/scenes/loby-scene";
 import MenuHeader from "@/components/MenuHeader";
 import { EventWrapper } from "@/game/event/EventBus";
 import { useModal } from "@/hook/useModal";
@@ -43,7 +42,6 @@ export default function GameWrapper({
     nickname: "",
   });
 
-  const [isPlayBgm, setIsPlayBgm] = useState(true);
   const {
     isModalOpen: isLoginModalOpen,
     onClose: onLoginModalClose,
@@ -66,15 +64,6 @@ export default function GameWrapper({
   } = useModal();
   const [isVisibleChat, setIsVisibleChat] = useState(false);
   useAttackedSound();
-
-  const playBgmToggle = useCallback(() => {
-    if (gameRef.current) {
-      const scene = gameRef.current.game.scene.getScene<LobyScene>("LobyScene");
-      // scene.setBgmPlay(!isPlayBgm);
-      scene.setBgmPlay(false);
-      setIsPlayBgm((state) => !state);
-    }
-  }, [gameRef]);
 
   useEffect(() => {
     const handleSceneReady = (data: {
@@ -199,11 +188,7 @@ export default function GameWrapper({
   return (
     <div>
       {!isLoading ? (
-        <MenuHeader
-          isPlayBgm={isPlayBgm}
-          playBgmToggle={playBgmToggle}
-          changeFriendModalOpen={changeFriendModalOpen}
-        />
+        <MenuHeader changeFriendModalOpen={changeFriendModalOpen} />
       ) : null}
 
       <Game ref={gameRef} currentActiveScene={() => {}} />
