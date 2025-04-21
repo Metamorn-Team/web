@@ -54,6 +54,10 @@ export class InputManager {
       Keys.ENTER,
       scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER)
     );
+    this.registerKey(
+      Keys.E,
+      scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E)
+    );
   }
 
   registerKey(keyEnum: Keys, keyCode: Phaser.Input.Keyboard.Key): void {
@@ -91,6 +95,15 @@ export class InputManager {
 
   isKeyJustDown(key: Keys): boolean {
     const phaserKey = this.keyMap.get(key);
+    this.forceResetKey(key);
     return phaserKey ? Phaser.Input.Keyboard.JustDown(phaserKey) : false;
+  }
+
+  forceResetKey(key: Keys): void {
+    const phaserKey = this.keyMap.get(key);
+    if (!phaserKey) return;
+
+    phaserKey.isDown = false;
+    phaserKey.timeDown = 0;
   }
 }
