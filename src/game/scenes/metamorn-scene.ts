@@ -6,7 +6,6 @@ import { Phaser } from "@/game/phaser";
 export class MetamornScene extends Phaser.Scene {
   protected player: Player;
   protected inputManager: InputManager;
-  protected isInteracting = false;
 
   constructor(sceneKey: string) {
     super({ key: sceneKey });
@@ -36,23 +35,11 @@ export class MetamornScene extends Phaser.Scene {
     return this.game.input.keyboard?.enabled || false;
   }
 
-  protected disableKeyboardInput() {
-    if (this.input.keyboard) {
-      this.input.keyboard.enabled = false;
-      this.isInteracting = true;
-    }
-  }
-  protected enableKeyboardInput() {
-    if (this.input.keyboard) {
-      this.input.keyboard.enabled = true;
-      this.isInteracting = false;
-    }
-  }
-
   protected onInitialEvent() {
     EventWrapper.offGameEvent("interactionComplete");
+
     EventWrapper.onGameEvent("interactionComplete", () => {
-      this.enableKeyboardInput();
+      this.setEnabledKeyboardInput(false);
     });
   }
 }

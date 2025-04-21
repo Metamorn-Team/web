@@ -73,7 +73,7 @@ export class LobyScene extends MetamornScene {
 
         this.npcs.forEach((npc) => {
           if (npc.isInteractivePromptVisible) {
-            this.disableKeyboardInput();
+            this.setEnabledKeyboardInput(false);
             npc.startInteraction();
           }
         });
