@@ -19,7 +19,7 @@ const TalkModal = ({
   const [index, setIndex] = useState(0);
 
   const onCompleteTalk = () => {
-    EventWrapper.emitToGame("interactionComplete");
+    EventWrapper.emitToGame("enableGameKeyboardInput");
     onClose();
   };
 
