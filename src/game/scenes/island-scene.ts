@@ -127,6 +127,13 @@ export class IslandScene extends MetamornScene {
   }
 
   listenLocalEvents() {
+    this.input.on("pointerdown", () => {
+      if (!this.getEnabledKeyboardInput()) {
+        EventWrapper.emitToUi("blurChatInput");
+        this.setEnabledKeyboardInput(true);
+      }
+    });
+
     EventWrapper.onGameEvent("mySpeechBubble", async (data: MessageSent) => {
       const me = await this.getPlayerInfo();
       this.showSpeechBubble(me.id, data.message, true);

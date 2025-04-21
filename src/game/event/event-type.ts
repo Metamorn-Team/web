@@ -35,6 +35,7 @@ export interface GameToUiEvent {
   attacked: () => void;
   updateOnlineStatus: (data: IslandHeartbeatResponse) => void;
   initBgmStatus: (isPlay: boolean) => void;
+  blurChatInput: () => void;
 }
 
 export interface UiToGameEvent {

@@ -81,9 +81,14 @@ export default function ChatPanel() {
       inputRef?.current?.focus();
     };
 
+    const handleBlurChatInput = () => {
+      inputRef?.current?.blur();
+    };
+
     EventWrapper.onUiEvent("newPlayer", handleNewPlayer);
     EventWrapper.onUiEvent("playerLeftChat", handlePlayerLeftChat);
     EventWrapper.onUiEvent("activeChatInput", handleActiveChatInput);
+    EventWrapper.onUiEvent("blurChatInput", handleBlurChatInput);
 
     const socket = socketManager.connect(nsp);
     if (!socket) return;
@@ -134,6 +139,8 @@ export default function ChatPanel() {
 
       EventWrapper.offUiEvent("newPlayer", handleNewPlayer);
       EventWrapper.offUiEvent("playerLeftChat", handlePlayerLeftChat);
+      EventWrapper.offUiEvent("activeChatInput", handleActiveChatInput);
+      EventWrapper.offUiEvent("blurChatInput", handleBlurChatInput);
     };
   }, []);
 
