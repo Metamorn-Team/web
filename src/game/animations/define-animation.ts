@@ -105,6 +105,16 @@ export const defineAnimation = (scene: Phaser.Scene) => {
     });
   });
 
+  scene.anims.create({
+    key: "sleep",
+    frames: scene.anims.generateFrameNumbers("sleep", {
+      start: 0,
+      end: 4,
+    }),
+    frameRate: 7,
+    repeat: -1,
+  });
+
   torchGoblinColors.forEach((color) => {
     scene.anims.create({
       key: TORCH_GOBLIN_IDLE(color),

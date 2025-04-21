@@ -82,6 +82,11 @@ export class AssetManager {
       )
     );
 
+    scene.load.spritesheet("sleep", `/game/player/pawn/sleep.png`, {
+      frameWidth: 192,
+      frameHeight: 192,
+    });
+
     scene.load.spritesheet(FOAM, `/game/tiles/tiny-sward/sprites/foam.png`, {
       frameWidth: 192,
       frameHeight: 192,
