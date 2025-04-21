@@ -64,7 +64,10 @@ export class LobyScene extends MetamornScene {
 
     this.listenEvents();
 
-    SoundManager.init(this).playBgm(this.bgmKey);
+    SoundManager.init(this);
+    this.time.delayedCall(1500, () => {
+      SoundManager.getInstance().playBgm(this.bgmKey);
+    });
   }
 
   update(time: number, delta: number): void {

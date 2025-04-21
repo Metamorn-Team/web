@@ -26,10 +26,12 @@ import { getMyProfile } from "@/api/user";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import Alert from "@/utils/alert";
 import { Keys } from "@/types/game/enum/key";
+import { SoundManager } from "@/game/managers/sound-manager";
 
 export class IslandScene extends MetamornScene {
   protected override player: Player;
 
+  private bgmKey = "town";
   private map: Phaser.Tilemaps.Tilemap;
   private mapWidth: number;
   private mapHeight: number;
@@ -74,7 +76,11 @@ export class IslandScene extends MetamornScene {
     });
     this.registerHearbeatCheck();
     this.isIntentionalDisconnect = false;
-    // this.playBgm();
+
+    SoundManager.init(this);
+    this.time.delayedCall(2000, () => {
+      SoundManager.getInstance().playBgm(this.bgmKey);
+    });
   }
 
   update(time: number, delta: number): void {

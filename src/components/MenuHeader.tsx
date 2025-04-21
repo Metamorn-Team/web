@@ -7,26 +7,26 @@ import {
   FiMenu,
   FiLogOut,
   FiEdit2,
-  FiShoppingBag, // ✅ 추가
+  FiShoppingBag,
 } from "react-icons/fi";
 import { BsMusicNoteBeamed } from "react-icons/bs";
 import { RiBookOpenLine } from "react-icons/ri";
 import { GiSailboat } from "react-icons/gi";
 import { getItem, setItem } from "@/utils/session-storage";
 import { EventWrapper } from "@/game/event/EventBus";
-import { removeItem } from "@/utils/persistence";
+import {
+  removeItem,
+  getItem as getPersistenceItem,
+  persistItem,
+} from "@/utils/persistence";
+import { SoundManager } from "@/game/managers/sound-manager";
 
 interface MenuHeaderProps {
-  isPlayBgm: boolean;
-  playBgmToggle: () => void;
   changeFriendModalOpen: (state: boolean) => void;
 }
 
-export default function MenuHeader({
-  isPlayBgm,
-  playBgmToggle,
-  changeFriendModalOpen,
-}: MenuHeaderProps) {
+export default function MenuHeader({ changeFriendModalOpen }: MenuHeaderProps) {
+  const [isPlayBgm, setIsPlayBgm] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const [isVisibleExit, setIsVisibleExit] = useState(true);
@@ -34,6 +34,19 @@ export default function MenuHeader({
   const onLeftIsland = useCallback(() => {
     EventWrapper.emitToGame("left-island");
   }, []);
+
+  const onPlayBgmToggle = () => {
+    const soundManager = SoundManager.getInstance();
+
+    if (isPlayBgm) {
+      soundManager.pauseBgm();
+      persistItem("play_bgm", false);
+    } else {
+      soundManager.resumeBgm();
+      persistItem("play_bgm", true);
+    }
+    setIsPlayBgm(!isPlayBgm);
+  };
 
   const onLogout = () => {
     removeItem("access_token");
@@ -45,6 +58,15 @@ export default function MenuHeader({
   };
 
   useEffect(() => {
+    const persisted = getPersistenceItem("play_bgm");
+
+    const isPlayBgm = persisted === null ? true : persisted;
+    setIsPlayBgm(isPlayBgm);
+
+    if (!isPlayBgm) {
+      SoundManager.getInstance().pauseBgm();
+    }
+
     const currentScene = getItem("current_scene");
     if (currentScene === "LobyScene" || !currentScene) {
       setIsVisibleExit(false);
@@ -72,7 +94,7 @@ export default function MenuHeader({
             )
           }
           label="BGM"
-          onClick={playBgmToggle}
+          onClick={onPlayBgmToggle}
         />
 
         <MenuItem

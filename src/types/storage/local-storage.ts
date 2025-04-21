@@ -8,4 +8,5 @@ interface PlayerProfile {
 export interface LocalStorageData {
   access_token: string;
   profile: PlayerProfile;
+  play_bgm: boolean;
 }
