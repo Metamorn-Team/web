@@ -248,8 +248,26 @@ export class IslandScene extends MetamornScene {
     });
 
     this.io.on("islandHearbeat", (data) => {
+      data.forEach((player) =>
+        this.handlePlayerSleep(player.id, player.lastActivity)
+      );
       EventWrapper.emitToUi("updateOnlineStatus", data);
     });
+  }
+
+  handlePlayerSleep(playerId: string, lastActivity: number) {
+    if (lastActivity > Date.now() - 1000 * 60 * 5) return;
+
+    const player = playerStore.getPlayer(playerId);
+    if (player) {
+      player.sleep();
+      return;
+    }
+
+    const myPlayer = this.player.getPlayerInfo();
+    if (myPlayer.id === playerId) {
+      this.player.sleep();
+    }
   }
 
   async getPlayerInfo() {

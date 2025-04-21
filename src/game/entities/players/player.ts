@@ -29,7 +29,9 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   protected isControllable: boolean;
   protected isAttack = false;
   protected isBeingBorn = true;
+  protected isSleep = false;
 
+  protected sleepParticle: Phaser.GameObjects.Sprite | null = null;
   private speechBubble: Phaser.GameObjects.Container | null = null;
   private playerNameText: Phaser.GameObjects.Text;
   protected effect: Phaser.FX.Controller | undefined;
@@ -248,6 +250,22 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     });
   }
 
+  sleep() {
+    if (this.isSleep) return;
+
+    this.isSleep = true;
+    this.sleepParticle = this.scene.add.sprite(this.x, this.y, "sleep");
+    this.sleepParticle.play("sleep");
+  }
+
+  awake() {
+    if (!this.isSleep) return;
+
+    this.isSleep = false;
+    this.sleepParticle?.destroy();
+    this.sleepParticle = null;
+  }
+
   setNicknamePosition() {
     if (this.playerNameText) {
       this.playerNameText.setPosition(
@@ -271,31 +289,6 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
       .setScale(1)
       .setDepth(999999);
     this.playerNameText.setOrigin(0.5, 0.5);
-  }
-
-  destroy(fromScene?: boolean): void {
-    this.free(fromScene);
-  }
-
-  destroyWithAnimation(fromScene?: boolean) {
-    this.play(DEAD);
-    this.once("animationcomplete", () => {
-      this.destroy(fromScene);
-    });
-  }
-
-  free(fromScene?: boolean) {
-    if (this.playerNameText) {
-      this.playerNameText.destroy(fromScene);
-    }
-    if (this.effect) {
-      this.preFX?.remove(this.effect);
-      this.effect.destroy();
-    }
-    if (this.preFX) {
-      this.preFX.destroy();
-    }
-    super.destroy(fromScene);
   }
 
   protected listenInteractionEvent(radius?: number) {
@@ -335,5 +328,29 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   setSpeechBubble(bubble: Phaser.GameObjects.Container | null) {
     this.speechBubble = bubble;
+  }
+
+  destroy(fromScene?: boolean): void {
+    this.free(fromScene);
+  }
+
+  destroyWithAnimation(fromScene?: boolean) {
+    this.play(DEAD);
+    this.once("animationcomplete", () => {
+      this.destroy(fromScene);
+    });
+  }
+
+  free(fromScene?: boolean) {
+    if (this.effect) {
+      this.preFX?.remove(this.effect);
+      this.effect.destroy();
+    }
+
+    this.playerNameText.destroy(fromScene);
+    this.preFX?.destroy();
+    this.sleepParticle?.destroy(fromScene);
+
+    super.destroy(fromScene);
   }
 }

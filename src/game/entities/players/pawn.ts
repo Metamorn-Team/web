@@ -45,6 +45,10 @@ export class Pawn extends Player {
   }
 
   walk(side: "right" | "left" | "up" | "down"): number {
+    if (this.isSleep) {
+      this.awake();
+    }
+
     this.play(PAWN_WALK(this.color), true);
 
     if (side === "right") {
@@ -75,6 +79,10 @@ export class Pawn extends Player {
   attack(attackType: AttackType): void {
     if (this.currAnimationState === PlayerAnimationState.ATTACK) return;
     this.currAnimationState = PlayerAnimationState.ATTACK;
+
+    if (this.isSleep) {
+      this.awake();
+    }
 
     this.scene.time.delayedCall(250, () => {
       this.scene.sound.play("hit");
