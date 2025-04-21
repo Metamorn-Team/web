@@ -1,0 +1,1 @@
+export const NPC_INTERACTABLE_DISTANCE = 120;
