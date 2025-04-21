@@ -128,7 +128,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
         this.idle();
       }
 
-      if (keys.includes(Keys.SPACE)) {
+      if (this.inputManager?.isKeyJustDown(Keys.SPACE)) {
         this.attack();
       }
 
