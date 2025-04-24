@@ -16,9 +16,9 @@ export const metadata: Metadata = {
 //   src: "../fonts/BMJUA_otf.otf",
 // });
 
-const CookiRun = localFont({
-  src: "../fonts/CookieRun_Regular.otf",
-});
+// const CookiRun = localFont({
+//   src: "../fonts/CookieRun_Regular.otf",
+// });
 
 const DungGeunMo = localFont({
   src: "../fonts/NeoDunggeunmoPro-Regular.woff",
