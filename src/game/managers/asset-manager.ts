@@ -100,6 +100,8 @@ export class AssetManager {
 
   loadMaps(scene: Phaser.Scene) {
     scene.load.tilemapTiledJSON("loby", "/game/maps/tiny_sward.json");
+    scene.load.tilemapTiledJSON("island", "/game/maps/island.json");
+    scene.load.tilemapTiledJSON("store", "/game/maps/store.json");
   }
 
   loadTileImages(scene: Phaser.Scene) {
@@ -125,6 +127,7 @@ export class AssetManager {
 
   loadAudios(scene: Phaser.Scene) {
     scene.load.audio("town", "/game/sounds/town.mp3");
+    scene.load.audio("store", "/game/sounds/store.mp3");
     scene.load.audio("woodland-fantasy", "/game/sounds/woodland-fantasy.mp3");
     scene.load.audio("hit", "/game/sounds/hit.wav");
   }
