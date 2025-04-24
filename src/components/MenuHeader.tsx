@@ -57,10 +57,13 @@ export default function MenuHeader({ changeFriendModalOpen }: MenuHeaderProps) {
     window.location.reload();
   };
 
+  const onClickStore = () => {
+    window.open("/store", "_blank");
+  };
+
   useEffect(() => {
     const isPlayBgm = getPersistenceItem("play_bgm") ?? true;
 
-    console.log(isPlayBgm);
     if (!isPlayBgm) {
       SoundManager.getInstance().pauseBgm();
     }
@@ -82,52 +85,53 @@ export default function MenuHeader({ changeFriendModalOpen }: MenuHeaderProps) {
   }, []);
 
   return (
-    <header className="absolute top-0 w-screen h-16 z-40 flex justify-between items-center px-4 bg-[#f9f5ec] bg-opacity-95 border-b border-[#d6c6aa] shadow-sm">
-      {/* 👈 왼쪽 버튼들 */}
-      <div className="flex items-center gap-3">
-        <MenuItem
+    <header
+      className="absolute top-0 w-screen h-20 z-40 flex justify-between items-center px-6 bg-[#fdf8ef] border-b border-[#bfae96] shadow-[4px_4px_0_#8c7a5c]"
+      style={{ fontFamily: "DungGeunMo, sans-serif" }}
+    >
+      <div className="flex items-center gap-4">
+        <StyledMenuItem
           icon={
             isPlayBgm ? (
-              <BsMusicNoteBeamed size={18} />
+              <BsMusicNoteBeamed size={20} />
             ) : (
-              <BsMusicNoteBeamed size={18} className="opacity-40" />
+              <BsMusicNoteBeamed size={20} className="opacity-40" />
             )
           }
           label="BGM"
           onClick={onPlayBgmToggle}
         />
 
-        <MenuItem
-          icon={<FiUser size={18} />}
+        <StyledMenuItem
+          icon={<FiUser size={20} />}
           label="친구"
           onClick={() => changeFriendModalOpen(true)}
         />
 
-        <MenuItem
-          icon={<FiShoppingBag size={18} />}
+        <StyledMenuItem
+          icon={<FiShoppingBag size={20} />}
           label="상점"
-          onClick={() => {
-            console.log("상점 열기!");
-          }}
+          onClick={onClickStore}
         />
       </div>
 
       <div className="relative flex gap-3" ref={menuRef}>
-        {isVisibleExit ? (
-          <MenuItem
-            icon={<GiSailboat size={18} />}
+        {isVisibleExit && (
+          <StyledMenuItem
+            icon={<GiSailboat size={20} />}
             label="섬 떠나기"
             onClick={onLeftIsland}
           />
-        ) : null}
+        )}
 
-        <MenuItem
-          icon={<FiMenu size={18} />}
+        <StyledMenuItem
+          icon={<FiMenu size={20} />}
           label="메뉴"
           onClick={() => setMenuOpen((prev) => !prev)}
         />
+
         {menuOpen && (
-          <div className="absolute right-0 top-full mt-2 w-40 bg-[#f9f5ec] border border-[#d6c6aa] rounded-md shadow-lg p-2 flex flex-col gap-1 text-sm text-[#5c4b32] animate-fadeIn">
+          <div className="absolute right-0 top-full mt-2 w-44 bg-[#fdf8ef] border border-[#bfae96] shadow-[4px_4px_0_#8c7a5c] p-2 flex flex-col gap-2 text-sm text-[#3d2c1b] animate-fadeIn rounded-[6px]">
             <DropdownItem icon={<FiEdit2 />} label="정보 수정" />
             <DropdownItem
               icon={<FiLogOut />}
@@ -144,7 +148,7 @@ export default function MenuHeader({ changeFriendModalOpen }: MenuHeaderProps) {
   );
 }
 
-function MenuItem({
+function StyledMenuItem({
   icon,
   label,
   onClick,
@@ -156,7 +160,7 @@ function MenuItem({
   return (
     <button
       onClick={onClick}
-      className="flex items-center gap-1 px-3 py-1 bg-[#f3ece1] border border-[#d6c6aa] rounded-full text-[#5c4b32] text-xs hover:bg-[#e8e0d0] transition"
+      className="flex items-center gap-2 px-3 py-2 bg-[#f3ece1] border border-[#5c4b32] rounded-[4px] text-[#5c4b32] text-xs shadow-[2px_2px_0_#5c4b32] hover:bg-[#e8e0d0] transition-all"
     >
       {icon}
       <span>{label}</span>
@@ -176,7 +180,7 @@ function DropdownItem({
   return (
     <button
       onClick={onClick}
-      className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-[#f1e8d8] transition"
+      className="flex items-center gap-2 px-2 py-1 text-sm text-[#5c4b32] border border-transparent hover:border-[#bfae96] hover:bg-[#f8f1e4] transition-all rounded-[4px]"
     >
       {icon}
       <span>{label}</span>
