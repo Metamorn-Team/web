@@ -20,6 +20,10 @@ const CookiRun = localFont({
   src: "../fonts/CookieRun_Regular.otf",
 });
 
+const DungGeunMo = localFont({
+  src: "../fonts/NeoDunggeunmoPro-Regular.woff",
+});
+
 const RootLayout = ({
   children,
 }: Readonly<{
@@ -27,7 +31,7 @@ const RootLayout = ({
 }>) => {
   return (
     <html>
-      <body className={CookiRun.className}>
+      <body className={DungGeunMo.className}>
         <AlertProvider />
         <Providers>{children}</Providers>
       </body>
