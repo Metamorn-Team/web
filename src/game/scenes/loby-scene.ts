@@ -1,5 +1,4 @@
-import { getMyProfile } from "@/api/user";
-import { initialProfile } from "@/constants/game/initial-profile";
+import { INITIAL_PROFILE } from "@/constants/game/initial-profile";
 import { NPC_INTERACTABLE_DISTANCE } from "@/constants/game/threshold";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { Npc } from "@/game/entities/npc/npc";
@@ -14,7 +13,6 @@ import { Phaser } from "@/game/phaser";
 import { MetamornScene } from "@/game/scenes/metamorn-scene";
 import { Keys } from "@/types/game/enum/key";
 import { UserInfo } from "@/types/socket-io/response";
-import { getItem, persistItem } from "@/utils/persistence";
 import { setItem } from "@/utils/session-storage";
 
 export class LobyScene extends MetamornScene {
@@ -122,7 +120,7 @@ export class LobyScene extends MetamornScene {
       userInfo = await this.getPlayerInfo();
     } catch (e: unknown) {
       console.log(e);
-      userInfo = initialProfile;
+      userInfo = INITIAL_PROFILE;
     }
 
     this.player = await controllablePlayerManager.spawnControllablePlayer(
@@ -132,18 +130,6 @@ export class LobyScene extends MetamornScene {
       this.centerOfMap.y,
       this.inputManager
     );
-  }
-
-  async getPlayerInfo() {
-    const storedProfile = getItem("profile");
-    return storedProfile || this.fetchFreshPlayerInfo();
-  }
-
-  private async fetchFreshPlayerInfo() {
-    const user = await getMyProfile();
-    persistItem("profile", user);
-
-    return user;
   }
 
   listenEvents() {

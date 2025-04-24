@@ -1,7 +1,9 @@
+import { getMyProfile } from "@/api/user";
 import { Player } from "@/game/entities/players/player";
 import { EventWrapper } from "@/game/event/EventBus";
 import { InputManager } from "@/game/managers/input-manager";
 import { Phaser } from "@/game/phaser";
+import { getItem, persistItem } from "@/utils/persistence";
 
 export class MetamornScene extends Phaser.Scene {
   protected player: Player;
@@ -41,5 +43,17 @@ export class MetamornScene extends Phaser.Scene {
     EventWrapper.onGameEvent("enableGameKeyboardInput", () => {
       this.setEnabledKeyboardInput(true);
     });
+  }
+
+  protected async getPlayerInfo() {
+    const storedProfile = getItem("profile");
+    return storedProfile || this.fetchFreshPlayerInfo();
+  }
+
+  protected async fetchFreshPlayerInfo() {
+    const user = await getMyProfile();
+    persistItem("profile", user);
+
+    return user;
   }
 }

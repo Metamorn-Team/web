@@ -21,8 +21,6 @@ import { Pawn } from "@/game/entities/players/pawn";
 import { AttackType } from "@/types/game/enum/state";
 import { tileMapManager } from "@/game/managers/tile-map-manager";
 import { controllablePlayerManager } from "@/game/managers/controllable-player-manager";
-import { getItem, persistItem } from "@/utils/persistence";
-import { getMyProfile } from "@/api/user";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import Alert from "@/utils/alert";
 import { Keys } from "@/types/game/enum/key";
@@ -54,11 +52,6 @@ export class IslandScene extends MetamornScene {
     } else {
       this.zoneType = getSessionItem("zone_type") || "design";
     }
-  }
-
-  preload() {
-    this.load.tilemapTiledJSON("zone", "/game/maps/portal.json");
-    this.load.tilemapTiledJSON("island", "/game/maps/island.json");
   }
 
   create() {
@@ -266,18 +259,6 @@ export class IslandScene extends MetamornScene {
     if (myPlayer.id === playerId) {
       this.player.sleep();
     }
-  }
-
-  async getPlayerInfo() {
-    const storedProfile = getItem("profile");
-    return storedProfile || this.fetchFreshPlayerInfo();
-  }
-
-  private async fetchFreshPlayerInfo() {
-    const user = await getMyProfile();
-    persistItem("profile", user);
-
-    return user;
   }
 
   handleAttacked(attackerId: string, attackedPlayerIds: string[]) {
