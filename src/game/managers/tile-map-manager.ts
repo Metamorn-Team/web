@@ -2,15 +2,16 @@ import { FOAM, ROCK_L, ROCK_M, ROCK_S } from "@/constants/game/sprites/tile";
 import { treeSpawner } from "@/game/managers/tree-spawner";
 import { Phaser } from "@/game/phaser";
 
-type MapKeys = "island" | "loby";
+type MapKeys = "island" | "loby" | "store";
 
-export class TileMapManager {
+class TileMapManager {
   private scene: Phaser.Scene;
 
   registerTileMap(scene: Phaser.Scene, mapKey: MapKeys) {
     this.scene = scene;
 
     const map = scene.make.tilemap({ key: mapKey });
+    console.log(map);
 
     if (mapKey === "island") {
       this.createIslandMapLayer(map);
@@ -18,8 +19,19 @@ export class TileMapManager {
     if (mapKey === "loby") {
       this.createLobyMapLayers(map);
     }
+    if (mapKey === "store") {
+      this.createStoreMapLayer(map);
+    }
 
     return map;
+  }
+
+  createStoreMapLayer(map: Phaser.Tilemaps.Tilemap) {
+    const groundTileset = map.addTilesetImage("ground", "ground");
+
+    if (groundTileset) {
+      map.createLayer("ground", groundTileset);
+    }
   }
 
   createIslandMapLayer(map: Phaser.Tilemaps.Tilemap) {

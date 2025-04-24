@@ -77,8 +77,15 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     }
 
     if (this.playerInfo.id === "601ecbae-ee0e-4a75-9fb1-61d068668046") {
-      this.effect = this.preFX?.addGlow(0xfabb43);
     }
+  }
+
+  getSpeed() {
+    return this.speed;
+  }
+
+  setSpeed(speed: number) {
+    this.speed = speed;
   }
 
   getCurrneAnimationState() {
@@ -273,6 +280,10 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
         this.y - this.displayHeight / 2 + 20
       );
     }
+  }
+
+  setVisibleNickname(visible: boolean) {
+    this.playerNameText.setVisible(visible);
   }
 
   private setNickname(scene: Phaser.Scene) {

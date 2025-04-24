@@ -21,7 +21,7 @@ export interface DefaultEvents {
 export interface GameToUiEvent {
   "current-scene-ready": (data: {
     scene: Phaser.Scene;
-    socketNsp: string;
+    socketNsp?: string;
   }) => void;
   "start-change-scene": () => void;
   "finish-change-scene": () => void;
@@ -45,4 +45,6 @@ export interface UiToGameEvent {
   "join-island": (data: { type: "dev" | "design" }) => void;
   playBgmToggle: () => void;
   enableGameKeyboardInput: () => void;
+
+  tryOnProduct: (type: string, key: string) => void;
 }
