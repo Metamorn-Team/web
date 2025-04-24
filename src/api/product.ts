@@ -5,8 +5,8 @@ import {
   ProductCategoryItem,
 } from "mmorntype";
 
-export enum ProductCategory {
-  AURA = "오라",
+export enum ProductType {
+  AURA = "aura",
 }
 
 export enum ProductOrder {
