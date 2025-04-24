@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "Dunggunmo";
+  font-family: "DungGeunMo";
   src: url("../fonts/NeoDunggeunmoPro-Regular.woff");
   font-display: swap;
   -webkit-font-smoothing: antialiased;
