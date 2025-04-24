@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "island.json",
+    "activeFile": "tiny_sward.json",
     "expandedProjectPaths": [
         "."
     ],
@@ -15,11 +15,11 @@
             "expandedObjectLayers": [
                 12
             ],
-            "scale": 1,
+            "scale": 0.2507,
             "selectedLayer": 12,
             "viewCenter": {
-                "x": 960,
-                "y": 634
+                "x": 402.8719585161548,
+                "y": 1334.2640606302355
             }
         },
         "island.json#bridge": {
@@ -87,8 +87,8 @@
             "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 960,
-                "y": 640
+                "x": 1133,
+                "y": 710.75
             }
         },
         "tiny_sward.json#bone1": {
@@ -114,12 +114,25 @@
         },
         "tiny_sward.json#water": {
             "scaleInDock": 1
+        },
+        "untitled.tmj": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 154,
+                "y": 129.5
+            }
+        },
+        "untitled.tmj#ground": {
+            "scaleInDock": 1
         }
     },
     "last.imagePath": "/Users/ganghaeseong/Documents/mmorn-web/public/game/tiles/tiny-sward",
+    "map.height": 5,
     "map.lastUsedFormat": "json",
     "map.tileHeight": 64,
     "map.tileWidth": 64,
+    "map.width": 5,
     "openFiles": [
         "island.json",
         "tiny_sward.json"
@@ -127,8 +140,9 @@
     "project": "island.tiled-project",
     "property.type": "bool",
     "recentFiles": [
-        "tiny_sward.json",
         "island.json",
+        "tiny_sward.json",
+        "untitled.tmj",
         "portal.json",
         "island.tmj"
     ],
