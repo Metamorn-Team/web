@@ -29,10 +29,10 @@ const Game = ({ ref }: GameProps) => {
       try {
         const cookieRun = new FontFaceObserver("CookieRun");
         const pretendard = new FontFaceObserver("Pretendard");
-        const dunggunmo = new FontFaceObserver("Dunggunmo");
+        const dungGeunMo = new FontFaceObserver("DungGeunMo");
         await cookieRun.load();
         await pretendard.load();
-        await dunggunmo.load();
+        await dungGeunMo.load();
 
         setFontsLoaded(true);
       } catch (err) {

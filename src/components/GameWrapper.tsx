@@ -68,7 +68,7 @@ export default function GameWrapper({
   useEffect(() => {
     const handleSceneReady = (data: {
       scene: Phaser.Scene;
-      socketNsp: string;
+      socketNsp?: string;
     }) => {
       const { socketNsp } = data;
 
