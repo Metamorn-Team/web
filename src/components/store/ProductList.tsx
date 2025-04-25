@@ -21,6 +21,7 @@ interface ProductListProps {
   page: number;
   limit: number;
   onAddEquippedItem: (item: EquippedItem) => void;
+  onSetPageArr: (productCount: number, limit: number) => void;
 }
 
 const ProductList = ({
@@ -29,6 +30,7 @@ const ProductList = ({
   page,
   limit,
   onAddEquippedItem,
+  onSetPageArr,
 }: ProductListProps) => {
   const { data, isLoading } = useGetProducts({
     type,
@@ -38,8 +40,12 @@ const ProductList = ({
   });
 
   useEffect(() => {
-    console.log(isLoading);
-  }, [isLoading]);
+    const productCount = data?.count;
+
+    if (productCount) {
+      onSetPageArr(productCount, limit);
+    }
+  }, [data]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-4">

@@ -11,6 +11,7 @@ import RetroButton from "@/components/common/RetroButton";
 import { EquippedItem } from "@/types/client/product";
 import RetroModal from "@/components/common/RetroModal";
 import { useModal } from "@/hook/useModal";
+import Alert from "@/utils/alert";
 
 const DynamicStoreGame = dynamic(() => import("@/components/StoreGame"), {
   ssr: false,
@@ -24,12 +25,29 @@ export default function StorePage() {
   const [selectedType, setSelectedType] = useState(ProductType.AURA);
   const [order, setOrder] = useState(ProductOrder.LATEST);
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageArr, setPageArr] = useState([1]);
 
   const [equippedItems, setEquippedItems] = useState<EquippedItem[]>([]);
 
   const { isModalOpen: isOpen, onOpen, onClose } = useModal();
 
   const gameRef = useRef<GameRef | null>(null);
+
+  const onSetPageArr = (productCount: number, limit: number) => {
+    const totalPages = Math.floor(productCount / limit);
+    const pageArr = Array.from({ length: totalPages }, (_, index) => index + 1);
+
+    setPageArr(pageArr.length === 0 ? [1] : pageArr);
+  };
+
+  const onPurchaseAll = () => {
+    if (equippedItems.length === 0) {
+      Alert.info("상품을 선택해주세요!");
+      return;
+    }
+
+    onOpen();
+  };
 
   const onEquippedItemRemove = useCallback((id: string) => {
     setEquippedItems((prev) => prev.filter((item) => item.id !== id));
@@ -111,15 +129,16 @@ export default function StorePage() {
               type={selectedType}
               order={order}
               page={currentPage}
-              onAddEquippedItem={onAddEquippedItem}
               limit={10}
+              onAddEquippedItem={onAddEquippedItem}
+              onSetPageArr={onSetPageArr}
             />
           </div>
 
           {/* 페이지네이션 */}
           <div className="flex justify-center mt-8">
             <nav className="inline-flex items-center space-x-1 bg-[#f3ece1] px-4 py-2 rounded-xl border border-[#d6c6aa] shadow-sm">
-              {[1, 2, 3].map((page) => (
+              {pageArr.map((page) => (
                 <button
                   key={page}
                   onClick={() => setCurrentPage(page)}
@@ -172,7 +191,7 @@ export default function StorePage() {
                 🎒 장착 내역
               </span>
               <div className="flex gap-2">
-                <RetroButton variant="ghost" onClick={onOpen}>
+                <RetroButton variant="ghost" onClick={onPurchaseAll}>
                   모두 구매
                 </RetroButton>
                 <RetroButton

@@ -37,7 +37,6 @@ export default function RetroButton({
         },
         className
       )}
-      style={{ fontFamily: "'DungGeunMo', sans-serif" }}
     >
       {children}
     </button>
