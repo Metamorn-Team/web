@@ -1,9 +1,9 @@
 const ProductCardSkeleton = () => (
   <div
-    className="bg-[#fdf8ef] border border-[#bfae96] shadow-[4px_4px_0_#8c7a5c] transition p-4 flex flex-col justify-between gap-2 w-56 rounded-[6px] animate-pulse"
+    className="bg-[#fdf8ef] border border-[#bfae96] shadow-[4px_4px_0_#8c7a5c] transition p-4 flex flex-col justify-between gap-2 w-52 rounded-[6px] animate-pulse"
     style={{ aspectRatio: "1/1.3", fontFamily: "'DungGeunMo', sans-serif" }}
   >
-    <div className="relative h-48 w-48 overflow-hidden border border-[#d2c4ad] rounded-[4px]">
+    <div className="relative w-full aspect-square overflow-hidden border border-[#d2c4ad] rounded-[4px]">
       <p></p>
     </div>
 

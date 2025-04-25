@@ -42,7 +42,7 @@ const ProductList = ({
   }, [isLoading]);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-4">
       {isLoading
         ? Array.from({ length: limit }).map((_, i) => (
             <ProductCardSkeleton key={`skeleton-${i}`} />
