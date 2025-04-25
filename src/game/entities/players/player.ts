@@ -74,7 +74,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     // 나
     if (this.playerInfo.id === "ebf2f847-01fd-4a5b-8e1e-79e3a94175fa") {
       const phantom = 0xb68df4;
-      this.preFX?.addGlow(phantom, 1.1);
+      this.preFX?.addGlow(phantom, 3);
       this.scene.tweens.add({
         targets: this,
         alpha: { from: 1, to: 0.5 },
