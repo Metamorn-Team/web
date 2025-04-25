@@ -9,6 +9,8 @@ import { GameRef } from "@/components/Game";
 import Image from "next/image";
 import RetroButton from "@/components/common/RetroButton";
 import { EquippedItem } from "@/types/client/product";
+import RetroModal from "@/components/common/RetroModal";
+import { useModal } from "@/hook/useModal";
 
 const DynamicStoreGame = dynamic(() => import("@/components/StoreGame"), {
   ssr: false,
@@ -24,6 +26,8 @@ export default function StorePage() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [equippedItems, setEquippedItems] = useState<EquippedItem[]>([]);
+
+  const { isModalOpen: isOpen, onOpen, onClose } = useModal();
 
   const gameRef = useRef<GameRef | null>(null);
 
@@ -167,9 +171,17 @@ export default function StorePage() {
               <span className="text-sm font-bold text-[#3d2c1b]">
                 🎒 장착 내역
               </span>
-              <RetroButton variant="ghost" onClick={() => setEquippedItems([])}>
-                모두 삭제
-              </RetroButton>
+              <div className="flex gap-2">
+                <RetroButton variant="ghost" onClick={onOpen}>
+                  모두 구매
+                </RetroButton>
+                <RetroButton
+                  variant="ghost"
+                  onClick={() => setEquippedItems([])}
+                >
+                  모두 삭제
+                </RetroButton>
+              </div>
             </div>
             <ul className="text-xs text-[#5c4b32] leading-snug space-y-1">
               {equippedItems.length === 0 ? (
@@ -189,6 +201,40 @@ export default function StorePage() {
           </div>
         </div>
       </main>
+
+      <RetroModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onConfirm={() => {}}
+        title="구매 확인"
+        confirmText="구매"
+        cancelText="취소"
+      >
+        <div className="space-y-4">
+          <ul className="space-y-2 text-sm text-[#5c4b32]">
+            {equippedItems.map((item) => (
+              <li
+                key={item.id}
+                className="flex justify-between items-center bg-[#f3e9d0] p-2 rounded-lg shadow-md hover:bg-[#f1e0c2] transition-all"
+              >
+                <p className="text-base">{item.name}</p>
+                <p className="font-semibold text-base">
+                  {item.price.toLocaleString()} G
+                </p>
+              </li>
+            ))}
+          </ul>
+          <div className="text-center text-lg font-bold text-[#a27c3f]">
+            <p>
+              총{" "}
+              {equippedItems
+                .reduce((total, item) => total + item.price, 0)
+                .toLocaleString()}{" "}
+              G
+            </p>
+          </div>
+        </div>
+      </RetroModal>
     </div>
   );
 }
