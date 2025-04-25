@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { FiZap } from "react-icons/fi";
 import { ProductType, ProductOrder } from "@/api/product";
 import ProductList from "@/components/store/ProductList";
@@ -8,6 +8,7 @@ import dynamic from "next/dynamic";
 import { GameRef } from "@/components/Game";
 import Image from "next/image";
 import RetroButton from "@/components/common/RetroButton";
+import { EquippedItem } from "@/types/client/product";
 
 const DynamicStoreGame = dynamic(() => import("@/components/StoreGame"), {
   ssr: false,
@@ -22,7 +23,22 @@ export default function StorePage() {
   const [order, setOrder] = useState(ProductOrder.LATEST);
   const [currentPage, setCurrentPage] = useState(1);
 
+  const [equippedItems, setEquippedItems] = useState<EquippedItem[]>([]);
+
   const gameRef = useRef<GameRef | null>(null);
+
+  const onEquippedItemRemove = useCallback((id: string) => {
+    setEquippedItems((prev) => prev.filter((item) => item.id !== id));
+  }, []);
+
+  const onAddEquippedItem = useCallback((item: EquippedItem) => {
+    setEquippedItems((prev) => {
+      const alreadyExist = prev.some((i) => i.id === item.id);
+      if (alreadyExist) return prev;
+
+      return [...prev, item];
+    });
+  }, []);
 
   return (
     <div
@@ -91,6 +107,7 @@ export default function StorePage() {
               type={selectedType}
               order={order}
               page={currentPage}
+              onAddEquippedItem={onAddEquippedItem}
               limit={10}
             />
           </div>
@@ -146,15 +163,28 @@ export default function StorePage() {
             className="w-72 p-3 rounded-[6px] border border-[#d6c6aa] bg-[#fcf4e4] shadow-[3px_3px_0_#c6b89d]"
             style={{ fontFamily: "'DungGeunMo', sans-serif" }}
           >
-            <div className="flex justify-between items-center mb-2">
+            <div className="flex justify-between items-center mb-4">
               <span className="text-sm font-bold text-[#3d2c1b]">
                 🎒 장착 내역
               </span>
-              <RetroButton variant="ghost">모두 해제</RetroButton>
+              <RetroButton variant="ghost" onClick={() => setEquippedItems([])}>
+                모두 삭제
+              </RetroButton>
             </div>
             <ul className="text-xs text-[#5c4b32] leading-snug space-y-1">
-              <li>✨ 반짝이는 오라</li>
-              <li>🌍 고대의 맵</li>
+              {equippedItems.length === 0 ? (
+                <p>마음껏 장착해봐요!</p>
+              ) : (
+                equippedItems.map((item) => (
+                  <HistoryItem
+                    key={item.id}
+                    id={item.id}
+                    name={item.name}
+                    price={item.price}
+                    onRemove={() => onEquippedItemRemove(item.id)}
+                  />
+                ))
+              )}
             </ul>
           </div>
         </div>
@@ -162,3 +192,28 @@ export default function StorePage() {
     </div>
   );
 }
+
+interface HistoryItemProps {
+  id: string;
+  name: string;
+  price: number;
+  onRemove?: (id: string) => void;
+}
+
+const HistoryItem = ({ id, name, price, onRemove }: HistoryItemProps) => {
+  return (
+    <li className="flex justify-between items-center px-3 py-2 bg-[#f5eee0] border border-[#d6c6aa] rounded-[4px] shadow-[2px_2px_0_#c6b89d]">
+      <div className="flex flex-col text-xs text-[#4a3928] font-bold leading-snug">
+        <span className="">{name}</span>
+        <span className="text-[#a27c3f]">{price.toLocaleString()} G</span>
+      </div>
+      <RetroButton
+        onClick={() => onRemove?.(id)}
+        className="ml-2 px-[6px] py-[2px] text-[10px]"
+        variant="ghost"
+      >
+        ✕
+      </RetroButton>
+    </li>
+  );
+};

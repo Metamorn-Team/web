@@ -1,17 +1,21 @@
 "use client";
 
 import { EventWrapper } from "@/game/event/EventBus";
-import { Product } from "@/types/client/friend.types";
+import { EquippedItem, Product } from "@/types/client/product";
 import Image from "next/image";
 import React from "react";
 
 interface ProductCardProps {
   product: Product;
+  onAddEquippedItem: (item: EquippedItem) => void;
 }
 
-const ProductCard = ({ product }: ProductCardProps) => {
+const ProductCard = ({ product, onAddEquippedItem }: ProductCardProps) => {
   const onTry = () => {
     EventWrapper.emitToGame("tryOnProduct", product.type, product.key);
+
+    const { id, name, price } = product;
+    onAddEquippedItem({ id, name, price });
   };
 
   return (
@@ -38,7 +42,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
       <div className="flex justify-between items-center mt-2">
         <span className="flex gap-2 items-center">
           <Image src={"/game/ui/gold.png"} width={20} height={20} alt="gold" />
-          <p className="text-[#40381b] font-bold text-base">{product.price}</p>
+          <p className="text-[#40381b] font-bold text-base">
+            {product.price.toLocaleString()}
+          </p>
         </span>
 
         <div className="flex gap-1">
