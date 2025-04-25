@@ -7,6 +7,7 @@ import ProductList from "@/components/store/ProductList";
 import dynamic from "next/dynamic";
 import { GameRef } from "@/components/Game";
 import Image from "next/image";
+import RetroButton from "@/components/common/RetroButton";
 
 const DynamicStoreGame = dynamic(() => import("@/components/StoreGame"), {
   ssr: false,
@@ -34,8 +35,9 @@ export default function StorePage() {
           {/* 카테고리 탭 */}
           <div className="flex gap-3 mb-4 sticky top-0 z-50 bg-[#f9f5ec]">
             {categories.map((category) => (
-              <button
+              <RetroButton
                 key={category.value}
+                variant="ghost"
                 onClick={() => setSelectedType(category.value)}
                 className={`flex items-center gap-2 px-4 py-2 border border-[#bfae96] text-sm font-bold shadow-[3px_3px_0_#8c7a5c] transition-all rounded-[4px]
           ${
@@ -43,11 +45,11 @@ export default function StorePage() {
               ? "bg-[#f0e4c3] text-[#2a1f14]"
               : "bg-[#fcf4e4] text-[#5c4b32] hover:bg-[#f3e9d0]"
           }`}
-                style={{ fontFamily: "'DungGeunMo', sans-serif" }}
+                // style={{ fontFamily: "'DungGeunMo', sans-serif" }}
               >
                 <span className="text-lg">{category.icon}</span>
                 <span>{category.label}</span>
-              </button>
+              </RetroButton>
             ))}
           </div>
 
@@ -131,9 +133,7 @@ export default function StorePage() {
                 1,234
               </p>
             </div>
-            <button className="text-xs bg-[#bfae96] text-white px-2 py-1 rounded border border-[#5c4b32] shadow-[2px_2px_0_#5c4b32] hover:bg-[#a79b84]">
-              🔇
-            </button>
+            <RetroButton>BGM</RetroButton>
           </div>
 
           {/* 게임 미리보기 */}
@@ -148,11 +148,9 @@ export default function StorePage() {
           >
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-bold text-[#3d2c1b]">
-                🎒 장착 중
+                🎒 장착 내역
               </span>
-              <button className="text-xs bg-[#d4c8b0] px-2 py-1 rounded border border-[#5c4b32] text-[#2a1f14] shadow-[2px_2px_0_#5c4b32] hover:bg-[#c8baa1] transition">
-                모두 해제
-              </button>
+              <RetroButton variant="ghost">모두 해제</RetroButton>
             </div>
             <ul className="text-xs text-[#5c4b32] leading-snug space-y-1">
               <li>✨ 반짝이는 오라</li>
