@@ -5,6 +5,8 @@ import { RegisterResponse } from "mmorntype";
 import { register } from "@/api/auth";
 import Button from "@/components/common/Button";
 import useRegisterPayloadStore from "@/stores/useRegisterPayloadStore";
+import RetroInput from "@/components/common/RetroInput";
+import Alert from "@/utils/alert";
 
 interface RegisterStepProps {
   onSuccessLogin: (response: RegisterResponse) => void;
@@ -16,8 +18,8 @@ const RegisterStep = ({ onSuccessLogin }: RegisterStepProps) => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVisibleErrorText, setIsVisibleErrorText] = useState({
-    nickname: false,
-    tag: false,
+    nickname: "",
+    tag: "",
   });
   const [avatarEmotion, setAvatarEmotion] = useState("💢");
 
@@ -29,20 +31,43 @@ const RegisterStep = ({ onSuccessLogin }: RegisterStepProps) => {
   };
 
   const validateInputs = () => {
-    const isValidNickname = nickname.length >= 2 && nickname.length <= 20;
-    const isValidTag = tag.length >= 4 && tag.length <= 15;
+    // 닉네임: 한글과 영어만 허용
+    const isValidNicknameLength = nickname.length >= 2 && nickname.length <= 20;
+    const isValidNicknameChars = /^[a-zA-Z가-힣]+$/.test(nickname);
+
+    // 태그: 영어 소문자와 _만 허용
+    const isValidTagLength = tag.length >= 4 && tag.length <= 15;
+    const isValidTagChars = /^[a-z0-9_]+$/.test(tag);
 
     setIsVisibleErrorText((curr) => ({
       ...curr,
-      nickname: !isValidNickname,
+      nickname:
+        !isValidNicknameLength && !isValidNicknameChars
+          ? "이름은 2~20자 사이로 입력해주세요"
+          : !isValidNicknameLength
+          ? "이름은 2~20자 사이로 입력해주세요"
+          : !isValidNicknameChars
+          ? "이름은 영어 대소문자와 한글만 사용 가능해요"
+          : "",
+
+      tag:
+        !isValidTagLength && !isValidTagChars
+          ? "태그는 4~15자 사이로 입력해주세요"
+          : !isValidTagLength
+          ? "태그는 4~15자 사이로 입력해주세요"
+          : !isValidTagChars
+          ? "태그는 영어 소문자와 _ 만 사용 가능해요"
+          : "",
     }));
 
-    setIsVisibleErrorText((curr) => ({
-      ...curr,
-      tag: !isValidTag,
-    }));
-
-    setAvatarEmotion(isValidNickname && isValidTag ? "💜" : "💢");
+    setAvatarEmotion(
+      isValidNicknameLength &&
+        isValidNicknameChars &&
+        isValidTagLength &&
+        isValidTagChars
+        ? "💜"
+        : "💢"
+    );
   };
 
   useEffect(() => {
@@ -51,6 +76,12 @@ const RegisterStep = ({ onSuccessLogin }: RegisterStepProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isSubmitting || isVisibleErrorText.nickname || isVisibleErrorText.tag) {
+      Alert.error("😡😡😡😡", false);
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -73,7 +104,7 @@ const RegisterStep = ({ onSuccessLogin }: RegisterStepProps) => {
   return (
     <div className="flex flex-col items-center justify-between w-full flex-grow">
       <div className="flex flex-col justify-center text-lg h-full">
-        <div className="relative w-12 h-12">
+        <div className="relative w-12 h-12 mb-4">
           <p className="absolute -top-2 -right-1 z-50 animate-ping">
             {avatarEmotion}
           </p>
@@ -94,54 +125,44 @@ const RegisterStep = ({ onSuccessLogin }: RegisterStepProps) => {
       >
         <div className="flex flex-col w-full px-4 justify-between items-center gap-3">
           <div className="w-full h-full max-w-[305px]">
-            <label className="block text-sm font-medium mb-1 w-fit">
+            <label className="block text-sm font-semibold mb-1 w-fit">
               이름을 지어주세요!
             </label>
-            <input
-              type="text"
+            <RetroInput
               value={nickname}
               onChange={onChangeNickname}
-              className={`w-full p-2 border rounded ${
-                isVisibleErrorText.nickname
-                  ? "border-red-500"
-                  : "border-gray-300"
-              }`}
-              required
-              minLength={2}
               maxLength={20}
+              error={isVisibleErrorText.nickname !== ""}
             />
 
             <p
-              className={`text-red-500 text-xs mt-1 w-fit ${
+              className={`text-red-600 text-xs mt-1 w-fit ${
                 isVisibleErrorText.nickname ? "opacity-100" : "opacity-0"
               }`}
+              style={{ minHeight: "1.25rem" }}
             >
-              이름은 2~20자 사이로 입력해주세요
+              {isVisibleErrorText.nickname}
             </p>
           </div>
 
           <div className="w-full max-w-[305px]">
-            <label className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-semibold mb-1">
               친구가 나를 찾을 때 사용하는 태그에요!
             </label>
-            <input
-              type="text"
+            <RetroInput
               value={tag}
               onChange={onChangeTag}
-              className={`w-full p-2 border rounded ${
-                isVisibleErrorText.tag ? "border-red-500" : "border-gray-300"
-              }`}
-              required
-              minLength={4}
               maxLength={15}
+              error={isVisibleErrorText.tag !== ""}
             />
 
             <p
-              className={`text-red-500 text-xs mt-1 ${
+              className={`text-red-600 text-xs mt-1 ${
                 isVisibleErrorText.tag ? "opacity-100" : "opacity-0"
               }`}
+              style={{ minHeight: "1.25rem" }}
             >
-              태그는 4~15자 사이로 입력해주세요
+              {isVisibleErrorText.tag}
             </p>
           </div>
         </div>
@@ -154,11 +175,6 @@ const RegisterStep = ({ onSuccessLogin }: RegisterStepProps) => {
           width="50%"
           isSubmitType
           className="max-w-[190px]"
-          disabled={
-            isSubmitting ||
-            !!isVisibleErrorText.nickname ||
-            !!isVisibleErrorText.tag
-          }
         />
       </form>
     </div>
