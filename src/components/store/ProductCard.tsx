@@ -1,5 +1,6 @@
 "use client";
 
+import RetroButton from "@/components/common/RetroButton";
 import { EventWrapper } from "@/game/event/EventBus";
 import { EquippedItem, Product } from "@/types/client/product";
 import Image from "next/image";
@@ -40,7 +41,9 @@ const ProductCard = ({ product, onAddEquippedItem }: ProductCardProps) => {
   return (
     <div
       key={product.id}
-      className="bg-[#fdf8ef] border border-[#bfae96] shadow-[4px_4px_0_#8c7a5c] transition p-4 flex flex-col justify-between gap-2 w-52 rounded-[6px]"
+      className={`bg-[#fdf8ef] border border-[#bfae96] shadow-[4px_4px_0_#8c7a5c] transition p-4 flex flex-col justify-between gap-2 w-52 rounded-[6px] ${
+        product.purchasedStatus === "PURCHASED" ? "opacity-70" : "opacity-100"
+      }`}
       style={{ aspectRatio: "1/1.3", fontFamily: "'DungGeunMo', sans-serif" }}
     >
       <div className="relative w-full aspect-square overflow-hidden border border-[#d2c4ad] rounded-[4px]">
@@ -52,6 +55,12 @@ const ProductCard = ({ product, onAddEquippedItem }: ProductCardProps) => {
           {gradeStyles[product.grade].label}
         </div>
 
+        {/* 솔드아웃 텍스트 (카드 전체 중앙에 대각선으로 표시) */}
+        {product.purchasedStatus === "PURCHASED" && (
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-5xl text-red-600 font-bold text-center">
+            SOLD OUT
+          </div>
+        )}
         <img
           src={product.coverImage}
           alt={product.name}
@@ -75,15 +84,15 @@ const ProductCard = ({ product, onAddEquippedItem }: ProductCardProps) => {
         </span>
 
         <div className="flex gap-1">
-          <button
-            className="px-2 py-1 text-[11px] bg-[#b4a68b] text-white border border-[#5c4b32] rounded-[2px] shadow-[2px_2px_0_#5c4b32] hover:bg-[#a79b84] transition-all"
-            onClick={onTry}
+          <RetroButton
+            onClick={product.purchasedStatus !== "PURCHASED" ? onTry : () => {}}
+            disabled={product.purchasedStatus === "PURCHASED"}
           >
-            장착
-          </button>
-          <button className="px-2 py-1 text-[11px] bg-[#b4a68b] text-white border border-[#5c4b32] rounded-[2px] shadow-[2px_2px_0_#5c4b32] hover:bg-[#a79b84] transition-all">
+            창작
+          </RetroButton>
+          <RetroButton disabled={product.purchasedStatus === "PURCHASED"}>
             구매
-          </button>
+          </RetroButton>
         </div>
       </div>
     </div>
