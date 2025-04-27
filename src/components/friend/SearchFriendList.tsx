@@ -5,12 +5,11 @@ import ScrollView from "@/components/common/ScrollView";
 import SquareButton from "@/components/common/SquareButton";
 import { useInfiniteUserSearch } from "@/hook/queries/useInfiniteUserSearch";
 import SearchUserItem from "@/components/friend/SearchUserItem";
-
-type SearchType = "NICKNAME" | "TAG";
+import { SearchVarient } from "mmorntype/dist/src/domain/types/uesr.types";
 
 const SearchFriendList = () => {
   const [query, setQuery] = useState("");
-  const [searchType, setSearchType] = useState<SearchType>("NICKNAME");
+  const [searchType, setSearchType] = useState<SearchVarient>("NICKNAME");
   const types = ["NICKNAME", "TAG"] as const;
 
   const {

@@ -1,10 +1,11 @@
 import { useInfiniteQuery, QueryFunctionContext } from "@tanstack/react-query";
 import { searchUsers } from "@/api/user";
 import { useMemo } from "react";
+import { SearchVarient } from "mmorntype/dist/src/domain/types/uesr.types";
 
 export const useInfiniteUserSearch = (
   search: string,
-  varient: "NICKNAME" | "TAG",
+  varient: SearchVarient,
   limit: number = 10
 ) => {
   const {
