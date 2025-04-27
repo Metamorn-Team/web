@@ -208,7 +208,7 @@ export default function StorePage() {
           >
             <div className="flex justify-between items-center mb-4">
               <span className="text-sm font-bold text-[#3d2c1b]">
-                🎒 장착 내역
+                🎒 장바구니
               </span>
               <div className="flex gap-2">
                 <RetroButton variant="ghost" onClick={openPurchaseModal}>
