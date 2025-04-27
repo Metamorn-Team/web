@@ -208,7 +208,7 @@ export default function GameWrapper({
         <PlayerInfoModal onClose={onPlayerModalClose} playerInfo={playerInfo} />
       ) : null}
 
-      {isLoginModalOpen ? <LoginModal onClose={onLoginModalClose} /> : null}
+      <LoginModal isOpen={isLoginModalOpen} onClose={onLoginModalClose} />
 
       {isVisibleChat ? <ChatPanel /> : null}
       {isVisibleChat ? <ParticipantPanel /> : null}
