@@ -1,6 +1,11 @@
 import { http } from "@/api/http";
 import { Provider } from "@/types/client/unions";
-import { GetUserResponse, SearchUserResponse } from "mmorntype";
+import {
+  GetGoldBalance,
+  GetUserResponse,
+  SearchUserResponse,
+  SearchUsersRequest,
+} from "mmorntype";
 
 export interface NotRegisteredUserResponse {
   readonly message: string;
@@ -22,21 +27,19 @@ export interface AdditionalRegisterData {
   readonly avatarKey: string;
 }
 
-export async function getMyProfile(): Promise<GetUserResponse> {
-  const response = await http.get<GetUserResponse>(`/users/my`);
+export const getMyProfile = async () => {
+  const response = await http.get<GetUserResponse>("/users/my");
   return response.data;
-}
+};
 
-// TODO 타입 배포되면 대치
-interface SearchUserRequest {
-  readonly search: string;
-  readonly varient: "NICKNAME" | "TAG";
-  readonly cursor?: string;
-  readonly limit?: number;
-}
-export async function searchUsers(query: SearchUserRequest) {
+export const getMyGoldBalance = async () => {
+  const response = await http.get<GetGoldBalance>("/users/gold");
+  return response.data;
+};
+
+export const searchUsers = async (query: SearchUsersRequest) => {
   const response = await http.get<SearchUserResponse>("/users/search", {
     params: query,
   });
   return response.data;
-}
+};
