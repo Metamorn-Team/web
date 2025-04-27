@@ -1,4 +1,4 @@
-import RetroModal from "@/components/common/RetroModal";
+import RetroConfirmModal from "@/components/common/RetroConfirmModal";
 import { EquippedItem } from "@/types/client/product";
 import React, { useEffect, useState } from "react";
 
@@ -31,7 +31,7 @@ const ConfirmPurchaseModal = ({
   }, [equippedItems]);
 
   return (
-    <RetroModal
+    <RetroConfirmModal
       isOpen={isOpen}
       onClose={onClose}
       onConfirm={isEnoughGold ? onPurchase : onCharge}
@@ -69,7 +69,7 @@ const ConfirmPurchaseModal = ({
           </p>
         </div>
       </div>
-    </RetroModal>
+    </RetroConfirmModal>
   );
 };
 
