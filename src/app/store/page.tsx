@@ -9,7 +9,6 @@ import { GameRef } from "@/components/Game";
 import Image from "next/image";
 import RetroButton from "@/components/common/RetroButton";
 import { EquippedItem } from "@/types/client/product";
-import RetroModal from "@/components/common/RetroModal";
 import { useModal } from "@/hook/useModal";
 import Alert from "@/utils/alert";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -17,6 +16,7 @@ import { QUERY_KEY as PRODUCTS_QUERY_KEY } from "@/hook/queries/useGetProducts";
 import { QUERY_KEY as GOLD_BALANCE_QUERY_KEY } from "@/hook/queries/useGetGoldBalance";
 import { purchase } from "@/api/purchase";
 import { useGetGoldBalance } from "@/hook/queries/useGetGoldBalance";
+import ConfirmPurchaseModal from "@/components/store/ConfirmPurchaseModal";
 
 const DynamicStoreGame = dynamic(() => import("@/components/StoreGame"), {
   ssr: false,
@@ -102,9 +102,7 @@ export default function StorePage() {
       style={{ cursor: 'url("/game/ui/cursor.png"), default' }}
     >
       <main className="flex flex-1 overflow-hidden gap-6 overflow-y-auto p-6 justify-center">
-        {/* 왼쪽: 상품 카테고리 + 리스트 + 페이지네이션 */}
         <div className="flex flex-col">
-          {/* 카테고리 탭 */}
           <div className="flex gap-3 mb-4 sticky top-0 z-50 bg-[#f9f5ec]">
             {categories.map((category) => (
               <RetroButton
@@ -117,7 +115,6 @@ export default function StorePage() {
               ? "bg-[#f0e4c3] text-[#2a1f14]"
               : "bg-[#fcf4e4] text-[#5c4b32] hover:bg-[#f3e9d0]"
           }`}
-                // style={{ fontFamily: "'DungGeunMo', sans-serif" }}
               >
                 <span className="text-lg">{category.icon}</span>
                 <span>{category.label}</span>
@@ -125,18 +122,13 @@ export default function StorePage() {
             ))}
           </div>
 
-          {/* 정렬 메뉴 (카테고리 바로 아래) */}
           <div className="flex items-center justify-between text-xs text-[#5c4b32] font-bold mb-3 px-1">
-            {/* 서브 카테고리 (필요 시 추가 가능) */}
             <div className="flex gap-2">
-              {/* 예시: 오라 타입 필터 */}
               <button className="px-2 py-1 rounded bg-[#f3e9d0] hover:bg-[#e8ddc3] transition">
                 전체
               </button>
             </div>
 
-            {/* 정렬 옵션 */}
-            {/* 정렬 드롭다운 */}
             <div className="flex justify-end mb-3 px-1">
               <div className="relative inline-block text-left">
                 <select
@@ -149,7 +141,6 @@ export default function StorePage() {
                   <option value={ProductOrder.CHEAPEST}>⬇️ 가격 낮은 순</option>
                   <option value={ProductOrder.PRICIEST}>⬆️ 가격 높은 순</option>
                 </select>
-                {/* 아래 화살표 아이콘 */}
                 <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-[#8c7a5c]">
                   ▼
                 </div>
@@ -157,7 +148,6 @@ export default function StorePage() {
             </div>
           </div>
 
-          {/* 상품 리스트 */}
           <div className="flex-1 overflow-y-auto pr-1 scrollbar-hide">
             <ProductList
               type={selectedType}
@@ -169,7 +159,6 @@ export default function StorePage() {
             />
           </div>
 
-          {/* 페이지네이션 */}
           <div className="flex justify-center mt-8">
             <nav className="inline-flex items-center space-x-1 bg-[#f3ece1] px-4 py-2 rounded-xl border border-[#d6c6aa] shadow-sm">
               {pageArr.map((page) => (
@@ -189,9 +178,7 @@ export default function StorePage() {
           </div>
         </div>
 
-        {/* 오른쪽: 미리보기 + 장착 정보 */}
         <div className="flex flex-col gap-6 items-center pt-[4px]">
-          {/* 골드 + 음소거 */}
           <div className="flex justify-between w-full items-center px-2">
             <div className="flex gap-2 items-center">
               <Image
@@ -210,12 +197,10 @@ export default function StorePage() {
             <RetroButton>BGM</RetroButton>
           </div>
 
-          {/* 게임 미리보기 */}
           <div className="overflow-hidden rounded-[8px] border border-[#bfae96] shadow-[4px_4px_0_#8c7a5c] bg-[#fdf8ef]">
             <DynamicStoreGame currentActiveScene={() => {}} ref={gameRef} />
           </div>
 
-          {/* 장착 중 아이템 */}
           <div
             className="w-72 p-3 rounded-[6px] border border-[#d6c6aa] bg-[#fcf4e4] shadow-[3px_3px_0_#c6b89d]"
             style={{ fontFamily: "'DungGeunMo', sans-serif" }}
@@ -255,51 +240,14 @@ export default function StorePage() {
         </div>
       </main>
 
-      <RetroModal
+      <ConfirmPurchaseModal
         isOpen={isOpen}
         onClose={onPurchaseModalClose}
-        onConfirm={onPurchase}
-        title="구매 확인"
-        confirmText="구매"
-        cancelText="취소"
-      >
-        <div className="space-y-4">
-          <ul className="space-y-2 text-sm text-[#5c4b32]">
-            {equippedItems.map((item) => (
-              <li
-                key={item.id}
-                className="flex justify-between items-center bg-[#f3e9d0] p-2 rounded-lg shadow-md hover:bg-[#f1e0c2] transition-all"
-              >
-                <p className="text-base">{item.name}</p>
-                <p className="font-semibold text-base">
-                  {item.price.toLocaleString()} G
-                </p>
-              </li>
-            ))}
-          </ul>
-          <div className="text-center text-lg font-bold text-[#a27c3f]">
-            {/* 총 가격 */}
-            <p className="text-xl font-bold text-[#8c7a5c]">
-              총{" "}
-              {equippedItems
-                .reduce((total, item) => total + item.price, 0)
-                .toLocaleString()}{" "}
-              G
-            </p>
-
-            {/* 거래 후 잔액 */}
-            <p className="text-xl font-bold mt-4 text-[#e4a945]">
-              거래 후 잔액:{" "}
-              {(gold?.goldBalance
-                ? gold?.goldBalance -
-                  equippedItems.reduce((total, item) => total + item.price, 0)
-                : 0
-              ).toLocaleString()}{" "}
-              G
-            </p>
-          </div>
-        </div>
-      </RetroModal>
+        onPurchase={onPurchase}
+        onCharge={() => Alert.warn("충전")}
+        equippedItems={equippedItems}
+        goldBalance={gold?.goldBalance ?? 0}
+      />
     </div>
   );
 }
