@@ -64,7 +64,7 @@ const ConfirmPurchaseModal = ({
             }`}
           >
             {isEnoughGold
-              ? `거래 후 잔액: ${goldBalance - totalPrice}`
+              ? `구매 후 잔액: ${(goldBalance - totalPrice).toLocaleString()} G`
               : "골드가 부족해요!"}
           </p>
         </div>
