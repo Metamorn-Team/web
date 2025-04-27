@@ -31,11 +31,8 @@ const gradeStyles = {
 };
 
 const ProductCard = ({ product, onAddEquippedItem }: ProductCardProps) => {
-  const onTry = () => {
+  const onEquip = () => {
     EventWrapper.emitToGame("tryOnProduct", product.type, product.key);
-
-    const { id, name, price } = product;
-    onAddEquippedItem({ id, name, price });
   };
 
   return (
@@ -85,13 +82,26 @@ const ProductCard = ({ product, onAddEquippedItem }: ProductCardProps) => {
 
         <div className="flex gap-1">
           <RetroButton
-            onClick={product.purchasedStatus !== "PURCHASED" ? onTry : () => {}}
+            onClick={
+              product.purchasedStatus !== "PURCHASED" ? onEquip : () => {}
+            }
             disabled={product.purchasedStatus === "PURCHASED"}
           >
             창작
           </RetroButton>
-          <RetroButton disabled={product.purchasedStatus === "PURCHASED"}>
-            구매
+          <RetroButton
+            disabled={product.purchasedStatus === "PURCHASED"}
+            onClick={() =>
+              product.purchasedStatus !== "PURCHASED"
+                ? onAddEquippedItem({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                  })
+                : () => {}
+            }
+          >
+            담기
           </RetroButton>
         </div>
       </div>
