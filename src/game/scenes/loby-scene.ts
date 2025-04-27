@@ -57,9 +57,9 @@ export class LobyScene extends MetamornScene {
     SoundManager.getInstance().playBgm(this.bgmKey);
   }
 
-  update(time: number, delta: number): void {
+  update(): void {
     if (this.player) {
-      this.player.update(delta);
+      this.player.update();
 
       this.checkNearNpc();
       if (this.inputManager.isKeyJustDown(Keys.E)) {
