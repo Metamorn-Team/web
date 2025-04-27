@@ -29,7 +29,7 @@ export default class PhotoScene extends MetamornScene {
     this.player = await controllablePlayerManager.spawnControllablePlayer(
       this,
       {
-        avatarKey: "red_pawn",
+        avatarKey: "purple_pawn",
         id: "1",
         nickname: "",
         tag: "",
@@ -47,9 +47,9 @@ export default class PhotoScene extends MetamornScene {
     this.showAura();
   }
 
-  update(time: number, delta: number): void {
+  update(): void {
     if (this.player) {
-      this.player.update(delta);
+      this.player.update();
     }
   }
 
@@ -87,9 +87,9 @@ export default class PhotoScene extends MetamornScene {
     // this.player.preFX?.addGlow(auraColors["bubblegum"]);
 
     // 약간 유령 같음
-    // const voidPurple = 0x6b32a8;
-    // this.player.preFX?.addGlow(voidPurple, 1.2);
-    // this.player.preFX?.addBloom(0.5);
+    const voidPurple = 0x6b32a8;
+    this.player.preFX?.addGlow(voidPurple, 1.2);
+    this.player.preFX?.addBloom(0.5);
 
     // rgb shift
     // const rgbColors = [0xff0040, 0x40ff00, 0x0080ff];
@@ -118,8 +118,8 @@ export default class PhotoScene extends MetamornScene {
     // });
 
     // 어둠 기사 같은 느낌
-    const necro = 0x4a0033;
-    this.player.preFX?.addGlow(necro, 2);
+    // const necro = 0x4a0033;
+    // this.player.preFX?.addGlow(necro, 1.5);
 
     // 커졌다 작아졌다
     // const poisonMint = 0x5fffcf;
@@ -146,15 +146,15 @@ export default class PhotoScene extends MetamornScene {
     // });
 
     // 유령 느낌
-    // const phantom = 0xb68df4;
-    // this.player.preFX?.addGlow(phantom, 1.1);
-    // this.tweens.add({
-    //   targets: this.player,
-    //   alpha: { from: 1, to: 0.5 },
-    //   duration: 900,
-    //   yoyo: true,
-    //   repeat: -1,
-    // });
+    const phantom = 0xb68df4;
+    this.player.preFX?.addGlow(phantom, 1.1);
+    this.tweens.add({
+      targets: this.player,
+      alpha: { from: 1, to: 0.5 },
+      duration: 900,
+      yoyo: true,
+      repeat: -1,
+    });
 
     // 엄청 빛나는 바다 느낌
     // this.player.preFX?.addGlow(0x00b4d8);
@@ -168,7 +168,7 @@ export default class PhotoScene extends MetamornScene {
 
     // 불꽃 같은 느낌
     // this.player.preFX?.addGlow(0xff6f00);
-    // this.player.preFX?.addShine(0xffca3a, 0.8, 0.3);
+    // this.player.preFX?.addShine(0xffca3a, 0.5, 0.3);
   }
 
   captureArea(x: number, y: number) {
