@@ -5,11 +5,11 @@ import { GetProductListRequest } from "mmorntype";
 const QUERY_KEY = "products";
 
 export const useGetProducts = (query: GetProductListRequest) => {
-  const { type, order, page, limit } = query;
+  const { page } = query;
   const fetcher = () => getProducts(query);
 
   return useQuery({
-    queryKey: [QUERY_KEY, type, order, page, limit],
+    queryKey: [QUERY_KEY, page],
     queryFn: fetcher,
     staleTime: 1000 * 60 * 5,
   });
