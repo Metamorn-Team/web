@@ -17,7 +17,7 @@ import { QUERY_KEY as GOLD_BALANCE_QUERY_KEY } from "@/hook/queries/useGetGoldBa
 import { purchase } from "@/api/purchase";
 import { useGetGoldBalance } from "@/hook/queries/useGetGoldBalance";
 import ConfirmPurchaseModal from "@/components/store/ConfirmPurchaseModal";
-import EquippedItemRow from "@/components/store/EquippedItemRow";
+import EquippedItemList from "@/components/store/EquippedItemList";
 
 const DynamicStoreGame = dynamic(() => import("@/components/StoreGame"), {
   ssr: false,
@@ -222,21 +222,10 @@ export default function StorePage() {
                 </RetroButton>
               </div>
             </div>
-            <ul className="text-xs text-[#5c4b32] leading-snug space-y-1">
-              {equippedItems.length === 0 ? (
-                <p>마음껏 장착해봐요!</p>
-              ) : (
-                equippedItems.map((item) => (
-                  <EquippedItemRow
-                    key={item.id}
-                    id={item.id}
-                    name={item.name}
-                    price={item.price}
-                    onRemove={() => onEquippedItemRemove(item.id)}
-                  />
-                ))
-              )}
-            </ul>
+            <EquippedItemList
+              equippedItems={equippedItems}
+              onEquippedItemRemove={onEquippedItemRemove}
+            />
           </div>
         </div>
       </main>
