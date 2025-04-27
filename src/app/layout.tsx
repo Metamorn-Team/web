@@ -16,13 +16,13 @@ export const metadata: Metadata = {
 //   src: "../fonts/BMJUA_otf.otf",
 // });
 
-// const CookiRun = localFont({
-//   src: "../fonts/CookieRun_Regular.otf",
-// });
-
-const DungGeunMo = localFont({
-  src: "../fonts/NeoDunggeunmoPro-Regular.woff",
+const CookiRun = localFont({
+  src: "../fonts/CookieRun_Regular.otf",
 });
+
+// const DungGeunMo = localFont({
+//   src: "../fonts/NeoDunggeunmoPro-Regular.woff",
+// });
 
 const RootLayout = ({
   children,
@@ -31,7 +31,7 @@ const RootLayout = ({
 }>) => {
   return (
     <html>
-      <body className={DungGeunMo.className}>
+      <body className={CookiRun.className}>
         <AlertProvider />
         <Providers>{children}</Providers>
       </body>
