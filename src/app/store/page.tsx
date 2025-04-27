@@ -47,7 +47,7 @@ export default function StorePage() {
     mutationFn: purchase,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [PRODUCTS_QUERY_KEY, currentPage],
+        queryKey: [PRODUCTS_QUERY_KEY, currentPage, order],
       });
       queryClient.invalidateQueries({
         queryKey: [GOLD_BALANCE_QUERY_KEY],
