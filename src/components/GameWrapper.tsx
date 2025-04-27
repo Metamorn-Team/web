@@ -23,6 +23,7 @@ import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { useAttackedSound } from "@/hook/useAttackedSound";
 import Alert from "@/utils/alert";
 import ParticipantPanel from "@/components/ParticipantsPanel";
+import SettingsModal from "@/components/SettingsModal";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -61,6 +62,11 @@ export default function GameWrapper({
     isModalOpen: isPlayerModalOpen,
     onClose: onPlayerModalClose,
     onOpen: onPlayerModalOpen,
+  } = useModal();
+  const {
+    isModalOpen: isSettingsModalOpen,
+    onClose: onSettingsModalClose,
+    onOpen: onSettingsModalOpen,
   } = useModal();
   const [isVisibleChat, setIsVisibleChat] = useState(false);
   useAttackedSound();
@@ -188,7 +194,10 @@ export default function GameWrapper({
   return (
     <div>
       {!isLoading ? (
-        <MenuHeader changeFriendModalOpen={changeFriendModalOpen} />
+        <MenuHeader
+          changeFriendModalOpen={changeFriendModalOpen}
+          onSettingsModalOpen={onSettingsModalOpen}
+        />
       ) : null}
 
       <Game ref={gameRef} currentActiveScene={() => {}} />
@@ -209,6 +218,11 @@ export default function GameWrapper({
       ) : null}
 
       <LoginModal isOpen={isLoginModalOpen} onClose={onLoginModalClose} />
+
+      <SettingsModal
+        isOpen={isSettingsModalOpen}
+        onClose={onSettingsModalClose}
+      />
 
       {isVisibleChat ? <ChatPanel /> : null}
       {isVisibleChat ? <ParticipantPanel /> : null}

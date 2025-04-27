@@ -23,9 +23,13 @@ import { SoundManager } from "@/game/managers/sound-manager";
 
 interface MenuHeaderProps {
   changeFriendModalOpen: (state: boolean) => void;
+  onSettingsModalOpen: () => void;
 }
 
-export default function MenuHeader({ changeFriendModalOpen }: MenuHeaderProps) {
+export default function MenuHeader({
+  changeFriendModalOpen,
+  onSettingsModalOpen,
+}: MenuHeaderProps) {
   const [isPlayBgm, setIsPlayBgm] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -136,7 +140,11 @@ export default function MenuHeader({ changeFriendModalOpen }: MenuHeaderProps) {
               onClick={onLogout}
             />
             <DropdownItem icon={<RiBookOpenLine />} label="내 로그 보기" />
-            <DropdownItem icon={<FiSettings />} label="환경 설정" />
+            <DropdownItem
+              icon={<FiSettings />}
+              label="환경 설정"
+              onClick={onSettingsModalOpen}
+            />
             <DropdownItem icon={<FiUser />} label="프로필 보기" />
           </div>
         )}

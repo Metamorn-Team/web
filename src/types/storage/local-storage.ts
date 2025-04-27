@@ -9,4 +9,6 @@ export interface LocalStorageData {
   access_token: string;
   profile: PlayerProfile;
   play_bgm: boolean;
+  sound_volume: number;
+  fps_limit: number;
 }
