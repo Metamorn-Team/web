@@ -136,7 +136,6 @@ export default function StorePage() {
                   value={order}
                   onChange={(e) => setOrder(e.target.value as ProductOrder)}
                   className="block w-40 px-3 py-2 text-sm font-semibold text-[#5c4b32] bg-[#fcf4e4] border border-[#bfae96] rounded shadow-sm appearance-none focus:outline-none focus:ring-2 focus:ring-[#d6c6aa]"
-                  style={{ fontFamily: "'DungGeunMo', sans-serif" }}
                 >
                   <option value={ProductOrder.LATEST}>🕒 최신 순</option>
                   <option value={ProductOrder.CHEAPEST}>⬇️ 가격 낮은 순</option>
@@ -188,10 +187,7 @@ export default function StorePage() {
                 height={20}
                 alt="gold"
               />
-              <p
-                className="text-lg font-bold text-[#a27c3f]"
-                style={{ fontFamily: "'DungGeunMo', sans-serif" }}
-              >
+              <p className="text-lg font-bold text-[#a27c3f]">
                 {gold?.goldBalance.toLocaleString() ?? ""}
               </p>
             </div>
@@ -202,10 +198,7 @@ export default function StorePage() {
             <DynamicStoreGame currentActiveScene={() => {}} ref={gameRef} />
           </div>
 
-          <div
-            className="w-72 p-3 rounded-[6px] border border-[#d6c6aa] bg-[#fcf4e4] shadow-[3px_3px_0_#c6b89d]"
-            style={{ fontFamily: "'DungGeunMo', sans-serif" }}
-          >
+          <div className="w-72 p-3 rounded-[6px] border border-[#d6c6aa] bg-[#fcf4e4] shadow-[3px_3px_0_#c6b89d]">
             <div className="flex justify-between items-center mb-4">
               <span className="text-sm font-bold text-[#3d2c1b]">
                 🎒 장바구니

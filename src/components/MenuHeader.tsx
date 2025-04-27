@@ -85,10 +85,7 @@ export default function MenuHeader({ changeFriendModalOpen }: MenuHeaderProps) {
   }, []);
 
   return (
-    <header
-      className="absolute top-0 w-screen h-20 z-40 flex justify-between items-center px-6 bg-[#fdf8ef] border-b border-[#bfae96] shadow-[4px_4px_0_#8c7a5c]"
-      style={{ fontFamily: "DungGeunMo, sans-serif" }}
-    >
+    <header className="absolute top-0 w-screen h-20 z-40 flex justify-between items-center px-6 bg-[#fdf8ef] border-b border-[#bfae96] shadow-[4px_4px_0_#8c7a5c]">
       <div className="flex items-center gap-4">
         <StyledMenuItem
           icon={
