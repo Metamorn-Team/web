@@ -15,22 +15,26 @@ type AlertType = "info" | "warn" | "error" | "done";
 export default function AlertProvider() {
   const [message, setMessage] = useState<string | null>(null);
   const [type, setType] = useState<AlertType>("info");
+  const [iconVisible, setIconVisible] = useState(true);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    Alert.setCallback((msg: string, type: AlertType) => {
-      setMessage(msg);
-      setType(type);
+    Alert.setCallback(
+      (msg: string, type: AlertType, iconVisible: boolean = true) => {
+        setIconVisible(iconVisible);
+        setMessage(msg);
+        setType(type);
 
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+
+        timeoutRef.current = setTimeout(() => {
+          setMessage(null);
+          timeoutRef.current = null;
+        }, 2500);
       }
-
-      timeoutRef.current = setTimeout(() => {
-        setMessage(null);
-        timeoutRef.current = null;
-      }, 2500);
-    });
+    );
   }, []);
 
   const getStyle = () => {
@@ -88,7 +92,7 @@ export default function AlertProvider() {
           <div
             className={`${bg} ${text} border ${border} rounded-lg shadow-lg p-4 flex items-center gap-3 max-w-xs mx-auto`}
           >
-            <Icon size={18} />
+            {iconVisible ? <Icon size={18} /> : null}
             <span className="text-sm font-medium">{message}</span>
           </div>
         </motion.div>
