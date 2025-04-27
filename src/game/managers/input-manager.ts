@@ -110,4 +110,19 @@ export class InputManager {
   resetKeyAll(): void {
     this.keyMap.forEach((_, key) => this.resetKey(key));
   }
+
+  isMovementKeyDown() {
+    const keys = this.getPressedKeys();
+
+    return (
+      keys.includes(Keys.UP) ||
+      keys.includes(Keys.W) ||
+      keys.includes(Keys.DOWN) ||
+      keys.includes(Keys.S) ||
+      keys.includes(Keys.LEFT) ||
+      keys.includes(Keys.A) ||
+      keys.includes(Keys.RIGHT) ||
+      keys.includes(Keys.D)
+    );
+  }
 }

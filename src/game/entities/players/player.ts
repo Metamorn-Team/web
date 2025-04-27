@@ -10,13 +10,6 @@ import { PlayerAnimationState } from "@/types/game/enum/animation";
 import { InputManager } from "@/game/managers/input-manager";
 import { Keys } from "@/types/game/enum/key";
 
-enum MoveDirection {
-  UP,
-  DOWN,
-  LEFT,
-  RIGHT,
-}
-
 export abstract class Player extends Phaser.Physics.Matter.Sprite {
   private inputManager?: InputManager;
 
@@ -149,17 +142,8 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
         this.attack();
       }
 
-      if (keys.includes(Keys.UP) || keys.includes(Keys.W)) {
-        this.move(MoveDirection.UP);
-      }
-      if (keys.includes(Keys.DOWN) || keys.includes(Keys.S)) {
-        this.move(MoveDirection.DOWN);
-      }
-      if (keys.includes(Keys.LEFT) || keys.includes(Keys.A)) {
-        this.move(MoveDirection.LEFT);
-      }
-      if (keys.includes(Keys.RIGHT) || keys.includes(Keys.D)) {
-        this.move(MoveDirection.RIGHT);
+      if (this.inputManager?.isMovementKeyDown()) {
+        this.move();
       }
 
       if (this.io && this.hasPositionChangedSignificantly()) {
@@ -203,38 +187,38 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.setDepth(this.y);
   }
 
-  move(direaction: MoveDirection) {
+  move() {
     if (this.currAnimationState === PlayerAnimationState.ATTACK) {
       this.setVelocity(0, 0);
       return;
     }
 
+    const keys = this.inputManager?.getPressedKeys() || [];
+
     let velocityX = 0;
     let velocityY = 0;
 
-    if (direaction === MoveDirection.LEFT) {
-      velocityX = this.walk("left");
+    if (keys.includes(Keys.UP) || keys.includes(Keys.W)) {
+      velocityY = -1;
     }
-    if (direaction === MoveDirection.RIGHT) {
-      velocityX = this.walk("right");
+    if (keys.includes(Keys.DOWN) || keys.includes(Keys.S)) {
+      velocityY = 1;
     }
-    if (direaction === MoveDirection.UP) {
-      velocityY = this.walk("up");
+    if (keys.includes(Keys.LEFT) || keys.includes(Keys.A)) {
+      velocityX = -1;
     }
-    if (direaction === MoveDirection.DOWN) {
-      velocityY = this.walk("down");
+    if (keys.includes(Keys.RIGHT) || keys.includes(Keys.D)) {
+      velocityX = 1;
     }
 
     if (velocityX !== 0 && velocityY !== 0) {
-      const magnitude = Math.sqrt(
-        velocityX * velocityX + velocityY * velocityY
-      );
-      velocityX = (velocityX / magnitude) * this.speed;
-      velocityY = (velocityY / magnitude) * this.speed;
+      const length = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
+      velocityX /= length;
+      velocityY /= length;
     }
 
-    this.x = this.x + velocityX;
-    this.y = this.y + velocityY;
+    this.x = this.x + velocityX * this.speed;
+    this.y = this.y + velocityY * this.speed;
   }
 
   abstract walk(side: "right" | "left" | "up" | "down"): number;
