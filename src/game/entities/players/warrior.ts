@@ -52,8 +52,8 @@ export class Warrior extends Player {
     this.setRectangle(50, 50, { label: "PLAYER" });
   }
 
-  update(delta: number): void {
-    super.update(delta);
+  update(): void {
+    super.update();
   }
 
   walk(side: "right" | "left" | "up" | "down"): number {

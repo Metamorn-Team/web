@@ -74,9 +74,9 @@ export class IslandScene extends MetamornScene {
     SoundManager.getInstance().playBgm(this.bgmKey);
   }
 
-  update(time: number, delta: number): void {
+  update(): void {
     if (this.player) {
-      this.player.update(delta);
+      this.player.update();
     }
 
     if (
@@ -91,7 +91,7 @@ export class IslandScene extends MetamornScene {
       .getAllPlayers()
       .values()
       .forEach((player) => {
-        player.update(delta);
+        player.update();
       });
   }
 

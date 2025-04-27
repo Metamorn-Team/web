@@ -22,7 +22,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   private playerInfo: UserInfo;
   private label = "PLAYER";
-  protected speed = 0.12;
+  protected speed = 2;
 
   protected currAnimationState: PlayerAnimationState =
     PlayerAnimationState.IDLE;
@@ -133,7 +133,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     );
   }
 
-  update(delta: number): void {
+  update(): void {
     if (this.currAnimationState === PlayerAnimationState.ATTACK) {
       return;
     }
@@ -150,16 +150,16 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
       }
 
       if (keys.includes(Keys.UP) || keys.includes(Keys.W)) {
-        this.move(delta, MoveDirection.UP);
+        this.move(MoveDirection.UP);
       }
       if (keys.includes(Keys.DOWN) || keys.includes(Keys.S)) {
-        this.move(delta, MoveDirection.DOWN);
+        this.move(MoveDirection.DOWN);
       }
       if (keys.includes(Keys.LEFT) || keys.includes(Keys.A)) {
-        this.move(delta, MoveDirection.LEFT);
+        this.move(MoveDirection.LEFT);
       }
       if (keys.includes(Keys.RIGHT) || keys.includes(Keys.D)) {
-        this.move(delta, MoveDirection.RIGHT);
+        this.move(MoveDirection.RIGHT);
       }
 
       if (this.io && this.hasPositionChangedSignificantly()) {
@@ -203,7 +203,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.setDepth(this.y);
   }
 
-  move(delta: number, direaction: MoveDirection) {
+  move(direaction: MoveDirection) {
     if (this.currAnimationState === PlayerAnimationState.ATTACK) {
       this.setVelocity(0, 0);
       return;
@@ -213,23 +213,24 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     let velocityY = 0;
 
     if (direaction === MoveDirection.LEFT) {
-      velocityX = this.walk("left") * delta;
+      velocityX = this.walk("left");
     }
     if (direaction === MoveDirection.RIGHT) {
-      velocityX = this.walk("right") * delta;
+      velocityX = this.walk("right");
     }
     if (direaction === MoveDirection.UP) {
-      velocityY = this.walk("up") * delta;
+      velocityY = this.walk("up");
     }
     if (direaction === MoveDirection.DOWN) {
-      velocityY = this.walk("down") * delta;
+      velocityY = this.walk("down");
     }
 
     if (velocityX !== 0 && velocityY !== 0) {
-      const factor =
-        (this.speed * delta) / Math.sqrt(velocityX ** 2 + velocityY ** 2);
-      velocityX *= factor;
-      velocityY *= factor;
+      const magnitude = Math.sqrt(
+        velocityX * velocityX + velocityY * velocityY
+      );
+      velocityX = (velocityX / magnitude) * this.speed;
+      velocityY = (velocityY / magnitude) * this.speed;
     }
 
     this.x = this.x + velocityX;
