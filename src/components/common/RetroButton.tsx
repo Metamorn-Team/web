@@ -26,7 +26,7 @@ export default function RetroButton({
       onClick={onClick}
       disabled={disabled}
       className={classNames(
-        "text-xs px-2 py-1 rounded border font-bold transition",
+        "text-xs px-2 py-1 rounded border transition",
         "disabled:opacity-50 disabled:cursor-not-allowed",
         "shadow-[2px_2px_0_#5c4b32]",
         {
