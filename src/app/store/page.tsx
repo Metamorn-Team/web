@@ -17,6 +17,7 @@ import { QUERY_KEY as GOLD_BALANCE_QUERY_KEY } from "@/hook/queries/useGetGoldBa
 import { purchase } from "@/api/purchase";
 import { useGetGoldBalance } from "@/hook/queries/useGetGoldBalance";
 import ConfirmPurchaseModal from "@/components/store/ConfirmPurchaseModal";
+import EquippedItemRow from "@/components/store/EquippedItemRow";
 
 const DynamicStoreGame = dynamic(() => import("@/components/StoreGame"), {
   ssr: false,
@@ -226,7 +227,7 @@ export default function StorePage() {
                 <p>마음껏 장착해봐요!</p>
               ) : (
                 equippedItems.map((item) => (
-                  <HistoryItem
+                  <EquippedItemRow
                     key={item.id}
                     id={item.id}
                     name={item.name}
@@ -251,28 +252,3 @@ export default function StorePage() {
     </div>
   );
 }
-
-interface HistoryItemProps {
-  id: string;
-  name: string;
-  price: number;
-  onRemove?: (id: string) => void;
-}
-
-const HistoryItem = ({ id, name, price, onRemove }: HistoryItemProps) => {
-  return (
-    <li className="flex justify-between items-center px-3 py-2 bg-[#f5eee0] border border-[#d6c6aa] rounded-[4px] shadow-[2px_2px_0_#c6b89d]">
-      <div className="flex flex-col text-xs text-[#4a3928] font-bold leading-snug">
-        <span className="">{name}</span>
-        <span className="text-[#a27c3f]">{price.toLocaleString()} G</span>
-      </div>
-      <RetroButton
-        onClick={() => onRemove?.(id)}
-        className="ml-2 px-[6px] py-[2px] text-[10px]"
-        variant="ghost"
-      >
-        ✕
-      </RetroButton>
-    </li>
-  );
-};
