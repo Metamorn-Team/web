@@ -43,15 +43,14 @@ const LoginStep = ({ nextStep, onSuccessLogin }: LoginStepProps) => {
         <Logo width="fit-content" />
       </div>
       <div className="flex flex-col justify-center items-center gap-4 w-full">
-        <OauthButton type={"GOOGLE"} width="90%" onClick={googleLogin} />
+        <OauthButton type={"GOOGLE"} onClick={googleLogin} />
         <OauthButton
           type={"KAKAO"}
-          width="90%"
           onClick={() => {
             router.replace("/");
           }}
         />
-        <OauthButton type={"NAVER"} width="90%" onClick={async () => {}} />
+        <OauthButton type={"NAVER"} onClick={async () => {}} />
       </div>
     </div>
   );

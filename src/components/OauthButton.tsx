@@ -12,8 +12,7 @@ interface OauthButtonProps {
 const OauthButton: React.FC<OauthButtonProps> = ({ type, width, onClick }) => {
   return (
     <button
-      className={`${commonStyles.button} ${buttonStyles[type].button}`}
-      style={{ width, maxWidth: 300 }}
+      className={`${commonStyles.button} ${buttonStyles[type].button} shadow-[4px_4px_0_#8c7a5c] border border-[#bfae96] transition hover:brightness-105`}
       onClick={onClick}
     >
       {icons[type]}
