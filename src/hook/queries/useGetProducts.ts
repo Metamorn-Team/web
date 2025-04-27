@@ -2,7 +2,7 @@ import { getProducts } from "@/api/product";
 import { useQuery } from "@tanstack/react-query";
 import { GetProductListRequest } from "mmorntype";
 
-const QUERY_KEY = "products";
+export const QUERY_KEY = "products";
 
 export const useGetProducts = (query: GetProductListRequest) => {
   const { page } = query;

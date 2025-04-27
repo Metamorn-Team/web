@@ -12,6 +12,11 @@ import { EquippedItem } from "@/types/client/product";
 import RetroModal from "@/components/common/RetroModal";
 import { useModal } from "@/hook/useModal";
 import Alert from "@/utils/alert";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEY as PRODUCTS_QUERY_KEY } from "@/hook/queries/useGetProducts";
+import { QUERY_KEY as GOLD_BALANCE_QUERY_KEY } from "@/hook/queries/useGetGoldBalance";
+import { purchase } from "@/api/purchase";
+import { useGetGoldBalance } from "@/hook/queries/useGetGoldBalance";
 
 const DynamicStoreGame = dynamic(() => import("@/components/StoreGame"), {
   ssr: false,
@@ -26,10 +31,35 @@ export default function StorePage() {
   const [order, setOrder] = useState(ProductOrder.LATEST);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageArr, setPageArr] = useState([1]);
+  const { data: gold } = useGetGoldBalance();
 
   const [equippedItems, setEquippedItems] = useState<EquippedItem[]>([]);
 
-  const { isModalOpen: isOpen, onOpen, onClose } = useModal();
+  const {
+    isModalOpen: isOpen,
+    onOpen: onPurchaseModalOpen,
+    onClose: onPurchaseModalClose,
+  } = useModal();
+
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: purchase,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [PRODUCTS_QUERY_KEY, currentPage],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [GOLD_BALANCE_QUERY_KEY],
+      });
+      setEquippedItems([]);
+      Alert.done("구매가 완료되었어요!");
+      onPurchaseModalClose();
+    },
+    onError: () => {
+      Alert.error("문제가 생겼어요, 잠시후 다시 시도해주세요..");
+      onPurchaseModalClose();
+    },
+  });
 
   const gameRef = useRef<GameRef | null>(null);
 
@@ -40,13 +70,17 @@ export default function StorePage() {
     setPageArr(pageArr.length === 0 ? [1] : pageArr);
   };
 
-  const onPurchaseAll = () => {
+  const openPurchaseModal = () => {
     if (equippedItems.length === 0) {
       Alert.info("상품을 선택해주세요!");
       return;
     }
 
-    onOpen();
+    onPurchaseModalOpen();
+  };
+
+  const onPurchase = () => {
+    mutate({ productIds: equippedItems.map((i) => i.id) });
   };
 
   const onEquippedItemRemove = useCallback((id: string) => {
@@ -170,7 +204,7 @@ export default function StorePage() {
                 className="text-lg font-bold text-[#a27c3f]"
                 style={{ fontFamily: "'DungGeunMo', sans-serif" }}
               >
-                1,234
+                {gold?.goldBalance.toLocaleString() ?? ""}
               </p>
             </div>
             <RetroButton>BGM</RetroButton>
@@ -191,7 +225,7 @@ export default function StorePage() {
                 🎒 장착 내역
               </span>
               <div className="flex gap-2">
-                <RetroButton variant="ghost" onClick={onPurchaseAll}>
+                <RetroButton variant="ghost" onClick={openPurchaseModal}>
                   모두 구매
                 </RetroButton>
                 <RetroButton
@@ -223,8 +257,8 @@ export default function StorePage() {
 
       <RetroModal
         isOpen={isOpen}
-        onClose={onClose}
-        onConfirm={() => {}}
+        onClose={onPurchaseModalClose}
+        onConfirm={onPurchase}
         title="구매 확인"
         confirmText="구매"
         cancelText="취소"
@@ -244,11 +278,23 @@ export default function StorePage() {
             ))}
           </ul>
           <div className="text-center text-lg font-bold text-[#a27c3f]">
-            <p>
+            {/* 총 가격 */}
+            <p className="text-xl font-bold text-[#8c7a5c]">
               총{" "}
               {equippedItems
                 .reduce((total, item) => total + item.price, 0)
                 .toLocaleString()}{" "}
+              G
+            </p>
+
+            {/* 거래 후 잔액 */}
+            <p className="text-xl font-bold mt-4 text-[#e4a945]">
+              거래 후 잔액:{" "}
+              {(gold?.goldBalance
+                ? gold?.goldBalance -
+                  equippedItems.reduce((total, item) => total + item.price, 0)
+                : 0
+              ).toLocaleString()}{" "}
               G
             </p>
           </div>
