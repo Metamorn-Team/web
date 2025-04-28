@@ -17,9 +17,9 @@ export class PlayerFSM extends FiniteStateMachine<PlayerState> {
   init() {
     const idle = new IdleState(this);
 
-    this.addState(PlayerState.IDLE, idle);
-    this.addState(PlayerState.WALK, new WalkState(this));
-    this.addState(PlayerState.ATTACK, new AttackState(this));
+    this.addState(PlayerState.IDLE, idle)
+      .addState(PlayerState.WALK, new WalkState(this))
+      .addState(PlayerState.ATTACK, new AttackState(this));
 
     this.currentState = idle;
     this.currentState.enter();

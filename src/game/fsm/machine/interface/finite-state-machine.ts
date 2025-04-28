@@ -3,7 +3,7 @@ import { Phaser } from "@/game/phaser";
 import { Keys } from "@/types/game/enum/key";
 
 /**
- * @E 각 상태의 키 값 (name)으로 사용할 enum
+ * @E 각 상태의 키 값 (name)으로 사용할 타입
  */
 export abstract class FiniteStateMachine<E> {
   public abstract gameObject: Phaser.Physics.Matter.Sprite;
@@ -15,6 +15,7 @@ export abstract class FiniteStateMachine<E> {
 
   addState(name: E, state: State<E>) {
     this.states.set(name, state);
+    return this;
   }
 
   setState(name: E) {
