@@ -1,7 +1,6 @@
 import { PAWN, PawnColor } from "@/constants/game/entities";
 import { PAWN_ATTACK, PAWN_IDLE, PAWN_WALK } from "@/game/animations/keys/pawn";
 import { Player } from "@/game/entities/players/player";
-import { PlayerFSM } from "@/game/fsm/machine/player/player-fsm";
 import { InputManager } from "@/game/managers/input-manager";
 import { PlayerAnimationState } from "@/types/game/enum/animation";
 import { AttackType } from "@/types/game/enum/state";
@@ -25,7 +24,6 @@ export class Pawn extends Player {
     this.color = color;
 
     this.isBeingBorn = false;
-    this.fsm = new PlayerFSM(this);
   }
 
   getColor() {
@@ -79,6 +77,5 @@ export class Pawn extends Player {
     this.play(PAWN_ATTACK(this.color), true);
 
     if (attackType === AttackType.VISUAL) return;
-    // this.io?.emit("attack");
   }
 }
