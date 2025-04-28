@@ -46,7 +46,7 @@ export default function ChatPanel() {
   useEffect(() => {
     const handleNewPlayer = (data: PlayerJoinResponse) => {
       const message = `${data.nickname} 님이 입장했어요 🏝️`;
-      Alert.info(message);
+      Alert.info(message, false);
 
       setMessages((prev) => [
         ...prev,
@@ -64,7 +64,7 @@ export default function ChatPanel() {
       const info = player?.getPlayerInfo();
 
       const message = `${info?.nickname ?? "알 수 없음"} 님이 떠났어요 ⛵️`;
-      Alert.info(message);
+      Alert.info(message, false);
 
       setMessages((prev) => [
         ...prev,
