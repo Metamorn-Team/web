@@ -8,12 +8,12 @@ import { TypedSocket } from "@/types/socket-io";
 import { AttackType } from "@/types/game/enum/state";
 import { PlayerAnimationState } from "@/types/game/enum/animation";
 import { InputManager } from "@/game/managers/input-manager";
-import { Keys } from "@/types/game/enum/key";
-import { PlayerFSM } from "@/game/fsm/machine/player/player-fsm";
+import { PlayerState } from "@/game/fsm/states/enum/player/player-state";
+import { FiniteStateMachine } from "@/game/fsm/machine/interface/finite-state-machine";
 
 export abstract class Player extends Phaser.Physics.Matter.Sprite {
   private inputManager?: InputManager;
-  protected fsm: PlayerFSM | null = null;
+  protected fsm: FiniteStateMachine<PlayerState> | null = null;
 
   private playerInfo: UserInfo;
   private label = "PLAYER";
@@ -21,8 +21,8 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   protected currAnimationState: PlayerAnimationState =
     PlayerAnimationState.IDLE;
-  protected isControllable: boolean;
   protected isAttack = false;
+  protected isControllable: boolean;
   protected isBeingBorn = true;
   protected isSleep = false;
 
@@ -103,6 +103,10 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     return this.playerInfo;
   }
 
+  setFsm(fsm: FiniteStateMachine<PlayerState>) {
+    this.fsm = fsm;
+  }
+
   private playerCommonBodyConfig() {
     this.setCollisionCategory(COLLISION_CATEGORIES.PLAYER);
     this.setCollidesWith(COLLISION_CATEGORIES.WORLD);
@@ -142,73 +146,14 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
         this.lastSentPosition.y = this.y;
       }
     } else {
-      const dx = this.x - this.targetPosition.x;
-      const dy = this.y - this.targetPosition.y;
-
-      const distance = Phaser.Math.Distance.Between(
-        this.x,
-        this.y,
-        this.targetPosition.x,
-        this.targetPosition.y
-      );
-
-      if (distance > 0.5) {
-        if (dx > 0) {
-          this.walk("left");
-        } else if (dx < 0) {
-          this.walk("right");
-        } else if (dy > 0) {
-          this.walk("none");
-        } else if (dy < 0) {
-          this.walk("none");
-        } else {
-          this.idle();
-        }
-
-        this.x = Phaser.Math.Linear(this.x, this.targetPosition.x, 0.1);
-        this.y = Phaser.Math.Linear(this.y, this.targetPosition.y, 0.1);
-      } else {
-        this.idle();
+      if (this.fsm) {
+        this.fsm.update();
       }
     }
 
     this.setSpeechBubblePosition();
     this.setNicknamePosition();
     this.setDepth(this.y);
-  }
-
-  move() {
-    if (this.currAnimationState === PlayerAnimationState.ATTACK) {
-      this.setVelocity(0, 0);
-      return;
-    }
-
-    const keys = this.inputManager?.getPressedKeys() || [];
-
-    let velocityX = 0;
-    let velocityY = 0;
-
-    if (keys.includes(Keys.UP) || keys.includes(Keys.W)) {
-      velocityY = -1;
-    }
-    if (keys.includes(Keys.DOWN) || keys.includes(Keys.S)) {
-      velocityY = 1;
-    }
-    if (keys.includes(Keys.LEFT) || keys.includes(Keys.A)) {
-      velocityX = -1;
-    }
-    if (keys.includes(Keys.RIGHT) || keys.includes(Keys.D)) {
-      velocityX = 1;
-    }
-
-    if (velocityX !== 0 && velocityY !== 0) {
-      const length = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
-      velocityX /= length;
-      velocityY /= length;
-    }
-
-    this.x = this.x + velocityX * this.speed;
-    this.y = this.y + velocityY * this.speed;
   }
 
   public abstract walk(side: "right" | "left" | "none"): void;
@@ -224,6 +169,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
     const originalX = this.x;
 
+    this.scene.sound.play("hit");
     this.scene.tweens.add({
       targets: this,
       x: {
@@ -346,5 +292,23 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.sleepParticle?.destroy(fromScene);
 
     super.destroy(fromScene);
+  }
+
+  onWalk(x: number, y: number) {
+    this.targetPosition.x = x;
+    this.targetPosition.y = y;
+    console.log(this.targetPosition);
+  }
+
+  onAttack() {
+    if (this.isControllable) {
+      this.attack();
+      this.io?.emit("attack");
+      return;
+    }
+
+    if (this.fsm) {
+      this.fsm.setState(PlayerState.ATTACK);
+    }
   }
 }

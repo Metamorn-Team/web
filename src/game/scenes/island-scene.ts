@@ -17,8 +17,6 @@ import {
   setItem as setSessionItem,
 } from "@/utils/session-storage";
 import { playerStore } from "@/game/managers/player-store";
-import { Pawn } from "@/game/entities/players/pawn";
-import { AttackType } from "@/types/game/enum/state";
 import { tileMapManager } from "@/game/managers/tile-map-manager";
 import { controllablePlayerManager } from "@/game/managers/controllable-player-manager";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
@@ -265,13 +263,11 @@ export class IslandScene extends MetamornScene {
     const player = playerStore.getPlayer(attackerId);
     if (!player && attackerId !== this.player.getPlayerInfo().id) return;
 
-    if (player instanceof Pawn) {
-      player.attack(AttackType.VISUAL);
-    }
+    player?.onAttack();
 
     this.time.delayedCall(200, () => {
       if (attackedPlayerIds.includes(this.player.getPlayerInfo().id)) {
-        EventWrapper.emitToUi("attacked");
+        // EventWrapper.emitToUi("attacked");
         this.player.hit();
       }
 
@@ -286,8 +282,7 @@ export class IslandScene extends MetamornScene {
     const isBeingBorn = player?.getIsBeingBorn();
 
     if (player && !isBeingBorn) {
-      player.targetPosition.x = x;
-      player.targetPosition.y = y;
+      player.onWalk(x, y);
     }
   }
 

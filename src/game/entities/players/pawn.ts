@@ -62,7 +62,6 @@ export class Pawn extends Player {
   }
 
   idle(): void {
-    console.log(this.color);
     this.play(PAWN_IDLE(this.color), true);
   }
 
@@ -80,6 +79,6 @@ export class Pawn extends Player {
     this.play(PAWN_ATTACK(this.color), true);
 
     if (attackType === AttackType.VISUAL) return;
-    this.io?.emit("attack");
+    // this.io?.emit("attack");
   }
 }

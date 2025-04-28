@@ -11,7 +11,7 @@ export class AttackState extends State<PlayerState> {
   }
 
   enter() {
-    this.parent.gameObject.attack();
+    this.parent.gameObject.onAttack();
     this.parent.gameObject.once(
       Phaser.Animations.Events.ANIMATION_COMPLETE,
       () => {
