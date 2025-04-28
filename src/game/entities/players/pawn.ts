@@ -1,6 +1,7 @@
 import { PAWN, PawnColor } from "@/constants/game/entities";
 import { PAWN_ATTACK, PAWN_IDLE, PAWN_WALK } from "@/game/animations/keys/pawn";
 import { Player } from "@/game/entities/players/player";
+import { PlayerFSM } from "@/game/fsm/machine/player/player-fsm";
 import { InputManager } from "@/game/managers/input-manager";
 import { PlayerAnimationState } from "@/types/game/enum/animation";
 import { AttackType } from "@/types/game/enum/state";
@@ -23,8 +24,8 @@ export class Pawn extends Player {
     super(scene, x, y, PAWN(color), userInfo, isControllable, inputManager, io);
     this.color = color;
 
-    // born 애니메이션 추가
     this.isBeingBorn = false;
+    this.fsm = new PlayerFSM(this);
   }
 
   getColor() {
@@ -44,7 +45,7 @@ export class Pawn extends Player {
     super.update();
   }
 
-  walk(side: "right" | "left" | "up" | "down"): number {
+  walk(side: "right" | "left" | "none"): void {
     if (this.isSleep) {
       this.awake();
     }
@@ -53,31 +54,19 @@ export class Pawn extends Player {
 
     if (side === "right") {
       this.setFlipX(false);
-      return this.speed;
     }
 
     if (side === "left") {
       this.setFlipX(true);
-      return -this.speed;
     }
-
-    if (side === "up") {
-      return -this.speed;
-    }
-
-    if (side === "down") {
-      return this.speed;
-    }
-
-    return this.speed;
   }
 
   idle(): void {
+    console.log(this.color);
     this.play(PAWN_IDLE(this.color), true);
   }
 
   attack(attackType: AttackType): void {
-    if (this.currAnimationState === PlayerAnimationState.ATTACK) return;
     this.currAnimationState = PlayerAnimationState.ATTACK;
 
     if (this.isSleep) {
@@ -88,12 +77,7 @@ export class Pawn extends Player {
       this.scene.sound.play("hit");
     });
 
-    this.play(PAWN_ATTACK(this.color), true).once(
-      Phaser.Animations.Events.ANIMATION_COMPLETE,
-      () => {
-        this.currAnimationState = PlayerAnimationState.IDLE;
-      }
-    );
+    this.play(PAWN_ATTACK(this.color), true);
 
     if (attackType === AttackType.VISUAL) return;
     this.io?.emit("attack");

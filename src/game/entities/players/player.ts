@@ -9,13 +9,15 @@ import { AttackType } from "@/types/game/enum/state";
 import { PlayerAnimationState } from "@/types/game/enum/animation";
 import { InputManager } from "@/game/managers/input-manager";
 import { Keys } from "@/types/game/enum/key";
+import { PlayerFSM } from "@/game/fsm/machine/player/player-fsm";
 
 export abstract class Player extends Phaser.Physics.Matter.Sprite {
   private inputManager?: InputManager;
+  protected fsm: PlayerFSM | null = null;
 
   private playerInfo: UserInfo;
   private label = "PLAYER";
-  protected speed = 2;
+  public speed = 2;
 
   protected currAnimationState: PlayerAnimationState =
     PlayerAnimationState.IDLE;
@@ -127,23 +129,11 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   }
 
   update(): void {
-    if (this.currAnimationState === PlayerAnimationState.ATTACK) {
-      return;
-    }
-
     if (this.isControllable) {
       const keys = this.inputManager?.getPressedKeys() ?? [];
 
-      if (keys.length === 0) {
-        this.idle();
-      }
-
-      if (this.inputManager?.isKeyJustDown(Keys.SPACE)) {
-        this.attack();
-      }
-
-      if (this.inputManager?.isMovementKeyDown()) {
-        this.move();
+      if (this.fsm) {
+        this.fsm.update(keys);
       }
 
       if (this.io && this.hasPositionChangedSignificantly()) {
@@ -168,9 +158,9 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
         } else if (dx < 0) {
           this.walk("right");
         } else if (dy > 0) {
-          this.walk("up");
+          this.walk("none");
         } else if (dy < 0) {
-          this.walk("down");
+          this.walk("none");
         } else {
           this.idle();
         }
@@ -221,9 +211,9 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.y = this.y + velocityY * this.speed;
   }
 
-  abstract walk(side: "right" | "left" | "up" | "down"): number;
-  abstract idle(): void;
-  abstract attack(attackTtype?: AttackType): void;
+  public abstract walk(side: "right" | "left" | "none"): void;
+  public abstract idle(): void;
+  public abstract attack(attackTtype?: AttackType): void;
 
   hit() {
     this.setTintFill(0xffffff);
