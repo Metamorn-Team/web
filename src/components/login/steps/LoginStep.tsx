@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { login } from "@/api/auth";
 import { isErrorUserInfo } from "@/api/guard/is-user-info";
 import Logo from "@/components/common/Logo";
@@ -14,7 +14,7 @@ interface LoginStepProps {
 }
 
 const LoginStep = ({ nextStep, onSuccessLogin }: LoginStepProps) => {
-  const router = useRouter();
+  // const router = useRouter();
   const { updatePayload } = useRegisterPayloadStore();
 
   const googleLogin = useGoogleLogin({
@@ -44,13 +44,13 @@ const LoginStep = ({ nextStep, onSuccessLogin }: LoginStepProps) => {
       </div>
       <div className="flex flex-col justify-center items-center gap-4 w-full">
         <OauthButton type={"GOOGLE"} onClick={googleLogin} />
-        <OauthButton
+        {/* <OauthButton
           type={"KAKAO"}
           onClick={() => {
             router.replace("/");
           }}
         />
-        <OauthButton type={"NAVER"} onClick={async () => {}} />
+        <OauthButton type={"NAVER"} onClick={async () => {}} /> */}
       </div>
     </div>
   );
