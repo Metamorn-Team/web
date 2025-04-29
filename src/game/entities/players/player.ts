@@ -6,7 +6,6 @@ import { UserInfo } from "@/types/socket-io/response";
 import { DEAD } from "@/game/animations/keys/common";
 import { TypedSocket } from "@/types/socket-io";
 import { AttackType } from "@/types/game/enum/state";
-import { PlayerAnimationState } from "@/types/game/enum/animation";
 import { InputManager } from "@/game/managers/input-manager";
 import { PlayerState } from "@/game/fsm/states/enum/player/player-state";
 import { FiniteStateMachine } from "@/game/fsm/machine/interface/finite-state-machine";
@@ -19,9 +18,6 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   private label = "PLAYER";
   public speed = 2;
 
-  protected currAnimationState: PlayerAnimationState =
-    PlayerAnimationState.IDLE;
-  protected isAttack = false;
   protected isControllable: boolean;
   protected isBeingBorn = true;
   protected isSleep = false;
@@ -33,11 +29,9 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   public targetPosition: { x: number; y: number } = { x: 0, y: 0 };
 
-  protected currentMove = 0;
-
   private lastSentPosition = { x: 0, y: 0 };
   private readonly POSITION_CHANGE_THRESHOLD = 3;
-  io?: TypedSocket;
+  public io?: TypedSocket;
 
   constructor(
     scene: Phaser.Scene,
@@ -89,10 +83,6 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   setSpeed(speed: number) {
     this.speed = speed;
-  }
-
-  getCurrneAnimationState() {
-    return this.currAnimationState;
   }
 
   getIsBeingBorn() {

@@ -2,7 +2,6 @@ import { PAWN, PawnColor } from "@/constants/game/entities";
 import { PAWN_ATTACK, PAWN_IDLE, PAWN_WALK } from "@/game/animations/keys/pawn";
 import { Player } from "@/game/entities/players/player";
 import { InputManager } from "@/game/managers/input-manager";
-import { PlayerAnimationState } from "@/types/game/enum/animation";
 import { AttackType } from "@/types/game/enum/state";
 import { TypedSocket } from "@/types/socket-io";
 import { UserInfo } from "@/types/socket-io/response";
@@ -64,8 +63,6 @@ export class Pawn extends Player {
   }
 
   attack(attackType: AttackType): void {
-    this.currAnimationState = PlayerAnimationState.ATTACK;
-
     if (this.isSleep) {
       this.awake();
     }
