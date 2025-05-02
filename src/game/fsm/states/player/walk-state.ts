@@ -3,12 +3,11 @@ import { PlayerState } from "@/game/fsm/states/enum/player/player-state";
 import { State } from "@/game/fsm/states/interface/state";
 import { Keys } from "@/types/game/enum/key";
 
-export class WalkState extends State<PlayerState> {
+export class WalkState implements State<PlayerState> {
   protected parent: PlayerFSM;
   private spaceKeyJustPressed = false;
 
   constructor(parent: PlayerFSM) {
-    super();
     this.parent = parent;
   }
 

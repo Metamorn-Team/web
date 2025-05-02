@@ -2,11 +2,10 @@ import { RemotePlayerFSM } from "@/game/fsm/machine/player/remote-player-fsm";
 import { PlayerState } from "@/game/fsm/states/enum/player/player-state";
 import { State } from "@/game/fsm/states/interface/state";
 
-export class WalkState extends State<PlayerState> {
+export class WalkState implements State<PlayerState> {
   protected parent: RemotePlayerFSM;
 
   constructor(parent: RemotePlayerFSM) {
-    super();
     this.parent = parent;
   }
 

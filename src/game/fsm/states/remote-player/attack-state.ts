@@ -3,11 +3,10 @@ import { PlayerState } from "@/game/fsm/states/enum/player/player-state";
 import { State } from "@/game/fsm/states/interface/state";
 import { AttackType } from "@/types/game/enum/state";
 
-export class AttackState extends State<PlayerState> {
+export class AttackState implements State<PlayerState> {
   protected parent: RemotePlayerFSM;
 
   constructor(parent: RemotePlayerFSM) {
-    super();
     this.parent = parent;
   }
 
