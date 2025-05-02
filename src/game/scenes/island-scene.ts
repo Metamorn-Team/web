@@ -12,9 +12,10 @@ import { spawnManager } from "@/game/managers/spawn-manager";
 import { Player } from "@/game/entities/players/player";
 import { socketManager } from "@/game/managers/socket-manager";
 import {
-  getItem as getSessionItem,
+  getItem,
+  removeItem,
   removeItem as removeSessionItem,
-  setItem as setSessionItem,
+  setItem,
 } from "@/utils/session-storage";
 import { playerStore } from "@/game/managers/player-store";
 import { tileMapManager } from "@/game/managers/tile-map-manager";
@@ -23,6 +24,7 @@ import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import Alert from "@/utils/alert";
 import { Keys } from "@/types/game/enum/key";
 import { SoundManager } from "@/game/managers/sound-manager";
+import { POSITION_CHANGE_THRESHOLD } from "@/constants/game/threshold";
 
 export class IslandScene extends MetamornScene {
   protected override player: Player;
@@ -34,21 +36,30 @@ export class IslandScene extends MetamornScene {
   private centerOfMap: { x: number; y: number };
 
   private io: Socket<ServerToClient, ClientToServer>;
-  private zoneType: "dev" | "design";
   private socketNsp = SOCKET_NAMESPACES.ISLAND;
+  private currentIslandId?: string;
 
   private isIntentionalDisconnect = false;
+  private islandType: "NORMAL" | "DESERTED";
 
   constructor() {
     super("IslandScene");
   }
 
-  init(data?: { type: "dev" | "design" }) {
-    if (data?.type) {
-      this.zoneType = data.type;
-      setSessionItem("zone_type", data.type);
-    } else {
-      this.zoneType = getSessionItem("zone_type") || "design";
+  init(data: { islandId?: string; type: "NORMAL" | "DESERTED" }) {
+    this.islandType = data.type;
+
+    if (data.type === "NORMAL") {
+      if (data.islandId) {
+        setItem("current_island_id", data.islandId);
+        this.currentIslandId = data.islandId;
+        return;
+      }
+
+      const islandId = getItem("current_island_id");
+      if (!islandId) {
+        this.joinFailed();
+      }
     }
   }
 
@@ -56,20 +67,27 @@ export class IslandScene extends MetamornScene {
     super.create();
     this.initWorld();
 
-    this.io = socketManager.connect(this.socketNsp)!;
-
     this.listenLocalEvents();
+
+    this.initConnection();
     this.listenSocketEvents();
 
-    EventWrapper.emitToUi("current-scene-ready", {
-      scene: this,
-      socketNsp: this.socketNsp,
-    });
     this.registerHearbeatCheck();
     this.isIntentionalDisconnect = false;
 
     SoundManager.init(this);
     SoundManager.getInstance().playBgm(this.bgmKey);
+
+    EventWrapper.emitToUi("current-scene-ready", {
+      scene: this,
+      socketNsp: this.socketNsp,
+    });
+  }
+
+  private hasPositionChangedSignificantly(): boolean {
+    const dx = Math.abs(this.player.x - this.player.lastSentPosition.x);
+    const dy = Math.abs(this.player.y - this.player.lastSentPosition.y);
+    return dx >= POSITION_CHANGE_THRESHOLD || dy >= POSITION_CHANGE_THRESHOLD;
   }
 
   update(): void {
@@ -83,6 +101,16 @@ export class IslandScene extends MetamornScene {
     ) {
       EventWrapper.emitToUi("activeChatInput");
       this.setEnabledKeyboardInput(false);
+    }
+
+    if (this.io && this.hasPositionChangedSignificantly()) {
+      const x = Math.round(this.player.x * 100) / 100;
+      const y = Math.round(this.player.y * 100) / 100;
+
+      this.io.emit("playerMoved", { x, y });
+
+      this.player.lastSentPosition.x = x;
+      this.player.lastSentPosition.y = y;
     }
 
     playerStore
@@ -104,7 +132,6 @@ export class IslandScene extends MetamornScene {
     };
 
     this.matter.world.setBounds(0, 0, this.mapWidth, this.mapHeight);
-
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
     this.cameras.main.setZoom(1.1);
   }
@@ -136,6 +163,8 @@ export class IslandScene extends MetamornScene {
     );
 
     EventWrapper.onGameEvent("left-island", () => {
+      this.io.emit("playerLeft");
+      removeItem("current_island_id");
       this.changeToLoby();
     });
 
@@ -149,19 +178,33 @@ export class IslandScene extends MetamornScene {
   }
 
   listenSocketEvents() {
-    const playerJoinParam = {
-      roomType: this.zoneType,
-      x: this.centerOfMap.x,
-      y: this.centerOfMap.y,
+    const joinIsland = () => {
+      const position = {
+        x: this.centerOfMap.x,
+        y: this.centerOfMap.y,
+      };
+
+      if (this.islandType === "NORMAL") {
+        if (this.currentIslandId) {
+          this.io.emit("playerJoin", {
+            ...position,
+            islandId: this.currentIslandId,
+          });
+          return;
+        }
+
+        this.joinFailed();
+      } else {
+        this.io.emit("joinDesertedIsland", position);
+      }
     };
 
     if (this.io.connected) {
-      this.io.emit("playerJoin", playerJoinParam);
+      joinIsland();
     }
 
     this.io.on("connect", () => {
-      console.log("on connect");
-      this.io.emit("playerJoin", playerJoinParam);
+      joinIsland();
     });
 
     this.io.on("disconnect", () => {
@@ -407,35 +450,44 @@ export class IslandScene extends MetamornScene {
       this.cleanupBeforeLeft();
 
       this.scene.start("LobyScene");
-      removeSessionItem("zone_type");
-      console.log("딜레이콜 완료");
     });
   }
 
   private cleanupBeforeLeft(): void {
-    // 1. 소켓 정리
-    socketManager.disconnect(this.socketNsp);
+    this.removeSocketEvents();
+    this.removeLocalEvents();
 
-    // 2. 플레이어 정리
-    // this.player?.destroy();
     playerStore.clear();
 
-    // 3. 맵 및 물리엔진 정리
     this.map?.destroy();
     this.matter.world.setBounds(0, 0, 0, 0);
 
-    // 4. 사운드/이펙트 정리
     this.sound.stopAll();
     this.tweens.killAll();
 
-    // 5. 이벤트 리스너 정리
+    this.children.each((child) => child.destroy());
+  }
+
+  private removeSocketEvents() {
+    if (!this.io) return;
+
+    this.io.off("connect");
+    this.io.off("disconnect");
+    this.io.off("activePlayers");
+    this.io.off("playerJoin");
+    this.io.off("playerJoinSuccess");
+    this.io.off("playerLeft");
+    this.io.off("playerMoved");
+    this.io.off("attacked");
+    this.io.off("islandHearbeat");
+    this.io.off("playerKicked");
+  }
+
+  private removeLocalEvents() {
     EventWrapper.offGameEvent("mySpeechBubble");
     EventWrapper.offGameEvent("otherSpeechBubble");
     EventWrapper.offGameEvent("left-island");
     EventWrapper.offGameEvent("enableGameKeyboardInput");
-
-    // 6. 모든 게임 객체 제거 - 이건 더 알아봐야할듯
-    this.children.each((child) => child.destroy());
   }
 
   private registerHearbeatCheck() {
@@ -446,5 +498,22 @@ export class IslandScene extends MetamornScene {
         this.io.emit("islandHearbeat");
       },
     });
+  }
+
+  initConnection() {
+    const socket = socketManager.connect(this.socketNsp);
+    if (socket) {
+      this.io = socket;
+    }
+
+    if (!this.io) {
+      EventWrapper.emitToGame("left-island");
+      Alert.error("섬에 도착하지 못 했어요..");
+    }
+  }
+
+  joinFailed() {
+    Alert.error("섬 참여 실패..");
+    this.changeToLoby();
   }
 }

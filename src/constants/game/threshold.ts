@@ -1,1 +1,2 @@
 export const NPC_INTERACTABLE_DISTANCE = 120;
+export const POSITION_CHANGE_THRESHOLD = 3;

@@ -29,8 +29,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   public targetPosition: { x: number; y: number } = { x: 0, y: 0 };
 
-  private lastSentPosition = { x: 0, y: 0 };
-  private readonly POSITION_CHANGE_THRESHOLD = 3;
+  public lastSentPosition = { x: 0, y: 0 };
   public io?: TypedSocket;
 
   constructor(
@@ -113,32 +112,13 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   protected abstract setBodyConfig(): void;
 
-  private hasPositionChangedSignificantly(): boolean {
-    const dx = Math.abs(this.x - this.lastSentPosition.x);
-    const dy = Math.abs(this.y - this.lastSentPosition.y);
-    return (
-      dx >= this.POSITION_CHANGE_THRESHOLD ||
-      dy >= this.POSITION_CHANGE_THRESHOLD
-    );
-  }
-
   update(): void {
-    if (this.isControllable) {
-      const keys = this.inputManager?.getPressedKeys() ?? [];
+    if (this.fsm) {
+      const keys = this.isControllable
+        ? this.inputManager?.getPressedKeys() || []
+        : undefined;
 
-      if (this.fsm) {
-        this.fsm.update(keys);
-      }
-
-      if (this.io && this.hasPositionChangedSignificantly()) {
-        this.io.emit("playerMoved", { x: this.x, y: this.y });
-        this.lastSentPosition.x = this.x;
-        this.lastSentPosition.y = this.y;
-      }
-    } else {
-      if (this.fsm) {
-        this.fsm.update();
-      }
+      this.fsm.update(keys);
     }
 
     this.setSpeechBubblePosition();

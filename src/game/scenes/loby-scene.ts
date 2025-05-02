@@ -13,7 +13,8 @@ import { Phaser } from "@/game/phaser";
 import { MetamornScene } from "@/game/scenes/metamorn-scene";
 import { Keys } from "@/types/game/enum/key";
 import { UserInfo } from "@/types/socket-io/response";
-import { setItem } from "@/utils/session-storage";
+import { ClientToServer, ServerToClient } from "mmorntype";
+import { Socket } from "socket.io-client";
 
 export class LobyScene extends MetamornScene {
   private bgmKey = "woodland-fantasy";
@@ -29,7 +30,8 @@ export class LobyScene extends MetamornScene {
 
   public updateLoadingState: (state: boolean) => void;
 
-  private socketNsp = SOCKET_NAMESPACES.LOBY;
+  private socketNsp = SOCKET_NAMESPACES.ISLAND;
+  private io: Socket<ServerToClient, ClientToServer>;
 
   constructor() {
     super("LobyScene");
@@ -40,6 +42,9 @@ export class LobyScene extends MetamornScene {
   create() {
     super.create();
     this.initWorld();
+
+    this.io = socketManager.connect(this.socketNsp)!;
+    console.log(this.io);
 
     this.spwanMyPlayer();
     this.spawnNpcs();
@@ -107,6 +112,8 @@ export class LobyScene extends MetamornScene {
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
     this.cameras.main.setZoom(1.1);
 
+    this.add.image(520, 600, "ship").setScale(0.6);
+
     EventWrapper.emitToUi("current-scene-ready", {
       scene: this,
       socketNsp: this.socketNsp,
@@ -133,17 +140,23 @@ export class LobyScene extends MetamornScene {
   }
 
   listenEvents() {
-    EventWrapper.offGameEvent("join-island");
+    EventWrapper.onGameEvent("joinDesertedIsland", () => {
+      this.changeToIsland({ type: "DESERTED" });
+    });
 
-    EventWrapper.onGameEvent(
-      "join-island",
-      (data: { type: "dev" | "design" }) => {
-        this.changeToIsland(data);
-      }
-    );
+    EventWrapper.onGameEvent("join-island", (islandId?: string) => {
+      this.changeToIsland({ islandId, type: "NORMAL" });
+    });
+
+    EventWrapper.onGameEvent("createdIsland", (islandId: string) => {
+      this.changeToIsland({ islandId, type: "NORMAL" });
+    });
   }
 
-  private changeToIsland(data: { type: "dev" | "design" }) {
+  private changeToIsland(data: {
+    islandId?: string;
+    type: "NORMAL" | "DESERTED";
+  }) {
     this.cameras.main.fadeOut(500, 0, 0, 0);
 
     this.time.delayedCall(500, () => {
@@ -152,17 +165,19 @@ export class LobyScene extends MetamornScene {
       this.cleanupBeforeLeft();
 
       this.scene.start("IslandScene", data);
-      setItem("zone_type", data.type);
     });
   }
 
   private cleanupBeforeLeft() {
-    socketManager.disconnect(this.socketNsp);
     this.npcGoblin?.destroy();
     this.npcs = [];
     this.mine?.destroy();
     this.sound.stopAll();
     this.map.destroy();
+
+    EventWrapper.offGameEvent("join-island");
+    EventWrapper.offGameEvent("createdIsland");
+    EventWrapper.offGameEvent("joinDesertedIsland");
   }
 
   spawnNpcs() {
