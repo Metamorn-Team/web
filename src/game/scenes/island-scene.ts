@@ -186,7 +186,7 @@ export class IslandScene extends MetamornScene {
 
       if (this.islandType === "NORMAL") {
         if (this.currentIslandId) {
-          this.io.emit("playerJoin", {
+          this.io.emit("joinNormalIsland", {
             ...position,
             islandId: this.currentIslandId,
           });
