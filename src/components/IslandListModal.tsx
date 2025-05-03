@@ -10,6 +10,7 @@ import { socketManager } from "@/game/managers/socket-manager";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { CreatedIslandResponse, LiveIslandItem } from "mmorntype";
 import { EventWrapper } from "@/game/event/EventBus";
+import Image from "next/image";
 
 interface Island {
   id: string;
@@ -24,7 +25,7 @@ interface Island {
 interface IslandListModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectIsland: (islandId: string, password?: string) => void; // 🔥 password optional
+  onSelectIsland: (islandId: string, password?: string) => void;
   onCreateIsland: () => void;
   onJoinRandomIsland: () => void;
 }
@@ -149,7 +150,7 @@ export default function IslandListModal({
           </div>
 
           {/* 중단 */}
-          <div className="flex-1 overflow-y-auto min-h-0 border-t border-b border-[#d2c4d2] py-6">
+          <div className="flex-1 overflow-y-auto scrollbar-hide min-h-0 border-t border-b border-[#d2c4d2] py-6">
             {activeTab === "normal" ? (
               islands.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-2">
@@ -159,12 +160,12 @@ export default function IslandListModal({
                       className="flex flex-col border border-[#d2c4ad] rounded-[6px] bg-[#f9f5ec] shadow-[3px_3px_0_#8c7a5c] overflow-hidden"
                     >
                       <div className="relative w-full aspect-[4/3] bg-[#ebe3d4]">
-                        <img
-                          // src={"/game/maps/images/map-preview.png"}
+                        <Image
                           src={island.coverImage}
+                          fill
                           alt={island.name}
-                          // fill
-                          className="object-cover image-render-pixel"
+                          objectFit="cover"
+                          className="image-render-pixel"
                         />
                         <div className="absolute bottom-2 right-2 bg-[#5c4b32] text-white text-xs px-2 py-1 rounded-[4px] shadow-[2px_2px_0_#3d2c1b]">
                           {island.countParticipants}/{island.maxMembers}명
@@ -185,7 +186,7 @@ export default function IslandListModal({
                           className="w-full mt-4"
                           onClick={() => onJoinIsland(island.id)}
                         >
-                          이 섬으로 이동
+                          섬으로 이동
                         </RetroButton>
                       </div>
                     </div>
