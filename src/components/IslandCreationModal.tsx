@@ -132,6 +132,7 @@ export default function IslandCreationModal({
                 layout="fill"
                 objectFit="cover"
                 className="rounded-lg shadow-md"
+                unoptimized
               />
             ) : (
               <div className="flex flex-col items-center">
