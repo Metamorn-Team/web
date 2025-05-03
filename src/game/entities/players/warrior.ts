@@ -6,7 +6,6 @@ import {
 } from "@/game/animations/keys/warrior";
 import { Player } from "@/game/entities/players/player";
 import { InputManager } from "@/game/managers/input-manager";
-import { PlayerAnimationState } from "@/types/game/enum/animation";
 import { AttackType } from "@/types/game/enum/state";
 import { UserInfo } from "@/types/socket-io/response";
 import type { Socket } from "socket.io-client";
@@ -69,8 +68,6 @@ export class Warrior extends Player {
   }
 
   attack(attackType: AttackType): void {
-    this.currAnimationState = PlayerAnimationState.ATTACK;
-
     if (this.isSleep) {
       this.awake();
     }
