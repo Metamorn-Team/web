@@ -123,7 +123,7 @@ export class Mine extends Phaser.Physics.Matter.Sprite {
   protected startInteraction() {
     this.isInteractedWithPlayer = true;
 
-    EventWrapper.emitToUi("request-join-island", { type: this.zoneType });
+    EventWrapper.emitToUi("request-join-island");
   }
 
   destroy(fromScene?: boolean): void {
