@@ -27,7 +27,7 @@ export interface GameToUiEvent {
   "finish-change-scene": () => void;
   "npc-interaction-started": (data: { npc: Npc; type: "guide" }) => void;
   "player-click": (userInfo: UserInfo) => void;
-  "request-join-island": (data: { type: "dev" | "design" }) => void;
+  "request-join-island": () => void;
   updateParticipantsPanel: () => void;
   newPlayer: (data: PlayerJoinResponse) => void;
   playerLeftChat: (data: PlayerLeftResponse) => void;
@@ -36,15 +36,19 @@ export interface GameToUiEvent {
   updateOnlineStatus: (data: IslandHeartbeatResponse) => void;
   initBgmStatus: (isPlay: boolean) => void;
   blurChatInput: () => void;
+  openIslandList: () => void;
 }
 
 export interface UiToGameEvent {
   mySpeechBubble: (data: MessageSent) => void;
   otherSpeechBubble: (data: ReceiveMessage) => void;
   "left-island": () => void;
-  "join-island": (data: { type: "dev" | "design" }) => void;
+  "join-island": (islandId?: string) => void;
+  joinDesertedIsland: () => void;
   playBgmToggle: () => void;
   enableGameKeyboardInput: () => void;
+  createdIsland: (islandId: string) => void;
 
   tryOnProduct: (type: string, key: string) => void;
+  goIsland: () => void;
 }
