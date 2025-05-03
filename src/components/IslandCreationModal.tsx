@@ -115,6 +115,7 @@ export default function IslandCreationModal({
         <div className="flex justify-center">
           <input
             type="file"
+            accept="image/*"
             ref={imageInputRef}
             onChange={handleImageChange}
             className="hidden"
