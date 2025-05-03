@@ -90,7 +90,7 @@ export default function AlertProvider() {
           className="fixed top-24 inset-x-0 flex justify-center z-50"
         >
           <div
-            className={`${bg} ${text} border ${border} rounded-lg shadow-lg p-4 flex items-center gap-3 max-w-xs mx-auto`}
+            className={`${bg} ${text} border ${border} rounded-lg shadow-lg p-4 flex items-center gap-3 max-w-lg mx-auto`}
           >
             {iconVisible ? <Icon size={18} /> : null}
             <span className="text-sm font-medium">{message}</span>
