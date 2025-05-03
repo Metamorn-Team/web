@@ -1,5 +1,6 @@
 "use client";
 
+import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { EventWrapper } from "@/game/event/EventBus";
 import { playerStore } from "@/game/managers/player-store";
 import { socketManager } from "@/game/managers/socket-manager";
@@ -41,7 +42,7 @@ export default function ChatPanel() {
   const startHeight = useRef(0);
 
   const collapsedHeight = 40;
-  const nsp = "zone";
+  const nsp = SOCKET_NAMESPACES.ISLAND;
 
   useEffect(() => {
     const handleNewPlayer = (data: PlayerJoinResponse) => {
@@ -91,9 +92,11 @@ export default function ChatPanel() {
     EventWrapper.onUiEvent("blurChatInput", handleBlurChatInput);
 
     const socket = socketManager.connect(nsp);
+    console.log(socket);
     if (!socket) return;
 
     const handleMessageSent = (data: MessageSent) => {
+      console.log(data);
       const { messageId, message } = data;
       const profile = getItem("profile");
 
@@ -111,6 +114,7 @@ export default function ChatPanel() {
     };
 
     const handleReceiveMessage = (data: ReceiveMessage) => {
+      console.log(data);
       const { senderId, message } = data;
       const player = playerStore.getPlayer(senderId);
       const playerInfo = player?.getPlayerInfo();
@@ -206,7 +210,7 @@ export default function ChatPanel() {
       return;
     }
 
-    const socket = socketManager.connect("zone");
+    const socket = socketManager.connect(nsp);
     socket?.emit("sendMessage", { message: input });
     setLastChat(Date.now());
     setInput("");

@@ -24,6 +24,7 @@ import { useAttackedSound } from "@/hook/useAttackedSound";
 import Alert from "@/utils/alert";
 import ParticipantPanel from "@/components/ParticipantsPanel";
 import SettingsModal from "@/components/SettingsModal";
+import IslandListModal from "@/components/IslandListModal";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -69,6 +70,11 @@ export default function GameWrapper({
     onOpen: onSettingsModalOpen,
   } = useModal();
   const [isVisibleChat, setIsVisibleChat] = useState(false);
+  const {
+    isModalOpen: isIslandListModalOpen,
+    onClose: onIslandListModalClose,
+    onOpen: onIslandListModalOpen,
+  } = useModal();
   useAttackedSound();
 
   useEffect(() => {
@@ -119,14 +125,12 @@ export default function GameWrapper({
       onPlayerModalOpen();
     };
 
-    const handleRequestJoinIsland = async (data: {
-      type: "dev" | "design";
-    }) => {
+    const handleRequestJoinIsland = async () => {
       try {
         const userInfo = await getMyProfile();
         persistItem("profile", userInfo);
 
-        EventWrapper.emitToGame("join-island", data);
+        onIslandListModalOpen();
       } catch (e: unknown) {
         if (e instanceof AxiosError) {
           if (e.status === 401 || e.status === 404) {
@@ -222,6 +226,17 @@ export default function GameWrapper({
       <SettingsModal
         isOpen={isSettingsModalOpen}
         onClose={onSettingsModalClose}
+      />
+
+      <IslandListModal
+        isOpen={isIslandListModalOpen}
+        onClose={onIslandListModalClose}
+        onSelectIsland={() => {}}
+        onCreateIsland={() => {}}
+        onJoinRandomIsland={() => {
+          EventWrapper.emitToGame("joinDesertedIsland");
+          onIslandListModalClose();
+        }}
       />
 
       {isVisibleChat ? <ChatPanel /> : null}
