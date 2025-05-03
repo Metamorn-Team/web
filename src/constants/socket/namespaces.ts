@@ -1,4 +1,4 @@
 export const SOCKET_NAMESPACES = {
-  ISLAND: "zone",
+  ISLAND: "island",
   LOBY: "loby",
 };
