@@ -10,7 +10,9 @@ class SocketManager {
   connect(nsp: string) {
     if (!this.store.has(nsp)) {
       const accessToken = getItem("access_token");
-      const socket = io(`${API_BASE_URL}/game/${nsp}`, {
+      const socket = io(`${API_BASE_URL}/${nsp}`, {
+        // parser: msgpackParser,
+        path: "/game",
         auth: {
           authorization: accessToken,
         },
