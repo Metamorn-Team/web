@@ -31,6 +31,7 @@ export default function ChatPanel() {
   const [input, setInput] = useState("");
   const [height, setHeight] = useState(448);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [lastChat, setLastChat] = useState(Date.now());
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -58,6 +59,7 @@ export default function ChatPanel() {
           isSystem: true,
         },
       ]);
+      if (isCollapsed) setUnreadCount((prev) => prev + 1);
     };
 
     const handlePlayerLeftChat = (data: PlayerLeftResponse) => {
@@ -76,6 +78,7 @@ export default function ChatPanel() {
           isSystem: true,
         },
       ]);
+      if (isCollapsed) setUnreadCount((prev) => prev + 1);
     };
 
     const handleActiveChatInput = () => {
@@ -92,11 +95,9 @@ export default function ChatPanel() {
     EventWrapper.onUiEvent("blurChatInput", handleBlurChatInput);
 
     const socket = socketManager.connect(nsp);
-    console.log(socket);
     if (!socket) return;
 
     const handleMessageSent = (data: MessageSent) => {
-      console.log(data);
       const { messageId, message } = data;
       const profile = getItem("profile");
 
@@ -114,7 +115,6 @@ export default function ChatPanel() {
     };
 
     const handleReceiveMessage = (data: ReceiveMessage) => {
-      console.log(data);
       const { senderId, message } = data;
       const player = playerStore.getPlayer(senderId);
       const playerInfo = player?.getPlayerInfo();
@@ -131,6 +131,8 @@ export default function ChatPanel() {
         },
       ]);
 
+      if (isCollapsed) setUnreadCount((prev) => prev + 1);
+
       EventWrapper.emitToGame("otherSpeechBubble", data);
     };
 
@@ -146,7 +148,7 @@ export default function ChatPanel() {
       EventWrapper.offUiEvent("activeChatInput", handleActiveChatInput);
       EventWrapper.offUiEvent("blurChatInput", handleBlurChatInput);
     };
-  }, []);
+  }, [isCollapsed]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -192,7 +194,6 @@ export default function ChatPanel() {
     if (e?.nativeEvent.isComposing) return;
     if (!input.trim()) {
       inputRef.current?.blur();
-
       EventWrapper.emitToGame("enableGameKeyboardInput");
       return;
     }
@@ -216,19 +217,16 @@ export default function ChatPanel() {
     setInput("");
   };
 
+  const toggleCollapse = () => {
+    if (isCollapsed) setUnreadCount(0);
+    setIsCollapsed(!isCollapsed);
+  };
+
   return (
     <div
       ref={panelRef}
-      style={{
-        height: isCollapsed ? collapsedHeight : height,
-      }}
-      className="fixed bottom-4 left-4 w-80
-      bg-[#f9f5ec]/10 hover:bg-[#f9f5ec]/80 
-      backdrop-blur-none hover:backdrop-blur-md 
-      border border-[#d6c6aa]/30 hover:border-[#d6c6aa] 
-      rounded-2xl shadow-none hover:shadow-lg 
-      transition-all duration-300 ease-in-out 
-      z-30 flex flex-col overflow-hidden"
+      style={{ height: isCollapsed ? collapsedHeight : height }}
+      className="fixed bottom-4 left-4 w-80 bg-[#f9f5ec]/10 hover:bg-[#f9f5ec]/80 backdrop-blur-none hover:backdrop-blur-md border border-[#d6c6aa]/30 hover:border-[#d6c6aa] rounded-2xl shadow-none hover:shadow-lg transition-all duration-300 ease-in-out z-30 flex flex-col overflow-hidden"
     >
       {!isCollapsed && (
         <div
@@ -238,10 +236,16 @@ export default function ChatPanel() {
         />
       )}
 
-      <div className="p-4 border-b border-[#d6c6aa] text-[#2a1f14] font-bold text-lg flex justify-between items-center">
-        채팅
+      <div className="p-2 text-[#2a1f14] font-bold text-lg flex justify-end gap-2 items-center relative">
+        <div className="relative">
+          {isCollapsed && unreadCount > 0 && (
+            <span className="w-[22px] h-[22px] text-[10px] px-[4px] text-white bg-red-600 rounded-full flex items-center justify-center animate-pulse">
+              {unreadCount > 99 ? "99+" : unreadCount}
+            </span>
+          )}
+        </div>
         <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={toggleCollapse}
           className="text-[#2a1f14] hover:text-[#7c6f58] transition"
         >
           {isCollapsed ? (
