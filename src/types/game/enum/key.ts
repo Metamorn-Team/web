@@ -5,6 +5,7 @@ export enum Keys {
   RIGHT,
   SPACE,
   ENTER,
+  Z,
   W,
   A,
   S,

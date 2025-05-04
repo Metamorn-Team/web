@@ -58,6 +58,10 @@ export class InputManager {
       Keys.E,
       scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E)
     );
+    this.registerKey(
+      Keys.Z,
+      scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z)
+    );
   }
 
   registerKey(keyEnum: Keys, keyCode: Phaser.Input.Keyboard.Key): void {

@@ -3,7 +3,7 @@ import { PlayerState } from "@/game/fsm/states/enum/player/player-state";
 import { State } from "@/game/fsm/states/interface/state";
 import { Keys } from "@/types/game/enum/key";
 
-export class WalkState implements State<PlayerState> {
+export class JumpState implements State<PlayerState> {
   protected parent: PlayerFSM;
 
   constructor(parent: PlayerFSM) {
@@ -13,17 +13,6 @@ export class WalkState implements State<PlayerState> {
   enter() {}
 
   update(input: Keys[]) {
-    if (input.includes(Keys.Z)) {
-      this.parent.setState(PlayerState.ATTACK);
-      this.parent.gameObject.setVelocity(0, 0);
-      return;
-    }
-
-    if (input.includes(Keys.SPACE)) {
-      this.parent.setState(PlayerState.JUMP);
-      return;
-    }
-
     let velocityX = 0;
     let velocityY = 0;
 
@@ -40,11 +29,6 @@ export class WalkState implements State<PlayerState> {
       velocityX = 1;
     }
 
-    if (velocityX === 0 && velocityY === 0) {
-      this.parent.setState(PlayerState.IDLE);
-      return;
-    }
-
     if (velocityX !== 0 && velocityY !== 0) {
       const length = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
       velocityX /= length;
@@ -56,14 +40,27 @@ export class WalkState implements State<PlayerState> {
     this.parent.gameObject.y =
       this.parent.gameObject.y + velocityY * this.parent.gameObject.speed;
 
-    this.parent.gameObject.walk(
+    this.parent.gameObject.jump(
       velocityX > 0 ? "right" : velocityX < 0 ? "left" : "none"
+    );
+    this.parent.gameObject.once(
+      Phaser.Animations.Events.ANIMATION_COMPLETE,
+      () => {
+        if (velocityX !== 0 || velocityY !== 0) {
+          this.parent.setState(PlayerState.WALK);
+          return;
+        }
+
+        if (velocityX === 0 || velocityY === 0) {
+          this.parent.setState(PlayerState.IDLE);
+        }
+      }
     );
   }
 
   exit() {}
 
   get name() {
-    return PlayerState.WALK;
+    return PlayerState.JUMP;
   }
 }
