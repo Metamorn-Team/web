@@ -80,4 +80,8 @@ export class Warrior extends Player {
 
     if (attackType === AttackType.VISUAL) return;
   }
+
+  public jump(side: "right" | "left" | "none"): void {
+    console.log(side);
+  }
 }

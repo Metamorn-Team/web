@@ -281,4 +281,18 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
       this.fsm.setState(PlayerState.ATTACK);
     }
   }
+
+  onJump(side?: "right" | "left" | "none") {
+    if (this.isControllable) {
+      if (side) {
+        this.jump(side);
+        this.io?.emit("jump");
+      }
+      return;
+    }
+
+    if (this.fsm) {
+      this.fsm.setState(PlayerState.JUMP);
+    }
+  }
 }

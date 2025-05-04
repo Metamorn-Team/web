@@ -270,13 +270,15 @@ export class IslandScene extends MetamornScene {
     });
 
     this.io.on("playerMoved", (data) => {
-      console.log(`on playerMoved: ${JSON.stringify(data, null, 2)}`);
       this.handleSetTargetPosition(data.id, data.x, data.y);
     });
 
     this.io.on("attacked", (data) => {
-      console.log(`on attacked: ${JSON.stringify(data, null, 2)}`);
       this.handleAttacked(data.attackerId, data.attackedPlayerIds);
+    });
+
+    this.io.on("jump", (userId: string) => {
+      this.handleJump(userId);
     });
 
     this.io.on("islandHearbeat", (data) => {
@@ -318,6 +320,13 @@ export class IslandScene extends MetamornScene {
         .map((id) => playerStore.getPlayer(id))
         .forEach((player) => player?.hit());
     });
+  }
+
+  handleJump(userId: string) {
+    const player = playerStore.getPlayer(userId);
+    if (!player) return;
+
+    player.onJump();
   }
 
   handleSetTargetPosition(playerId: string, x: number, y: number) {

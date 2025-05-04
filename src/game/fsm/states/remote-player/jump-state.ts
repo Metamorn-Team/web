@@ -1,9 +1,11 @@
 import { RemotePlayerFSM } from "@/game/fsm/machine/player/remote-player-fsm";
 import { PlayerState } from "@/game/fsm/states/enum/player/player-state";
 import { State } from "@/game/fsm/states/interface/state";
+import { Phaser } from "@/game/phaser";
 
-export class WalkState implements State<PlayerState> {
+export class JumpState implements State<PlayerState> {
   protected parent: RemotePlayerFSM;
+  private isJump = false;
 
   constructor(parent: RemotePlayerFSM) {
     this.parent = parent;
@@ -13,7 +15,9 @@ export class WalkState implements State<PlayerState> {
     return PlayerState.WALK;
   }
 
-  enter(): void {}
+  enter(): void {
+    this.isJump = true;
+  }
 
   update(): void {
     const x = this.parent.gameObject.x;
@@ -22,23 +26,22 @@ export class WalkState implements State<PlayerState> {
 
     const dx = x - targetPosition.x;
 
-    const distance = Phaser.Math.Distance.Between(
-      x,
-      y,
-      targetPosition.x,
-      targetPosition.y
-    );
-
-    // 완벽히 0으로 잘 떨어지지 않음.
-    if (distance < 0.5) {
-      this.parent.setState(PlayerState.IDLE);
-      return;
-    }
-
-    this.parent.gameObject.walk(dx > 0 ? "left" : dx < 0 ? "right" : "none");
     this.parent.gameObject.x = Phaser.Math.Linear(x, targetPosition.x, 0.1);
     this.parent.gameObject.y = Phaser.Math.Linear(y, targetPosition.y, 0.1);
+
+    if (this.isJump) {
+      this.parent.gameObject.jump(dx > 0 ? "left" : dx < 0 ? "right" : "none");
+      this.parent.gameObject.once(
+        Phaser.Animations.Events.ANIMATION_COMPLETE,
+        () => {
+          this.parent.setState(PlayerState.IDLE);
+        }
+      );
+      this.isJump = false;
+    }
   }
 
-  exit(): void {}
+  exit(): void {
+    this.isJump = false;
+  }
 }

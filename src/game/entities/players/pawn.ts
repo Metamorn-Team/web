@@ -83,6 +83,7 @@ export class Pawn extends Player {
 
   public jump(side: "right" | "left" | "none"): void {
     this.play(PAWN_JUMP(this.color), true);
+    this.scene.sound.play("jump");
 
     if (side === "right") {
       this.setFlipX(false);

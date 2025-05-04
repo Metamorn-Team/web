@@ -44,7 +44,7 @@ export class JumpState implements State<PlayerState> {
       this.parent.gameObject.y + velocityY * this.parent.gameObject.speed;
 
     if (this.isJump) {
-      this.parent.gameObject.jump(
+      this.parent.gameObject.onJump(
         velocityX > 0 ? "right" : velocityX < 0 ? "left" : "none"
       );
       this.parent.gameObject.once(
