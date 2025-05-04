@@ -91,9 +91,9 @@ export class IslandScene extends MetamornScene {
   }
 
   update(): void {
-    if (this.player) {
-      this.player.update();
-    }
+    if (!this.player) return;
+
+    this.player.update();
 
     if (
       this.getEnabledKeyboardInput() &&
