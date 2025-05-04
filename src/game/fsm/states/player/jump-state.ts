@@ -5,12 +5,15 @@ import { Keys } from "@/types/game/enum/key";
 
 export class JumpState implements State<PlayerState> {
   protected parent: PlayerFSM;
+  private isJump = false;
 
   constructor(parent: PlayerFSM) {
     this.parent = parent;
   }
 
-  enter() {}
+  enter() {
+    this.isJump = true;
+  }
 
   update(input: Keys[]) {
     let velocityX = 0;
@@ -40,25 +43,30 @@ export class JumpState implements State<PlayerState> {
     this.parent.gameObject.y =
       this.parent.gameObject.y + velocityY * this.parent.gameObject.speed;
 
-    this.parent.gameObject.jump(
-      velocityX > 0 ? "right" : velocityX < 0 ? "left" : "none"
-    );
-    this.parent.gameObject.once(
-      Phaser.Animations.Events.ANIMATION_COMPLETE,
-      () => {
-        if (velocityX !== 0 || velocityY !== 0) {
-          this.parent.setState(PlayerState.WALK);
-          return;
-        }
+    if (this.isJump) {
+      this.parent.gameObject.jump(
+        velocityX > 0 ? "right" : velocityX < 0 ? "left" : "none"
+      );
+      this.parent.gameObject.once(
+        Phaser.Animations.Events.ANIMATION_COMPLETE,
+        () => {
+          if (velocityX !== 0 || velocityY !== 0) {
+            this.parent.setState(PlayerState.WALK);
+            return;
+          }
 
-        if (velocityX === 0 || velocityY === 0) {
-          this.parent.setState(PlayerState.IDLE);
+          if (velocityX === 0 || velocityY === 0) {
+            this.parent.setState(PlayerState.IDLE);
+          }
         }
-      }
-    );
+      );
+      this.isJump = false;
+    }
   }
 
-  exit() {}
+  exit() {
+    this.isJump = false;
+  }
 
   get name() {
     return PlayerState.JUMP;

@@ -130,6 +130,7 @@ export class AssetManager {
     scene.load.audio("store", "/game/sounds/store.mp3");
     scene.load.audio("woodland-fantasy", "/game/sounds/woodland-fantasy.mp3");
     scene.load.audio("hit", "/game/sounds/hit.wav");
+    scene.load.audio("jump", "/game/sounds/jump.wav");
   }
 }
 
