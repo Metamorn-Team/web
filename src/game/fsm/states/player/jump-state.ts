@@ -43,10 +43,18 @@ export class JumpState implements State<PlayerState> {
     this.parent.gameObject.y =
       this.parent.gameObject.y + velocityY * this.parent.gameObject.speed;
 
+    const side = velocityX > 0 ? "right" : velocityX < 0 ? "left" : "none";
+
+    if (side === "right") {
+      this.parent.gameObject.setFlipX(false);
+    }
+
+    if (side === "left") {
+      this.parent.gameObject.setFlipX(true);
+    }
+
     if (this.isJump) {
-      this.parent.gameObject.onJump(
-        velocityX > 0 ? "right" : velocityX < 0 ? "left" : "none"
-      );
+      this.parent.gameObject.onJump(side);
       this.parent.gameObject.once(
         Phaser.Animations.Events.ANIMATION_COMPLETE,
         () => {
