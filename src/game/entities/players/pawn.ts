@@ -73,7 +73,7 @@ export class Pawn extends Player {
     }
 
     this.scene.time.delayedCall(250, () => {
-      this.scene.sound.play("hit");
+      this.scene.sound.play("hit", { volume: 0.1 });
     });
 
     this.play(PAWN_ATTACK(this.color), true);
@@ -83,7 +83,7 @@ export class Pawn extends Player {
 
   public jump(side: "right" | "left" | "none"): void {
     this.play(PAWN_JUMP(this.color), true);
-    this.scene.sound.play("jump", { volume: 0.2 });
+    this.scene.sound.play("jump", { volume: 0.05 });
 
     if (side === "right") {
       this.setFlipX(false);
