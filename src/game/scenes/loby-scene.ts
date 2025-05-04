@@ -193,6 +193,7 @@ export class LobyScene extends MetamornScene {
     EventWrapper.offGameEvent("joinNormalIsland");
     EventWrapper.offGameEvent("createdIsland");
     EventWrapper.offGameEvent("joinDesertedIsland");
+    this.io.off("canJoinIsland");
   }
 
   spawnNpcs() {
