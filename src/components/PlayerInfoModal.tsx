@@ -19,7 +19,7 @@ const PlayerInfoModal = ({
 }: PlayerInfoModalProps) => {
   const { mutate } = useSendFriendRequest();
   const myProfile = getItem("profile");
-  const isMe = myProfile?.id === playerInfo.id || " ";
+  const isMe = (myProfile?.id || " ") === playerInfo.id;
 
   const onSendRequest = () => {
     mutate({ targetUserId: playerInfo.id });
@@ -28,7 +28,7 @@ const PlayerInfoModal = ({
   return (
     <SquareModal onClose={onClose} width={"30%"} className={`${className}`}>
       <div className="w-full h-full flex flex-col items-center justify-between py-6 px-2">
-        <div className="flex flex-col items-center gap-6">
+        <div className="flex flex-col items-center gap-4">
           <div>
             <Image
               src={`/images/avatar/${
