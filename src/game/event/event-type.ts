@@ -43,7 +43,7 @@ export interface UiToGameEvent {
   mySpeechBubble: (data: MessageSent) => void;
   otherSpeechBubble: (data: ReceiveMessage) => void;
   "left-island": () => void;
-  "join-island": (islandId?: string) => void;
+  joinNormalIsland: (islandId: string) => void;
   joinDesertedIsland: () => void;
   playBgmToggle: () => void;
   enableGameKeyboardInput: () => void;

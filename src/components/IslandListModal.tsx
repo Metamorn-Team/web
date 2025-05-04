@@ -82,7 +82,7 @@ export default function IslandListModal({
   const onJoinIsland = (islandId: string) => {
     onCreationModalClose();
     onClose();
-    EventWrapper.emitToGame("join-island", islandId);
+    EventWrapper.emitToGame("joinNormalIsland", islandId);
   };
 
   return (

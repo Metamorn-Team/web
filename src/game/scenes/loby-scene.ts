@@ -13,7 +13,12 @@ import { Phaser } from "@/game/phaser";
 import { MetamornScene } from "@/game/scenes/metamorn-scene";
 import { Keys } from "@/types/game/enum/key";
 import { UserInfo } from "@/types/socket-io/response";
-import { ClientToServer, ServerToClient } from "mmorntype";
+import Alert from "@/utils/alert";
+import {
+  CanJoinIslandResponse,
+  ClientToServer,
+  ServerToClient,
+} from "mmorntype";
 import { Socket } from "socket.io-client";
 
 export class LobyScene extends MetamornScene {
@@ -144,12 +149,22 @@ export class LobyScene extends MetamornScene {
       this.changeToIsland({ type: "DESERTED" });
     });
 
-    EventWrapper.onGameEvent("join-island", (islandId?: string) => {
-      this.changeToIsland({ islandId, type: "NORMAL" });
+    EventWrapper.onGameEvent("joinNormalIsland", (islandId?: string) => {
+      this.io.emit("canJoinIsland", { islandId });
     });
 
     EventWrapper.onGameEvent("createdIsland", (islandId: string) => {
       this.changeToIsland({ islandId, type: "NORMAL" });
+    });
+
+    this.io.on("canJoinIsland", (data: CanJoinIslandResponse) => {
+      const { islandId, canJoin, reason } = data;
+
+      if (canJoin && islandId) {
+        this.changeToIsland({ islandId, type: "NORMAL" });
+        return;
+      }
+      Alert.error(reason || "섬에 참여하지 못했어요..");
     });
   }
 
@@ -175,7 +190,7 @@ export class LobyScene extends MetamornScene {
     this.sound.stopAll();
     this.map.destroy();
 
-    EventWrapper.offGameEvent("join-island");
+    EventWrapper.offGameEvent("joinNormalIsland");
     EventWrapper.offGameEvent("createdIsland");
     EventWrapper.offGameEvent("joinDesertedIsland");
   }
