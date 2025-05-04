@@ -16,7 +16,12 @@ import {
 } from "@/constants/game/sprites/tile";
 import { BORN, DEAD } from "@/game/animations/keys/common";
 import { TREE_IDLE } from "@/game/animations/keys/objects/tree";
-import { PAWN_ATTACK, PAWN_IDLE, PAWN_WALK } from "@/game/animations/keys/pawn";
+import {
+  PAWN_ATTACK,
+  PAWN_IDLE,
+  PAWN_JUMP,
+  PAWN_WALK,
+} from "@/game/animations/keys/pawn";
 import { TORCH_GOBLIN_IDLE } from "@/game/animations/keys/torch-goblin";
 import {
   WARRIOR_ATTACK,
@@ -102,6 +107,15 @@ export const defineAnimation = (scene: Phaser.Scene) => {
         end: 17,
       }),
       frameRate: 13,
+    });
+
+    scene.anims.create({
+      key: PAWN_JUMP(color),
+      frames: scene.anims.generateFrameNumbers(PAWN(color), {
+        start: 36,
+        end: 41,
+      }),
+      frameRate: 15,
     });
   });
 

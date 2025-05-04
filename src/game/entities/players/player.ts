@@ -129,6 +129,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   public abstract walk(side: "right" | "left" | "none"): void;
   public abstract idle(): void;
   public abstract attack(attackTtype?: AttackType): void;
+  public abstract jump(side: "right" | "left" | "none"): void;
 
   hit() {
     this.setTintFill(0xffffff);
@@ -267,7 +268,6 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   onWalk(x: number, y: number) {
     this.targetPosition.x = x;
     this.targetPosition.y = y;
-    console.log(this.targetPosition);
   }
 
   onAttack() {

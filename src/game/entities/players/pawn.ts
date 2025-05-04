@@ -1,5 +1,10 @@
 import { PAWN, PawnColor } from "@/constants/game/entities";
-import { PAWN_ATTACK, PAWN_IDLE, PAWN_WALK } from "@/game/animations/keys/pawn";
+import {
+  PAWN_ATTACK,
+  PAWN_IDLE,
+  PAWN_JUMP,
+  PAWN_WALK,
+} from "@/game/animations/keys/pawn";
 import { Player } from "@/game/entities/players/player";
 import { InputManager } from "@/game/managers/input-manager";
 import { AttackType } from "@/types/game/enum/state";
@@ -74,5 +79,17 @@ export class Pawn extends Player {
     this.play(PAWN_ATTACK(this.color), true);
 
     if (attackType === AttackType.VISUAL) return;
+  }
+
+  public jump(side: "right" | "left" | "none"): void {
+    this.play(PAWN_JUMP(this.color), true);
+
+    if (side === "right") {
+      this.setFlipX(false);
+    }
+
+    if (side === "left") {
+      this.setFlipX(true);
+    }
   }
 }
