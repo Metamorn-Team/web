@@ -30,13 +30,13 @@ const PlayerInfoModal = ({
   const myProfile = getItem("profile");
   const isMe = (myProfile?.id || " ") === playerInfo.id;
 
-  const { mutate: sendRequest } = useSendFriendRequest(() => {
+  const onSuccess = () =>
     queryClient.invalidateQueries({
       queryKey: [USER_QUERY_KEY, playerInfo.id],
     });
-  });
-
-  const { mutate: updateBio } = useChangeBio(() => {
+  const { mutate: sendRequest } = useSendFriendRequest(onSuccess);
+  const { mutate: changeBio } = useChangeBio(() => {
+    onSuccess();
     setIsEditing(false);
   });
 
@@ -119,7 +119,7 @@ const PlayerInfoModal = ({
                     ✏️ 수정
                   </button>
                 )}
-                {bio ? `💬 ${bio}` : "💬 자기소개가 아직 없어요!"}
+                {user.bio ? `💬 ${user.bio}` : "💬 자기소개가 아직 없어요!"}
               </>
             )}
 
@@ -143,7 +143,9 @@ const PlayerInfoModal = ({
                     취소
                   </button>
                   <button
-                    onClick={() => updateBio({ bio })}
+                    onClick={() =>
+                      changeBio({ bio: bio.trim().length === 0 ? null : bio })
+                    }
                     className="px-2 py-1 rounded bg-[#bfae96] text-white hover:bg-[#a39179]"
                   >
                     저장
