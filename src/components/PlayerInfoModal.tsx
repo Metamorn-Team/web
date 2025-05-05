@@ -60,18 +60,34 @@ const PlayerInfoModal = ({
           />
         );
       case "SENT":
-        return <p>친구 요청 보냄</p>;
+        return <p>수락 대기중</p>;
       case "RECEIVED":
         return <p>친구 요청 받음</p>;
       case "ACCEPTED":
-        return <p>친구</p>;
+        return (
+          <div className="relative w-24 h-12">
+            <Image
+              src={"/images/pawn_friend.png"}
+              fill
+              objectFit="cover"
+              alt="친구"
+            />
+            <p className="absolute -bottom-5 right-1/2 translate-x-1/2 text-lg">
+              친구
+            </p>
+          </div>
+        );
       default:
         return null;
     }
   };
 
   return (
-    <SquareModal onClose={onClose} width={"30%"} className={`${className}`}>
+    <SquareModal
+      onClose={onClose}
+      width={"30%"}
+      className={`${className} min-w-[500px]`}
+    >
       <div className="w-full h-full flex flex-col items-center justify-between py-6 px-2">
         <div className="flex flex-col items-center gap-4">
           <div>
@@ -93,7 +109,7 @@ const PlayerInfoModal = ({
           </div>
 
           <div className="w-full bg-[#f9f5ec] border border-[#d6c6aa] rounded-md px-5 py-5 text-sm text-[#5c4b32] text-center shadow-inner max-w-[340px]">
-            💬 {"자기소개가 아직 없어요!"}
+            💬{"자기소개가 아직 없어요!"}
           </div>
         </div>
 
