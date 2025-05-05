@@ -120,33 +120,47 @@ export default function IslandListModal({
             </div>
 
             {/* 검색 및 태그 */}
-            {activeTab === "normal" && (
-              <div className="flex flex-wrap items-center gap-2">
-                <RetroInput
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  placeholder="섬 검색..."
-                  className="w-full sm:w-60"
-                />
-                <div className="flex flex-wrap gap-2">
-                  {tags.map((tag) => (
-                    <button
-                      key={tag}
-                      onClick={() =>
-                        setSelectedTag(selectedTag === tag ? null : tag)
-                      }
-                      className={`text-xs px-2 py-1 rounded border transition ${
-                        selectedTag === tag
-                          ? "bg-[#bfae96] text-white border-[#5c4b32]"
-                          : "bg-[#f3ece1] text-[#5c4b32] border-[#5c4b32]"
-                      } shadow-[2px_2px_0_#5c4b32] hover:bg-[#e8e0d0]`}
-                    >
-                      {tag}
-                    </button>
-                  ))}
+            <div className="flex justify-between">
+              {activeTab === "normal" && (
+                <div className="flex flex-wrap items-center gap-2">
+                  <RetroInput
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    placeholder="섬 검색..."
+                    className="w-full sm:w-60"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    {tags.map((tag) => (
+                      <button
+                        key={tag}
+                        onClick={() =>
+                          setSelectedTag(selectedTag === tag ? null : tag)
+                        }
+                        className={`text-xs px-2 py-1 rounded border transition ${
+                          selectedTag === tag
+                            ? "bg-[#bfae96] text-white border-[#5c4b32]"
+                            : "bg-[#f3ece1] text-[#5c4b32] border-[#5c4b32]"
+                        } shadow-[2px_2px_0_#5c4b32] hover:bg-[#e8e0d0]`}
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+              <button
+                onClick={() => {
+                  const socket = socketManager.connect(
+                    SOCKET_NAMESPACES.ISLAND
+                  );
+                  socket?.emit("getActiveIslands", { page: 1, limit: 10 });
+                }}
+                className="text-xs px-2 py-1 rounded border border-[#5c4b32] bg-[#f3ece1] text-[#5c4b32] shadow-[2px_2px_0_#5c4b32] hover:bg-[#e8e0d0]"
+                title="섬 목록 새로고침"
+              >
+                새로고침
+              </button>
+            </div>
           </div>
 
           {/* 중단 */}
