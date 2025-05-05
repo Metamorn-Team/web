@@ -19,12 +19,12 @@ import LoginModal from "@/components/login/LoginModal";
 import { getMyProfile } from "@/api/user";
 import { persistItem } from "@/utils/persistence";
 import ChatPanel from "@/components/ChatPanel";
-import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { useAttackedSound } from "@/hook/useAttackedSound";
 import Alert from "@/utils/alert";
 import ParticipantPanel from "@/components/ParticipantsPanel";
 import SettingsModal from "@/components/SettingsModal";
 import IslandListModal from "@/components/IslandListModal";
+import { ISLAND_SCENE } from "@/constants/game/islands/island";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -82,7 +82,7 @@ export default function GameWrapper({
       scene: Phaser.Scene;
       socketNsp?: string;
     }) => {
-      const { socketNsp } = data;
+      const { scene } = data;
 
       if (gameRef.current) {
         setItem("current_scene", data.scene.scene.key);
@@ -91,7 +91,7 @@ export default function GameWrapper({
 
         changeIsLoading(false);
 
-        if (socketNsp === SOCKET_NAMESPACES.ISLAND) {
+        if (scene.sys.settings.key === ISLAND_SCENE) {
           setIsVisibleChat(true);
         } else {
           setIsVisibleChat(false);
