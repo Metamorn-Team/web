@@ -6,7 +6,7 @@ import {
   WARRIOR,
   warriorColors,
 } from "@/constants/game/entities";
-import { TREE } from "@/constants/game/sprites/nature";
+import { SKULL_SIGN, TREE } from "@/constants/game/sprites/nature";
 import {
   FOAM,
   ROCK_L,
@@ -118,6 +118,7 @@ export class AssetManager {
     scene.load.image("bone2", "/game/tiles/tiny-sward/bone2.png");
 
     scene.load.image("bridge", "/game/tiles/tiny-sward/bridge.png");
+    scene.load.image(SKULL_SIGN, "/game/tiles/tiny-sward/skull-sign.png");
   }
 
   loadImages(scene: Phaser.Scene) {

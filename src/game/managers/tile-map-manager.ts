@@ -1,4 +1,5 @@
 import { FOAM, ROCK_L, ROCK_M, ROCK_S } from "@/constants/game/sprites/tile";
+import { skullSpawner } from "@/game/managers/spawners/skull-sign-spawner";
 import { treeSpawner } from "@/game/managers/tree-spawner";
 import { Phaser } from "@/game/phaser";
 
@@ -153,6 +154,8 @@ class TileMapManager {
     ]);
 
     this.setRectanleCollisionObjects(map);
+
+    skullSpawner.spawnSkullSign(this.scene, 16, 7);
   }
 
   setRectanleCollisionObjects(map: Phaser.Tilemaps.Tilemap) {
