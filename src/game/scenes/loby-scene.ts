@@ -1,4 +1,5 @@
 import { INITIAL_PROFILE } from "@/constants/game/initial-profile";
+import { ISLAND_SCENE, LOBY_SCENE } from "@/constants/game/islands/island";
 import { NPC_INTERACTABLE_DISTANCE } from "@/constants/game/threshold";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { Npc } from "@/game/entities/npc/npc";
@@ -25,7 +26,6 @@ export class LobyScene extends MetamornScene {
   private bgmKey = "woodland-fantasy";
   private npcGoblin: TorchGoblin;
   private mine: Mine;
-
   private npcs: Npc[] = [];
 
   private map: Phaser.Tilemaps.Tilemap;
@@ -33,13 +33,11 @@ export class LobyScene extends MetamornScene {
   private mapHeight: number;
   private centerOfMap: { x: number; y: number };
 
-  public updateLoadingState: (state: boolean) => void;
-
   private socketNsp = SOCKET_NAMESPACES.ISLAND;
   private io: Socket<ServerToClient, ClientToServer>;
 
   constructor() {
-    super("LobyScene");
+    super(LOBY_SCENE);
   }
 
   preload() {}
@@ -49,17 +47,11 @@ export class LobyScene extends MetamornScene {
     this.initWorld();
 
     this.io = socketManager.connect(this.socketNsp)!;
-    console.log(this.io);
 
     this.spwanMyPlayer();
     this.spawnNpcs();
 
-    this.mine = new Mine(
-      this,
-      this.centerOfMap.x,
-      this.centerOfMap.y - 200,
-      "dev"
-    );
+    this.mine = new Mine(this, this.centerOfMap.x, this.centerOfMap.y - 200);
 
     this.listenEvents();
 
@@ -118,8 +110,6 @@ export class LobyScene extends MetamornScene {
 
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
     this.cameras.main.setZoom(1.1);
-
-    this.add.image(520, 600, "ship").setScale(0.6);
   }
 
   async spwanMyPlayer() {
@@ -174,9 +164,9 @@ export class LobyScene extends MetamornScene {
     this.time.delayedCall(500, () => {
       EventWrapper.emitToUi("start-change-scene");
 
+      this.scene.stop(LOBY_SCENE);
       this.cleanupBeforeLeft();
-
-      this.scene.start("IslandScene", data);
+      this.scene.start(ISLAND_SCENE, data);
     });
   }
 

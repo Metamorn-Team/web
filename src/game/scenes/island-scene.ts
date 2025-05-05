@@ -25,6 +25,7 @@ import Alert from "@/utils/alert";
 import { Keys } from "@/types/game/enum/key";
 import { SoundManager } from "@/game/managers/sound-manager";
 import { POSITION_CHANGE_THRESHOLD } from "@/constants/game/threshold";
+import { ISLAND_SCENE, LOBY_SCENE } from "@/constants/game/islands/island";
 
 export class IslandScene extends MetamornScene {
   protected override player: Player;
@@ -43,7 +44,7 @@ export class IslandScene extends MetamornScene {
   private islandType: "NORMAL" | "DESERTED";
 
   constructor() {
-    super("IslandScene");
+    super(ISLAND_SCENE);
   }
 
   init(data: { islandId?: string; type: "NORMAL" | "DESERTED" }) {
@@ -456,9 +457,9 @@ export class IslandScene extends MetamornScene {
     this.time.delayedCall(500, () => {
       EventWrapper.emitToUi("start-change-scene");
 
+      this.scene.stop(ISLAND_SCENE);
       this.cleanupBeforeLeft();
-
-      this.scene.start("LobyScene");
+      this.scene.start(LOBY_SCENE);
     });
   }
 
