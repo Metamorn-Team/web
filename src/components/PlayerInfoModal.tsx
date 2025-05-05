@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Button from "@/components/common/Button";
 import SquareModal from "@/components/common/SquareModal";
 import { UserInfo } from "@/types/socket-io/response";
 import { useSendFriendRequest } from "@/hook/queries/useSendFriendRequest";
 import { getItem } from "@/utils/persistence";
-import { FriendRequestStatus } from "mmorntype/dist/src/presentation/dto/shared";
-import { useCheckFriendRequestStatus } from "@/hook/queries/useCheckFriendRequestStatus";
 import { useQueryClient } from "@tanstack/react-query";
-import { QUERY_KEY as FRIEND_STATUS_QUERY_KEY } from "@/hook/queries/useCheckFriendRequestStatus";
+import { QUERY_KEY as USER_QUERY_KEY } from "@/hook/queries/useGetUserProfile";
+import { useChangeBio } from "@/hook/queries/useChangeBio";
+import { useGetUserProfile } from "@/hook/queries/useGetUserProfile";
 
 interface PlayerInfoModalProps {
   playerInfo: UserInfo;
@@ -22,33 +22,34 @@ const PlayerInfoModal = ({
   className,
 }: PlayerInfoModalProps) => {
   const queryClient = useQueryClient();
-  const { data } = useCheckFriendRequestStatus(playerInfo.id);
-  const [status, setStatus] = useState<FriendRequestStatus | null>(null);
+  const { data: user, isLoading } = useGetUserProfile(playerInfo.id);
 
-  const onSuccess = () => {
-    queryClient.invalidateQueries({
-      queryKey: [FRIEND_STATUS_QUERY_KEY, playerInfo.id],
-    });
-  };
+  const [isEditing, setIsEditing] = useState(false);
+  const [bio, setBio] = useState<string>("");
 
-  const { mutate } = useSendFriendRequest(onSuccess);
   const myProfile = getItem("profile");
   const isMe = (myProfile?.id || " ") === playerInfo.id;
 
+  const { mutate: sendRequest } = useSendFriendRequest(() => {
+    queryClient.invalidateQueries({
+      queryKey: [USER_QUERY_KEY, playerInfo.id],
+    });
+  });
+
+  const { mutate: updateBio } = useChangeBio(() => {
+    setIsEditing(false);
+  });
+
   const onSendRequest = () => {
-    mutate({ targetUserId: playerInfo.id });
+    sendRequest({ targetUserId: playerInfo.id });
   };
 
-  useEffect(() => {
-    if (data) {
-      setStatus(data.status);
-    }
-  }, [data]);
+  if (isLoading || !user) return <p>불러오는 중..</p>;
 
   const renderFriendButton = () => {
     if (isMe) return null;
 
-    switch (status) {
+    switch (user.friendStatus) {
       case "NONE":
         return (
           <Button
@@ -92,24 +93,64 @@ const PlayerInfoModal = ({
         <div className="flex flex-col items-center gap-4">
           <div>
             <Image
-              src={`/images/avatar/${
-                playerInfo.avatarKey || "purple_pawn"
-              }.png`}
+              src={`/images/avatar/${user.avatarKey || "purple_pawn"}.png`}
               width={64}
               height={64}
               alt="avatar"
             />
           </div>
           <div className="flex flex-col items-center">
-            <div className="text-xl font-bold">{playerInfo.nickname}</div>
+            <div className="text-xl font-bold">{user.nickname}</div>
 
-            <div className="text-sm text-[#5c4b32] bg-[#f9f5ec] border border-[#d6c6aa]  rounded-full px-3 py-1">
-              @{playerInfo.tag}
+            <div className="text-sm text-[#5c4b32] bg-[#f9f5ec] border border-[#d6c6aa] rounded-full px-3 py-1">
+              @{user.tag}
             </div>
           </div>
 
-          <div className="w-full bg-[#f9f5ec] border border-[#d6c6aa] rounded-md px-5 py-5 text-sm text-[#5c4b32] text-center shadow-inner max-w-[340px]">
-            💬{"자기소개가 아직 없어요!"}
+          {/* 자기소개 영역 */}
+          <div className="relative w-full bg-[#f9f5ec] border border-[#d6c6aa] rounded-md px-5 py-5 text-sm text-[#5c4b32] text-center shadow-inner max-w-[340px]">
+            {!isEditing && (
+              <>
+                {isMe && (
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="absolute top-1 right-2 text-xs text-[#5c4b32] hover:underline"
+                  >
+                    ✏️ 수정
+                  </button>
+                )}
+                {bio ? `💬 ${bio}` : "💬 자기소개가 아직 없어요!"}
+              </>
+            )}
+
+            {isEditing && (
+              <div className="flex flex-col gap-2">
+                <textarea
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  maxLength={300}
+                  className="w-full p-2 border border-[#d6c6aa] rounded text-sm resize-none"
+                  rows={4}
+                />
+                <div className="flex justify-end gap-2 text-sm">
+                  <button
+                    onClick={() => {
+                      setBio("");
+                      setIsEditing(false);
+                    }}
+                    className="px-2 py-1 rounded bg-gray-200 text-gray-800 hover:bg-gray-300"
+                  >
+                    취소
+                  </button>
+                  <button
+                    onClick={() => updateBio({ bio })}
+                    className="px-2 py-1 rounded bg-[#bfae96] text-white hover:bg-[#a39179]"
+                  >
+                    저장
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

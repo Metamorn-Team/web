@@ -1,6 +1,7 @@
 import { http } from "@/api/http";
 import { Provider } from "@/types/client/unions";
 import {
+  ChangeBioRequest,
   GetGoldBalance,
   GetUserResponse,
   SearchUserResponse,
@@ -32,6 +33,11 @@ export const getMyProfile = async () => {
   return response.data;
 };
 
+export const getProfile = async (userId: string) => {
+  const response = await http.get<GetUserResponse>(`/users/${userId}`);
+  return response.data;
+};
+
 export const getMyGoldBalance = async () => {
   const response = await http.get<GetGoldBalance>("/users/gold");
   return response.data;
@@ -42,4 +48,8 @@ export const searchUsers = async (query: SearchUsersRequest) => {
     params: query,
   });
   return response.data;
+};
+
+export const changeBio = async (body: ChangeBioRequest) => {
+  return await http.patch("/users/bio", body);
 };

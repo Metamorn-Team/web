@@ -109,7 +109,7 @@ export default function IslandCreationModal({
       <div className="flex flex-col gap-6 max-w-lg mx-auto">
         {/* 섬 생성 타이틀 */}
         <h3 className="text-3xl font-semibold text-[#2a1f14] text-center">
-          🌴 새 섬 만들기
+          🏝️ 섬 만들기
         </h3>
         {/* 커버 이미지 */}
         <div className="flex justify-center">
