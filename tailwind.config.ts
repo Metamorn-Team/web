@@ -61,6 +61,7 @@ export default {
         goblinTorch: "goblinTorchAnim 0.6s step(7) infinite",
         pawn: "pawnAnim 0.6s steps(6) infinite",
         fadeIn: "fadeIn 0.3s",
+        spinOnce: "spinOnce 0.7s ease-in-out",
       },
       keyframes: {
         fireAnim: {
@@ -78,6 +79,14 @@ export default {
         pawnAnim: {
           from: { backgroundPosition: "0% 0%" },
           to: { backgroundPosition: "-600% 0%" },
+        },
+        spinOnce: {
+          from: {
+            transform: "rotate(0deg)",
+          },
+          to: {
+            transform: "rotate(-360deg)",
+          },
         },
       },
     },
