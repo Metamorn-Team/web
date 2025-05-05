@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import { FiRotateCcw } from "react-icons/fi";
 import RetroModal from "@/components/common/RetroModal";
 import RetroButton from "@/components/common/RetroButton";
 import RetroInput from "@/components/common/RetroInput";
@@ -10,7 +12,6 @@ import { socketManager } from "@/game/managers/socket-manager";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { CreatedIslandResponse, LiveIslandItem } from "mmorntype";
 import { EventWrapper } from "@/game/event/EventBus";
-import Image from "next/image";
 
 interface Island {
   id: string;
@@ -41,6 +42,7 @@ export default function IslandListModal({
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"normal" | "random">("normal");
   const [islands, setIslands] = useState<Island[]>([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const {
     isModalOpen: isCreationModalOpen,
@@ -83,6 +85,16 @@ export default function IslandListModal({
     onCreationModalClose();
     onClose();
     EventWrapper.emitToGame("joinNormalIsland", islandId);
+  };
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    const socket = socketManager.connect(SOCKET_NAMESPACES.ISLAND);
+    socket?.emit("getActiveIslands", { page: 1, limit: 10 });
+
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 600);
   };
 
   return (
@@ -148,18 +160,23 @@ export default function IslandListModal({
                   </div>
                 </div>
               )}
-              <button
-                onClick={() => {
-                  const socket = socketManager.connect(
-                    SOCKET_NAMESPACES.ISLAND
-                  );
-                  socket?.emit("getActiveIslands", { page: 1, limit: 10 });
-                }}
-                className="text-xs px-2 py-1 rounded border border-[#5c4b32] bg-[#f3ece1] text-[#5c4b32] shadow-[2px_2px_0_#5c4b32] hover:bg-[#e8e0d0]"
-                title="섬 목록 새로고침"
-              >
-                새로고침
-              </button>
+
+              {activeTab == "normal" ? (
+                <button
+                  onClick={handleRefresh}
+                  className="text-xs px-2 py-1 rounded border border-[#5c4b32] bg-[#f3ece1] text-[#5c4b32] shadow-[2px_2px_0_#5c4b32] hover:bg-[#e8e0d0] flex items-center gap-1"
+                  title="섬 목록 새로고침"
+                >
+                  <FiRotateCcw
+                    width={32}
+                    hanging={32}
+                    className={`transition-transform duration-100 ${
+                      isRefreshing ? "animate-spinOnce" : ""
+                    }`}
+                  />
+                  새로고침
+                </button>
+              ) : null}
             </div>
           </div>
 
