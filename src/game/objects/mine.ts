@@ -5,19 +5,10 @@ export class Mine extends Phaser.Physics.Matter.Sprite {
   private interactionSensor: MatterJS.BodyType; // free 대상
   private interactionIndicator: Phaser.GameObjects.Text; // free 대상
   private isPlayerInRange = false;
-  private isInteractedWithPlayer = false;
   private interactKey: Phaser.Input.Keyboard.Key;
 
-  private zoneType: "dev" | "design";
-
-  constructor(
-    scene: Phaser.Scene,
-    x: number,
-    y: number,
-    zoneType: "dev" | "design"
-  ) {
+  constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene.matter.world, x, y, "mine");
-    this.zoneType = zoneType;
     scene.add.existing(this);
     this.setRectangle(150, 80);
     this.setStatic(true);
@@ -121,8 +112,6 @@ export class Mine extends Phaser.Physics.Matter.Sprite {
   }
 
   protected startInteraction() {
-    this.isInteractedWithPlayer = true;
-
     EventWrapper.emitToUi("request-join-island");
   }
 

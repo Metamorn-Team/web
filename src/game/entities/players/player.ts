@@ -177,7 +177,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     if (this.playerNameText) {
       this.playerNameText.setPosition(
         this.x,
-        this.y - this.displayHeight / 2 + 20
+        this.y - this.displayHeight / 2 + 30
       );
     }
   }
