@@ -65,6 +65,8 @@ export class LobyScene extends MetamornScene {
 
     SoundManager.init(this);
     SoundManager.getInstance().playBgm(this.bgmKey);
+
+    this.ready(this.socketNsp);
   }
 
   update(): void {
@@ -118,11 +120,6 @@ export class LobyScene extends MetamornScene {
     this.cameras.main.setZoom(1.1);
 
     this.add.image(520, 600, "ship").setScale(0.6);
-
-    EventWrapper.emitToUi("current-scene-ready", {
-      scene: this,
-      socketNsp: this.socketNsp,
-    });
   }
 
   async spwanMyPlayer() {

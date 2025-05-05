@@ -119,6 +119,8 @@ class TileMapManager {
 
   createLobyMapLayers(map: Phaser.Tilemaps.Tilemap) {
     const waterTileset = map.addTilesetImage("water", "water");
+    const shadowTileset = map.addTilesetImage("shadow", "shadow");
+
     const stonTileset = map.addTilesetImage("elevation", "elevation");
     const bone1Tileset = map.addTilesetImage("bone1", "bone1");
     const bone2ileset = map.addTilesetImage("bone2", "bone2");
@@ -128,6 +130,19 @@ class TileMapManager {
     const mushroomSTileset = map.addTilesetImage("mushroom-s", "mushroom-s");
 
     map.createLayer("water", waterTileset!);
+    map.createLayer("shadow", shadowTileset!);
+
+    const foamLayer = map.createLayer("foam", shadowTileset!);
+    const foams = foamLayer?.createFromTiles(55, -1, {
+      key: FOAM,
+      origin: 0.33,
+    });
+    console.log(foams);
+
+    if (foams) {
+      this.scene.anims.staggerPlay(FOAM, foams, 50);
+    }
+
     map.createLayer("ston", stonTileset!);
     map.createLayer("bone", [bone1Tileset!, bone2ileset!]);
     map.createLayer("bridge", bridgeileset!);
