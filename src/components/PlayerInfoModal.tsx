@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Button from "@/components/common/Button";
 import SquareModal from "@/components/common/SquareModal";
 import { UserInfo } from "@/types/socket-io/response";
 import { useSendFriendRequest } from "@/hook/queries/useSendFriendRequest";
 import { getItem } from "@/utils/persistence";
+import { FriendRequestStatus } from "mmorntype/dist/src/presentation/dto/shared";
+import { useCheckFriendRequestStatus } from "@/hook/queries/useCheckFriendRequestStatus";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEY as FRIEND_STATUS_QUERY_KEY } from "@/hook/queries/useCheckFriendRequestStatus";
 
 interface PlayerInfoModalProps {
   playerInfo: UserInfo;
@@ -17,12 +21,53 @@ const PlayerInfoModal = ({
   playerInfo,
   className,
 }: PlayerInfoModalProps) => {
-  const { mutate } = useSendFriendRequest();
+  const queryClient = useQueryClient();
+  const { data } = useCheckFriendRequestStatus(playerInfo.id);
+  const [status, setStatus] = useState<FriendRequestStatus | null>(null);
+
+  const onSuccess = () => {
+    queryClient.invalidateQueries({
+      queryKey: [FRIEND_STATUS_QUERY_KEY, playerInfo.id],
+    });
+  };
+
+  const { mutate } = useSendFriendRequest(onSuccess);
   const myProfile = getItem("profile");
   const isMe = (myProfile?.id || " ") === playerInfo.id;
 
   const onSendRequest = () => {
     mutate({ targetUserId: playerInfo.id });
+  };
+
+  useEffect(() => {
+    if (data) {
+      setStatus(data.status);
+    }
+  }, [data]);
+
+  const renderFriendButton = () => {
+    if (isMe) return null;
+
+    switch (status) {
+      case "NONE":
+        return (
+          <Button
+            color="yellow"
+            onClick={onSendRequest}
+            title="친구 요청"
+            width={"40%"}
+            fontSize={"text-sm"}
+          />
+        );
+      case "SENT":
+        return <p>친구 요청 보냄</p>;
+      case "RECEIVED":
+        return <p>친구 요청 받음</p>;
+      case "ACCEPTED":
+        return <p>친구</p>;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -52,15 +97,7 @@ const PlayerInfoModal = ({
           </div>
         </div>
 
-        {!isMe ? (
-          <Button
-            color="yellow"
-            onClick={onSendRequest}
-            title="친구 요청"
-            width={"40%"}
-            fontSize={"text-sm"}
-          />
-        ) : null}
+        {renderFriendButton()}
       </div>
     </SquareModal>
   );

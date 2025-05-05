@@ -1,5 +1,6 @@
 import { http } from "@/api/http";
 import {
+  CheckFriendshipResponse,
   GetFriendRequestListRequest,
   GetFriendRequestsResponse,
   GetFriendsRequest,
@@ -37,6 +38,13 @@ export const rejectFriend = async (requestId: string) => {
 export const getFriends = async (query: GetFriendsRequest) => {
   const response = await http.get<GetFriendsResponse>("/friends", {
     params: query,
+  });
+  return response.data;
+};
+
+export const checkFriendRequestStatus = async (targetId: string) => {
+  const response = await http.get<CheckFriendshipResponse>("/friends/check", {
+    params: { targetId },
   });
   return response.data;
 };
