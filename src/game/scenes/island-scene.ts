@@ -79,10 +79,7 @@ export class IslandScene extends MetamornScene {
     SoundManager.init(this);
     SoundManager.getInstance().playBgm(this.bgmKey);
 
-    EventWrapper.emitToUi("current-scene-ready", {
-      scene: this,
-      socketNsp: this.socketNsp,
-    });
+    this.ready(this.socketNsp);
   }
 
   private hasPositionChangedSignificantly(): boolean {
@@ -405,13 +402,14 @@ export class IslandScene extends MetamornScene {
     text.setOrigin(0.5, 0.5);
 
     const bubble = this.add.graphics();
-    const padding = 10;
+    const paddingX = 20;
+    const paddingY = 10;
     const cornerRadius = 15;
     const tailHeight = 10;
 
     // 말풍선 크기 계산
-    const bubbleWidth = text.width + padding * 2;
-    const bubbleHeight = text.height + padding * 2;
+    const bubbleWidth = text.width + paddingX * 2;
+    const bubbleHeight = text.height + paddingY * 2;
 
     text.y = -bubbleHeight / 2 - tailHeight;
 
