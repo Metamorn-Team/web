@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import GoblinTorch from "@/components/common/GoblinTorch";
 import Pawn from "@/components/common/Pawn";
 
+const commonMessage = "섬을 만드는 중";
+
 export default function LoadingPage() {
   const loaders = [
     { loader: <GoblinTorch key={"goblin"} />, message: "불을 밝히러 가는 중" },
@@ -36,12 +38,12 @@ export default function LoadingPage() {
   return (
     <div className="absolute w-screen h-screen bg-darkBg flex flex-col justify-center items-center -z-50">
       {loader.loader}
-      <Dots message={loader.message} />
+      <Dots />
     </div>
   );
 }
 
-const Dots = ({ message }: { message: string }) => {
+const Dots = () => {
   const [dots, setDots] = useState(".");
 
   useEffect(() => {
@@ -54,7 +56,7 @@ const Dots = ({ message }: { message: string }) => {
 
   return (
     <p className="text-4xl text-white font-bold mt-4">
-      {message}
+      {commonMessage}
       {dots}
     </p>
   );
