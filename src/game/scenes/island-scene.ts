@@ -111,12 +111,9 @@ export class IslandScene extends MetamornScene {
       this.player.lastSentPosition.y = y;
     }
 
-    playerStore
-      .getAllPlayers()
-      .values()
-      .forEach((player) => {
-        player.update();
-      });
+    for (const player of playerStore.getAllPlayers().values()) {
+      player.update();
+    }
   }
 
   initWorld() {
@@ -334,11 +331,6 @@ export class IslandScene extends MetamornScene {
     if (player && !isBeingBorn) {
       player.onWalk(x, y);
     }
-  }
-
-  playBgm() {
-    this.sound.play("town");
-    this.sound.setVolume(0.15);
   }
 
   clearAllPlayer() {
