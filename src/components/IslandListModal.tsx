@@ -97,7 +97,7 @@ export default function IslandListModal({
 
     setTimeout(() => {
       setIsRefreshing(false);
-    }, 600);
+    }, 650);
   };
 
   return (
@@ -142,7 +142,7 @@ export default function IslandListModal({
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
                     placeholder="섬 검색..."
-                    className="w-full sm:w-60"
+                    className="w-full sm:w-60 text-sm"
                   />
                   <div className="flex flex-wrap gap-2">
                     {tags &&
@@ -211,11 +211,11 @@ export default function IslandListModal({
 
                       <div className="p-4 flex flex-col flex-grow justify-between">
                         <div>
-                          <h4 className="text-sm font-bold text-[#3d2c1b] flex items-center gap-1">
+                          <h4 className="text-sm font-bold text-[#3d2c1b] flex items-center gap-1 truncate">
                             {island.name}
                           </h4>
 
-                          <p className="text-xs text-[#5c4b32] mt-2">
+                          <p className="text-xs text-[#5c4b32] mt-2 truncate">
                             {island.description}
                           </p>
 
