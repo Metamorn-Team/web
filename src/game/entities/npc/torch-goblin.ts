@@ -25,7 +25,9 @@ export class TorchGoblin extends Npc {
   }
 
   protected setBodyConfig(): void {
-    this.setRectangle(55, 75);
+    this.setRectangle(35, 10);
+    this.displayOriginY += 5;
+    this.setDepth(this.y + 5);
   }
 
   public startInteraction(): void {
