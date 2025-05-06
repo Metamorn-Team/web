@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import RetroModal from "@/components/common/RetroModal";
-import { getItem, persistItem } from "@/utils/persistence";
+import { getItem } from "@/utils/persistence";
+import { SoundManager } from "@/game/managers/sound-manager";
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -13,27 +14,23 @@ const fpsLimits = [30, 60] as const;
 const menus = ["사운드", "성능"] as const;
 
 const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
+  const storedSoundVolume = getItem("sound_volume") ?? 1;
+  const storedFpsLimit = getItem("fps_limit") ?? 60;
+
   const [activeMenu, setActiveMenu] =
     useState<(typeof menus)[number]>("사운드");
-  const [soundVolume, setSoundVolume] = useState<number>(100);
-  const [fpsLimit, setFpsLimit] = useState<number>(60);
+  const [soundVolume, setSoundVolume] = useState<number>(
+    Math.floor(storedSoundVolume * 100)
+  );
+  const [fpsLimit, setFpsLimit] = useState<number>(storedFpsLimit);
   const [isMuted, setIsMuted] = useState<boolean>(false);
 
   useEffect(() => {
-    const storedSoundVolume = getItem("sound_volume");
-    const storedFpsLimit = getItem("fps_limit");
-
-    if (storedSoundVolume) {
-      setSoundVolume(Number(storedSoundVolume));
+    const soundManager = SoundManager.getInstanceSafe();
+    if (soundManager) {
+      const volumeWeight = soundVolume / 100;
+      SoundManager.getInstance().setVolume(volumeWeight);
     }
-    if (storedFpsLimit) {
-      setFpsLimit(Number(storedFpsLimit));
-    }
-  }, []);
-
-  useEffect(() => {
-    persistItem("sound_volume", soundVolume);
-    persistItem("fps_limit", fpsLimit);
   }, [soundVolume, fpsLimit]);
 
   const handleMenuClick = (menu: (typeof menus)[number]) => {

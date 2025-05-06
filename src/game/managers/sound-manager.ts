@@ -1,8 +1,13 @@
+import { getItem, persistItem } from "@/utils/persistence";
+
 export class SoundManager {
   private static instance: SoundManager;
   private currentScene: Phaser.Scene;
   private sound: Phaser.Sound.BaseSoundManager;
   private bgm: Phaser.Sound.BaseSound | null = null;
+
+  private baseVolume = 0.15;
+  private volumeWeight = 1;
 
   private constructor(scene: Phaser.Scene) {
     this.currentScene = scene;
@@ -24,12 +29,29 @@ export class SoundManager {
     return this.instance;
   }
 
-  public playBgm(key: string, volume = 0.15, loop = true) {
+  public static getInstanceSafe(): SoundManager | null {
+    return this.instance || null;
+  }
+
+  public playBgm(key: string, initVolume = 0.2, loop = true) {
+    this.baseVolume = initVolume;
+
+    let volumeWeight = getItem("sound_volume") ?? 1;
+    if (volumeWeight > 1) volumeWeight = 1;
+
+    const volume = this.baseVolume * volumeWeight;
+    console.log(volume);
+    console.log(this.sound);
+    this.sound.volume = volume;
+
     if (this.bgm?.isPlaying) {
       this.bgm.stop();
     }
-    this.bgm = this.sound.add(key, { loop, volume });
+    this.bgm = this.sound.add(key, { loop });
     this.bgm.play();
+
+    console.log(this.sound.volume);
+    console.log(this.sound);
   }
 
   public pauseBgm() {
@@ -55,5 +77,20 @@ export class SoundManager {
 
   public stopAll() {
     this.sound.stopAll();
+  }
+
+  public setVolume(volumeWeight: number) {
+    this.volumeWeight = volumeWeight;
+    const volume = this.baseVolume * this.volumeWeight;
+
+    this.sound.volume = volume;
+    persistItem("sound_volume", volumeWeight);
+
+    console.log(
+      "[setVolume] volumeWeight:",
+      volumeWeight,
+      "final volume:",
+      volume
+    );
   }
 }
