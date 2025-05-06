@@ -10,6 +10,7 @@ import { getPresignedUrl, uploadImage } from "@/api/file";
 import { BUCKET_PATH, CDN_URL } from "@/constants/image-path";
 import Alert from "@/utils/alert";
 import { useKeydownClose } from "@/hook/useKeydownClose";
+import { useGetAllTags } from "@/hook/queries/useGetAllTags";
 
 interface IslandCreationModalProps {
   isOpen: boolean;
@@ -27,6 +28,7 @@ const initial = {
   description: "",
   name: "",
   maxMembers: 5,
+  tags: [],
 };
 
 export default function IslandCreationModal({
@@ -35,6 +37,7 @@ export default function IslandCreationModal({
 }: IslandCreationModalProps) {
   useKeydownClose(onClose);
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const { data: tags } = useGetAllTags();
   const [createData, setCreateData] = useState<CreateIslandRequest>(initial);
 
   const onChange = <K extends keyof CreateIslandRequest>(
@@ -52,7 +55,7 @@ export default function IslandCreationModal({
   };
 
   const validateData = (data: Partial<CreateIslandRequest>) => {
-    const { coverImage, description, maxMembers, name } = data;
+    const { coverImage, description, maxMembers, name, tags } = data;
 
     if (!coverImage || !description || !maxMembers || !name) {
       return false;
@@ -65,7 +68,10 @@ export default function IslandCreationModal({
       description.length > 1 &&
       urlReg.test(coverImage) &&
       maxMembers > 1 &&
-      maxMembers <= 5
+      maxMembers <= 5 &&
+      tags &&
+      tags.length > 0 &&
+      tags.length < 4
     );
   };
 
@@ -177,6 +183,41 @@ export default function IslandCreationModal({
                 {value}
               </RetroButton>
             ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-[#5c4b32]">
+            섬 태그 (최대 3개 선택)
+          </label>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {tags?.map((tag) => {
+              const selected = createData.tags.includes(tag.name);
+              return (
+                <button
+                  key={tag.id}
+                  onClick={() => {
+                    setCreateData((prev) => {
+                      const alreadySelected = prev.tags.includes(tag.name);
+                      const newTags = alreadySelected
+                        ? prev.tags.filter((t) => t !== tag.name)
+                        : prev.tags.length > 2
+                        ? prev.tags
+                        : [...prev.tags, tag.name];
+
+                      return { ...prev, tags: newTags };
+                    });
+                  }}
+                  className={`px-3 py-1 rounded-full border text-sm font-medium ${
+                    selected
+                      ? "bg-[#5c4b32] text-white border-[#5c4b32]"
+                      : "bg-[#f3ece1] text-[#5c4b32] border-[#8c7a5c]"
+                  }`}
+                >
+                  {tag.name}
+                </button>
+              );
+            })}
           </div>
         </div>
 

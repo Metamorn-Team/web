@@ -13,6 +13,7 @@ import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { CreatedIslandResponse, LiveIslandItem } from "mmorntype";
 import { EventWrapper } from "@/game/event/EventBus";
 import { useKeydownClose } from "@/hook/useKeydownClose";
+import { useGetAllTags } from "@/hook/queries/useGetAllTags";
 
 interface Island {
   id: string;
@@ -21,7 +22,7 @@ interface Island {
   coverImage: string;
   countParticipants: number;
   maxMembers: number;
-  tag?: string;
+  tags: string[];
 }
 
 interface IslandListModalProps {
@@ -45,14 +46,13 @@ export default function IslandListModal({
   const [activeTab, setActiveTab] = useState<"normal" | "random">("normal");
   const [islands, setIslands] = useState<Island[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const { data: tags } = useGetAllTags();
 
   const {
     isModalOpen: isCreationModalOpen,
     onOpen: onCreationModalOpen,
     onClose: onCreationModalClose,
   } = useModal();
-
-  const tags = ["전체", "자유", "수다", "공부"];
 
   useEffect(() => {
     if (isOpen) {
@@ -145,21 +145,24 @@ export default function IslandListModal({
                     className="w-full sm:w-60"
                   />
                   <div className="flex flex-wrap gap-2">
-                    {tags.map((tag) => (
-                      <button
-                        key={tag}
-                        onClick={() =>
-                          setSelectedTag(selectedTag === tag ? null : tag)
-                        }
-                        className={`text-xs px-2 py-1 rounded border transition ${
-                          selectedTag === tag
-                            ? "bg-[#bfae96] text-white border-[#5c4b32]"
-                            : "bg-[#f3ece1] text-[#5c4b32] border-[#5c4b32]"
-                        } shadow-[2px_2px_0_#5c4b32] hover:bg-[#e8e0d0]`}
-                      >
-                        {tag}
-                      </button>
-                    ))}
+                    {tags &&
+                      tags.map((tag) => (
+                        <button
+                          key={tag.id}
+                          onClick={() =>
+                            setSelectedTag(
+                              selectedTag === tag.name ? null : tag.name
+                            )
+                          }
+                          className={`text-xs px-2 py-1 rounded border transition ${
+                            selectedTag === tag.name
+                              ? "bg-[#bfae96] text-white border-[#5c4b32]"
+                              : "bg-[#f3ece1] text-[#5c4b32] border-[#5c4b32]"
+                          } shadow-[2px_2px_0_#5c4b32] hover:bg-[#e8e0d0]`}
+                        >
+                          {tag.name}
+                        </button>
+                      ))}
                   </div>
                 </div>
               )}
@@ -167,7 +170,7 @@ export default function IslandListModal({
               {activeTab == "normal" ? (
                 <button
                   onClick={handleRefresh}
-                  className="text-xs px-2 py-1 rounded border border-[#5c4b32] bg-[#f3ece1] text-[#5c4b32] shadow-[2px_2px_0_#5c4b32] hover:bg-[#e8e0d0] flex items-center gap-1"
+                  className="ml-2 sm:ml-0 text-xs px-2 py-1 rounded border border-[#5c4b32] bg-[#f3ece1] text-[#5c4b32] shadow-[2px_2px_0_#5c4b32] hover:bg-[#e8e0d0] flex items-center gap-1"
                   title="섬 목록 새로고침"
                 >
                   <FiRotateCcw
@@ -177,7 +180,7 @@ export default function IslandListModal({
                       isRefreshing ? "animate-spinOnce" : ""
                     }`}
                   />
-                  새로고침
+                  <p className="hidden sm:block">새로고침</p>
                 </button>
               ) : null}
             </div>
@@ -211,9 +214,23 @@ export default function IslandListModal({
                           <h4 className="text-sm font-bold text-[#3d2c1b] flex items-center gap-1">
                             {island.name}
                           </h4>
+
                           <p className="text-xs text-[#5c4b32] mt-2">
                             {island.description}
                           </p>
+
+                          {island.tags && island.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {island.tags.map((tag) => (
+                                <span
+                                  key={tag}
+                                  className="text-[10px] px-2 py-[2px] rounded-full bg-[#f3ece1] text-[#5c4b32] border border-[#8c7a5c] shadow-[1px_1px_0_#8c7a5c]"
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </div>
 
                         <RetroButton
