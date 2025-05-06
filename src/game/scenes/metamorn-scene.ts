@@ -33,15 +33,26 @@ export class MetamornScene extends Phaser.Scene {
     }
   }
 
+  protected setEnabledMouseInput(enabled: boolean) {
+    if (this.game.input.mouse) {
+      this.game.input.mouse.enabled = enabled;
+    }
+  }
+
   protected getEnabledKeyboardInput() {
     return this.game.input.keyboard?.enabled || false;
   }
 
   protected onInitialEvent() {
-    EventWrapper.offGameEvent("enableGameKeyboardInput");
-
     EventWrapper.onGameEvent("enableGameKeyboardInput", () => {
       this.setEnabledKeyboardInput(true);
+      this.setEnabledMouseInput(true);
+    });
+
+    EventWrapper.onGameEvent("disableGameInput", () => {
+      this.setEnabledKeyboardInput(false);
+      this.setEnabledMouseInput(false);
+      console.log(this.getEnabledKeyboardInput());
     });
   }
 
@@ -62,5 +73,10 @@ export class MetamornScene extends Phaser.Scene {
       scene: this,
       socketNsp: nsp,
     });
+  }
+
+  protected free() {
+    EventWrapper.offGameEvent("enableGameKeyboardInput");
+    EventWrapper.offGameEvent("disableGameInput");
   }
 }

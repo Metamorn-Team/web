@@ -474,6 +474,7 @@ export class IslandScene extends MetamornScene {
     this.tweens.killAll();
 
     this.children.each((child) => child.destroy());
+    this.free();
   }
 
   private removeSocketEvents() {

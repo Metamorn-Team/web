@@ -9,6 +9,7 @@ import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { getPresignedUrl, uploadImage } from "@/api/file";
 import { BUCKET_PATH, CDN_URL } from "@/constants/image-path";
 import Alert from "@/utils/alert";
+import { useKeydownClose } from "@/hook/useKeydownClose";
 
 interface IslandCreationModalProps {
   isOpen: boolean;
@@ -32,6 +33,7 @@ export default function IslandCreationModal({
   isOpen,
   onClose,
 }: IslandCreationModalProps) {
+  useKeydownClose(onClose);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [createData, setCreateData] = useState<CreateIslandRequest>(initial);
 

@@ -185,15 +185,20 @@ export default function GameWrapper({
       isHelpModalOpen ||
       isFriendModalOpen ||
       isPlayerModalOpen ||
-      isLoginModalOpen
+      isLoginModalOpen ||
+      isIslandListModalOpen
     ) {
-      gameRef.current.game.input.keyboard.enabled = false;
-      gameRef.current.game.input.mouse.enabled = false;
+      EventWrapper.emitToGame("disableGameInput");
     } else {
-      gameRef.current.game.input.keyboard.enabled = true;
-      gameRef.current.game.input.mouse.enabled = true;
+      EventWrapper.emitToGame("enableGameKeyboardInput");
     }
-  }, [isFriendModalOpen, isHelpModalOpen, isLoginModalOpen, isPlayerModalOpen]);
+  }, [
+    isFriendModalOpen,
+    isHelpModalOpen,
+    isIslandListModalOpen,
+    isLoginModalOpen,
+    isPlayerModalOpen,
+  ]);
 
   return (
     <div>

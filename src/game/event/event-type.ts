@@ -47,6 +47,7 @@ export interface UiToGameEvent {
   joinDesertedIsland: () => void;
   playBgmToggle: () => void;
   enableGameKeyboardInput: () => void;
+  disableGameInput: () => void;
   createdIsland: (islandId: string) => void;
 
   tryOnProduct: (type: string, key: string) => void;

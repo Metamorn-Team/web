@@ -12,6 +12,7 @@ import { socketManager } from "@/game/managers/socket-manager";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { CreatedIslandResponse, LiveIslandItem } from "mmorntype";
 import { EventWrapper } from "@/game/event/EventBus";
+import { useKeydownClose } from "@/hook/useKeydownClose";
 
 interface Island {
   id: string;
@@ -38,6 +39,7 @@ export default function IslandListModal({
   // onCreateIsland,
   onJoinRandomIsland,
 }: IslandListModalProps) {
+  useKeydownClose(onClose);
   const [searchText, setSearchText] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"normal" | "random">("normal");
@@ -72,6 +74,7 @@ export default function IslandListModal({
       onClose();
       EventWrapper.emitToGame("createdIsland", data.islandId);
     };
+
     socket?.on("getActiveIslands", handleGetAvticeIslands);
     socket?.on("createdIsland", handleCreatedIsland);
 
