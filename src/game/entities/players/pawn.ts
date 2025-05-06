@@ -36,7 +36,7 @@ export class Pawn extends Player {
 
   protected setBodyConfig(): void {
     this.setScale(0.7);
-    this.setCircle(20, {
+    this.setCircle(15, {
       label: this.isControllable ? "MY_PLAYER" : "PLAYER",
     });
   }
