@@ -5,6 +5,7 @@ import {
   MessageSent,
   ReceiveMessage,
   ServerToClient,
+  WsErrorBody,
 } from "mmorntype";
 import { EventWrapper } from "@/game/event/EventBus";
 import { MetamornScene } from "@/game/scenes/metamorn-scene";
@@ -72,6 +73,7 @@ export class IslandScene extends MetamornScene {
 
     this.initConnection();
     this.listenSocketEvents();
+    this.listenSocketErrorEvent();
 
     this.registerHearbeatCheck();
     this.isIntentionalDisconnect = false;
@@ -281,6 +283,23 @@ export class IslandScene extends MetamornScene {
         this.handlePlayerSleep(player.id, player.lastActivity)
       );
       EventWrapper.emitToUi("updateOnlineStatus", data);
+    });
+  }
+
+  listenSocketErrorEvent() {
+    this.io.on("wsError", ({ name, message }: WsErrorBody) => {
+      switch (name) {
+        case "ISLAND_FULL":
+          Alert.error(message);
+          this.changeToLoby();
+          return;
+        case "ISLAND_NOT_FOUND":
+          Alert.error(message);
+          this.changeToLoby();
+          return;
+        default:
+          return;
+      }
     });
   }
 
