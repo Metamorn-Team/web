@@ -12,7 +12,6 @@ class TileMapManager {
     this.scene = scene;
 
     const map = scene.make.tilemap({ key: mapKey });
-    console.log(map);
 
     if (mapKey === "island") {
       this.createIslandMapLayer(map);
@@ -138,7 +137,6 @@ class TileMapManager {
       key: FOAM,
       origin: 0.33,
     });
-    console.log(foams);
 
     if (foams) {
       this.scene.anims.staggerPlay(FOAM, foams, 50);
