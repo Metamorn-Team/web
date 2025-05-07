@@ -5,15 +5,23 @@ import { FiRotateCcw } from "react-icons/fi";
 import RetroModal from "@/components/common/RetroModal";
 import RetroButton from "@/components/common/RetroButton";
 import RetroInput from "@/components/common/RetroInput";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import IslandCreationModal from "@/components/IslandCreationModal";
 import { useModal } from "@/hook/useModal";
 import { socketManager } from "@/game/managers/socket-manager";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
-import { CreatedIslandResponse, LiveIslandItem } from "mmorntype";
+import {
+  ClientToServer,
+  CreatedIslandResponse,
+  GetLiveIslandListReqeust,
+  GetLiveIslandListResponse,
+  ServerToClient,
+} from "mmorntype";
 import { EventWrapper } from "@/game/event/EventBus";
 import { useKeydownClose } from "@/hook/useKeydownClose";
 import { useGetAllTags } from "@/hook/queries/useGetAllTags";
+import { Socket } from "socket.io-client";
+import { usePageGroup } from "@/hook/usePageGroup";
 
 interface Island {
   id: string;
@@ -33,6 +41,9 @@ interface IslandListModalProps {
   onJoinRandomIsland: () => void;
 }
 
+const limit = 1;
+const initialTag = "전체";
+
 export default function IslandListModal({
   isOpen,
   onClose,
@@ -42,11 +53,36 @@ export default function IslandListModal({
 }: IslandListModalProps) {
   useKeydownClose(onClose);
   const [searchText, setSearchText] = useState("");
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"normal" | "random">("normal");
   const [islands, setIslands] = useState<Island[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { data: tags } = useGetAllTags();
+  const socketRef = useRef<Socket<ServerToClient, ClientToServer>>(null);
+
+  const [query, setQuery] = useState<GetLiveIslandListReqeust>({
+    page: 1,
+    limit,
+    tag: null,
+  });
+  const {
+    pageGroupStart,
+    visiblePageCount,
+    getPageGroup,
+    handleNextGroup,
+    handlePrevGroup,
+  } = usePageGroup(totalCount, query.page, limit);
+
+  const onChangeQuery = <K extends keyof GetLiveIslandListReqeust>(
+    key: K,
+    value: GetLiveIslandListReqeust[K]
+  ) => {
+    setQuery({
+      ...query,
+      [key]: value,
+    });
+  };
 
   const {
     isModalOpen: isCreationModalOpen,
@@ -57,17 +93,21 @@ export default function IslandListModal({
   useEffect(() => {
     if (isOpen) {
       const socket = socketManager.connect(SOCKET_NAMESPACES.ISLAND);
-      console.log(socket);
-      socket?.emit("getActiveIslands", { page: 1, limit: 10 });
+      if (socket) {
+        socketRef.current = socket;
+        console.log(socket);
+        socket.emit("getActiveIslands", query);
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, query]);
 
   useEffect(() => {
     const socket = socketManager.connect(SOCKET_NAMESPACES.ISLAND);
 
-    const handleGetAvticeIslands = (data: LiveIslandItem[]) => {
-      const islands: Island[] = data.map((i) => ({ ...i, tag: "자유" }));
+    const handleGetAvticeIslands = (data: GetLiveIslandListResponse) => {
+      const { islands, count } = data;
       setIslands(islands);
+      setTotalCount(count);
     };
     const handleCreatedIsland = (data: CreatedIslandResponse) => {
       onCreationModalClose();
@@ -93,12 +133,16 @@ export default function IslandListModal({
   const handleRefresh = () => {
     setIsRefreshing(true);
     const socket = socketManager.connect(SOCKET_NAMESPACES.ISLAND);
-    socket?.emit("getActiveIslands", { page: 1, limit: 10 });
+    socket?.emit("getActiveIslands", { page: 1, limit });
 
     setTimeout(() => {
       setIsRefreshing(false);
     }, 650);
   };
+
+  useEffect(() => {
+    console.log(query);
+  }, [query]);
 
   return (
     <>
@@ -145,23 +189,32 @@ export default function IslandListModal({
                     className="w-full sm:w-60 text-sm"
                   />
                   <div className="flex flex-wrap gap-2">
+                    <Tag
+                      key={initialTag}
+                      onClick={() =>
+                        setQuery({
+                          page: 1,
+                          limit,
+                          tag: null,
+                        })
+                      }
+                      selectedTag={query.tag || initialTag}
+                      name={initialTag}
+                    />
                     {tags &&
                       tags.map((tag) => (
-                        <button
-                          key={tag.id}
+                        <Tag
+                          key={tag.name}
                           onClick={() =>
-                            setSelectedTag(
-                              selectedTag === tag.name ? null : tag.name
-                            )
+                            setQuery({
+                              page: 1,
+                              limit,
+                              tag: tag.name,
+                            })
                           }
-                          className={`text-xs px-2 py-1 rounded border transition ${
-                            selectedTag === tag.name
-                              ? "bg-[#bfae96] text-white border-[#5c4b32]"
-                              : "bg-[#f3ece1] text-[#5c4b32] border-[#5c4b32]"
-                          } shadow-[2px_2px_0_#5c4b32] hover:bg-[#e8e0d0]`}
-                        >
-                          {tag.name}
-                        </button>
+                          selectedTag={query.tag || initialTag}
+                          name={tag.name}
+                        />
                       ))}
                   </div>
                 </div>
@@ -267,36 +320,58 @@ export default function IslandListModal({
           </div>
 
           {/* 하단 버튼 */}
-          <div className="shrink-0 mt-6 flex justify-end">
-            {activeTab === "normal" ? (
-              <RetroButton onClick={onCreationModalOpen} className="w-36">
-                + 새 섬 생성
-              </RetroButton>
-            ) : (
-              <RetroButton onClick={onJoinRandomIsland} className="w-36">
-                무인도 입장
-              </RetroButton>
-            )}
+          <div className="mt-6 flex justify-center">
+            <div className="mt-4 flex justify-center gap-2 flex-wrap">
+              {/* 이전 그룹 버튼 */}
+              {pageGroupStart > 1 && (
+                <button
+                  onClick={handlePrevGroup}
+                  className="px-3 py-1 rounded border text-sm font-bold bg-[#f3ece1] text-[#5c4b32] border-[#5c4b32] hover:bg-[#e8e0d0] shadow-[2px_2px_0_#5c4b32]"
+                >
+                  &lt;
+                </button>
+              )}
+
+              {/* 현재 그룹 페이지 번호 */}
+              {getPageGroup().map((page) => (
+                <button
+                  key={page}
+                  onClick={() => onChangeQuery("page", page)}
+                  className={`px-3 py-1 rounded border text-sm font-bold shadow-[2px_2px_0_#5c4b32] transition ${
+                    query.page === page
+                      ? "bg-[#bfae96] text-white border-[#5c4b32]"
+                      : "bg-[#f3ece1] text-[#5c4b32] border-[#5c4b32] hover:bg-[#e8e0d0]"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+
+              {/* 다음 그룹 버튼 */}
+              {pageGroupStart + visiblePageCount <=
+                Math.ceil(totalCount / limit) && (
+                <button
+                  onClick={handleNextGroup}
+                  className="px-3 py-1 rounded border text-sm font-bold bg-[#f3ece1] text-[#5c4b32] border-[#5c4b32] hover:bg-[#e8e0d0] shadow-[2px_2px_0_#5c4b32]"
+                >
+                  &gt;
+                </button>
+              )}
+            </div>
+            <div className="flex flex-1 justify-end">
+              {activeTab === "normal" ? (
+                <RetroButton onClick={onCreationModalOpen} className="w-36">
+                  + 새 섬 생성
+                </RetroButton>
+              ) : (
+                <RetroButton onClick={onJoinRandomIsland} className="w-36">
+                  무인도 입장
+                </RetroButton>
+              )}
+            </div>
           </div>
         </div>
       </RetroModal>
-
-      {/* 비밀번호 입력 모달 */}
-      {/* <RetroConfirmModal
-        isOpen={isPasswordModalOpen}
-        onClose={() => setPasswordModalOpen(false)}
-        onConfirm={handleConfirmPassword}
-        title="비밀번호 입력"
-        confirmText="입장하기"
-        cancelText="취소"
-      >
-        <RetroInput
-          value={passwordInput}
-          onChange={(e) => setPasswordInput(e.target.value)}
-          placeholder="비밀번호를 입력하세요"
-          required
-        />
-      </RetroConfirmModal> */}
 
       <IslandCreationModal
         isOpen={isCreationModalOpen}
@@ -306,3 +381,25 @@ export default function IslandListModal({
     </>
   );
 }
+
+interface TagProps {
+  onClick: () => void;
+  selectedTag: string;
+  name: string;
+}
+
+const Tag = ({ onClick, selectedTag, name }: TagProps) => {
+  return (
+    <button
+      key={name}
+      onClick={onClick}
+      className={`text-xs px-2 py-1 rounded border transition ${
+        selectedTag === name
+          ? "bg-[#bfae96] text-white border-[#5c4b32]"
+          : "bg-[#f3ece1] text-[#5c4b32] border-[#5c4b32]"
+      } shadow-[2px_2px_0_#5c4b32] hover:bg-[#e8e0d0]`}
+    >
+      {name}
+    </button>
+  );
+};
