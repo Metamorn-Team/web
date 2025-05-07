@@ -54,6 +54,8 @@ export class IslandScene extends MetamornScene {
     if (data.type === "NORMAL") {
       if (data.islandId) {
         setItem("current_island_id", data.islandId);
+        setItem("current_island_name", data.islandId);
+        setItem("current_island_type", data.islandId);
         this.currentIslandId = data.islandId;
         return;
       }
@@ -170,6 +172,7 @@ export class IslandScene extends MetamornScene {
     EventWrapper.onGameEvent("enableGameKeyboardInput", () => {
       this.time.delayedCall(100, () => {
         this.setEnabledKeyboardInput(true);
+        this.setEnabledMouseInput(true);
       });
     });
   }
