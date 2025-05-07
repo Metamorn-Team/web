@@ -4,7 +4,7 @@ import Image from "next/image";
 import { FiRotateCcw } from "react-icons/fi";
 import RetroModal from "@/components/common/RetroModal";
 import RetroButton from "@/components/common/RetroButton";
-import RetroInput from "@/components/common/RetroInput";
+// import RetroInput from "@/components/common/RetroInput";
 import React, { useEffect, useRef, useState } from "react";
 import IslandCreationModal from "@/components/IslandCreationModal";
 import { useModal } from "@/hook/useModal";
@@ -52,7 +52,7 @@ export default function IslandListModal({
   onJoinRandomIsland,
 }: IslandListModalProps) {
   useKeydownClose(onClose);
-  const [searchText, setSearchText] = useState("");
+  // const [searchText, setSearchText] = useState("");
   const [activeTab, setActiveTab] = useState<"normal" | "random">("normal");
   const [islands, setIslands] = useState<Island[]>([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -182,12 +182,12 @@ export default function IslandListModal({
             <div className="flex justify-between">
               {activeTab === "normal" && (
                 <div className="flex flex-wrap items-center gap-2">
-                  <RetroInput
+                  {/* <RetroInput
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
                     placeholder="섬 검색..."
                     className="w-full sm:w-60 text-sm"
-                  />
+                  /> */}
                   <div className="flex flex-wrap gap-2">
                     <Tag
                       key={initialTag}
