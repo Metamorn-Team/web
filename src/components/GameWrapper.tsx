@@ -175,13 +175,6 @@ export default function GameWrapper({
   // 로그인 모달 떠 있을 떄 phaser 키 이벤트 비활성화
   useEffect(() => {
     if (
-      !gameRef.current?.game.input.keyboard ||
-      !gameRef.current?.game.input.mouse
-    ) {
-      return;
-    }
-
-    if (
       isHelpModalOpen ||
       isFriendModalOpen ||
       isPlayerModalOpen ||
