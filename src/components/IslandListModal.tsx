@@ -41,7 +41,7 @@ interface IslandListModalProps {
   onJoinRandomIsland: () => void;
 }
 
-const limit = 1;
+const limit = 20;
 const initialTag = "전체";
 
 export default function IslandListModal({
