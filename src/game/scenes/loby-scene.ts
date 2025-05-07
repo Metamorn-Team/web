@@ -136,7 +136,7 @@ export class LobyScene extends MetamornScene {
       this.changeToIsland({ type: "DESERTED" });
     });
 
-    EventWrapper.onGameEvent("joinNormalIsland", (islandId?: string) => {
+    EventWrapper.onGameEvent("joinNormalIsland", (islandId: string) => {
       this.io.emit("canJoinIsland", { islandId });
     });
 
