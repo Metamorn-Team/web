@@ -41,6 +41,7 @@ export class IslandScene extends MetamornScene {
   private socketNsp = SOCKET_NAMESPACES.ISLAND;
   private currentIslandId?: string;
 
+  private isActiveChat = false;
   private isIntentionalDisconnect = false;
   private islandType: "NORMAL" | "DESERTED";
 
@@ -93,16 +94,16 @@ export class IslandScene extends MetamornScene {
   }
 
   update(): void {
-    if (!this.player) return;
+    if (!this.player?.body) return;
 
     this.player.update();
 
     if (
-      this.getEnabledKeyboardInput() &&
+      this.isActiveChat === false &&
       this.inputManager.isKeyJustDown(Keys.ENTER)
     ) {
       EventWrapper.emitToUi("activeChatInput");
-      this.setEnabledKeyboardInput(false);
+      this.isActiveChat = true;
     }
 
     if (this.io && this.hasPositionChangedSignificantly()) {
@@ -131,8 +132,10 @@ export class IslandScene extends MetamornScene {
     };
 
     this.matter.world.setBounds(0, 0, this.mapWidth, this.mapHeight);
+
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
     this.cameras.main.setZoom(1.1);
+    this.cameras.main.setScroll(this.centerOfMap.x, this.centerOfMap.y);
   }
 
   spawnActiveUsers(activeUsers: ActivePlayerResponse) {
@@ -173,6 +176,7 @@ export class IslandScene extends MetamornScene {
       this.time.delayedCall(100, () => {
         this.setEnabledKeyboardInput(true);
         this.setEnabledMouseInput(true);
+        this.isActiveChat = false;
       });
     });
   }

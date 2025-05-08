@@ -169,7 +169,6 @@ export default function ChatPanel() {
     const handleEscapeDown = (e: KeyboardEvent) => {
       if (e.code === "Escape") {
         inputRef.current?.blur();
-        EventWrapper.emitToGame("enableGameKeyboardInput");
       }
     };
 
@@ -194,7 +193,6 @@ export default function ChatPanel() {
     if (e?.nativeEvent.isComposing) return;
     if (!input.trim()) {
       inputRef.current?.blur();
-      EventWrapper.emitToGame("enableGameKeyboardInput");
       return;
     }
 
@@ -321,12 +319,18 @@ interface ChatInputProps {
 }
 
 function ChatInput({ input, setInput, onSend, inputRef }: ChatInputProps) {
+  const onFocus = () => EventWrapper.emitToGame("disableGameInput");
+
+  const onBlur = () => EventWrapper.emitToGame("enableGameKeyboardInput");
+
   return (
     <div className="p-3 border-t border-[#d6c6aa] bg-[#f3ece1]/90 flex items-center gap-2">
       <input
         type="text"
         ref={inputRef}
         value={input}
+        onFocus={onFocus}
+        onBlur={onBlur}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && onSend(e)}
         placeholder="메시지를 입력하세요..."
