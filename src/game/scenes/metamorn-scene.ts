@@ -52,7 +52,7 @@ export class MetamornScene extends Phaser.Scene {
     EventWrapper.onGameEvent("disableGameInput", () => {
       this.setEnabledKeyboardInput(false);
       this.setEnabledMouseInput(false);
-      console.log(this.getEnabledKeyboardInput());
+      this.inputManager.resetKeyAll();
     });
   }
 
