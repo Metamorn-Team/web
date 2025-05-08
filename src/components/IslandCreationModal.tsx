@@ -112,130 +112,133 @@ export default function IslandCreationModal({
         onClear();
         onClose();
       }}
-      className="max-w-[400px] sm:max-w-[400px] md:max-w-[500px] lg:max-w-[600px] xl:max-w-[700px]"
+      className="max-w-[400px] sm:max-w-[400px] md:max-w-[500px] lg:max-w-[600px] xl:max-w-[700px] max-h-[90vh]"
     >
       <div className="flex flex-col gap-6 max-w-lg mx-auto">
         {/* 섬 생성 타이틀 */}
-        <h3 className="text-3xl font-semibold text-[#2a1f14] text-center">
+        <h3 className="text-2xl font-semibold text-[#2a1f14] text-center">
           🏝️ 섬 만들기
         </h3>
-        {/* 커버 이미지 */}
-        <div className="flex justify-center">
-          <input
-            type="file"
-            accept="image/*"
-            ref={imageInputRef}
-            onChange={handleImageChange}
-            className="hidden"
-          />
 
-          <div
-            className="relative mt-4 flex justify-center items-center w-2/3 aspect-[4/3] border border-[#8c7a5c] rounded-lg"
-            onClick={() => imageInputRef.current?.click()}
-          >
-            {createData.coverImage ? (
-              <Image
-                src={createData.coverImage}
-                alt="Preview"
-                layout="fill"
-                objectFit="cover"
-                className="rounded-lg shadow-md"
-                unoptimized
-              />
-            ) : (
-              <div className="flex flex-col items-center">
-                <p>이미지를 등록해봐요!</p>
-                <p>Click!</p>
-              </div>
-            )}
+        <div className="max-h-[550px] overflow-y-scroll px-6 space-y-6 scrollbar-hide">
+          {/* 커버 이미지 */}
+          <div className="flex justify-center">
+            <input
+              type="file"
+              accept="image/*"
+              ref={imageInputRef}
+              onChange={handleImageChange}
+              className="hidden"
+            />
+
+            <div
+              className="relative mt-4 flex justify-center items-center max-w-[330px] w-2/3 aspect-[4/3] border border-[#8c7a5c] rounded-lg"
+              onClick={() => imageInputRef.current?.click()}
+            >
+              {createData.coverImage ? (
+                <Image
+                  src={createData.coverImage}
+                  alt="Preview"
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-lg shadow-md"
+                  unoptimized
+                />
+              ) : (
+                <div className="flex flex-col items-center">
+                  <p>이미지를 등록해봐요</p>
+                  <p>Click!</p>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* 섬 이름 */}
-        <div>
-          <label className="block text-sm font-medium text-[#5c4b32]">
-            섬 이름
-          </label>
-          <RetroInput
-            value={createData.name || ""}
-            onChange={(e) => onChange("name", e.target.value)}
-            placeholder="섬의 이름을 입력하세요"
-            className="mt-2 p-3 rounded-lg border border-[#8c7a5c] shadow-md focus:outline-none"
-          />
-        </div>
-
-        {/* 최대 인원 버튼 */}
-        <div>
-          <label className="block text-sm font-medium text-[#5c4b32]">
-            최대 인원
-          </label>
-          <div className="flex justify-center gap-4 mt-2">
-            {[2, 3, 4, 5].map((value) => (
-              <RetroButton
-                key={value}
-                onClick={() => onChange("maxMembers", value)}
-                className={`w-10 p-2 text-lg rounded-lg ${
-                  createData.maxMembers === value
-                    ? "bg-[#5c4b32] text-white"
-                    : "bg-[#f3ece1] text-[#5c4b32]"
-                }`}
-              >
-                {value}
-              </RetroButton>
-            ))}
+          {/* 섬 이름 */}
+          <div>
+            <label className="block text-sm font-medium text-[#5c4b32]">
+              섬 이름
+            </label>
+            <RetroInput
+              value={createData.name || ""}
+              onChange={(e) => onChange("name", e.target.value)}
+              placeholder="섬의 이름을 입력하세요"
+              className="mt-2 p-3 rounded-lg border border-[#8c7a5c] shadow-md focus:outline-none"
+            />
           </div>
-        </div>
 
-        <div>
-          <label className="block text-sm font-medium text-[#5c4b32]">
-            섬 태그 (최대 3개 선택)
-          </label>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {tags?.map((tag) => {
-              const selected = createData.tags.includes(tag.name);
-              return (
-                <button
-                  key={tag.id}
-                  onClick={() => {
-                    setCreateData((prev) => {
-                      const alreadySelected = prev.tags.includes(tag.name);
-                      const newTags = alreadySelected
-                        ? prev.tags.filter((t) => t !== tag.name)
-                        : prev.tags.length > 2
-                        ? prev.tags
-                        : [...prev.tags, tag.name];
-
-                      return { ...prev, tags: newTags };
-                    });
-                  }}
-                  className={`px-3 py-1 rounded-full border text-sm font-medium ${
-                    selected
-                      ? "bg-[#5c4b32] text-white border-[#5c4b32]"
-                      : "bg-[#f3ece1] text-[#5c4b32] border-[#8c7a5c]"
+          {/* 최대 인원 버튼 */}
+          <div>
+            <label className="block text-sm font-medium text-[#5c4b32]">
+              최대 인원
+            </label>
+            <div className="flex justify-center gap-4 mt-2">
+              {[2, 3, 4, 5].map((value) => (
+                <RetroButton
+                  key={value}
+                  onClick={() => onChange("maxMembers", value)}
+                  className={`w-10 p-2 text-lg rounded-lg ${
+                    createData.maxMembers === value
+                      ? "bg-[#5c4b32] text-white"
+                      : "bg-[#f3ece1] text-[#5c4b32]"
                   }`}
                 >
-                  {tag.name}
-                </button>
-              );
-            })}
+                  {value}
+                </RetroButton>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* 섬 설명 */}
-        <div>
-          <label className="block text-sm font-medium text-[#5c4b32]">
-            섬 설명
-          </label>
-          <RetroInput
-            value={createData.description || ""}
-            onChange={(e) => onChange("description", e.target.value)}
-            placeholder="섬에 대해 간단히 설명해주세요"
-            className="mt-2 p-3 rounded-lg border border-[#8c7a5c] shadow-md focus:outline-none"
-          />
+          <div>
+            <label className="block text-sm font-medium text-[#5c4b32]">
+              섬 태그 (최대 3개 선택)
+            </label>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {tags?.map((tag) => {
+                const selected = createData.tags.includes(tag.name);
+                return (
+                  <button
+                    key={tag.id}
+                    onClick={() => {
+                      setCreateData((prev) => {
+                        const alreadySelected = prev.tags.includes(tag.name);
+                        const newTags = alreadySelected
+                          ? prev.tags.filter((t) => t !== tag.name)
+                          : prev.tags.length > 2
+                          ? prev.tags
+                          : [...prev.tags, tag.name];
+
+                        return { ...prev, tags: newTags };
+                      });
+                    }}
+                    className={`px-3 py-1 rounded-full border text-sm font-medium ${
+                      selected
+                        ? "bg-[#5c4b32] text-white border-[#5c4b32]"
+                        : "bg-[#f3ece1] text-[#5c4b32] border-[#8c7a5c]"
+                    }`}
+                  >
+                    {tag.name}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 섬 설명 */}
+          <div>
+            <label className="block text-sm font-medium text-[#5c4b32]">
+              섬 설명
+            </label>
+            <RetroInput
+              value={createData.description || ""}
+              onChange={(e) => onChange("description", e.target.value)}
+              placeholder="섬에 대해 간단히 설명해주세요"
+              className="mt-2 p-3 rounded-lg border border-[#8c7a5c] shadow-md focus:outline-none"
+            />
+          </div>
         </div>
 
         {/* 생성 버튼 */}
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center">
           <RetroButton
             disabled={!validateData(createData)}
             onClick={handleCreateIsland}
