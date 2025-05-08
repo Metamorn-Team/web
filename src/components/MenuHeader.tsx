@@ -6,11 +6,9 @@ import {
   FiSettings,
   FiMenu,
   FiLogOut,
-  FiEdit2,
   FiShoppingBag,
 } from "react-icons/fi";
 import { BsMusicNoteBeamed } from "react-icons/bs";
-import { RiBookOpenLine } from "react-icons/ri";
 import { GiSailboat } from "react-icons/gi";
 import { getItem, setItem } from "@/utils/session-storage";
 import { EventWrapper } from "@/game/event/EventBus";
@@ -133,19 +131,16 @@ export default function MenuHeader({
 
         {menuOpen && (
           <div className="absolute right-0 top-full mt-2 w-44 bg-[#fdf8ef] border border-[#bfae96] shadow-[4px_4px_0_#8c7a5c] p-2 flex flex-col gap-2 text-sm text-[#3d2c1b] animate-fadeIn rounded-[6px]">
-            <DropdownItem icon={<FiEdit2 />} label="정보 수정" />
             <DropdownItem
               icon={<FiLogOut />}
               label="로그아웃"
               onClick={onLogout}
             />
-            <DropdownItem icon={<RiBookOpenLine />} label="내 로그 보기" />
             <DropdownItem
               icon={<FiSettings />}
               label="환경 설정"
               onClick={onSettingsModalOpen}
             />
-            <DropdownItem icon={<FiUser />} label="프로필 보기" />
           </div>
         )}
       </div>
