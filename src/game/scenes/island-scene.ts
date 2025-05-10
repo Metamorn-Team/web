@@ -49,23 +49,22 @@ export class IslandScene extends MetamornScene {
     super(ISLAND_SCENE);
   }
 
-  init(data: { islandId?: string; type: "NORMAL" | "DESERTED" }) {
-    this.islandType = data.type;
-
-    if (data.type === "NORMAL") {
-      if (data.islandId) {
+  init(data?: { islandId?: string; type: "NORMAL" | "DESERTED" }) {
+    if (data && "islandId" in data && "type" in data) {
+      if (data.type === "NORMAL" && data.islandId) {
         setItem("current_island_id", data.islandId);
-        setItem("current_island_name", data.islandId);
-        setItem("current_island_type", data.islandId);
+        setItem("current_island_type", data.type);
         this.currentIslandId = data.islandId;
         return;
       }
 
-      const islandId = getItem("current_island_id");
-      if (!islandId) {
-        this.joinFailed();
-      }
+      return this.joinFailed();
     }
+    const islandId = getItem("current_island_id");
+    const type = getItem("current_island_type");
+
+    this.currentIslandId = islandId;
+    this.islandType = type;
   }
 
   create() {
@@ -165,8 +164,6 @@ export class IslandScene extends MetamornScene {
     );
 
     EventWrapper.onGameEvent("left-island", () => {
-      this.io.emit("playerLeft");
-      removeItem("current_island_id");
       this.changeToLoby();
     });
 
@@ -235,7 +232,7 @@ export class IslandScene extends MetamornScene {
     });
 
     this.io.on("playerJoinSuccess", async (data: { x: number; y: number }) => {
-      this.io.emit("islandHearbeat");
+      // this.io.emit("islandHearbeat");
       try {
         if (this.player) {
           this.player.destroy(true);
@@ -467,6 +464,9 @@ export class IslandScene extends MetamornScene {
   }
 
   private changeToLoby() {
+    this.io.emit("playerLeft");
+    removeItem("current_island_id");
+    removeItem("current_island_type");
     this.isIntentionalDisconnect = true;
     this.cameras.main.fadeOut(500, 0, 0, 0);
 
