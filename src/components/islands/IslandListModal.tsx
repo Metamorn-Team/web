@@ -6,7 +6,7 @@ import RetroModal from "@/components/common/RetroModal";
 import RetroButton from "@/components/common/RetroButton";
 // import RetroInput from "@/components/common/RetroInput";
 import React, { useEffect, useRef, useState } from "react";
-import IslandCreationModal from "@/components/IslandCreationModal";
+import IslandCreationModal from "@/components/islands/IslandCreationModal";
 import { useModal } from "@/hook/useModal";
 import { socketManager } from "@/game/managers/socket-manager";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
@@ -22,6 +22,7 @@ import { useKeydownClose } from "@/hook/useKeydownClose";
 import { useGetAllTags } from "@/hook/queries/useGetAllTags";
 import { Socket } from "socket.io-client";
 import { usePageGroup } from "@/hook/usePageGroup";
+import Tag from "@/components/islands/Tag";
 
 interface Island {
   id: string;
@@ -182,12 +183,6 @@ export default function IslandListModal({
             <div className="flex justify-between">
               {activeTab === "normal" && (
                 <div className="flex flex-wrap items-center gap-2">
-                  {/* <RetroInput
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    placeholder="섬 검색..."
-                    className="w-full sm:w-60 text-sm"
-                  /> */}
                   <div className="flex flex-wrap gap-2">
                     <Tag
                       key={initialTag}
@@ -333,38 +328,38 @@ export default function IslandListModal({
               )}
 
               {/* 현재 그룹 페이지 번호 */}
-              {getPageGroup().map((page) => (
-                <button
-                  key={page}
-                  onClick={() => onChangeQuery("page", page)}
-                  className={`px-3 py-1 rounded border text-sm font-bold shadow-[2px_2px_0_#5c4b32] transition ${
-                    query.page === page
-                      ? "bg-[#bfae96] text-white border-[#5c4b32]"
-                      : "bg-[#f3ece1] text-[#5c4b32] border-[#5c4b32] hover:bg-[#e8e0d0]"
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
+              {activeTab === "normal"
+                ? getPageGroup().map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => onChangeQuery("page", page)}
+                      className={`px-3 py-1 rounded border text-sm font-bold shadow-[2px_2px_0_#5c4b32] transition ${
+                        query.page === page
+                          ? "bg-[#bfae96] text-white border-[#5c4b32]"
+                          : "bg-[#f3ece1] text-[#5c4b32] border-[#5c4b32] hover:bg-[#e8e0d0]"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))
+                : null}
 
               {/* 다음 그룹 버튼 */}
               {pageGroupStart + visiblePageCount <=
                 Math.ceil(totalCount / limit) && (
-                <button
-                  onClick={handleNextGroup}
-                  className="px-3 py-1 rounded border text-sm font-bold bg-[#f3ece1] text-[#5c4b32] border-[#5c4b32] hover:bg-[#e8e0d0] shadow-[2px_2px_0_#5c4b32]"
-                >
-                  &gt;
-                </button>
+                <RetroButton onClick={handleNextGroup}>&gt;</RetroButton>
               )}
             </div>
             <div className="flex flex-1 justify-end">
               {activeTab === "normal" ? (
-                <RetroButton onClick={onCreationModalOpen} className="w-36">
+                <RetroButton
+                  onClick={onCreationModalOpen}
+                  className="w-36 py-4"
+                >
                   + 새 섬 생성
                 </RetroButton>
               ) : (
-                <RetroButton onClick={onJoinRandomIsland} className="w-36">
+                <RetroButton onClick={onJoinRandomIsland} className="w-36 py-4">
                   무인도 입장
                 </RetroButton>
               )}
@@ -381,25 +376,3 @@ export default function IslandListModal({
     </>
   );
 }
-
-interface TagProps {
-  onClick: () => void;
-  selectedTag: string;
-  name: string;
-}
-
-const Tag = ({ onClick, selectedTag, name }: TagProps) => {
-  return (
-    <button
-      key={name}
-      onClick={onClick}
-      className={`text-xs px-2 py-1 rounded border transition ${
-        selectedTag === name
-          ? "bg-[#bfae96] text-white border-[#5c4b32]"
-          : "bg-[#f3ece1] text-[#5c4b32] border-[#5c4b32]"
-      } shadow-[2px_2px_0_#5c4b32] hover:bg-[#e8e0d0]`}
-    >
-      {name}
-    </button>
-  );
-};

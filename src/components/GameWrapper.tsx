@@ -23,7 +23,7 @@ import { useAttackedSound } from "@/hook/useAttackedSound";
 import Alert from "@/utils/alert";
 import ParticipantPanel from "@/components/ParticipantsPanel";
 import SettingsModal from "@/components/SettingsModal";
-import IslandListModal from "@/components/IslandListModal";
+import IslandListModal from "@/components/islands/IslandListModal";
 import { ISLAND_SCENE } from "@/constants/game/islands/island";
 
 interface GameWrapperProps {
