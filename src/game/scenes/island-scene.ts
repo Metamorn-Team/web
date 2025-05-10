@@ -55,6 +55,7 @@ export class IslandScene extends MetamornScene {
         setItem("current_island_id", data.islandId);
         setItem("current_island_type", data.type);
         this.currentIslandId = data.islandId;
+        this.islandType = data.type;
         return;
       }
 
