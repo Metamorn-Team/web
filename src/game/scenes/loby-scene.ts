@@ -23,8 +23,9 @@ import {
 import { Socket } from "socket.io-client";
 
 export class LobyScene extends MetamornScene {
+  private isCreated = false;
+
   private bgmKey = "woodland-fantasy";
-  private npcGoblin: TorchGoblin;
   private mine: Mine;
   private npcs: Npc[] = [];
 
@@ -43,6 +44,8 @@ export class LobyScene extends MetamornScene {
   preload() {}
 
   create() {
+    if (this.isCreated) return;
+
     super.create();
     this.initWorld();
 
@@ -59,10 +62,13 @@ export class LobyScene extends MetamornScene {
     SoundManager.getInstance().playBgm(this.bgmKey);
 
     this.ready(this.socketNsp);
+    this.isCreated = true;
+
+    console.log(this.game.scene);
   }
 
   update(): void {
-    if (this.player) {
+    if (this.player?.body) {
       this.player.update();
 
       this.checkNearNpc();
@@ -81,6 +87,7 @@ export class LobyScene extends MetamornScene {
 
   checkNearNpc() {
     return this.npcs.forEach((npc) => {
+      if (!npc.body) return;
       const distance = Phaser.Math.Distance.Between(
         this.player.x,
         this.player.y,
@@ -110,6 +117,7 @@ export class LobyScene extends MetamornScene {
 
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
     this.cameras.main.setZoom(1.1);
+    this.cameras.main.setScroll(this.centerOfMap.x, this.centerOfMap.y);
   }
 
   async spwanMyPlayer() {
@@ -159,23 +167,27 @@ export class LobyScene extends MetamornScene {
     islandId?: string;
     type: "NORMAL" | "DESERTED";
   }) {
+    console.log(this.cameras.main);
     this.cameras.main.fadeOut(500, 0, 0, 0);
 
     this.time.delayedCall(500, () => {
       EventWrapper.emitToUi("start-change-scene");
 
       this.scene.stop(LOBY_SCENE);
-      this.cleanupBeforeLeft();
+      this.cleanup();
       this.scene.start(ISLAND_SCENE, data);
     });
   }
 
-  private cleanupBeforeLeft() {
-    this.npcGoblin?.destroy();
+  private cleanup() {
+    this.npcs.forEach((npc) => {
+      npc.destroy();
+    });
     this.npcs = [];
     this.mine?.destroy();
     this.sound.stopAll();
     this.map.destroy();
+    this.isCreated = false;
 
     EventWrapper.offGameEvent("joinNormalIsland");
     EventWrapper.offGameEvent("createdIsland");
