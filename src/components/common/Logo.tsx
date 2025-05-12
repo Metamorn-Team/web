@@ -14,7 +14,7 @@ export const Logo = ({ width }: { width: string }) => {
           fill
         />
       </div>
-      <p className="text-3xl">메타몬</p>
+      <p className="text-3xl">리브아일랜드</p>
     </div>
   );
 };
