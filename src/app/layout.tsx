@@ -5,8 +5,8 @@ import Providers from "@/app/provider";
 import AlertProvider from "@/components/common/AlertProvider";
 
 export const metadata: Metadata = {
-  title: "메타몬",
-  description: "메타메타몬몬",
+  title: "🏝️섬으로 떠나 친구를 만나요~!",
+  description: "리브아일랜드",
   icons: {
     icon: "/icons/favicon.png",
   },
