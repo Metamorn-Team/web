@@ -27,6 +27,12 @@ import { Keys } from "@/types/game/enum/key";
 import { SoundManager } from "@/game/managers/sound-manager";
 import { POSITION_CHANGE_THRESHOLD } from "@/constants/game/threshold";
 import { ISLAND_SCENE, LOBY_SCENE } from "@/constants/game/islands/island";
+import {
+  CONFLIC_MESSAGE,
+  ISLAND_FULL_MESSAGE,
+  ISLANF_NOT_FOUND_MESSAGE,
+  UNKNOWN_MESSAGE,
+} from "@/error/exceptions/message";
 
 export class IslandScene extends MetamornScene {
   protected override player: Player;
@@ -44,6 +50,7 @@ export class IslandScene extends MetamornScene {
   private isActiveChat = false;
   private isIntentionalDisconnect = false;
   private islandType: "NORMAL" | "DESERTED";
+  private isChangingScene = false;
 
   constructor() {
     super(ISLAND_SCENE);
@@ -66,6 +73,8 @@ export class IslandScene extends MetamornScene {
 
     this.currentIslandId = islandId;
     this.islandType = type;
+
+    this.isChangingScene = false;
   }
 
   create() {
@@ -165,7 +174,7 @@ export class IslandScene extends MetamornScene {
     );
 
     EventWrapper.onGameEvent("left-island", () => {
-      this.changeToLoby();
+      this.io.emit("playerLeft");
     });
 
     EventWrapper.offGameEvent("enableGameKeyboardInput");
@@ -257,6 +266,10 @@ export class IslandScene extends MetamornScene {
       }
     });
 
+    this.io.on("playerLeftSuccess", () => {
+      this.changeToLoby();
+    });
+
     this.io.on("playerKicked", () => {
       console.log("on Kicked");
       alert("다른 곳에서 로그인 되었어요.. 😢");
@@ -292,16 +305,25 @@ export class IslandScene extends MetamornScene {
   }
 
   listenSocketErrorEvent() {
-    this.io.on("wsError", ({ name, message }: WsErrorBody) => {
+    this.io.on("wsError", ({ name }: WsErrorBody) => {
       switch (name) {
         case "ISLAND_FULL":
-          Alert.error(message);
+          Alert.error(ISLAND_FULL_MESSAGE);
           this.changeToLoby();
           return;
         case "ISLAND_NOT_FOUND":
-          Alert.error(message);
+          Alert.error(ISLANF_NOT_FOUND_MESSAGE);
           this.changeToLoby();
           return;
+        case "ISLAND_NOT_FOUND_IN_STORAGE":
+          Alert.error(ISLANF_NOT_FOUND_MESSAGE);
+          this.changeToLoby();
+        case "PLAYER_NOT_FOUND_IN_STORAGE":
+          Alert.error(UNKNOWN_MESSAGE);
+          this.changeToLoby();
+        case "LOCK_ACQUIRED_FAILED":
+          Alert.error(CONFLIC_MESSAGE);
+          this.changeToLoby();
         default:
           return;
       }
@@ -465,7 +487,9 @@ export class IslandScene extends MetamornScene {
   }
 
   private changeToLoby() {
-    this.io.emit("playerLeft");
+    if (this.isChangingScene) return;
+    this.isChangingScene = true;
+
     removeItem("current_island_id");
     removeItem("current_island_type");
     this.isIntentionalDisconnect = true;
@@ -509,6 +533,8 @@ export class IslandScene extends MetamornScene {
     this.io.off("attacked");
     this.io.off("islandHearbeat");
     this.io.off("playerKicked");
+
+    this.io.off("wsError");
   }
 
   private removeLocalEvents() {
