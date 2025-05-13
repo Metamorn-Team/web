@@ -8,6 +8,7 @@ import {
   FiLogOut,
   FiShoppingBag,
 } from "react-icons/fi";
+import { useQueryClient } from "@tanstack/react-query";
 import { BsMusicNoteBeamed } from "react-icons/bs";
 import { GiSailboat } from "react-icons/gi";
 import { getItem, setItem } from "@/utils/session-storage";
@@ -18,6 +19,10 @@ import {
   persistItem,
 } from "@/utils/persistence";
 import { SoundManager } from "@/game/managers/sound-manager";
+import { socketManager } from "@/game/managers/socket-manager";
+import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
+import { useGetUnreadFriendRequest } from "@/hook/queries/useGetUnreadFriendRequest";
+import { QUERY_KEY as UNREAD_COUNT_QUERY_KEY } from "@/hook/queries/useGetUnreadFriendRequest";
 
 interface MenuHeaderProps {
   changeFriendModalOpen: (state: boolean) => void;
@@ -28,10 +33,39 @@ export default function MenuHeader({
   changeFriendModalOpen,
   onSettingsModalOpen,
 }: MenuHeaderProps) {
+  const queryClient = useQueryClient();
   const [isPlayBgm, setIsPlayBgm] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const [isVisibleExit, setIsVisibleExit] = useState(true);
+
+  const [showNewRequestMessage, setShowNewRequestMessage] = useState(false);
+  const { data: unreadRequestCount } = useGetUnreadFriendRequest();
+
+  useEffect(() => {
+    const socket = socketManager.connect(SOCKET_NAMESPACES.ISLAND);
+
+    socket?.on("receiveFriendRequest", () => {
+      const prev = queryClient.getQueryData<{ count: number }>([
+        UNREAD_COUNT_QUERY_KEY,
+      ]);
+
+      if (prev && typeof prev.count === "number") {
+        queryClient.setQueryData([UNREAD_COUNT_QUERY_KEY], {
+          count: prev.count + 1,
+        });
+      } else {
+        queryClient.setQueryData([UNREAD_COUNT_QUERY_KEY], { count: 1 });
+      }
+
+      setShowNewRequestMessage(true);
+      setTimeout(() => setShowNewRequestMessage(false), 5000);
+    });
+
+    return () => {
+      socket?.off("receiveFriendRequest");
+    };
+  }, []);
 
   const onLeftIsland = useCallback(() => {
     EventWrapper.emitToGame("left-island");
@@ -101,11 +135,25 @@ export default function MenuHeader({
           onClick={onPlayBgmToggle}
         />
 
-        <StyledMenuItem
-          icon={<FiUser size={20} />}
-          label="친구"
-          onClick={() => changeFriendModalOpen(true)}
-        />
+        <div className="relative">
+          <StyledMenuItem
+            icon={<FiUser size={20} />}
+            label="친구"
+            onClick={() => changeFriendModalOpen(true)}
+          />
+
+          {unreadRequestCount && unreadRequestCount.count > 0 ? (
+            <span className="absolute -top-2 -right-2 w-[18px] h-[18px] text-[10px] px-[4px] text-white bg-red-600 rounded-full flex items-center justify-center">
+              {unreadRequestCount.count > 99 ? "99+" : unreadRequestCount.count}
+            </span>
+          ) : null}
+
+          {showNewRequestMessage ? (
+            <div className="absolute top-full mt-1 left-1/2 -translate-x-1/2 bg-red-600 text-white text-xs px-3 py-1 rounded shadow animate-pulse whitespace-nowrap">
+              새로운 친구 요청이 왔어요!
+            </div>
+          ) : null}
+        </div>
 
         <StyledMenuItem
           icon={<FiShoppingBag size={20} />}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useCallback, useState } from "react";
+import React, { Suspense, useCallback, useEffect, useState } from "react";
 import Button from "@/components/common/Button";
 import Modal from "@/components/common/Modal";
 import Ribon from "@/components/common/Ribon";
@@ -8,6 +8,8 @@ import ReceivedFriendRequestItemList from "@/components/friend/ReceivedFriendReq
 import SearchFriendList from "@/components/friend/SearchFriendList";
 import SentFriendRequestItemList from "@/components/friend/SentFriendRequestItemList";
 import FriendItmeList from "@/components/FriendItemList";
+import { useMarkAllFriendRequestAsRead } from "@/hook/queries/useMarkAllFriendRequestAsRead";
+import { useGetUnreadFriendRequest } from "@/hook/queries/useGetUnreadFriendRequest";
 
 interface FriendModalProps {
   onClose: () => void;
@@ -24,6 +26,8 @@ type Menu = keyof typeof menus;
 
 const FriendModal = ({ onClose }: FriendModalProps) => {
   const [selected, setSelected] = useState<Menu>("친구 목록");
+  const { mutate: markAllRequestAsRead } = useMarkAllFriendRequestAsRead();
+  const { data: unreadRequestCount } = useGetUnreadFriendRequest();
 
   const renderContents = useCallback(() => {
     const Component = menus[selected];
@@ -34,6 +38,18 @@ const FriendModal = ({ onClose }: FriendModalProps) => {
       </div>
     );
   }, [selected]);
+
+  useEffect(() => {
+    markAllRequestAsRead();
+  }, []);
+
+  useEffect(() => {
+    if (unreadRequestCount) {
+      if (unreadRequestCount.count > 0) {
+        setSelected("받은 요청");
+      }
+    }
+  }, [unreadRequestCount]);
 
   return (
     <Modal

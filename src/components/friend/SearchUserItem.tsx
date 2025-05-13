@@ -5,6 +5,8 @@ import { useState } from "react";
 import PaperCard from "@/components/common/PaperCard";
 import SquareButton from "@/components/common/SquareButton";
 import { useSendFriendRequest } from "@/hook/queries/useSendFriendRequest";
+import { socketManager } from "@/game/managers/socket-manager";
+import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 
 interface SearchedUser {
   id: string;
@@ -22,6 +24,13 @@ const SearchUserItem = ({ friend }: SearchUserItemProps) => {
   const [status, setStatus] = useState<"NONE" | "SENT">("NONE");
 
   const onSend = () => {
+    const socket = socketManager.connect(SOCKET_NAMESPACES.ISLAND);
+
+    if (socket?.connected) {
+      socket?.emit("sendFriendRequest", { targetUserId: friend.id });
+      return;
+    }
+
     mutate({ targetUserId: friend.id });
   };
 

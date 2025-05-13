@@ -9,6 +9,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEY as USER_QUERY_KEY } from "@/hook/queries/useGetUserProfile";
 import { useChangeBio } from "@/hook/queries/useChangeBio";
 import { useGetUserProfile } from "@/hook/queries/useGetUserProfile";
+import { socketManager } from "@/game/managers/socket-manager";
+import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 
 interface PlayerInfoModalProps {
   playerInfo: UserInfo;
@@ -41,6 +43,14 @@ const PlayerInfoModal = ({
   });
 
   const onSendRequest = () => {
+    const socket = socketManager.connect(SOCKET_NAMESPACES.ISLAND);
+
+    if (socket?.connected) {
+      socket?.emit("sendFriendRequest", { targetUserId: playerInfo.id });
+      onSuccess();
+      return;
+    }
+
     sendRequest({ targetUserId: playerInfo.id });
   };
 
