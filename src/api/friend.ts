@@ -5,6 +5,7 @@ import {
   GetFriendRequestsResponse,
   GetFriendsRequest,
   GetFriendsResponse,
+  GetUnreadRequestResponse,
   SendFriendRequest,
 } from "mmorntype";
 
@@ -47,4 +48,15 @@ export const checkFriendRequestStatus = async (targetId: string) => {
     params: { targetId },
   });
   return response.data;
+};
+
+export const getUnreadRequestCount = async () => {
+  const response = await http.get<GetUnreadRequestResponse>(
+    "friends/unread-count"
+  );
+  return response.data;
+};
+
+export const markAllRequestAsRead = async () => {
+  return await http.patch("/friends/read");
 };
