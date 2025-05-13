@@ -33,6 +33,7 @@ import {
   ISLANF_NOT_FOUND_MESSAGE,
   UNKNOWN_MESSAGE,
 } from "@/error/exceptions/message";
+import { SpeechBubbleRenderer } from "@/game/managers/speech-bubble-renderer";
 
 export class IslandScene extends MetamornScene {
   protected override player: Player;
@@ -417,73 +418,18 @@ export class IslandScene extends MetamornScene {
 
     const currBubble = player.getSpeechBubble();
     if (currBubble) {
-      if (currBubble) {
-        currBubble.destroy();
-      }
+      currBubble.destroy();
       player.setSpeechBubble(null);
     }
 
-    const container = this.add.container(
+    const bubble = SpeechBubbleRenderer.render(
+      this,
       player.x,
-      player.y - player.displayHeight / 2 - 10
-    );
-    container.setDepth(99999);
-
-    const text = this.add.text(0, 0, message, {
-      fontFamily: "CookieRun",
-      fontSize: "14px",
-      color: "#000000",
-      wordWrap: { width: 150, useAdvancedWrap: true },
-      align: "center",
-      resolution: 10,
-    });
-    text.setOrigin(0.5, 0.5);
-
-    const bubble = this.add.graphics();
-    const paddingX = 20;
-    const paddingY = 10;
-    const cornerRadius = 15;
-    const tailHeight = 10;
-
-    // 말풍선 크기 계산
-    const bubbleWidth = text.width + paddingX * 2;
-    const bubbleHeight = text.height + paddingY * 2;
-
-    text.y = -bubbleHeight / 2 - tailHeight;
-
-    bubble.fillStyle(0xffffff, 1);
-    // bubble.lineStyle(2, 0x000000, 1);
-
-    bubble.fillRoundedRect(
-      -bubbleWidth / 2,
-      -bubbleHeight - tailHeight,
-      bubbleWidth,
-      bubbleHeight,
-      cornerRadius
-    );
-    bubble.strokeRoundedRect(
-      -bubbleWidth / 2,
-      -bubbleHeight - tailHeight,
-      bubbleWidth,
-      bubbleHeight,
-      cornerRadius
+      player.y - player.displayHeight / 2 - 10,
+      message
     );
 
-    bubble.fillTriangle(-10, -tailHeight, 10, -tailHeight, 0, 0);
-    // bubble.strokeTriangle(-10, -tailHeight, 10, -tailHeight, 0, 0);
-
-    // 컨테이너에 요소 추가
-    container.add(bubble);
-    container.add(text);
-
-    player.setSpeechBubble(container);
-
-    this.time.delayedCall(5000, () => {
-      if (container && container.active) {
-        container.destroy();
-        player.setSpeechBubble(null);
-      }
-    });
+    player.setSpeechBubble(bubble);
   }
 
   private changeToLoby() {
