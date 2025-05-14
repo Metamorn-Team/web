@@ -192,8 +192,8 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
         fontFamily: "CookieRun",
         fontSize: "16px",
         padding: { bottom: 14 },
-        color: this.isControllable ? "#000000" : "#FFFFFF",
-        stroke: this.isControllable ? "#FFFFFF" : "#000000",
+        color: this.isControllable ? "#81D4FA" : "#FFFFFF",
+        stroke: "#000000",
         strokeThickness: 2,
         resolution: 10,
       })
