@@ -24,6 +24,7 @@ export default function ChatInput({
         ref={inputRef}
         value={input}
         rows={1}
+        maxLength={300}
         onFocus={onFocus}
         onBlur={onBlur}
         onChange={(e) => setInput(e.target.value)}

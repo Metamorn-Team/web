@@ -6,9 +6,20 @@ interface MessageProps {
   avatarKey: string;
   sender: string;
   message: string;
+  onOpenModal: () => void;
 }
 
-const Message = ({ isMine, avatarKey, sender, message }: MessageProps) => {
+const Message = ({
+  isMine,
+  avatarKey,
+  sender,
+  message,
+  onOpenModal,
+}: MessageProps) => {
+  const lines = message.split("\n");
+  const isLongMessage = lines.length > 10;
+  const previewMessage = isLongMessage ? lines.slice(0, 8).join("\n") : message;
+
   return (
     <div
       className={`flex gap-2 max-w-[80%] text-[#2a1f14] ${
@@ -28,9 +39,21 @@ const Message = ({ isMine, avatarKey, sender, message }: MessageProps) => {
           isMine ? "bg-[#e8e0d0]" : "bg-[#f3ece1]"
         }`}
       >
-        <div className="font-semibold opacity-80 text-right">{sender}</div>
+        <div
+          className={`font-semibold opacity-80 ${isMine ? "text-right" : ""}`}
+        >
+          {sender}
+        </div>
         <div className="break-all whitespace-pre-wrap">
-          <p>{message}</p>
+          <p>{previewMessage}</p>
+          {isLongMessage && (
+            <button
+              className="text-xs text-blue-500 mt-1 underline"
+              onClick={onOpenModal}
+            >
+              전체 보기
+            </button>
+          )}
         </div>
       </div>
     </div>

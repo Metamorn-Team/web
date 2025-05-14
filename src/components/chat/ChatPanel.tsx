@@ -1,12 +1,14 @@
 "use client";
 
 import ChatInput from "@/components/chat/ChatInput";
+import FullMessageModal from "@/components/chat/FullMessageModal";
 import Message from "@/components/chat/Message";
 import SystemMessage from "@/components/chat/SystemMessage";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { EventWrapper } from "@/game/event/EventBus";
 import { playerStore } from "@/game/managers/player-store";
 import { socketManager } from "@/game/managers/socket-manager";
+import { useModal } from "@/hook/useModal";
 import Alert from "@/utils/alert";
 import { getItem } from "@/utils/persistence";
 import {
@@ -28,6 +30,8 @@ interface ChatMessage {
 
 export default function ChatPanel() {
   const CHAT_THRESHOLD = 500;
+  const { isModalOpen, onOpen, onClose } = useModal();
+  const [modalMessage, setModalMessage] = useState("");
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
@@ -271,6 +275,10 @@ export default function ChatPanel() {
                 avatarKey={msg.avatarKey || "purple_pawn"}
                 sender={msg.sender}
                 message={msg.message}
+                onOpenModal={() => {
+                  setModalMessage(msg.message);
+                  onOpen();
+                }}
               />
             );
           })}
@@ -285,6 +293,10 @@ export default function ChatPanel() {
           onSend={handleSend}
           inputRef={inputRef}
         />
+      )}
+
+      {isModalOpen && (
+        <FullMessageModal onClose={onClose} message={modalMessage} />
       )}
     </div>
   );
