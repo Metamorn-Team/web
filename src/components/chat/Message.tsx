@@ -29,7 +29,9 @@ const Message = ({ isMine, avatarKey, sender, message }: MessageProps) => {
         }`}
       >
         <div className="font-semibold opacity-80 text-right">{sender}</div>
-        <div className="break-all whitespace-pre-line">{message}</div>
+        <div className="break-all whitespace-pre-wrap">
+          <p>{message}</p>
+        </div>
       </div>
     </div>
   );
