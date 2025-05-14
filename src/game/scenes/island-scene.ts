@@ -401,6 +401,7 @@ export class IslandScene extends MetamornScene {
     readonly nickname: string;
     readonly tag: string;
     readonly avatarKey: string;
+    readonly lastActivity?: number;
     readonly x: number;
     readonly y: number;
   }) {

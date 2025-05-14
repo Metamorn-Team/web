@@ -2,19 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { IslandHeartbeatResponse } from "mmorntype";
 import { UserInfo } from "@/types/socket-io/response";
 import { playerStore } from "@/game/managers/player-store";
 import { EventWrapper } from "@/game/event/EventBus";
 
 export default function ParticipantPanel() {
   const [players, setPlayer] = useState<UserInfo[]>([]);
-  const [lastActivityies, setLastActivities] = useState<
-    {
-      id: string;
-      lastActivity: number;
-    }[]
-  >([]);
 
   useEffect(() => {
     const updatePlayers = () => {
@@ -25,24 +18,20 @@ export default function ParticipantPanel() {
       setPlayer(players);
     };
 
-    const handleUpdateOnlineStatus = (data: IslandHeartbeatResponse) => {
-      setLastActivities(data);
-    };
-
     EventWrapper.onUiEvent("updateParticipantsPanel", updatePlayers);
-    EventWrapper.onUiEvent("updateOnlineStatus", handleUpdateOnlineStatus);
+    EventWrapper.onUiEvent("updateOnlineStatus", updatePlayers);
 
     return () => {
       EventWrapper.offUiEvent("updateParticipantsPanel", updatePlayers);
-      EventWrapper.offUiEvent("updateOnlineStatus", handleUpdateOnlineStatus);
+      EventWrapper.offUiEvent("updateOnlineStatus", updatePlayers);
     };
   }, []);
 
   const getInactivityDuration = (id: string) => {
-    const activity = lastActivityies.find((activities) => activities.id === id);
-    if (!activity) return Date.now();
+    const player = players.find((player) => player.id === id);
+    if (!player) return Date.now();
 
-    return Date.now() - activity.lastActivity;
+    return player.lastActivity ? Date.now() - player.lastActivity : Date.now();
   };
 
   return (
