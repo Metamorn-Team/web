@@ -38,7 +38,7 @@ export default function ChatPanel() {
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   const isResizing = useRef(false);
   const startY = useRef(0);
@@ -191,7 +191,7 @@ export default function ChatPanel() {
     document.body.style.cursor = "ns-resize";
   };
 
-  const handleSend = (e?: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleSend = (e?: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e?.nativeEvent.isComposing) return;
     if (!input.trim()) {
       inputRef.current?.blur();

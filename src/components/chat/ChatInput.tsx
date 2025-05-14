@@ -4,8 +4,8 @@ import { FiSend } from "react-icons/fi";
 interface ChatInputProps {
   input: string;
   setInput: (val: string) => void;
-  onSend: (e?: React.KeyboardEvent<HTMLInputElement>) => void;
-  inputRef: React.RefObject<HTMLInputElement | null>;
+  onSend: (e?: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+  inputRef: React.RefObject<HTMLTextAreaElement | null>;
 }
 
 export default function ChatInput({
@@ -20,16 +20,21 @@ export default function ChatInput({
 
   return (
     <div className="p-3 border-t border-[#d6c6aa] bg-[#f3ece1]/90 flex items-center gap-2">
-      <input
-        type="text"
+      <textarea
         ref={inputRef}
         value={input}
+        rows={1}
         onFocus={onFocus}
         onBlur={onBlur}
         onChange={(e) => setInput(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && onSend(e)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            onSend(e);
+          }
+        }}
         placeholder="메시지를 입력하세요..."
-        className="flex-1 px-3 py-2 rounded-md border border-[#d6c6aa] bg-white text-[#2a1f14] text-sm outline-none focus:ring-2 focus:ring-[#d6c6aa]"
+        className="flex-1 px-3 py-2 rounded-md border border-[#d6c6aa] bg-white text-[#2a1f14] text-sm outline-none focus:ring-2 focus:ring-[#d6c6aa] resize-none"
       />
       <button
         onClick={() => onSend()}
