@@ -58,6 +58,8 @@ export class IslandScene extends MetamornScene {
   }
 
   init(data?: { islandId?: string; type: "NORMAL" | "DESERTED" }) {
+    this.isChangingScene = false;
+
     if (data && "islandId" in data && "type" in data) {
       if (data.type === "NORMAL" && data.islandId) {
         setItem("current_island_id", data.islandId);
@@ -74,8 +76,6 @@ export class IslandScene extends MetamornScene {
 
     this.currentIslandId = islandId;
     this.islandType = type;
-
-    this.isChangingScene = false;
   }
 
   create() {
