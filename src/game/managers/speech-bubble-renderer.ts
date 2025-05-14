@@ -17,7 +17,7 @@ export class SpeechBubbleRenderer {
         fontFamily: "CookieRun",
         fontSize: `${fontSize}px`,
         color: "#000000",
-        wordWrap: { width: 150, useAdvancedWrap: true },
+        wordWrap: { width: 200, useAdvancedWrap: true },
         align: "center",
         resolution: 10,
       })
@@ -25,7 +25,7 @@ export class SpeechBubbleRenderer {
 
     const paddingX = 20;
     const paddingY = 10;
-    const tailHeight = 10;
+    const tailHeight = 7;
     const bubbleWidth = text.width + paddingX * 2;
     const bubbleHeight = text.height + paddingY * 2;
 
