@@ -24,6 +24,7 @@ import { Socket } from "socket.io-client";
 
 export class LobyScene extends MetamornScene {
   private isCreated = false;
+  private isChangingScene = false;
 
   private bgmKey = "woodland-fantasy";
   private mine: Mine;
@@ -41,7 +42,9 @@ export class LobyScene extends MetamornScene {
     super(LOBY_SCENE);
   }
 
-  preload() {}
+  init() {
+    this.isChangingScene = false;
+  }
 
   create() {
     if (this.isCreated) return;
@@ -167,7 +170,9 @@ export class LobyScene extends MetamornScene {
     islandId?: string;
     type: "NORMAL" | "DESERTED";
   }) {
-    console.log(this.cameras.main);
+    if (this.isChangingScene) return;
+    this.isChangingScene = true;
+
     this.cameras.main.fadeOut(500, 0, 0, 0);
 
     this.time.delayedCall(500, () => {
