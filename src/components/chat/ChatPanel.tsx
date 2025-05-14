@@ -1,5 +1,8 @@
 "use client";
 
+import ChatInput from "@/components/chat/ChatInput";
+import Message from "@/components/chat/Message";
+import SystemMessage from "@/components/chat/SystemMessage";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { EventWrapper } from "@/game/event/EventBus";
 import { playerStore } from "@/game/managers/player-store";
@@ -12,9 +15,8 @@ import {
   PlayerLeftResponse,
   ReceiveMessage,
 } from "mmorntype";
-import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-import { FiSend, FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
 interface ChatMessage {
   id: string;
@@ -258,41 +260,18 @@ export default function ChatPanel() {
         <div className="flex-1 overflow-y-auto p-4 space-y-3 text-sm text-[#2a1f14] scrollbar-hide">
           {messages.map((msg) => {
             if (msg.isSystem) {
-              return (
-                <div
-                  key={msg.id}
-                  className="text-center text-xs text-[#2a1f14]"
-                >
-                  {msg.message}
-                </div>
-              );
+              return <SystemMessage key={msg.id} message={msg.message} />;
             }
 
             const isMine = msg.sender === "나";
             return (
-              <div
+              <Message
                 key={msg.id}
-                className={`flex gap-2 max-w-[85%] text-[#2a1f14] ${
-                  isMine ? "ml-auto flex-row-reverse text-right" : ""
-                }`}
-              >
-                <div className="relative w-8 h-8 object-cover">
-                  <Image
-                    src={`/images/avatar/${msg.avatarKey || "purple_pawn"}.png`}
-                    fill
-                    className={isMine ? "scale-x-[-1]" : ""}
-                    alt="avatar"
-                  />
-                </div>
-                <div
-                  className={`px-3 py-2 rounded-md ${
-                    isMine ? "bg-[#e8e0d0]" : "bg-[#f3ece1]"
-                  }`}
-                >
-                  <div className="font-semibold opacity-80">{msg.sender}</div>
-                  <div>{msg.message}</div>
-                </div>
-              </div>
+                isMine={isMine}
+                avatarKey={msg.avatarKey || "purple_pawn"}
+                sender={msg.sender}
+                message={msg.message}
+              />
             );
           })}
           <div ref={bottomRef} />
@@ -307,41 +286,6 @@ export default function ChatPanel() {
           inputRef={inputRef}
         />
       )}
-    </div>
-  );
-}
-
-interface ChatInputProps {
-  input: string;
-  setInput: (val: string) => void;
-  onSend: (e?: React.KeyboardEvent<HTMLInputElement>) => void;
-  inputRef: React.RefObject<HTMLInputElement | null>;
-}
-
-function ChatInput({ input, setInput, onSend, inputRef }: ChatInputProps) {
-  const onFocus = () => EventWrapper.emitToGame("disableGameInput");
-
-  const onBlur = () => EventWrapper.emitToGame("enableGameKeyboardInput");
-
-  return (
-    <div className="p-3 border-t border-[#d6c6aa] bg-[#f3ece1]/90 flex items-center gap-2">
-      <input
-        type="text"
-        ref={inputRef}
-        value={input}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        onChange={(e) => setInput(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && onSend(e)}
-        placeholder="메시지를 입력하세요..."
-        className="flex-1 px-3 py-2 rounded-md border border-[#d6c6aa] bg-white text-[#2a1f14] text-sm outline-none focus:ring-2 focus:ring-[#d6c6aa]"
-      />
-      <button
-        onClick={() => onSend()}
-        className="text-[#2a1f14] hover:text-[#7c6f58] transition"
-      >
-        <FiSend size={18} />
-      </button>
     </div>
   );
 }

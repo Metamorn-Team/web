@@ -18,7 +18,7 @@ import { 친절한_토치_고블린 } from "@/constants/game/talk-scripts";
 import LoginModal from "@/components/login/LoginModal";
 import { getMyProfile } from "@/api/user";
 import { persistItem } from "@/utils/persistence";
-import ChatPanel from "@/components/ChatPanel";
+import ChatPanel from "@/components/chat/ChatPanel";
 import { useAttackedSound } from "@/hook/useAttackedSound";
 import Alert from "@/utils/alert";
 import ParticipantPanel from "@/components/ParticipantsPanel";
