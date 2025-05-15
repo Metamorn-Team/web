@@ -16,7 +16,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   private playerInfo: UserInfo;
   private label = "PLAYER";
-  public speed = 2;
+  public speed = 2.2;
 
   protected isControllable: boolean;
   protected isBeingBorn = true;
