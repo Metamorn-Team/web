@@ -14,7 +14,7 @@ import { Npc } from "@/game/entities/npc/npc";
 import GoblinTorch from "@/components/common/GoblinTorch";
 import { UserInfo } from "@/types/socket-io/response";
 import PlayerInfoModal from "@/components/PlayerInfoModal";
-import { 친절한_토치_고블린 } from "@/constants/game/talk-scripts";
+import { 지친_토치_고블린 } from "@/constants/game/talk-scripts";
 import LoginModal from "@/components/login/LoginModal";
 import { getMyProfile } from "@/api/user";
 import { persistItem } from "@/utils/persistence";
@@ -208,8 +208,8 @@ export default function GameWrapper({
         <TalkModal
           onClose={onHelpClose}
           avatar={<GoblinTorch />}
-          name="친절한 토치 고블린"
-          comments={친절한_토치_고블린}
+          name="토치 고블린"
+          comments={지친_토치_고블린}
         />
       ) : null}
 
