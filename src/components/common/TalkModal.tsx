@@ -55,7 +55,7 @@ const TalkModal = ({
       ></div>
 
       <div
-        className={`relative flex flex-col bg-paperSmall bg-cover p-12 z-10 animate-fadeIn rounded-3xl w-full justify-between ${className}`}
+        className={`relative flex flex-col bg-paperSmall bg-cover p-12 z-10 animate-fadeIn rounded-3xl w-full md:w-4/5 justify-between ${className}`}
         style={{ aspectRatio: "3/1", maxWidth: 780 }}
       >
         <div className="absolute" style={{ top: -160, left: -50 }}>
