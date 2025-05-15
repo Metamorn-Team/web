@@ -6,9 +6,24 @@ import AlertProvider from "@/components/common/AlertProvider";
 
 export const metadata: Metadata = {
   title: "🏝️섬으로 떠나 친구를 만나요~!",
-  description: "리브아일랜드",
+  description: "일상을 떠나 평화로운 섬으로 - 리브아일랜드",
   icons: {
     icon: "/icons/favicon.png",
+  },
+  openGraph: {
+    title: "🏝️섬으로 떠나 친구를 만나요~!",
+    description: "일상을 떠나 평화로운 섬으로 - 리브아일랜드",
+    url: "https://livisland.com",
+    siteName: "리브아일랜드",
+    images: [
+      {
+        url: "https://cdn.metamorn.com/vanner/ad-vanner.png",
+        width: 1500,
+        height: 1024,
+        alt: "메타몬 OG 이미지",
+      },
+    ],
+    type: "website",
   },
 };
 
