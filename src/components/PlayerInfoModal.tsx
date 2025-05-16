@@ -14,6 +14,8 @@ import { useGetUserProfile } from "@/hook/queries/useGetUserProfile";
 import { socketManager } from "@/game/managers/socket-manager";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { INITIAL_PROFILE } from "@/constants/game/initial-profile";
+import Pawn from "@/components/common/Pawn";
+import { PawnColor } from "@/constants/game/entities";
 
 interface PlayerInfoModalProps {
   playerInfo: UserInfo;
@@ -114,13 +116,14 @@ const PlayerInfoModal = ({
       <div className="w-full h-full flex flex-col items-center justify-between py-6 px-2">
         <div className="flex flex-col items-center gap-4">
           <div>
-            <Image
-              src={`/images/avatar/${
-                displayedUser.avatarKey || "purple_pawn"
-              }.png`}
-              width={64}
-              height={64}
-              alt="avatar"
+            <Pawn
+              color={
+                (displayedUser.avatarKey || "purple_pawn").split(
+                  "_"
+                )[0] as PawnColor
+              }
+              animation="idle"
+              className="w-[72px] h-[72px]"
             />
           </div>
 
@@ -132,7 +135,11 @@ const PlayerInfoModal = ({
           </div>
 
           {/* 자기소개 영역 */}
-          <div className="relative w-full bg-[#f9f5ec] border border-[#d6c6aa] rounded-md px-5 py-5 text-sm text-[#5c4b32] text-center shadow-inner max-w-[340px]">
+          <div
+            className={`relative w-full bg-[#f9f5ec] border border-[#d6c6aa] rounded-md px-5 py-5 text-sm text-[#5c4b32] text-center shadow-inner min-w-[200px] max-w-[340px] overflow-y-scroll scrollbar-hide ${
+              isEditing ? "h-fit" : "max-h-[150px]"
+            }`}
+          >
             {!isEditing && (
               <>
                 {isMe && isLogined && (
@@ -150,21 +157,22 @@ const PlayerInfoModal = ({
             )}
 
             {isEditing && (
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col w-[250px] gap-2 animate-fadeIn">
                 <textarea
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
                   maxLength={300}
-                  className="w-full p-2 border border-[#d6c6aa] rounded text-sm resize-none"
+                  className="w-full p-2 rounded-md border border-[#bfae96] text-sm text-[#3d2c1b] bg-[#fff9ee] shadow-inner resize-none focus:outline-none focus:ring-2 focus:ring-[#e7d6b8]"
                   rows={4}
+                  placeholder="자기소개를 입력해보세요 ✨"
                 />
-                <div className="flex justify-end gap-2 text-sm">
+                <div className="flex justify-end gap-2 text-sm mt-1">
                   <button
                     onClick={() => {
                       setBio("");
                       setIsEditing(false);
                     }}
-                    className="px-2 py-1 rounded bg-gray-200 text-gray-800 hover:bg-gray-300"
+                    className="px-3 py-1 rounded-full bg-[#e0e0e0] text-gray-700 hover:bg-[#d4d4d4] shadow-sm transition-all"
                   >
                     취소
                   </button>
@@ -172,7 +180,7 @@ const PlayerInfoModal = ({
                     onClick={() =>
                       changeBio({ bio: bio.trim().length === 0 ? null : bio })
                     }
-                    className="px-2 py-1 rounded bg-[#bfae96] text-white hover:bg-[#a39179]"
+                    className="px-3 py-1 rounded-full bg-[#f5c36c] text-white hover:bg-[#e5b05a] shadow-md transition-all"
                   >
                     저장
                   </button>
