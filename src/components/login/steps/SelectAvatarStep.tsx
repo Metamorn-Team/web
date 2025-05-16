@@ -36,7 +36,11 @@ const SelectAvatarStep = ({ nextStep }: SelectAvatarStep) => {
         <div className="absolute left-0 h-full flex flex-col justify-center">
           <SquareButton color="blue" onClick={onPrev} title="<<" width={48} />
         </div>
-        <Pawn color={currentColor} className="w-3/5 aspect-[1/1] h-auto" />
+        <Pawn
+          color={currentColor}
+          animation="idle"
+          className="w-3/5 aspect-[1/1] h-auto"
+        />
         <div className="absolute right-0 h-full flex flex-col justify-center">
           <SquareButton color="blue" onClick={onNext} title=">>" width={48} />
         </div>
