@@ -61,15 +61,16 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
     // 나
     if (this.playerInfo.id === "ebf2f847-01fd-4a5b-8e1e-79e3a94175fa") {
-      const phantom = 0xb68df4;
-      this.preFX?.addGlow(phantom, 3);
-      this.scene.tweens.add({
-        targets: this,
-        alpha: { from: 1, to: 0.5 },
-        duration: 900,
-        yoyo: true,
-        repeat: -1,
-      });
+      this.preFX?.addGlow(0xfbb6ce);
+      // const phantom = 0xb68df4;
+      // this.preFX?.addGlow(phantom, 3);
+      // this.scene.tweens.add({
+      //   targets: this,
+      //   alpha: { from: 1, to: 0.5 },
+      //   duration: 900,
+      //   yoyo: true,
+      //   repeat: -1,
+      // });
     }
 
     if (this.playerInfo.id === "601ecbae-ee0e-4a75-9fb1-61d068668046") {
