@@ -49,13 +49,13 @@ export default function ControlGuide() {
                 {keys.map((key) => (
                   <kbd
                     key={key}
-                    className="px-2 py-1 border border-white/50 rounded bg-white/10 text-white text-xs shadow"
+                    className="px-2 py-1 border border-white/50 rounded bg-white/10 text-white text-sm shadow"
                   >
                     {key}
                   </kbd>
                 ))}
               </div>
-              <span className="text-xs text-white/80">{label}</span>
+              <span className="text-base text-white/80">{label}</span>
             </li>
           ))}
         </ul>
