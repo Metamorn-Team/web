@@ -1,8 +1,9 @@
 import { PAWN } from "@/constants/game/entities";
 
 export const INITIAL_PROFILE = {
-  id: "metamorn",
+  id: "initial",
   avatarKey: PAWN("purple"),
   nickname: " ",
-  tag: "metamorn",
+  tag: "hello_livisland",
+  bio: "섬으로 떠나자!!",
 };

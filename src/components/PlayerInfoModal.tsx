@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Button from "@/components/common/Button";
 import SquareModal from "@/components/common/SquareModal";
@@ -11,6 +13,7 @@ import { useChangeBio } from "@/hook/queries/useChangeBio";
 import { useGetUserProfile } from "@/hook/queries/useGetUserProfile";
 import { socketManager } from "@/game/managers/socket-manager";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
+import { INITIAL_PROFILE } from "@/constants/game/initial-profile";
 
 interface PlayerInfoModalProps {
   playerInfo: UserInfo;
@@ -23,19 +26,30 @@ const PlayerInfoModal = ({
   playerInfo,
   className,
 }: PlayerInfoModalProps) => {
+  const myProfile = getItem("profile");
+  const isLogined = !!myProfile;
+  const isMe = myProfile?.id === playerInfo.id;
+
   const queryClient = useQueryClient();
-  const { data: user, isLoading } = useGetUserProfile(playerInfo.id);
+
+  const { data: user } = useGetUserProfile(playerInfo.id, isLogined);
+
+  const displayedUser = user ?? INITIAL_PROFILE;
 
   const [isEditing, setIsEditing] = useState(false);
   const [bio, setBio] = useState<string>("");
 
-  const myProfile = getItem("profile");
-  const isMe = (myProfile?.id || " ") === playerInfo.id;
+  useEffect(() => {
+    if (isMe && user?.bio) {
+      setBio(user.bio);
+    }
+  }, [isMe, user]);
 
   const onSuccess = () =>
     queryClient.invalidateQueries({
       queryKey: [USER_QUERY_KEY, playerInfo.id],
     });
+
   const { mutate: sendRequest } = useSendFriendRequest(onSuccess);
   const { mutate: changeBio } = useChangeBio(() => {
     onSuccess();
@@ -46,7 +60,7 @@ const PlayerInfoModal = ({
     const socket = socketManager.connect(SOCKET_NAMESPACES.ISLAND);
 
     if (socket?.connected) {
-      socket?.emit("sendFriendRequest", { targetUserId: playerInfo.id });
+      socket.emit("sendFriendRequest", { targetUserId: playerInfo.id });
       onSuccess();
       return;
     }
@@ -54,12 +68,10 @@ const PlayerInfoModal = ({
     sendRequest({ targetUserId: playerInfo.id });
   };
 
-  if (isLoading || !user) return <p>불러오는 중..</p>;
-
   const renderFriendButton = () => {
-    if (isMe) return null;
+    if (isMe || !isLogined) return null;
 
-    switch (user.friendStatus) {
+    switch (user?.friendStatus) {
       case "NONE":
         return (
           <Button
@@ -103,17 +115,19 @@ const PlayerInfoModal = ({
         <div className="flex flex-col items-center gap-4">
           <div>
             <Image
-              src={`/images/avatar/${user.avatarKey || "purple_pawn"}.png`}
+              src={`/images/avatar/${
+                displayedUser.avatarKey || "purple_pawn"
+              }.png`}
               width={64}
               height={64}
               alt="avatar"
             />
           </div>
-          <div className="flex flex-col items-center">
-            <div className="text-xl font-bold">{user.nickname}</div>
 
+          <div className="flex flex-col items-center gap-2">
+            <div className="text-xl font-bold">{displayedUser.nickname}</div>
             <div className="text-sm text-[#5c4b32] bg-[#f9f5ec] border border-[#d6c6aa] rounded-full px-3 py-1">
-              @{user.tag}
+              @{displayedUser.tag}
             </div>
           </div>
 
@@ -121,7 +135,7 @@ const PlayerInfoModal = ({
           <div className="relative w-full bg-[#f9f5ec] border border-[#d6c6aa] rounded-md px-5 py-5 text-sm text-[#5c4b32] text-center shadow-inner max-w-[340px]">
             {!isEditing && (
               <>
-                {isMe && (
+                {isMe && isLogined && (
                   <button
                     onClick={() => setIsEditing(true)}
                     className="absolute top-1 right-2 text-xs text-[#5c4b32] hover:underline"
@@ -129,7 +143,9 @@ const PlayerInfoModal = ({
                     ✏️ 수정
                   </button>
                 )}
-                {user.bio ? `💬 ${user.bio}` : "💬 자기소개가 아직 없어요!"}
+                {displayedUser.bio
+                  ? `💬 ${displayedUser.bio}`
+                  : "💬 자기소개가 아직 없어요!"}
               </>
             )}
 
