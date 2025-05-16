@@ -306,25 +306,28 @@ export class IslandScene extends MetamornScene {
   }
 
   listenSocketErrorEvent() {
+    const alertAndChangeToLoby = (message: string) => {
+      Alert.error(message);
+      this.changeToLoby();
+    };
+
     this.io.on("wsError", ({ name }: WsErrorBody) => {
       switch (name) {
         case "ISLAND_FULL":
-          Alert.error(ISLAND_FULL_MESSAGE);
-          this.changeToLoby();
-          return;
+          alertAndChangeToLoby(ISLAND_FULL_MESSAGE);
+          break;
         case "ISLAND_NOT_FOUND":
-          Alert.error(ISLANF_NOT_FOUND_MESSAGE);
-          this.changeToLoby();
-          return;
+          alertAndChangeToLoby(ISLAND_FULL_MESSAGE);
+          break;
         case "ISLAND_NOT_FOUND_IN_STORAGE":
-          Alert.error(ISLANF_NOT_FOUND_MESSAGE);
-          this.changeToLoby();
+          alertAndChangeToLoby(ISLANF_NOT_FOUND_MESSAGE);
+          break;
         case "PLAYER_NOT_FOUND_IN_STORAGE":
-          Alert.error(UNKNOWN_MESSAGE);
-          this.changeToLoby();
+          alertAndChangeToLoby(UNKNOWN_MESSAGE);
+          break;
         case "LOCK_ACQUIRED_FAILED":
-          Alert.error(CONFLIC_MESSAGE);
-          this.changeToLoby();
+          alertAndChangeToLoby(CONFLIC_MESSAGE);
+          break;
         default:
           return;
       }
