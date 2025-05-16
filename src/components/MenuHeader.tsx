@@ -137,25 +137,29 @@ export default function MenuHeader({
           onClick={onPlayBgmToggle}
         />
 
-        <div className="relative">
-          <StyledMenuItem
-            icon={<FiUser size={20} />}
-            label="친구"
-            onClick={() => changeFriendModalOpen(true)}
-          />
+        {isLogined ? (
+          <div className="relative">
+            <StyledMenuItem
+              icon={<FiUser size={20} />}
+              label="친구"
+              onClick={() => changeFriendModalOpen(true)}
+            />
 
-          {unreadRequestCount && unreadRequestCount.count > 0 ? (
-            <span className="absolute -top-2 -right-2 w-[18px] h-[18px] text-[10px] px-[4px] text-white bg-red-600 rounded-full flex items-center justify-center">
-              {unreadRequestCount.count > 99 ? "99+" : unreadRequestCount.count}
-            </span>
-          ) : null}
+            {unreadRequestCount && unreadRequestCount.count > 0 ? (
+              <span className="absolute -top-2 -right-2 w-[18px] h-[18px] text-[10px] px-[4px] text-white bg-red-600 rounded-full flex items-center justify-center">
+                {unreadRequestCount.count > 99
+                  ? "99+"
+                  : unreadRequestCount.count}
+              </span>
+            ) : null}
 
-          {showNewRequestMessage ? (
-            <div className="absolute top-full mt-1 left-1/2 -translate-x-1/2 bg-red-600 text-white text-xs px-3 py-1 rounded shadow animate-pulse whitespace-nowrap">
-              새로운 친구 요청이 왔어요!
-            </div>
-          ) : null}
-        </div>
+            {showNewRequestMessage ? (
+              <div className="absolute top-full mt-1 left-1/2 -translate-x-1/2 bg-red-600 text-white text-xs px-3 py-1 rounded shadow animate-pulse whitespace-nowrap">
+                새로운 친구 요청이 왔어요!
+              </div>
+            ) : null}
+          </div>
+        ) : null}
 
         <StyledMenuItem
           icon={<FiShoppingBag size={20} />}
