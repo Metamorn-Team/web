@@ -143,12 +143,15 @@ export default function GameWrapper({
       }
     };
 
+    const handleOpenLoginModal = () => onLoginModalOpen();
+
     EventWrapper.onUiEvent("current-scene-ready", handleSceneReady);
     EventWrapper.onUiEvent("start-change-scene", handleStartChangeScene);
     EventWrapper.onUiEvent("finish-change-scene", handleFinishChangeScene);
     EventWrapper.onUiEvent("npc-interaction-started", handleNpcInteraction);
     EventWrapper.onUiEvent("player-click", handlePlayerClick);
-    EventWrapper.onUiEvent("request-join-island", handleRequestJoinIsland);
+    EventWrapper.onUiEvent("requestJoinIsland", handleRequestJoinIsland);
+    EventWrapper.onUiEvent("openLoginModal", handleOpenLoginModal);
 
     const handleResize = () => {
       if (gameRef.current) {
@@ -166,7 +169,8 @@ export default function GameWrapper({
       EventWrapper.offUiEvent("finish-change-scene", handleFinishChangeScene);
       EventWrapper.offUiEvent("npc-interaction-started", handleNpcInteraction);
       EventWrapper.offUiEvent("player-click", handlePlayerClick);
-      EventWrapper.offUiEvent("request-join-island", handleRequestJoinIsland);
+      EventWrapper.offUiEvent("requestJoinIsland", handleRequestJoinIsland);
+      EventWrapper.offUiEvent("openLoginModal", handleOpenLoginModal);
 
       window.removeEventListener("resize", handleResize);
     };

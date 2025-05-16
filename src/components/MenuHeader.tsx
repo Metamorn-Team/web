@@ -42,6 +42,8 @@ export default function MenuHeader({
   const [showNewRequestMessage, setShowNewRequestMessage] = useState(false);
   const { data: unreadRequestCount } = useGetUnreadFriendRequest();
 
+  const isLogined = !!getPersistenceItem("access_token");
+
   useEffect(() => {
     const socket = socketManager.connect(SOCKET_NAMESPACES.ISLAND);
 
@@ -179,11 +181,19 @@ export default function MenuHeader({
 
         {menuOpen && (
           <div className="absolute right-0 top-full mt-2 w-44 bg-[#fdf8ef] border border-[#bfae96] shadow-[4px_4px_0_#8c7a5c] p-2 flex flex-col gap-2 text-sm text-[#3d2c1b] animate-fadeIn rounded-[6px]">
-            <DropdownItem
-              icon={<FiLogOut />}
-              label="로그아웃"
-              onClick={onLogout}
-            />
+            {isLogined ? (
+              <DropdownItem
+                icon={<FiLogOut />}
+                label="로그아웃"
+                onClick={onLogout}
+              />
+            ) : (
+              <DropdownItem
+                icon={<FiUser />}
+                label="로그인"
+                onClick={() => EventWrapper.emitToUi("openLoginModal")}
+              />
+            )}
             <DropdownItem
               icon={<FiSettings />}
               label="환경 설정"
