@@ -80,14 +80,7 @@ const ProductCard = ({ product, onAddEquippedItem }: ProductCardProps) => {
         </span>
 
         <div className="flex gap-1">
-          <RetroButton
-            onClick={
-              product.purchasedStatus !== "PURCHASED" ? onEquip : () => {}
-            }
-            disabled={product.purchasedStatus === "PURCHASED"}
-          >
-            장착
-          </RetroButton>
+          <RetroButton onClick={onEquip}>장착</RetroButton>
           <RetroButton
             disabled={product.purchasedStatus === "PURCHASED"}
             onClick={() =>
