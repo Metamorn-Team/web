@@ -3,5 +3,5 @@ export interface UserInfo {
   tag: string;
   nickname: string;
   avatarKey: string;
-  lastActivity?: number;
+  lastActivity: number;
 }
