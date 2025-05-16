@@ -236,7 +236,7 @@ export class IslandScene extends MetamornScene {
 
     this.io.on("playerJoin", (data) => {
       console.log(`on playerJoin: ${JSON.stringify(data, null, 2)}`);
-      this.addPlayer(data);
+      this.addPlayer({ ...data, lastActivity: Date.now() });
 
       EventWrapper.emitToUi("newPlayer", data);
       EventWrapper.emitToUi("updateParticipantsPanel");
@@ -252,7 +252,7 @@ export class IslandScene extends MetamornScene {
         const userInfo = await this.getPlayerInfo();
         this.player = await controllablePlayerManager.spawnControllablePlayer(
           this,
-          userInfo,
+          { ...userInfo, lastActivity: Date.now() },
           data.x,
           data.y,
           this.inputManager,
@@ -299,7 +299,7 @@ export class IslandScene extends MetamornScene {
 
     this.io.on("islandHearbeat", (data) => {
       data.forEach((player) =>
-        this.handlePlayerSleep(player.id, player.lastActivity)
+        this.handleHeartbeat(player.id, player.lastActivity)
       );
       EventWrapper.emitToUi("updateOnlineStatus", data);
     });
@@ -331,18 +331,22 @@ export class IslandScene extends MetamornScene {
     });
   }
 
-  handlePlayerSleep(playerId: string, lastActivity: number) {
-    if (lastActivity > Date.now() - 1000 * 60 * 5) return;
+  handleHeartbeat(playerId: string, newLastActivity: number) {
+    const player =
+      this.player.getPlayerInfo().id === playerId
+        ? this.player
+        : playerStore.getPlayer(playerId);
 
-    const player = playerStore.getPlayer(playerId);
-    if (player) {
+    if (!player) return;
+
+    player.setLastActivity(newLastActivity);
+
+    const { lastActivity } = player.getPlayerInfo();
+    const now = Date.now();
+
+    const INACTIVITY_THRESHOLD = 1000 * 60 * 5;
+    if (now - lastActivity > INACTIVITY_THRESHOLD) {
       player.sleep();
-      return;
-    }
-
-    const myPlayer = this.player.getPlayerInfo();
-    if (myPlayer.id === playerId) {
-      this.player.sleep();
     }
   }
 
@@ -401,7 +405,7 @@ export class IslandScene extends MetamornScene {
     readonly nickname: string;
     readonly tag: string;
     readonly avatarKey: string;
-    readonly lastActivity?: number;
+    readonly lastActivity: number;
     readonly x: number;
     readonly y: number;
   }) {

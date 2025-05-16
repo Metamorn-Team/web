@@ -92,6 +92,10 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     return this.playerInfo;
   }
 
+  setLastActivity(time: number) {
+    this.playerInfo.lastActivity = time;
+  }
+
   setFsm(fsm: FiniteStateMachine<PlayerState>) {
     this.fsm = fsm;
   }
