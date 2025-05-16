@@ -73,7 +73,15 @@ const StoreGame = ({ ref }: StoreGameProps) => {
     initialize();
   }, [ref, fontsLoaded]);
 
-  return <div id="game-container" />;
+  return (
+    <div className="relative w-[288px] h-[288px]">
+      <div id="game-container" className="w-full h-full" />
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs px-3 py-1 rounded shadow z-10 w-3/4">
+        <p>💡 상점 기능은 아직 준비 중이에요..</p>
+        <p>하지만 자유롭게 장착해볼 수 있어요!</p>
+      </div>
+    </div>
+  );
 };
 
 export default React.memo(StoreGame);
