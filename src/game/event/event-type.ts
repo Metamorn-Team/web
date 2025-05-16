@@ -27,7 +27,8 @@ export interface GameToUiEvent {
   "finish-change-scene": () => void;
   "npc-interaction-started": (data: { npc: Npc; type: "guide" }) => void;
   "player-click": (userInfo: UserInfo) => void;
-  "request-join-island": () => void;
+  requestJoinIsland: () => void;
+  openLoginModal: () => void;
   updateParticipantsPanel: () => void;
   newPlayer: (data: PlayerJoinResponse) => void;
   playerLeftChat: (data: PlayerLeftResponse) => void;
