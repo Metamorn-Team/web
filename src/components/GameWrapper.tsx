@@ -25,6 +25,7 @@ import ParticipantPanel from "@/components/ParticipantsPanel";
 import SettingsModal from "@/components/SettingsModal";
 import IslandListModal from "@/components/islands/IslandListModal";
 import { ISLAND_SCENE } from "@/constants/game/islands/island";
+import ControlGuide from "@/components/ControlGuide";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -243,6 +244,7 @@ export default function GameWrapper({
 
       {isVisibleChat ? <ChatPanel /> : null}
       {isVisibleChat ? <ParticipantPanel /> : null}
+      {<ControlGuide />}
     </div>
   );
 }

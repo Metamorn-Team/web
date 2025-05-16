@@ -11,4 +11,5 @@ export interface LocalStorageData {
   play_bgm: boolean;
   sound_volume: number;
   fps_limit: number;
+  seen_control_guide: boolean;
 }
