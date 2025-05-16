@@ -51,16 +51,16 @@ const ProductCard = ({ product, onAddEquippedItem }: ProductCardProps) => {
           {gradeStyles[product.grade].label}
         </div>
 
-        {/* 솔드아웃 텍스트 (카드 전체 중앙에 대각선으로 표시) */}
         {product.purchasedStatus === "PURCHASED" && (
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-5xl text-red-600 font-bold text-center">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-5xl text-red-600 font-bold text-center z-50">
             SOLD OUT
           </div>
         )}
-        <img
+        <Image
           src={product.coverImage}
           alt={product.name}
-          className="w-full h-full object-contain image-render-pixel"
+          fill
+          objectFit="cover"
         />
       </div>
 
@@ -86,7 +86,7 @@ const ProductCard = ({ product, onAddEquippedItem }: ProductCardProps) => {
             }
             disabled={product.purchasedStatus === "PURCHASED"}
           >
-            창작
+            장착
           </RetroButton>
           <RetroButton
             disabled={product.purchasedStatus === "PURCHASED"}
