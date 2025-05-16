@@ -1,5 +1,6 @@
 "use client";
 
+import { ReloadModalProvider } from "@/components/common/RealodModalProvider";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
@@ -19,7 +20,7 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <GoogleOAuthProvider clientId="643620098305-m4javmkthiki8jciimaloh1hj14g18ap.apps.googleusercontent.com">
-        {children}
+        <ReloadModalProvider>{children}</ReloadModalProvider>
       </GoogleOAuthProvider>
     </QueryClientProvider>
   );
