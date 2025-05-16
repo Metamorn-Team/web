@@ -236,7 +236,7 @@ export class IslandScene extends MetamornScene {
 
     this.io.on("playerJoin", (data) => {
       console.log(`on playerJoin: ${JSON.stringify(data, null, 2)}`);
-      this.addPlayer({ ...data, lastActivity: Date.now() });
+      this.addPlayer(data);
 
       EventWrapper.emitToUi("newPlayer", data);
       EventWrapper.emitToUi("updateParticipantsPanel");
@@ -252,7 +252,7 @@ export class IslandScene extends MetamornScene {
         const userInfo = await this.getPlayerInfo();
         this.player = await controllablePlayerManager.spawnControllablePlayer(
           this,
-          { ...userInfo, lastActivity: Date.now() },
+          userInfo,
           data.x,
           data.y,
           this.inputManager,
@@ -348,7 +348,7 @@ export class IslandScene extends MetamornScene {
     const now = Date.now();
 
     const INACTIVITY_THRESHOLD = 1000 * 60 * 5;
-    if (now - lastActivity > INACTIVITY_THRESHOLD) {
+    if (now - (lastActivity || now) > INACTIVITY_THRESHOLD) {
       player.sleep();
     }
   }
@@ -408,7 +408,6 @@ export class IslandScene extends MetamornScene {
     readonly nickname: string;
     readonly tag: string;
     readonly avatarKey: string;
-    readonly lastActivity: number;
     readonly x: number;
     readonly y: number;
   }) {
