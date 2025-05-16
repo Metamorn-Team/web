@@ -161,11 +161,13 @@ export default function MenuHeader({
           </div>
         ) : null}
 
-        <StyledMenuItem
-          icon={<FiShoppingBag size={20} />}
-          label="상점"
-          onClick={onClickStore}
-        />
+        {isLogined ? (
+          <StyledMenuItem
+            icon={<FiShoppingBag size={20} />}
+            label="상점"
+            onClick={onClickStore}
+          />
+        ) : null}
       </div>
 
       <div className="relative flex gap-3" ref={menuRef}>
