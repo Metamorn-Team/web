@@ -125,7 +125,7 @@ export default function ParticipantPanel() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed top-[68px] sm:top-[76px] right-2 z-40 bg-[#f3ece1] border border-[#5c4b32] text-[#5c4b32] px-3 py-1 rounded-full shadow-md flex items-center gap-2 text-xs sm:text-sm"
+          className="fixed top-[68px] sm:top-[76px] right-3 sm:right-5 z-30 bg-[#f3ece1] border border-[#5c4b32] text-[#5c4b32] px-3 py-1 rounded-full shadow-md flex items-center gap-2 text-xs sm:text-sm"
         >
           <FiUsers size={14} />
           <ParticipantStatusLabel count={onlineCount} />
