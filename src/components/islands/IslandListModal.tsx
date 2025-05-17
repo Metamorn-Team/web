@@ -148,7 +148,7 @@ export default function IslandListModal({
   return (
     <>
       <RetroModal isOpen={isOpen} onClose={onClose}>
-        <div className="flex flex-col justify-between h-[92vh] sm:h-[80vh]">
+        <div className="flex flex-col justify-between h-[92dvh] sm:h-[80dvh]">
           {/* 상단 */}
           <div className="shrink-0 mb-4">
             <h3 className="text-xl font-bold text-[#2a1f14] text-center mb-6">
