@@ -6,9 +6,9 @@ import { UserInfo } from "@/types/socket-io/response";
 import { DEAD } from "@/game/animations/keys/common";
 import { TypedSocket } from "@/types/socket-io";
 import { AttackType } from "@/types/game/enum/state";
-import { InputManager } from "@/game/managers/input-manager";
 import { PlayerState } from "@/game/fsm/states/enum/player/player-state";
 import { FiniteStateMachine } from "@/game/fsm/machine/interface/finite-state-machine";
+import { InputManager } from "@/game/managers/input/input-manager";
 
 export abstract class Player extends Phaser.Physics.Matter.Sprite {
   private inputManager?: InputManager;

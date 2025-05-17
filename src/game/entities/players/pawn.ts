@@ -6,7 +6,7 @@ import {
   PAWN_WALK,
 } from "@/game/animations/keys/pawn";
 import { Player } from "@/game/entities/players/player";
-import { InputManager } from "@/game/managers/input-manager";
+import { InputManager } from "@/game/managers/input/input-manager";
 import { AttackType } from "@/types/game/enum/state";
 import { TypedSocket } from "@/types/socket-io";
 import { UserInfo } from "@/types/socket-io/response";

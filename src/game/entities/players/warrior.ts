@@ -5,7 +5,7 @@ import {
   WARRIOR_WALK,
 } from "@/game/animations/keys/warrior";
 import { Player } from "@/game/entities/players/player";
-import { InputManager } from "@/game/managers/input-manager";
+import { InputManager } from "@/game/managers/input/input-manager";
 import { AttackType } from "@/types/game/enum/state";
 import { UserInfo } from "@/types/socket-io/response";
 import type { Socket } from "socket.io-client";

@@ -1,4 +1,4 @@
-import { InputManager } from "@/game/managers/input-manager";
+import { InputManager } from "@/game/managers/input/input-manager";
 import { spawnManager } from "@/game/managers/spawn-manager";
 import { Phaser } from "@/game/phaser";
 import { UserInfo } from "@/types/socket-io/response";

@@ -3,9 +3,9 @@ import { Pawn } from "@/game/entities/players/pawn";
 import { Phaser } from "@/game/phaser";
 import { UserInfo } from "@/types/socket-io/response";
 import { PawnColor, pawnColors } from "@/constants/game/entities";
-import { InputManager } from "@/game/managers/input-manager";
 import { RemotePlayerFSM } from "@/game/fsm/machine/player/remote-player-fsm";
 import { PlayerFSM } from "@/game/fsm/machine/player/player-fsm";
+import { InputManager } from "@/game/managers/input/input-manager";
 
 class SpawnManager {
   spawnPlayer(
