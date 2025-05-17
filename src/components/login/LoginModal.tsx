@@ -49,7 +49,6 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   return (
     <SquareModal
       onClose={onCloseWithStateClear}
-      width="30%"
       className="min-w-[365px] max-w-[420px]"
     >
       {StepComponents[step]}
