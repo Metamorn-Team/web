@@ -37,19 +37,34 @@ const RetroModal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center p-4"
+      className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center sm:p-4 p-0"
       onClick={handleModalClick}
     >
       <div
         className={classNames(
-          "bg-[#fdf8ef] border border-[#bfae96] shadow-[6px_6px_0_#8c7a5c] rounded-[8px] w-full max-w-[500px] sm:max-w-[600px] md:max-w-[700px] lg:max-w-[800px] xl:max-w-[900px] h-auto animate-fadeIn duration-200",
+          `
+          bg-[#fdf8ef] border border-[#bfae96]
+          shadow-[6px_6px_0_#8c7a5c] 
+          rounded-none sm:rounded-[8px]
+          w-screen sm:w-full 
+          h-screen sm:h-auto
+          max-w-full sm:max-w-[500px] md:max-w-[600px] lg:max-w-[700px] xl:max-w-[800px]
+          animate-fadeIn duration-200 relative
+          overflow-y-auto
+        `,
           className
         )}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="overflow-hidden w-full max-h-[90vh] p-6">
-          {children}
-        </div>
+        {/* 모바일 전용 닫기 버튼 */}
+        <button
+          className="absolute top-3 right-3 text-[#8c7a5c] font-bold text-xl sm:hidden"
+          onClick={onClose}
+        >
+          ×
+        </button>
+
+        <div className="w-full p-6">{children}</div>
       </div>
     </div>
   );
