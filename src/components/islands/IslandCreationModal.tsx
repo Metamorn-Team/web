@@ -112,7 +112,7 @@ export default function IslandCreationModal({
         onClear();
         onClose();
       }}
-      className="max-w-[400px] sm:max-w-[400px] md:max-w-[500px] lg:max-w-[600px] xl:max-w-[700px] max-h-[90vh]"
+      className="max-w-[400px] sm:max-w-[400px] md:max-w-[500px] lg:max-w-[600px] xl:max-w-[700px] max-h-[90dvh]"
     >
       <div className="flex flex-col gap-6 max-w-lg mx-auto">
         {/* 섬 생성 타이틀 */}
