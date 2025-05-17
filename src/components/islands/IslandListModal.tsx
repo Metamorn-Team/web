@@ -148,7 +148,7 @@ export default function IslandListModal({
   return (
     <>
       <RetroModal isOpen={isOpen} onClose={onClose}>
-        <div className="flex flex-col h-[80vh]">
+        <div className="flex flex-col justify-between h-[92vh] sm:h-[80vh]">
           {/* 상단 */}
           <div className="shrink-0 mb-4">
             <h3 className="text-xl font-bold text-[#2a1f14] text-center mb-6">
@@ -235,7 +235,7 @@ export default function IslandListModal({
           </div>
 
           {/* 중단 */}
-          <div className="flex-1 overflow-y-auto scrollbar-hide min-h-0 border-t border-b border-[#d2c4d2] py-6">
+          <div className="flex-grow overflow-y-auto scrollbar-hide min-h-0 border-t border-b border-[#d2c4d2] py-6">
             {activeTab === "normal" ? (
               islands.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-2">
@@ -315,7 +315,7 @@ export default function IslandListModal({
           </div>
 
           {/* 하단 버튼 */}
-          <div className="mt-6 flex justify-center">
+          <div className="mt-3 sm:mt-6 flex justify-center">
             <div className="mt-4 flex justify-center gap-2 flex-wrap">
               {/* 이전 그룹 버튼 */}
               {pageGroupStart > 1 && (
