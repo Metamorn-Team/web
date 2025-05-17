@@ -2,6 +2,7 @@ import { INITIAL_PROFILE } from "@/constants/game/initial-profile";
 import { ISLAND_SCENE, LOBY_SCENE } from "@/constants/game/islands/island";
 import { NPC_INTERACTABLE_DISTANCE } from "@/constants/game/threshold";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
+import { InteractiveObject } from "@/game/entities/interactive-object";
 import { Npc } from "@/game/entities/npc/npc";
 import { TorchGoblin } from "@/game/entities/npc/torch-goblin";
 import { EventWrapper } from "@/game/event/EventBus";
@@ -78,12 +79,15 @@ export class LobyScene extends MetamornScene {
       if (this.inputManager.isKeyJustDown(Keys.E)) {
         this.inputManager.resetKeyAll();
 
-        this.npcs.forEach((npc) => {
-          if (npc.isInteractivePromptVisible) {
+        const interactables: InteractiveObject[] = [this.mine, ...this.npcs];
+
+        for (const object of interactables) {
+          if (object.isInteractivePromptVisible) {
             this.setEnabledKeyboardInput(false);
-            npc.startInteraction();
+            object.startInteraction();
+            break;
           }
-        });
+        }
       }
     }
   }
