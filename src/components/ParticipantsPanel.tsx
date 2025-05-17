@@ -21,8 +21,8 @@ function useIsMobile() {
 function ParticipantStatusLabel({ count }: { count: number }) {
   return (
     <div className="flex items-center gap-2 font-bold text-xs sm:text-sm text-[#2a1f14]">
-      <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
       <span className="truncate">{count}명</span>
+      <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
     </div>
   );
 }
