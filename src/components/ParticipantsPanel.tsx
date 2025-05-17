@@ -58,7 +58,7 @@ export default function ParticipantPanel() {
   const onlineCount = players.length;
 
   const panelContent = (
-    <div className="w-full sm:w-64 bg-[#f9f5ec]/90 border border-[#d6c6aa] shadow-lg z-40 p-4 text-sm text-[#2a1f14] transition-all rounded-t-2xl sm:rounded-2xl max-h-[70vh] sm:max-h-[80vh] overflow-hidden">
+    <div className="w-full sm:w-64 bg-[#f9f5ec] border-2 border-[#d6c6aa] shadow-lg z-40 p-4 text-sm text-[#2a1f14] transition-all rounded-t-2xl sm:rounded-2xl max-h-[70vh] sm:max-h-[80vh] overflow-hidden">
       <div className="flex justify-between items-center border-b border-[#d6c6aa] pb-2 mb-2">
         <ParticipantStatusLabel count={onlineCount} />
         <button
