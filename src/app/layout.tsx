@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "일상을 떠나 평화로운 섬으로 - 리브아일랜드",
   icons: {
     icon: "/icons/favicon.png",
+    shortcut: "/icons/favicon.png",
+    apple: "/icons/favicon.png",
   },
   openGraph: {
     title: "🏝️섬으로 떠나 친구를 만나요~!",
