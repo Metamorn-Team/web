@@ -15,7 +15,6 @@ export default function ChatInput({
   inputRef,
 }: ChatInputProps) {
   const onFocus = () => EventWrapper.emitToGame("disableGameInput");
-
   const onBlur = () => EventWrapper.emitToGame("enableGameKeyboardInput");
 
   return (
@@ -35,7 +34,8 @@ export default function ChatInput({
           }
         }}
         placeholder="메시지를 입력하세요..."
-        className="flex-1 px-3 py-2 rounded-md border border-[#d6c6aa] bg-white text-[#2a1f14] text-sm outline-none focus:ring-2 focus:ring-[#d6c6aa] resize-none"
+        className="flex-1 px-3 py-2 rounded-md border border-[#d6c6aa] bg-white text-[#2a1f14] outline-none focus:ring-2 focus:ring-[#d6c6aa] resize-none
+          text-[16px] scale-[0.875]"
       />
       <button
         onClick={() => onSend()}

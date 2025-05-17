@@ -181,9 +181,11 @@ export default function ChatPanel() {
 
   useEffect(() => {
     if (isMobile && !isChatVisible) {
+      const lastMessage = messages[messages.length - 1];
+      if (!lastMessage || lastMessage.sender === "나") return;
       setUnreadCount((prev) => prev + 1);
     }
-  }, [messages]);
+  }, [messages, isChatVisible, isMobile]);
 
   useEffect(() => {
     if (isChatVisible) {
