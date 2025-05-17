@@ -3,16 +3,10 @@ import React, { useEffect } from "react";
 interface SquareModalProps {
   children: React.ReactElement;
   onClose: () => void;
-  width: string;
   className?: string;
 }
 
-const SquareModal = ({
-  children,
-  onClose,
-  width,
-  className,
-}: SquareModalProps) => {
+const SquareModal = ({ children, onClose, className }: SquareModalProps) => {
   useEffect(() => {
     document.body.style.overflow = "hidden";
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -37,8 +31,8 @@ const SquareModal = ({
       ></div>
 
       <div
-        className={`flex flex-col relative bg-paperBg bg-cover p-8 animate-fadeIn rounded-3xl min-w-[400px] ${className}`}
-        style={{ aspectRatio: "1/1", width, height: "auto" }}
+        className={`flex flex-col relative bg-paperBg bg-cover p-8 animate-fadeIn rounded-3xl ${className}`}
+        style={{ aspectRatio: "1/1", height: "auto" }}
       >
         {children}
       </div>

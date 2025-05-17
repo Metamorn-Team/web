@@ -110,10 +110,9 @@ const PlayerInfoModal = ({
   return (
     <SquareModal
       onClose={onClose}
-      width={"30%"}
-      className={`${className} min-w-[500px]`}
+      className={`${className} w-[95%] max-w-[500px]`}
     >
-      <div className="w-full h-full flex flex-col items-center justify-between py-6 px-2">
+      <div className="w-full h-full flex flex-col items-center justify-between px-2">
         <div className="flex flex-col items-center gap-4">
           <div>
             <Pawn
@@ -123,7 +122,7 @@ const PlayerInfoModal = ({
                 )[0] as PawnColor
               }
               animation="idle"
-              className="w-[72px] h-[72px]"
+              className="w-[60px] h-[60px] sm:w-[72px] sm:h-[72px]"
             />
           </div>
 
@@ -136,8 +135,8 @@ const PlayerInfoModal = ({
 
           {/* 자기소개 영역 */}
           <div
-            className={`relative w-full bg-[#f9f5ec] border border-[#d6c6aa] rounded-md px-5 py-5 text-sm text-[#5c4b32] text-center shadow-inner min-w-[200px] max-w-[340px] overflow-y-scroll scrollbar-hide ${
-              isEditing ? "h-fit" : "max-h-[150px]"
+            className={`relative w-full bg-[#f9f5ec] border border-[#d6c6aa] rounded-md p-2 sm:p-5 text-sm text-[#5c4b32] text-center shadow-inner min-w-[200px] max-w-[340px] overflow-y-scroll scrollbar-hide ${
+              isEditing ? "h-fit" : "max-h-[80px] sm:max-h-[150px]"
             }`}
           >
             {!isEditing && (
