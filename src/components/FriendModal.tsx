@@ -54,7 +54,7 @@ const FriendModal = ({ onClose }: FriendModalProps) => {
   return (
     <Modal
       onClose={onClose}
-      className="relative h-[80vh] max-h-[800px] w-[90vw] max-w-[500px]"
+      className="relative w-full sm:h-[80vh] sm:w-[90vw] max-h-[800px] max-w-[500px]"
     >
       <div className="flex flex-col h-full">
         {/* 헤더 부분 */}
@@ -76,7 +76,7 @@ const FriendModal = ({ onClose }: FriendModalProps) => {
         </div>
 
         {/* 하단 메뉴 버튼 */}
-        <div className="flex gap-2 w-full justify-between px-4 pb-4">
+        <div className="flex gap-1 sm:gap-2 w-full justify-between px-2 pb-4">
           {Object.keys(menus).map((menu) => (
             <Button
               key={menu}

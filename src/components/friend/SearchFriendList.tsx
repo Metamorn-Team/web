@@ -41,7 +41,7 @@ const SearchFriendList = () => {
 
       {/* 검색 입력 영역 */}
       <div className="flex sticky top-0 z-10 w-full justify-center">
-        <div className="flex w-9/12 gap-2">
+        <div className="flex w-full gap-2">
           <input
             type="text"
             placeholder={`${

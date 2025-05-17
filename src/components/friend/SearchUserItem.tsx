@@ -35,7 +35,7 @@ const SearchUserItem = ({ friend }: SearchUserItemProps) => {
   };
 
   return (
-    <PaperCard width={"60%"}>
+    <PaperCard className="w-full sm:w-2/3">
       <div className="flex items-center justify-center flex-grow-[1] basis-0">
         <Image
           src={friend.profileImageUrl}

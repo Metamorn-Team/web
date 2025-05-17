@@ -34,7 +34,7 @@ export default function Button({
   return (
     <button
       type={isSubmitType ? "submit" : "button"}
-      className={`${styles} ${fontSize} bg-cover bg-no-repeat flex justify-center items-center ${className}`}
+      className={`${styles} text-xs sm:${fontSize} bg-cover bg-no-repeat flex justify-center items-center ${className}`}
       style={{
         aspectRatio: "3/1",
         width,

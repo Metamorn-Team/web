@@ -13,7 +13,7 @@ export default function FriendItem({ friend }: FriendItem) {
   const [showMenu, setShowMenu] = useState(false);
 
   return (
-    <PaperCard width={"70%"} className="group">
+    <PaperCard className="group w-full sm:w-2/3">
       <div className="relative flex items-center justify-center flex-grow-[1] basis-0">
         <Image
           src={friend.profileImageUrl}
