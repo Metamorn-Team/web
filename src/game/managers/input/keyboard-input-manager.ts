@@ -1,7 +1,8 @@
+import { InputManager } from "@/game/managers/input/input-manager";
 import { Phaser } from "@/game/phaser";
 import { Keys } from "@/types/game/enum/key";
 
-export class InputManager {
+export class KeyboardInputManager implements InputManager {
   private keyMap: Map<Keys, Phaser.Input.Keyboard.Key> = new Map();
   private scene: Phaser.Scene;
 
