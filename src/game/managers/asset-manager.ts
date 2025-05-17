@@ -1,3 +1,4 @@
+import { CDN_BASE_URL } from "@/constants/constants";
 import {
   PAWN,
   pawnColors,
@@ -18,6 +19,10 @@ import { DEAD } from "@/game/animations/keys/common";
 import { Phaser } from "@/game/phaser";
 
 export class AssetManager {
+  spriteUrl = `${CDN_BASE_URL}/asset/sprite`;
+  imageUrl = `${CDN_BASE_URL}/asset/image`;
+  tileUrl = `${CDN_BASE_URL}/asset/tile`;
+
   preloadCommonAsset(scene: Phaser.Scene) {
     this.loadSprites(scene);
     this.loadAudios(scene);
@@ -27,12 +32,12 @@ export class AssetManager {
   }
 
   loadSprites(scene: Phaser.Scene) {
-    scene.load.spritesheet("sheep", `/game/animal/sheep.png`, {
+    scene.load.spritesheet("sheep", `${this.spriteUrl}/sheep.png`, {
       frameWidth: 128,
       frameHeight: 128,
     });
 
-    scene.load.spritesheet(DEAD, `/game/player/dead.png`, {
+    scene.load.spritesheet(DEAD, `${this.spriteUrl}/dead.png`, {
       frameWidth: 128,
       frameHeight: 128,
     });
@@ -40,7 +45,7 @@ export class AssetManager {
     torchGoblinColors.forEach((color) => {
       scene.load.spritesheet(
         TORCH_GOBLIN(color),
-        `/game/enemy/${TORCH_GOBLIN(color)}.png`,
+        `${this.spriteUrl}/${TORCH_GOBLIN(color)}.png`,
         {
           frameWidth: 192,
           frameHeight: 192,
@@ -51,7 +56,7 @@ export class AssetManager {
     warriorColors.forEach((color) => {
       scene.load.spritesheet(
         WARRIOR(color),
-        `/game/player/${WARRIOR(color)}.png`,
+        `${this.spriteUrl}/${WARRIOR(color)}.png`,
         {
           frameWidth: 192,
           frameHeight: 192,
@@ -62,7 +67,7 @@ export class AssetManager {
     pawnColors.forEach((color) => {
       scene.load.spritesheet(
         PAWN(color),
-        `/game/player/pawn/${PAWN(color)}.png`,
+        `${this.spriteUrl}/${PAWN(color)}.png`,
         {
           frameWidth: 192,
           frameHeight: 192,
@@ -72,27 +77,23 @@ export class AssetManager {
 
     const ROCKS = [ROCK_S, ROCK_M, ROCK_L, ROCK_XL];
     ROCKS.forEach((ROCK) =>
-      scene.load.spritesheet(
-        ROCK,
-        `/game/tiles/tiny-sward/sprites/${ROCK}.png`,
-        {
-          frameWidth: 128,
-          frameHeight: 128,
-        }
-      )
+      scene.load.spritesheet(ROCK, `${this.spriteUrl}/${ROCK}.png`, {
+        frameWidth: 128,
+        frameHeight: 128,
+      })
     );
 
-    scene.load.spritesheet("sleep", `/game/player/pawn/sleep.png`, {
+    scene.load.spritesheet("sleep", `${this.spriteUrl}/sleep.png`, {
       frameWidth: 192,
       frameHeight: 192,
     });
 
-    scene.load.spritesheet(FOAM, `/game/tiles/tiny-sward/sprites/foam.png`, {
+    scene.load.spritesheet(FOAM, `${this.spriteUrl}/foam.png`, {
       frameWidth: 192,
       frameHeight: 192,
     });
 
-    scene.load.spritesheet(TREE, `/game/object/sprites/tree.png`, {
+    scene.load.spritesheet(TREE, `${this.spriteUrl}/tree.png`, {
       frameWidth: 192,
       frameHeight: 192,
     });
@@ -105,25 +106,25 @@ export class AssetManager {
   }
 
   loadTileImages(scene: Phaser.Scene) {
-    scene.load.image("water", "/game/tiles/tiny-sward/water.png");
-    scene.load.image("elevation", "/game/tiles/tiny-sward/elevation.png");
-    scene.load.image("ground", "/game/tiles/tiny-sward/ground.png");
-    scene.load.image("shadow", "/game/tiles/tiny-sward/shadow.png");
+    scene.load.image("water", `${this.tileUrl}/water.png`);
+    scene.load.image("elevation", `${this.tileUrl}/elevation.png`);
+    scene.load.image("ground", `${this.tileUrl}/ground.png`);
+    scene.load.image("shadow", `${this.tileUrl}/shadow.png`);
 
-    scene.load.image("mushroom-l", "/game/tiles/tiny-sward/mushroom-l.png");
-    scene.load.image("mushroom-m", "/game/tiles/tiny-sward/mushroom-m.png");
-    scene.load.image("mushroom-s", "/game/tiles/tiny-sward/mushroom-s.png");
+    scene.load.image("mushroom-l", `${this.imageUrl}/mushroom-l.png`);
+    scene.load.image("mushroom-m", `${this.imageUrl}/mushroom-m.png`);
+    scene.load.image("mushroom-s", `${this.imageUrl}/mushroom-s.png`);
 
-    scene.load.image("bone1", "/game/tiles/tiny-sward/bone1.png");
-    scene.load.image("bone2", "/game/tiles/tiny-sward/bone2.png");
+    scene.load.image("bone1", `${this.imageUrl}/bone1.png`);
+    scene.load.image("bone2", `${this.imageUrl}/bone2.png`);
+    scene.load.image(SKULL_SIGN, `${this.imageUrl}/skull-sign.png`);
 
-    scene.load.image("bridge", "/game/tiles/tiny-sward/bridge.png");
-    scene.load.image(SKULL_SIGN, "/game/tiles/tiny-sward/skull-sign.png");
+    scene.load.image("bridge", `${this.tileUrl}/bridge.png`);
   }
 
   loadImages(scene: Phaser.Scene) {
-    scene.load.image("paper-small", "/images/ui/paper-small.png");
-    scene.load.image("mine", "/game/object/mine.png");
+    // scene.load.image("paper-small", `${this.imageUrl}/paper-small.png`);
+    scene.load.image("mine", `${this.imageUrl}/mine.png`);
   }
 
   loadAudios(scene: Phaser.Scene) {
