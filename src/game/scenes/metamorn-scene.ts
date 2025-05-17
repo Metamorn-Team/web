@@ -104,20 +104,20 @@ export class MetamornScene extends Phaser.Scene {
 
   private initJoystickInputManager(): InputManager {
     const base = this.add
-      .circle(0, 0, 30, 0x888888)
+      .circle(0, 0, 44, 0x888888)
       .setScrollFactor(0)
       .setDepth(1000)
       .setAlpha(1);
     const thumb = this.add
-      .circle(0, 0, 15, 0xcccccc)
+      .circle(0, 0, 22, 0xcccccc)
       .setScrollFactor(0)
       .setDepth(1000)
       .setAlpha(1);
 
     const joystick = new VirtualJoystick(this, {
       x: 85,
-      y: this.scale.height - 180,
-      radius: 30,
+      y: this.scale.height - 170,
+      radius: 44,
       base,
       thumb,
     });
