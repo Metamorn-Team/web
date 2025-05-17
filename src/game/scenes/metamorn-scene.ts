@@ -111,8 +111,8 @@ export class MetamornScene extends Phaser.Scene {
       .setAlpha(1);
 
     const joystick = new VirtualJoystick(this, {
-      x: 75,
-      y: this.scale.height - 160,
+      x: 85,
+      y: this.scale.height - 180,
       radius: 30,
       base,
       thumb,
