@@ -24,6 +24,10 @@ export class MetamornScene extends Phaser.Scene {
     this.onInitialEvent();
   }
 
+  protected isMobile(): boolean {
+    return this.scale.width <= 640;
+  }
+
   protected followPlayerCamera() {
     this.cameras.main = this.cameras.main;
     this.cameras.main.startFollow(this.player);

@@ -144,7 +144,7 @@ export class IslandScene extends MetamornScene {
     this.matter.world.setBounds(0, 0, this.mapWidth, this.mapHeight);
 
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
-    this.cameras.main.setZoom(1.1);
+    this.cameras.main.setZoom(this.isMobile() ? 0.9 : 1.1);
     this.cameras.main.setScroll(this.centerOfMap.x, this.centerOfMap.y);
   }
 
