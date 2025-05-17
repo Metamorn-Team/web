@@ -20,6 +20,17 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+  return isMobile;
+}
+
 interface ChatMessage {
   id: string;
   sender: string;
@@ -29,62 +40,89 @@ interface ChatMessage {
 }
 
 export default function ChatPanel() {
+  const isMobile = useIsMobile();
   const CHAT_THRESHOLD = 500;
   const { isModalOpen, onOpen, onClose } = useModal();
   const [modalMessage, setModalMessage] = useState("");
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
-  const [height, setHeight] = useState(448);
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const [isChatVisible, setIsChatVisible] = useState(false);
   const [lastChat, setLastChat] = useState(Date.now());
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
-  const panelRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const isResizing = useRef(false);
-  const startY = useRef(0);
-  const startHeight = useRef(0);
-
-  const collapsedHeight = 40;
   const nsp = SOCKET_NAMESPACES.ISLAND;
+
+  useEffect(() => {
+    const handleEscapeDown = (e: KeyboardEvent) => {
+      if (e.code === "Escape") {
+        inputRef.current?.blur();
+      }
+    };
+
+    window.addEventListener("keydown", handleEscapeDown);
+    return () => {
+      window.removeEventListener("keydown", handleEscapeDown);
+    };
+  }, []);
 
   useEffect(() => {
     const handleNewPlayer = (data: PlayerJoinResponse) => {
       const message = `${data.nickname} 님이 입장했어요 🏝️`;
       Alert.info(message, false);
-
       setMessages((prev) => [
         ...prev,
-        {
-          id: `system-${Date.now()}`,
-          sender: "",
-          message,
-          isSystem: true,
-        },
+        { id: `system-${Date.now()}`, sender: "", message, isSystem: true },
       ]);
-      if (isCollapsed) setUnreadCount((prev) => prev + 1);
     };
 
     const handlePlayerLeftChat = (data: PlayerLeftResponse) => {
       const player = playerStore.getPlayer(data.id);
       const info = player?.getPlayerInfo();
-
       const message = `${info?.nickname ?? "알 수 없음"} 님이 떠났어요 ⛵️`;
       Alert.info(message, false);
+      setMessages((prev) => [
+        ...prev,
+        { id: `system-${Date.now()}`, sender: "", message, isSystem: true },
+      ]);
+    };
 
+    EventWrapper.onUiEvent("newPlayer", handleNewPlayer);
+    EventWrapper.onUiEvent("playerLeftChat", handlePlayerLeftChat);
+
+    const socket = socketManager.connect(nsp);
+    if (!socket) return;
+
+    const handleMessageSent = (data: MessageSent) => {
+      const profile = getItem("profile");
       setMessages((prev) => [
         ...prev,
         {
-          id: `system-${Date.now()}`,
-          sender: "",
-          message,
-          isSystem: true,
+          id: data.messageId,
+          sender: "나",
+          message: data.message,
+          avatarKey: profile?.avatarKey || "purple_pawn",
         },
       ]);
-      if (isCollapsed) setUnreadCount((prev) => prev + 1);
+      EventWrapper.emitToGame("mySpeechBubble", data);
+    };
+
+    const handleReceiveMessage = (data: ReceiveMessage) => {
+      const player = playerStore.getPlayer(data.senderId);
+      const info = player?.getPlayerInfo();
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `${Date.now()}${info?.nickname}`,
+          sender: info?.nickname || "누군가",
+          message: data.message,
+          avatarKey: info?.avatarKey || "blue_pawn",
+        },
+      ]);
+      EventWrapper.emitToGame("otherSpeechBubble", data);
     };
 
     const handleActiveChatInput = () => {
@@ -95,52 +133,8 @@ export default function ChatPanel() {
       inputRef?.current?.blur();
     };
 
-    EventWrapper.onUiEvent("newPlayer", handleNewPlayer);
-    EventWrapper.onUiEvent("playerLeftChat", handlePlayerLeftChat);
     EventWrapper.onUiEvent("activeChatInput", handleActiveChatInput);
     EventWrapper.onUiEvent("blurChatInput", handleBlurChatInput);
-
-    const socket = socketManager.connect(nsp);
-    if (!socket) return;
-
-    const handleMessageSent = (data: MessageSent) => {
-      const { messageId, message } = data;
-      const profile = getItem("profile");
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: messageId,
-          sender: "나",
-          message,
-          avatarKey: profile?.avatarKey || "purple_pawn",
-        },
-      ]);
-
-      EventWrapper.emitToGame("mySpeechBubble", data);
-    };
-
-    const handleReceiveMessage = (data: ReceiveMessage) => {
-      const { senderId, message } = data;
-      const player = playerStore.getPlayer(senderId);
-      const playerInfo = player?.getPlayerInfo();
-      const nickname = playerInfo?.nickname || "누군가";
-      const avatarKey = playerInfo?.avatarKey || "blue_pawn";
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `${Date.now()}${nickname}`,
-          sender: nickname,
-          message,
-          avatarKey: avatarKey,
-        },
-      ]);
-
-      if (isCollapsed) setUnreadCount((prev) => prev + 1);
-
-      EventWrapper.emitToGame("otherSpeechBubble", data);
-    };
 
     socket.on("messageSent", handleMessageSent);
     socket.on("receiveMessage", handleReceiveMessage);
@@ -148,52 +142,16 @@ export default function ChatPanel() {
     return () => {
       socket.off("messageSent", handleMessageSent);
       socket.off("receiveMessage", handleReceiveMessage);
-
       EventWrapper.offUiEvent("newPlayer", handleNewPlayer);
       EventWrapper.offUiEvent("playerLeftChat", handlePlayerLeftChat);
       EventWrapper.offUiEvent("activeChatInput", handleActiveChatInput);
       EventWrapper.offUiEvent("blurChatInput", handleBlurChatInput);
     };
-  }, [isCollapsed]);
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isResizing.current || isCollapsed) return;
-      const newHeight = startHeight.current + (startY.current - e.clientY);
-      setHeight(Math.max(300, Math.min(newHeight, 700)));
-    };
-
-    const handleMouseUp = () => {
-      isResizing.current = false;
-      document.body.style.cursor = "";
-    };
-
-    const handleEscapeDown = (e: KeyboardEvent) => {
-      if (e.code === "Escape") {
-        inputRef.current?.blur();
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", handleMouseUp);
-    window.addEventListener("keydown", handleEscapeDown);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
-      window.removeEventListener("keydown", handleEscapeDown);
-    };
-  }, [isCollapsed]);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    isResizing.current = true;
-    startY.current = e.clientY;
-    startHeight.current = panelRef.current?.getBoundingClientRect().height || 0;
-    document.body.style.cursor = "ns-resize";
-  };
 
   const handleSend = (e?: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e?.nativeEvent.isComposing) return;
@@ -221,57 +179,64 @@ export default function ChatPanel() {
     setInput("");
   };
 
-  const toggleCollapse = () => {
-    if (isCollapsed) setUnreadCount(0);
-    setIsCollapsed(!isCollapsed);
-  };
+  useEffect(() => {
+    if (isMobile && !isChatVisible) {
+      setUnreadCount((prev) => prev + 1);
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (isChatVisible) {
+      setUnreadCount(0);
+    }
+  }, [isChatVisible]);
 
   return (
     <div
-      ref={panelRef}
-      style={{ height: isCollapsed ? collapsedHeight : height }}
-      className="fixed bottom-4 left-4 w-80 bg-[#f9f5ec]/10 hover:bg-[#f9f5ec]/80 backdrop-blur-none hover:backdrop-blur-md border border-[#d6c6aa]/30 hover:border-[#d6c6aa] rounded-2xl shadow-none hover:shadow-lg transition-all duration-300 ease-in-out z-30 flex flex-col overflow-hidden"
+      className={`fixed z-30 transition-all duration-300 ease-in-out
+    ${
+      isMobile
+        ? "bottom-0 left-0 w-full"
+        : "group bottom-4 left-4 w-80 rounded-2xl"
+    }
+    ${isMobile ? "bg-[#f9f5ec]/90" : "bg-transparent hover:bg-[#f9f5ec]/90"}
+    border border-[#d6c6aa] flex flex-col overflow-hidden`}
+      style={{
+        height:
+          isMobile && !isChatVisible ? "auto" : isMobile ? "60vh" : "448px",
+      }}
     >
-      {!isCollapsed && (
-        <div
-          onMouseDown={handleMouseDown}
-          className="h-3 cursor-ns-resize bg-[#d6c6aa]/30 hover:bg-[#d6c6aa]/50 transition"
-          title="위로 드래그해서 크기 조절"
-        />
+      {isMobile && (
+        <button
+          onClick={() => setIsChatVisible((prev) => !prev)}
+          className="text-[#2a1f14] p-2 text-sm font-bold flex justify-center items-center gap-2 border-b border-[#d6c6aa]"
+        >
+          {isChatVisible ? (
+            <FiChevronDown size={18} />
+          ) : (
+            <FiChevronUp size={18} />
+          )}
+
+          <span className="relative inline-flex items-center">
+            {isChatVisible ? "채팅 숨기기" : "채팅 보기"}
+            {!isChatVisible && unreadCount > 0 && (
+              <span className="w-[20px] h-[20px] text-[10px] ml-1 text-white bg-red-600 rounded-full flex items-center justify-center animate-pulse">
+                {unreadCount > 99 ? "99+" : unreadCount}
+              </span>
+            )}
+          </span>
+        </button>
       )}
 
-      <div className="p-2 text-[#2a1f14] font-bold text-lg flex justify-end gap-2 items-center relative">
-        <div className="relative">
-          {isCollapsed && unreadCount > 0 && (
-            <span className="w-[22px] h-[22px] text-[10px] px-[4px] text-white bg-red-600 rounded-full flex items-center justify-center animate-pulse">
-              {unreadCount > 99 ? "99+" : unreadCount}
-            </span>
-          )}
-        </div>
-        <button
-          onClick={toggleCollapse}
-          className="text-[#2a1f14] hover:text-[#7c6f58] transition"
-        >
-          {isCollapsed ? (
-            <FiChevronUp size={20} />
-          ) : (
-            <FiChevronDown size={20} />
-          )}
-        </button>
-      </div>
-
-      {!isCollapsed && (
+      {(!isMobile || isChatVisible) && (
         <div className="flex-1 overflow-y-auto p-4 space-y-3 text-sm text-[#2a1f14] scrollbar-hide">
-          {messages.map((msg) => {
-            if (msg.isSystem) {
-              return <SystemMessage key={msg.id} message={msg.message} />;
-            }
-
-            const isMine = msg.sender === "나";
-            return (
+          {messages.map((msg) =>
+            msg.isSystem ? (
+              <SystemMessage key={msg.id} message={msg.message} />
+            ) : (
               <Message
                 key={msg.id}
-                isMine={isMine}
+                isMine={msg.sender === "나"}
                 avatarKey={msg.avatarKey || "purple_pawn"}
                 sender={msg.sender}
                 message={msg.message}
@@ -280,20 +245,18 @@ export default function ChatPanel() {
                   onOpen();
                 }}
               />
-            );
-          })}
+            )
+          )}
           <div ref={bottomRef} />
         </div>
       )}
 
-      {!isCollapsed && (
-        <ChatInput
-          input={input}
-          setInput={setInput}
-          onSend={handleSend}
-          inputRef={inputRef}
-        />
-      )}
+      <ChatInput
+        input={input}
+        setInput={setInput}
+        onSend={handleSend}
+        inputRef={inputRef}
+      />
 
       {isModalOpen && (
         <FullMessageModal onClose={onClose} message={modalMessage} />
