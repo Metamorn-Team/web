@@ -50,11 +50,62 @@ export default function ChatPanel() {
   const [isChatVisible, setIsChatVisible] = useState(false);
   const [lastChat, setLastChat] = useState(Date.now());
   const [unreadCount, setUnreadCount] = useState(0);
+  const [showToBottom, setShowToBottom] = useState(false);
 
+  const [isAtBottom, setIsAtBottom] = useState(false);
+  const [hasNewMessage, setHasNewMessage] = useState(false);
+
+  const scrollRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   const nsp = SOCKET_NAMESPACES.ISLAND;
+
+  const scrollToBottom = () =>
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const canScroll = container.scrollHeight > container.clientHeight + 1;
+    if (!isAtBottom && canScroll) {
+      setHasNewMessage(true);
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const container = scrollRef.current;
+      if (!container) return;
+
+      const canScroll = container.scrollHeight > container.clientHeight + 1;
+
+      if (!canScroll) {
+        setIsAtBottom(true);
+        setShowToBottom(false);
+        setHasNewMessage(false);
+        return;
+      }
+
+      const threshold = 40;
+      const atBottom =
+        container.scrollHeight - container.scrollTop - container.clientHeight <
+        threshold;
+
+      setIsAtBottom(atBottom);
+      setShowToBottom(!atBottom);
+      if (atBottom) setHasNewMessage(false);
+    };
+
+    container.addEventListener("scroll", handleScroll);
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const handleEscapeDown = (e: KeyboardEvent) => {
@@ -150,7 +201,9 @@ export default function ChatPanel() {
   }, []);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (isAtBottom) {
+      scrollToBottom();
+    }
   }, [messages]);
 
   const handleSend = (e?: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -278,7 +331,10 @@ export default function ChatPanel() {
       )}
 
       {(!isMobile || isChatVisible) && (
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 text-sm text-[#2a1f14] scrollbar-hide">
+        <div
+          ref={scrollRef}
+          className="flex-1 overflow-y-auto p-4 space-y-3 text-sm text-[#2a1f14] scrollbar-hide"
+        >
           {messages.map((msg) =>
             msg.isSystem ? (
               <SystemMessage key={msg.id} message={msg.message} />
@@ -299,6 +355,21 @@ export default function ChatPanel() {
           )}
           <div ref={bottomRef} />
         </div>
+      )}
+
+      {hasNewMessage && (
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xs px-3 py-1 rounded-full z-10 animate-pulse">
+          새로운 메시지
+        </div>
+      )}
+
+      {showToBottom && (
+        <button
+          onClick={scrollToBottom}
+          className="absolute bottom-24 right-4 w-9 h-9 flex items-center justify-center bg-black/60 text-white rounded-full shadow hover:bg-black/80 transition"
+        >
+          <FiChevronDown size={18} />
+        </button>
       )}
 
       <ChatInput
