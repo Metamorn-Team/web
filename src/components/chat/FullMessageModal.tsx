@@ -3,9 +3,14 @@ import React from "react";
 interface FullMessageModalProps {
   onClose: () => void;
   message: string;
+  linkify: (message: string) => string | React.JSX.Element[];
 }
 
-const FullMessageModal = ({ onClose, message }: FullMessageModalProps) => {
+const FullMessageModal = ({
+  onClose,
+  message,
+  linkify,
+}: FullMessageModalProps) => {
   return (
     <div className="absolute bg-[#fff9ec] border-2 border-[#d6c6aa] rounded-xl p-4 shadow-lg w-full">
       <div className="flex justify-between items-center mb-2">
@@ -20,7 +25,7 @@ const FullMessageModal = ({ onClose, message }: FullMessageModalProps) => {
         </button>
       </div>
       <div className="text-sm text-[#2a1f14] whitespace-pre-wrap break-words h-64 overflow-y-auto border-t border-[#e0d8c6] pt-2">
-        {message}
+        {linkify(message)}
       </div>
     </div>
   );

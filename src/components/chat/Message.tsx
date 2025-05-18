@@ -6,6 +6,7 @@ interface MessageProps {
   avatarKey: string;
   sender: string;
   message: string;
+  linkify: (text: string) => string | React.JSX.Element[];
   onOpenModal: () => void;
 }
 
@@ -14,6 +15,7 @@ const Message = ({
   avatarKey,
   sender,
   message,
+  linkify,
   onOpenModal,
 }: MessageProps) => {
   const lines = message.split("\n");
@@ -45,7 +47,7 @@ const Message = ({
           {sender}
         </div>
         <div className="break-all whitespace-pre-wrap">
-          <p>{previewMessage}</p>
+          {linkify(previewMessage)}
           {isLongMessage && (
             <button
               className="text-xs text-blue-500 mt-1 underline"
