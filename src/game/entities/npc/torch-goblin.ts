@@ -14,20 +14,13 @@ export class TorchGoblin extends Npc {
 
     scene.add.existing(this);
     this.play(TORCH_GOBLIN_IDLE(color), true);
-
-    // this.createSpeechBubble(
-    //   this.x,
-    //   this.y - 40,
-    //   150,
-    //   100,
-    //   "메타몬에 온 걸 환영해~"
-    // );
   }
 
   protected setBodyConfig(): void {
     this.setRectangle(35, 10);
     this.displayOriginY += 5;
     this.setDepth(this.y + 5);
+    this.setStatic(true);
   }
 
   public startInteraction(): void {
