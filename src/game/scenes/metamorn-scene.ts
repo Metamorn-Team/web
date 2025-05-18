@@ -104,20 +104,20 @@ export class MetamornScene extends Phaser.Scene {
 
   private initJoystickInputManager(): InputManager {
     const base = this.add
-      .circle(0, 0, 44, 0x888888)
+      .image(0, 0, "base")
+      .setDisplaySize(100, 100)
       .setScrollFactor(0)
-      .setDepth(1000)
-      .setAlpha(1);
+      .setDepth(1000);
     const thumb = this.add
-      .circle(0, 0, 22, 0xcccccc)
+      .image(0, 0, "thumb")
+      .setDisplaySize(44, 44)
       .setScrollFactor(0)
-      .setDepth(1000)
-      .setAlpha(1);
+      .setDepth(1000);
 
     const joystick = new VirtualJoystick(this, {
       x: 85,
       y: this.scale.height - 170,
-      radius: 44,
+      radius: 50,
       base,
       thumb,
     });
@@ -128,80 +128,41 @@ export class MetamornScene extends Phaser.Scene {
   }
 
   private initVirtualButtons() {
-    const eBtn = this.add
-      .text(this.scale.width - 175, this.scale.height - 180, "E", {
-        fontFamily: "CookieRun",
-        fontSize: "14px",
-        backgroundColor: "#d6c6aa",
-        padding: { x: 10, y: 6 },
-        color: "#2a1f14",
-        fontStyle: "bold",
-        resolution: 10,
-      })
-      .setInteractive()
-      .setScrollFactor(0)
-      .setDepth(1000);
+    const createButton = (x: number, y: number, key: Keys, label: string) => {
+      const thumbImage = this.add
+        .image(x, y, "thumb")
+        .setDisplaySize(50, 50)
+        .setInteractive()
+        .setScrollFactor(0)
+        .setDepth(1000);
 
-    const zBtn = this.add
-      .text(this.scale.width - 125, this.scale.height - 180, "공격", {
-        fontFamily: "CookieRun",
-        fontSize: "14px",
-        backgroundColor: "#d6c6aa",
-        padding: { x: 10, y: 6 },
-        color: "#2a1f14",
-        fontStyle: "bold",
-        resolution: 10,
-      })
-      .setInteractive()
-      .setScrollFactor(0)
-      .setDepth(1000);
+      this.add
+        .text(x, y, label, {
+          fontFamily: "CookieRun",
+          fontSize: "14px",
+          color: "#2a1f14",
+          fontStyle: "bold",
+          resolution: 2,
+        })
+        .setOrigin(0.5)
+        .setScrollFactor(0)
+        .setDepth(1001);
 
-    const spaceBtn = this.add
-      .text(this.scale.width - 75, this.scale.height - 180, "점프", {
-        fontFamily: "CookieRun",
-        fontSize: "14px",
-        backgroundColor: "#d6c6aa",
-        padding: { x: 10, y: 6 },
-        color: "#2a1f14",
-        fontStyle: "bold",
-        resolution: 10,
-      })
-      .setInteractive()
-      .setScrollFactor(0)
-      .setDepth(1000);
+      // 이벤트 연결
+      thumbImage.on("pointerdown", () => {
+        (this.inputManager as VirtualJoystickInputManager).pressVirtualKey(key);
+      });
 
-    zBtn.on("pointerdown", () => {
-      (this.inputManager as VirtualJoystickInputManager).pressVirtualKey(
-        Keys.Z
-      );
-    });
+      thumbImage.on("pointerup", () => {
+        (this.inputManager as VirtualJoystickInputManager).releaseVirtualKey(
+          key
+        );
+      });
+    };
 
-    zBtn.on("pointerup", () => {
-      (this.inputManager as VirtualJoystickInputManager).releaseVirtualKey(
-        Keys.Z
-      );
-    });
-
-    eBtn.on("pointerdown", () => {
-      (this.inputManager as VirtualJoystickInputManager).pressVirtualKey(
-        Keys.E
-      );
-    });
-    eBtn.on("pointerup", () => {
-      (this.inputManager as VirtualJoystickInputManager).releaseVirtualKey(
-        Keys.E
-      );
-    });
-
-    spaceBtn.on("pointerdown", () => {
-      (this.inputManager as VirtualJoystickInputManager).pressVirtualKey(
-        Keys.SPACE
-      );
-    });
-    spaceBtn.on("pointerup", () => {
-      (this.inputManager as VirtualJoystickInputManager).releaseVirtualKey(
-        Keys.SPACE
-      );
-    });
+    const baseY = this.scale.height - 170;
+    createButton(this.scale.width - 165, baseY, Keys.E, "E");
+    createButton(this.scale.width - 110, baseY, Keys.Z, "공격");
+    createButton(this.scale.width - 55, baseY, Keys.SPACE, "점프");
   }
 }
