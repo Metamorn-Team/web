@@ -4,16 +4,18 @@ import Image from "next/image";
 import { Friend } from "@/types/client/friend.types";
 import PaperCard from "@/components/common/PaperCard";
 import { useState } from "react";
+import classNames from "classnames";
 
 interface FriendItem {
   friend: Friend;
+  className?: string;
 }
 
-export default function FriendItem({ friend }: FriendItem) {
+export default function FriendItem({ friend, className }: FriendItem) {
   const [showMenu, setShowMenu] = useState(false);
 
   return (
-    <PaperCard className="group w-full sm:w-2/3">
+    <PaperCard className={classNames("group w-full", className)}>
       <div className="relative flex items-center justify-center flex-grow-[1] basis-0">
         <Image
           src={friend.profileImageUrl}
