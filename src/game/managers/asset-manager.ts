@@ -125,8 +125,8 @@ export class AssetManager {
   loadImages(scene: Phaser.Scene) {
     // scene.load.image("paper-small", `${this.imageUrl}/paper-small.png`);
     scene.load.image("mine", `${this.imageUrl}/mine.png`);
-    scene.load.image("base", `${this.imageUrl}/joystick-base.png`);
-    scene.load.image("thumb", `${this.imageUrl}/joystick-thumb.png`);
+    scene.load.image("base", `${this.imageUrl}/base.png`);
+    scene.load.image("thumb", `${this.imageUrl}/thumb.png`);
   }
 
   loadAudios(scene: Phaser.Scene) {
