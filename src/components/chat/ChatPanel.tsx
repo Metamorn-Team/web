@@ -91,7 +91,7 @@ export default function ChatPanel() {
         return;
       }
 
-      const threshold = 40;
+      const threshold = 100;
       const atBottom =
         container.scrollHeight - container.scrollTop - container.clientHeight <
         threshold;
@@ -100,6 +100,7 @@ export default function ChatPanel() {
       setShowToBottom(!atBottom);
       if (atBottom) setHasNewMessage(false);
     };
+    handleScroll();
 
     container.addEventListener("scroll", handleScroll);
     return () => {
