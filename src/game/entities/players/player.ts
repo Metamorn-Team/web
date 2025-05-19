@@ -201,7 +201,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
         padding: { bottom: 14 },
         color: this.isControllable ? "#81D4FA" : "#FFFFFF",
         stroke: "#000000",
-        strokeThickness: 2,
+        strokeThickness: 3,
         resolution: cameraZoom,
       })
       .setScale(1)
