@@ -83,7 +83,7 @@ export class IslandScene extends MetamornScene {
   create() {
     super.create();
     this.initWorld();
-    // this.onMapResize(this.mapWidth);
+    this.onMapResize(this.mapWidth);
 
     this.listenLocalEvents();
 
