@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { GetFriendsRequest } from "mmorntype";
 import { getFriends } from "@/api/friend";
 
-export const QUERY_KEY = "friendRequests";
+export const QUERY_KEY = "friends";
 
 export const useInfiniteGetFriends = (query: GetFriendsRequest) => {
   const {

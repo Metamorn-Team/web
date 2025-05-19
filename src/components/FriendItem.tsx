@@ -5,6 +5,10 @@ import { Friend } from "@/types/client/friend.types";
 import PaperCard from "@/components/common/PaperCard";
 import { useState } from "react";
 import classNames from "classnames";
+import { useRemoveFriend } from "@/hook/queries/useRemoveFriend";
+import { QUERY_KEY } from "@/hook/queries/useInfiniteGetFriends";
+import { InfiniteData, useQueryClient } from "@tanstack/react-query";
+import { GetFriendsResponse } from "mmorntype";
 
 interface FriendItem {
   friend: Friend;
@@ -13,6 +17,30 @@ interface FriendItem {
 
 export default function FriendItem({ friend, className }: FriendItem) {
   const [showMenu, setShowMenu] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { mutate } = useRemoveFriend(() => {
+    queryClient.setQueryData<InfiniteData<GetFriendsResponse, unknown>>(
+      [QUERY_KEY],
+      (oldData) => {
+        if (!oldData) return oldData;
+
+        return {
+          pages: oldData.pages.map((page) => ({
+            ...page,
+            data: page.data.filter((f) => f.id !== friend.id),
+          })),
+          pageParams: oldData.pageParams,
+        };
+      }
+    );
+
+    setShowMenu(false);
+  });
+
+  const handleRemoveFriend = () => {
+    mutate(friend.friendshipId);
+  };
 
   return (
     <PaperCard className={classNames("group w-full", className)}>
@@ -64,11 +92,7 @@ export default function FriendItem({ friend, className }: FriendItem) {
           {showMenu && (
             <div className="absolute top-4 right-0 mt-2 bg-white border border-gray-300 shadow-lg rounded-md z-10 w-24 animate-fadeIn overflow-hidden">
               <button
-                onClick={() => {
-                  // 친구 삭제 로직
-                  console.log("delete friend", friend.id);
-                  setShowMenu(false);
-                }}
+                onClick={handleRemoveFriend}
                 className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
               >
                 친구 삭제

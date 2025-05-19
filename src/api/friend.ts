@@ -60,3 +60,7 @@ export const getUnreadRequestCount = async () => {
 export const markAllRequestAsRead = async () => {
   return await http.patch("/friends/read");
 };
+
+export const removeFriend = async (id: string) => {
+  return await http.delete(`/friends/${id}`);
+};

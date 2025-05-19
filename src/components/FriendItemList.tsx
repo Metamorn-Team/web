@@ -23,12 +23,12 @@ export default function FriendItmeList({ className }: FriendItemListProps) {
         <p className="text-center text-sm text-red-500 mt-4">오류 발생</p>
       ) : friends && friends.length > 0 ? (
         <>
-          {friends.map((user) => (
+          {friends.map((friendship) => (
             <FriendItem
-              key={user.id}
+              key={friendship.id}
               friend={{
-                ...user,
-                profileImageUrl: `/images/avatar/${user.avatarKey}.png`,
+                ...friendship,
+                profileImageUrl: `/images/avatar/${friendship.avatarKey}.png`,
               }}
             />
           ))}
