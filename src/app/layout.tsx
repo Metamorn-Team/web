@@ -22,7 +22,6 @@ export const metadata: Metadata = {
     shortcut: "/icons/favicon.png",
     apple: "/icons/apple-touch-icon.png",
   },
-  themeColor: "#f9f5ec",
   openGraph: {
     title: "🏝️섬으로 떠나 친구를 만나요~!",
     description: "일상을 떠나 평화로운 섬으로 - 리브아일랜드",
