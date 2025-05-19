@@ -93,7 +93,7 @@ export default function GameWrapper({
 
       if (gameRef.current) {
         setItem("current_scene", data.scene.scene.key);
-        gameRef.current.game.canvas.style.display = "block";
+        gameRef.current.game.canvas.style.opacity = "1";
         gameRef.current.currnetScene = data.scene;
 
         changeIsLoading(false);
@@ -109,14 +109,14 @@ export default function GameWrapper({
     const handleStartChangeScene = () => {
       if (gameRef.current) {
         changeIsLoading(true);
-        gameRef.current.game.canvas.style.display = "none";
+        gameRef.current.game.canvas.style.opacity = "0";
       }
     };
 
     const handleFinishChangeScene = () => {
       if (gameRef.current) {
         changeIsLoading(false);
-        gameRef.current.game.canvas.style.display = "block";
+        // gameRef.current.game.canvas.style.display = "block";
       }
     };
 
@@ -160,16 +160,6 @@ export default function GameWrapper({
     EventWrapper.onUiEvent("requestJoinIsland", handleRequestJoinIsland);
     EventWrapper.onUiEvent("openLoginModal", handleOpenLoginModal);
 
-    const handleResize = () => {
-      if (gameRef.current) {
-        gameRef.current.game.scale.resize(
-          window.innerWidth,
-          window.innerHeight
-        );
-      }
-    };
-    window.addEventListener("resize", handleResize);
-
     return () => {
       EventWrapper.offUiEvent("current-scene-ready", handleSceneReady);
       EventWrapper.offUiEvent("start-change-scene", handleStartChangeScene);
@@ -178,8 +168,6 @@ export default function GameWrapper({
       EventWrapper.offUiEvent("player-click", handlePlayerClick);
       EventWrapper.offUiEvent("requestJoinIsland", handleRequestJoinIsland);
       EventWrapper.offUiEvent("openLoginModal", handleOpenLoginModal);
-
-      window.removeEventListener("resize", handleResize);
     };
   }, [gameRef]);
 

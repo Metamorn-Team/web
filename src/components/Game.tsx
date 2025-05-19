@@ -53,7 +53,7 @@ const Game = ({ ref }: GameProps) => {
       let game: Phaser.Game;
 
       if (!gameRef.current) {
-        game = GameSingleton.getInstance(window.innerWidth, window.innerHeight);
+        game = GameSingleton.getInstance();
         gameRef.current = game;
 
         if (ref) {

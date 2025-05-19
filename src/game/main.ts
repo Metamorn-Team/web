@@ -11,13 +11,11 @@ export class GameSingleton {
 
   private constructor() {}
 
-  static getInstance(width: number, height: number) {
+  static getInstance() {
     this.destroy();
     this.instance = new Phaser.Game({
       type: Phaser.AUTO,
-      width,
-      height,
-      canvasStyle: "display: none",
+      canvasStyle: "opacity: 0",
       parent: "game-container",
       scene: [BootScene, LobyScene, IslandScene, PhotoScene],
       render: {
@@ -35,6 +33,12 @@ export class GameSingleton {
           gravity: { x: 0, y: 0 },
           debug: false,
         },
+      },
+      scale: {
+        mode: Phaser.Scale.RESIZE,
+        parent: "game-container",
+        width: "100%",
+        height: "100%",
       },
     });
 
