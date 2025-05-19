@@ -1,9 +1,9 @@
-import { API_BASE_URL, APP_VERSION } from "@/constants/constants";
+import { APP_VERSION } from "@/constants/constants";
 import { getItem } from "@/utils/persistence";
 import axios from "axios";
 
 export const http = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   timeout: 5000,
 });
 

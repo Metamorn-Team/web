@@ -1,4 +1,3 @@
-import { CDN_BASE_URL } from "@/constants/constants";
 import { PawnColor } from "@/constants/game/entities";
 import React from "react";
 
@@ -13,7 +12,7 @@ const Pawn = ({ color, animation, className }: PawnProps) => {
     <div
       className={`w-[100px] h-[100px] bg-[length:600%_100%] animate-pawn ${className}`}
       style={{
-        backgroundImage: `url("${CDN_BASE_URL}/anim/${color}_pawn_${animation}.png")`,
+        backgroundImage: `url("${process.env.NEXT_PUBLIC_CDN_BASE_URL}/anim/${color}_pawn_${animation}.png")`,
       }}
     />
   );

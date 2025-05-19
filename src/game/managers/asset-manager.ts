@@ -1,4 +1,3 @@
-import { CDN_BASE_URL } from "@/constants/constants";
 import {
   PAWN,
   pawnColors,
@@ -19,9 +18,10 @@ import { DEAD } from "@/game/animations/keys/common";
 import { Phaser } from "@/game/phaser";
 
 export class AssetManager {
-  spriteUrl = `${CDN_BASE_URL}/asset/sprite`;
-  imageUrl = `${CDN_BASE_URL}/asset/image`;
-  tileUrl = `${CDN_BASE_URL}/asset/tile`;
+  cdnUrl = process.env.NEXT_PUBLIC_CDN_BASE_URL;
+  spriteUrl = `${this.cdnUrl}/asset/sprite`;
+  imageUrl = `${this.cdnUrl}/asset/image`;
+  tileUrl = `${this.cdnUrl}/asset/tile`;
 
   preloadCommonAsset(scene: Phaser.Scene) {
     this.loadSprites(scene);

@@ -1,4 +1,3 @@
-import { CDN_BASE_URL } from "@/constants/constants";
 import { TORCH_GOBLIN } from "@/constants/game/entities";
 import React from "react";
 
@@ -7,9 +6,9 @@ const GoblinTorch = ({ className }: { className?: string }) => {
     <div
       className={`w-60 h-60 bg-[length:700%_500%] animate-fire ${className}`}
       style={{
-        backgroundImage: `url(${CDN_BASE_URL}/asset/sprite/${TORCH_GOBLIN(
-          "red"
-        )}.png)`,
+        backgroundImage: `url(${
+          process.env.NEXT_PUBLIC_CDN_BASE_URL
+        }/asset/sprite/${TORCH_GOBLIN("red")}.png)`,
       }}
     />
   );
