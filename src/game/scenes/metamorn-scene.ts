@@ -88,6 +88,9 @@ export class MetamornScene extends Phaser.Scene {
   protected free() {
     EventWrapper.offGameEvent("enableGameKeyboardInput");
     EventWrapper.offGameEvent("disableGameInput");
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.scale.off("resize");
+    });
   }
 
   private initInputManager() {
@@ -164,5 +167,28 @@ export class MetamornScene extends Phaser.Scene {
     createButton(this.scale.width - 165, baseY, Keys.E, "E");
     createButton(this.scale.width - 110, baseY, Keys.Z, "공격");
     createButton(this.scale.width - 55, baseY, Keys.SPACE, "점프");
+  }
+
+  protected onMapResize(mapWith: number) {
+    this.scale.on("resize", () => {
+      this.adjustZoomBasedOnWidth(mapWith);
+    });
+  }
+
+  protected adjustZoomBasedOnWidth(mapWidth: number) {
+    const width = this.scale.width;
+
+    let zoom = 2.5;
+
+    if (width <= 640) {
+      zoom = 0.85;
+    } else if (width <= 1024) {
+      zoom = 1.1;
+    }
+
+    const minZoomX = width / mapWidth;
+    zoom = Math.max(zoom, minZoomX);
+
+    this.setZoom(zoom);
   }
 }

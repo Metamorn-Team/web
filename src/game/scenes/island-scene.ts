@@ -81,6 +81,7 @@ export class IslandScene extends MetamornScene {
   create() {
     super.create();
     this.initWorld();
+    this.onMapResize(this.mapWidth);
 
     this.listenLocalEvents();
 
@@ -144,7 +145,7 @@ export class IslandScene extends MetamornScene {
     this.matter.world.setBounds(0, 0, this.mapWidth, this.mapHeight);
 
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
-    this.cameras.main.setZoom(this.isMobile() ? 0.9 : 1.1);
+    // this.cameras.main.setZoom(this.isMobile() ? 0.9 : 1.1);
     this.cameras.main.setScroll(this.centerOfMap.x, this.centerOfMap.y);
   }
 
@@ -220,7 +221,6 @@ export class IslandScene extends MetamornScene {
     });
 
     this.io.on("disconnect", () => {
-      console.log("on disconnect");
       if (!this.isIntentionalDisconnect) {
         Alert.error("서버와의 연결이 끊어졌어요..");
         this.clearAllPlayer();
@@ -228,14 +228,12 @@ export class IslandScene extends MetamornScene {
     });
 
     this.io.on("activePlayers", (activeUsers) => {
-      console.log(`online users: ${JSON.stringify(activeUsers, null, 2)}`);
       this.spawnActiveUsers(activeUsers);
 
       EventWrapper.emitToUi("updateParticipantsPanel");
     });
 
     this.io.on("playerJoin", (data) => {
-      console.log(`on playerJoin: ${JSON.stringify(data, null, 2)}`);
       this.addPlayer(data);
 
       EventWrapper.emitToUi("newPlayer", data);
@@ -272,13 +270,11 @@ export class IslandScene extends MetamornScene {
     });
 
     this.io.on("playerKicked", () => {
-      console.log("on Kicked");
       alert("다른 곳에서 로그인 되었어요.. 😢");
       this.changeToLoby();
     });
 
     this.io.on("playerLeft", (data) => {
-      console.log(`on playerLeft: ${JSON.stringify(data, null, 2)}`);
       EventWrapper.emitToUi("playerLeftChat", data);
       this.destroyPlayer(data.id);
 

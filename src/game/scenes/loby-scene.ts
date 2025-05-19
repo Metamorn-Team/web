@@ -52,6 +52,7 @@ export class LobyScene extends MetamornScene {
 
     super.create();
     this.initWorld();
+    this.onMapResize(this.mapWidth);
 
     this.io = socketManager.connect(this.socketNsp)!;
 
@@ -67,8 +68,6 @@ export class LobyScene extends MetamornScene {
 
     this.ready(this.socketNsp);
     this.isCreated = true;
-
-    console.log(this.game.scene);
   }
 
   update(): void {
@@ -123,7 +122,7 @@ export class LobyScene extends MetamornScene {
     this.matter.world.setBounds(0, 0, this.mapWidth, this.mapHeight);
 
     this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
-    this.cameras.main.setZoom(this.isMobile() ? 0.9 : 1.1);
+    // this.cameras.main.setZoom(this.isMobile() ? 0.9 : 1.1);
     this.cameras.main.setScroll(this.centerOfMap.x, this.centerOfMap.y);
   }
 
