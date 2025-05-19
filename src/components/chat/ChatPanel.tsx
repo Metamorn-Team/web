@@ -340,9 +340,12 @@ export default function ChatPanel() {
 
       {(!isMobile && hasNewMessage) ||
       (isMobile && isChatVisible && hasNewMessage) ? (
-        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xs px-3 py-1 rounded-full z-10 animate-pulse">
+        <button
+          onClick={scrollToBottom}
+          className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xs px-3 py-1 rounded-full z-10 animate-pulse"
+        >
           새로운 메시지
-        </div>
+        </button>
       ) : null}
 
       {(!isMobile && showToBottom) ||
