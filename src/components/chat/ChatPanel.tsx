@@ -9,6 +9,7 @@ import { EventWrapper } from "@/game/event/EventBus";
 import { playerStore } from "@/game/managers/player-store";
 import { socketManager } from "@/game/managers/socket-manager";
 import { linkify } from "@/game/utils/inkify";
+import { replaceBadWords } from "@/game/utils/text-filter";
 import { useModal } from "@/hook/useModal";
 import Alert from "@/utils/alert";
 import { getItem } from "@/utils/persistence";
@@ -237,7 +238,7 @@ export default function ChatPanel() {
     }
 
     const socket = socketManager.connect(nsp);
-    socket?.emit("sendMessage", { message: input });
+    socket?.emit("sendMessage", { message: replaceBadWords(input) });
     setLastChat(Date.now());
     setInput("");
   };
