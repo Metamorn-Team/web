@@ -209,9 +209,9 @@ export default function MenuHeader({
             <DropdownItem
               icon={
                 <Image
-                  src={"/images/avatar/blue_pawn.png"}
-                  width={24}
-                  height={24}
+                  src={`${process.env.NEXT_PUBLIC_CDN_BASE_URL}/asset/image/axe_pawn.png`}
+                  width={40}
+                  height={40}
                   alt="리브아일랜드에 힘을 주세요"
                 />
               }
