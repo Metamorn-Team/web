@@ -7,7 +7,7 @@ export class SpeechBubbleRenderer {
     x: number,
     y: number,
     message: string,
-    fontSize = 14
+    fontSize = 12
   ): Phaser.GameObjects.Container {
     const container = scene.add.container(x, y);
     container.setDepth(99999);
@@ -25,7 +25,7 @@ export class SpeechBubbleRenderer {
       })
       .setOrigin(0.5);
 
-    const paddingX = 20;
+    const paddingX = 22;
     const paddingY = 10;
     const tailHeight = 7;
     const bubbleWidth = text.width + paddingX * 2;
