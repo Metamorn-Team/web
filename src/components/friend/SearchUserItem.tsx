@@ -56,6 +56,7 @@ const SearchUserItem = ({ friend }: SearchUserItemProps) => {
             title="요청"
             fontSize={12}
             width={"70%"}
+            className="max-w-[42px]"
           />
         ) : (
           <SquareButton

@@ -13,6 +13,7 @@ export const useInfiniteGetFriends = (query: GetFriendsRequest) => {
     fetchNextPage,
     isFetchingNextPage,
     refetch,
+    hasNextPage,
   } = useInfiniteQuery({
     queryKey: [QUERY_KEY],
     queryFn: async (
@@ -43,5 +44,6 @@ export const useInfiniteGetFriends = (query: GetFriendsRequest) => {
     fetchNextPage,
     isFetchingNextPage,
     refetch,
+    hasNextPage,
   };
 };

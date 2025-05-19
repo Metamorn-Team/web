@@ -15,6 +15,7 @@ export const useInfiniteGetFriendRequests = (
     fetchNextPage,
     isFetchingNextPage,
     refetch,
+    hasNextPage,
   } = useInfiniteQuery({
     queryKey: [QUERY_KEY, query.direction],
     queryFn: async (
@@ -45,5 +46,6 @@ export const useInfiniteGetFriendRequests = (
     fetchNextPage,
     isFetchingNextPage,
     refetch,
+    hasNextPage,
   };
 };

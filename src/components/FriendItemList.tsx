@@ -8,8 +8,14 @@ interface FriendItemListProps {
 }
 
 export default function FriendItmeList({ className }: FriendItemListProps) {
-  const { friends, fetchNextPage, isError, isFetchingNextPage, isLoading } =
-    useInfiniteGetFriends({ limit: 10 });
+  const {
+    friends,
+    fetchNextPage,
+    isError,
+    isFetchingNextPage,
+    isLoading,
+    hasNextPage,
+  } = useInfiniteGetFriends({ limit: 10 });
 
   useEffect(() => {
     console.log(friends);
@@ -37,7 +43,7 @@ export default function FriendItmeList({ className }: FriendItemListProps) {
               더 불러오는 중...
             </p>
           )}
-          {!isFetchingNextPage && (
+          {hasNextPage && !isFetchingNextPage && (
             <button
               onClick={() => fetchNextPage()}
               className="w-full text-sm text-blue-500 py-2"

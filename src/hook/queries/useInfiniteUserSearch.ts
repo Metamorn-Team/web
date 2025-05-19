@@ -15,6 +15,7 @@ export const useInfiniteUserSearch = (
     fetchNextPage,
     isFetchingNextPage,
     refetch,
+    hasNextPage,
   } = useInfiniteQuery({
     queryKey: ["userSearch", search, varient],
     queryFn: async (
@@ -47,5 +48,6 @@ export const useInfiniteUserSearch = (
     fetchNextPage,
     isFetchingNextPage,
     refetch,
+    hasNextPage,
   };
 };

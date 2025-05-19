@@ -13,6 +13,7 @@ const ReceivedFriendRequestItemList = () => {
     isError,
     fetchNextPage,
     isFetchingNextPage,
+    hasNextPage,
   } = useInfiniteGetFriendRequests({
     direction: FriendRequestDirection.RECEIVED,
     limit: 10,
@@ -58,7 +59,7 @@ const ReceivedFriendRequestItemList = () => {
               더 불러오는 중...
             </p>
           )}
-          {!isFetchingNextPage && (
+          {hasNextPage && !isFetchingNextPage && (
             <button
               onClick={() => fetchNextPage()}
               className="w-full text-sm text-blue-500 py-2"

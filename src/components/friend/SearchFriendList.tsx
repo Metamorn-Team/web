@@ -19,38 +19,44 @@ const SearchFriendList = () => {
     fetchNextPage,
     refetch,
     isFetchingNextPage,
+    hasNextPage,
   } = useInfiniteUserSearch(query, searchType, 10);
 
   return (
     <div className="flex flex-col gap-4 w-full h-full">
       <div className="flex justify-center gap-2 mt-2 px-4">
-        {types.map((type) => (
-          <button
-            key={type}
-            onClick={() => setSearchType(type)}
-            className={`px-4 py-1 rounded-full border text-sm transition ${
-              searchType === type
-                ? "bg-[#d6c6aa] text-white border-[#b5a183]"
-                : "bg-[#f3ece1] text-[#5c4b32] border-[#d6c6aa] hover:bg-[#e8e0d0]"
-            }`}
-          >
-            {type === "NICKNAME" ? "닉네임" : "태그"}
-          </button>
-        ))}
+        {types.map((type) => {
+          const isActive = searchType === type;
+          return (
+            <button
+              key={type}
+              onClick={() => setSearchType(type)}
+              className={`px-4 py-1 border text-sm font-bold transition
+          ${
+            isActive
+              ? "bg-[#5c4b32] text-white border-[#3d2c1b] shadow-[2px_2px_0_#3d2c1b]"
+              : "bg-[#fdf8ef] text-[#5c4b32] border-[#bfae96] hover:bg-[#f3ece1]"
+          }
+          rounded-md`}
+            >
+              {type === "NICKNAME" ? "닉네임" : "태그"}
+            </button>
+          );
+        })}
       </div>
 
       {/* 검색 입력 영역 */}
       <div className="flex sticky top-0 z-10 w-full justify-center">
-        <div className="flex w-full gap-2">
+        <div className="flex w-full gap-2 justify-center">
           <input
             type="text"
             placeholder={`${
-              searchType === "NICKNAME" ? "닉네임" : "태그"
-            }으로 검색`}
+              searchType === "NICKNAME" ? "닉네임으" : "태그"
+            }로 검색`}
             value={query}
             onKeyUp={(e) => e.key === "Enter" && refetch()}
             onChange={(e) => setQuery(e.target.value)}
-            className="h-12 px-4 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 flex-1"
+            className="h-12 px-4 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 flex-1 max-w-[260px]"
           />
           <SquareButton
             onClick={refetch}
@@ -86,7 +92,7 @@ const SearchFriendList = () => {
                   더 불러오는 중...
                 </p>
               )}
-              {!isFetchingNextPage && (
+              {hasNextPage && !isFetchingNextPage && (
                 <button
                   onClick={() => fetchNextPage()}
                   className="w-full text-sm text-blue-500 py-2"
