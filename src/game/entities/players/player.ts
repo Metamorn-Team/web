@@ -192,6 +192,8 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   }
 
   private setNickname(scene: Phaser.Scene) {
+    const cameraZoom = scene.cameras.main.zoom;
+
     this.playerNameText = scene.add
       .text(this.x, this.y - this.displayHeight / 2, this.playerInfo.nickname, {
         fontFamily: "CookieRun",
@@ -200,7 +202,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
         color: this.isControllable ? "#81D4FA" : "#FFFFFF",
         stroke: "#000000",
         strokeThickness: 2,
-        resolution: 10,
+        resolution: cameraZoom,
       })
       .setScale(1)
       .setDepth(999999);

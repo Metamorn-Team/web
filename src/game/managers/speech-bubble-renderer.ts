@@ -12,6 +12,8 @@ export class SpeechBubbleRenderer {
     const container = scene.add.container(x, y);
     container.setDepth(99999);
 
+    const cameraZoom = scene.cameras.main.zoom;
+
     const text = scene.add
       .text(0, 0, message, {
         fontFamily: "CookieRun",
@@ -19,7 +21,7 @@ export class SpeechBubbleRenderer {
         color: "#000000",
         wordWrap: { width: 200, useAdvancedWrap: true },
         align: "center",
-        resolution: 10,
+        resolution: cameraZoom,
       })
       .setOrigin(0.5);
 
