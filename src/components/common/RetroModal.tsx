@@ -45,7 +45,7 @@ const RetroModal = ({
           `
           bg-[#fdf8ef] border border-[#bfae96]
           shadow-[6px_6px_0_#8c7a5c] 
-          rounded-none sm:rounded-[8px]
+          rounded-[12px]
           w-full h-auto
           max-w-full sm:max-w-[500px] md:max-w-[600px] lg:max-w-[700px] xl:max-w-[800px]
           animate-fadeIn duration-200 relative

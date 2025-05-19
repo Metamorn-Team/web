@@ -34,6 +34,8 @@ import {
   UNKNOWN_MESSAGE,
 } from "@/error/exceptions/message";
 import { SpeechBubbleRenderer } from "@/game/managers/speech-bubble-renderer";
+import Reload from "@/utils/reload";
+import { HAS_NEW_VERSION } from "@/constants/message/info-message";
 
 export class IslandScene extends MetamornScene {
   protected override player: Player;
@@ -81,7 +83,7 @@ export class IslandScene extends MetamornScene {
   create() {
     super.create();
     this.initWorld();
-    this.onMapResize(this.mapWidth);
+    // this.onMapResize(this.mapWidth);
 
     this.listenLocalEvents();
 
@@ -298,6 +300,10 @@ export class IslandScene extends MetamornScene {
         this.handleHeartbeat(player.id, player.lastActivity)
       );
       EventWrapper.emitToUi("updateOnlineStatus", data);
+    });
+
+    this.io.on("invalidVersion", () => {
+      Reload.open(HAS_NEW_VERSION);
     });
   }
 

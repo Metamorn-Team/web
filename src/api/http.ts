@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "@/constants/constants";
+import { API_BASE_URL, APP_VERSION } from "@/constants/constants";
 import { getItem } from "@/utils/persistence";
 import axios from "axios";
 
@@ -13,6 +13,8 @@ http.interceptors.request.use(
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
+
+    config.headers["App-Version"] = APP_VERSION;
     return config;
   },
   (error) => {

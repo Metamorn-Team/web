@@ -1,7 +1,8 @@
+import * as msgpackParser from "socket.io-msgpack-parser";
 import { getItem } from "@/utils/persistence";
 import { io, Socket } from "socket.io-client";
 import { ClientToServer, ServerToClient } from "mmorntype";
-import { API_BASE_URL } from "@/constants/constants";
+import { API_BASE_URL, APP_VERSION } from "@/constants/constants";
 
 class SocketManager {
   private store: Map<string, Socket<ServerToClient, ClientToServer>> =
@@ -11,10 +12,11 @@ class SocketManager {
     if (!this.store.has(nsp)) {
       const accessToken = getItem("access_token");
       const socket = io(`${API_BASE_URL}/${nsp}`, {
-        // parser: msgpackParser,
+        parser: msgpackParser,
         path: "/game",
         auth: {
           authorization: accessToken,
+          "app-version": APP_VERSION,
         },
       });
       socket.connect();
