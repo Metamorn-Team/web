@@ -20,14 +20,23 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
-function useIsMobile() {
+function useIsMobile(): boolean {
   const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth <= 640);
+    const check = () => {
+      const mobile = window.innerWidth <= 640;
+      setIsMobile(mobile);
+    };
+
     check();
     window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
+
+    return () => {
+      window.removeEventListener("resize", check);
+    };
   }, []);
+
   return isMobile;
 }
 
@@ -311,7 +320,10 @@ export default function ChatPanel() {
     >
       {isMobile && (
         <button
-          onClick={() => setIsChatVisible((prev) => !prev)}
+          onClick={() => {
+            setIsChatVisible((prev) => !prev);
+            scrollToBottom();
+          }}
           className="text-[#2a1f14] p-2 text-sm font-bold flex justify-center items-center gap-2 border-b border-[#d6c6aa]"
         >
           {isChatVisible ? (
@@ -331,47 +343,49 @@ export default function ChatPanel() {
         </button>
       )}
 
-      {(!isMobile || isChatVisible) && (
-        <div
-          ref={scrollRef}
-          className="flex-1 overflow-y-auto p-4 space-y-3 text-sm text-[#2a1f14] scrollbar-hide"
-        >
-          {messages.map((msg) =>
-            msg.isSystem ? (
-              <SystemMessage key={msg.id} message={msg.message} />
-            ) : (
-              <Message
-                key={msg.id}
-                isMine={msg.sender === "나"}
-                avatarKey={msg.avatarKey || "purple_pawn"}
-                sender={msg.sender}
-                message={msg.message}
-                linkify={linkify}
-                onOpenModal={() => {
-                  setModalMessage(msg.message);
-                  onOpen();
-                }}
-              />
-            )
-          )}
-          <div ref={bottomRef} />
-        </div>
-      )}
+      <div
+        ref={scrollRef}
+        className={`flex-1 overflow-y-auto p-4 space-y-3 text-sm text-[#2a1f14] scrollbar-hide transition-opacity duration-200 ${
+          isMobile && !isChatVisible ? " hidden" : "flex flex-col"
+        }`}
+      >
+        {messages.map((msg) =>
+          msg.isSystem ? (
+            <SystemMessage key={msg.id} message={msg.message} />
+          ) : (
+            <Message
+              key={msg.id}
+              isMine={msg.sender === "나"}
+              avatarKey={msg.avatarKey || "purple_pawn"}
+              sender={msg.sender}
+              message={msg.message}
+              linkify={linkify}
+              onOpenModal={() => {
+                setModalMessage(msg.message);
+                onOpen();
+              }}
+            />
+          )
+        )}
+        <div ref={bottomRef} />
+      </div>
 
-      {hasNewMessage && (
+      {(!isMobile && hasNewMessage) ||
+      (isMobile && isChatVisible && hasNewMessage) ? (
         <div className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xs px-3 py-1 rounded-full z-10 animate-pulse">
           새로운 메시지
         </div>
-      )}
+      ) : null}
 
-      {showToBottom && (
+      {(!isMobile && showToBottom) ||
+      (isMobile && isChatVisible && showToBottom) ? (
         <button
           onClick={scrollToBottom}
           className="absolute bottom-24 right-4 w-9 h-9 flex items-center justify-center bg-black/60 text-white rounded-full shadow hover:bg-black/80 transition"
         >
           <FiChevronDown size={18} />
         </button>
-      )}
+      ) : null}
 
       <ChatInput
         input={input}
