@@ -8,6 +8,7 @@ import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { EventWrapper } from "@/game/event/EventBus";
 import { playerStore } from "@/game/managers/player-store";
 import { socketManager } from "@/game/managers/socket-manager";
+import { linkify } from "@/game/utils/inkify";
 import { useModal } from "@/hook/useModal";
 import Alert from "@/utils/alert";
 import { getItem } from "@/utils/persistence";
@@ -63,6 +64,7 @@ export default function ChatPanel() {
 
   const [isAtBottom, setIsAtBottom] = useState(false);
   const [hasNewMessage, setHasNewMessage] = useState(false);
+  const [lastSeenMessageId, setLastSeenMessageId] = useState("");
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -74,6 +76,10 @@ export default function ChatPanel() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
 
   useEffect(() => {
+    if (isAtBottom) {
+      scrollToBottom();
+    }
+
     const container = scrollRef.current;
     if (!container) return;
 
@@ -210,12 +216,6 @@ export default function ChatPanel() {
     };
   }, []);
 
-  useEffect(() => {
-    if (isAtBottom) {
-      scrollToBottom();
-    }
-  }, [messages]);
-
   const handleSend = (e?: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e?.nativeEvent.isComposing) return;
     if (!input.trim()) {
@@ -243,65 +243,33 @@ export default function ChatPanel() {
   };
 
   useEffect(() => {
-    if (isMobile && !isChatVisible) {
+    if (isMobile && !isChatVisible && messages.length > 0) {
       const lastMessage = messages[messages.length - 1];
+
+      // 내 메시지 무시
       if (!lastMessage || lastMessage.sender === "나") return;
-      setUnreadCount((prev) => prev + 1);
+
+      // 새로운 메시지인 경우만 카운트 증가
+      if (lastMessage.id !== lastSeenMessageId) {
+        setUnreadCount((prev) => prev + 1);
+        setLastSeenMessageId(lastMessage.id);
+      }
     }
   }, [messages, isChatVisible, isMobile]);
+
+  useEffect(() => {
+    if (isChatVisible && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      setLastSeenMessageId(lastMessage.id);
+      setUnreadCount(0);
+    }
+  }, [isChatVisible, messages]);
 
   useEffect(() => {
     if (isChatVisible) {
       setUnreadCount(0);
     }
   }, [isChatVisible]);
-
-  const linkify = (text: string) => {
-    if (!text) return text;
-
-    const urlRegex =
-      /(https?:\/\/[^\s]+|www\.[^\s]+|\b[\w-]+\.[\w-]+(?:\.[\w-]+)*\b(?:\/[^\s]*)?)/gi;
-
-    const urls = text.match(urlRegex) || [];
-    let lastIndex = 0;
-    const result = [];
-
-    urls.forEach((url, index) => {
-      const urlStart = text.indexOf(url, lastIndex);
-      if (urlStart > lastIndex) {
-        result.push(
-          <span key={`text-${index}`}>
-            {text.substring(lastIndex, urlStart)}
-          </span>
-        );
-      }
-
-      const href = url.startsWith("http")
-        ? url
-        : url.startsWith("www.")
-        ? `https://${url}`
-        : `https://www.${url}`;
-      result.push(
-        <a
-          key={`link-${index}`}
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[#6b4e2e] underline underline-offset-2 hover:text-[#4b3824]"
-        >
-          {url}
-        </a>
-      );
-
-      lastIndex = urlStart + url.length;
-    });
-
-    if (lastIndex < text.length) {
-      result.push(<span key="text-end">{text.substring(lastIndex)}</span>);
-    }
-
-    return result;
-  };
 
   return (
     <div
