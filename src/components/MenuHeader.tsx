@@ -23,15 +23,18 @@ import { socketManager } from "@/game/managers/socket-manager";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { useGetUnreadFriendRequest } from "@/hook/queries/useGetUnreadFriendRequest";
 import { QUERY_KEY as UNREAD_COUNT_QUERY_KEY } from "@/hook/queries/useGetUnreadFriendRequest";
+import Image from "next/image";
 
 interface MenuHeaderProps {
   changeFriendModalOpen: (state: boolean) => void;
   onSettingsModalOpen: () => void;
+  onDevModalOpen: () => void;
 }
 
 export default function MenuHeader({
   changeFriendModalOpen,
   onSettingsModalOpen,
+  onDevModalOpen,
 }: MenuHeaderProps) {
   const queryClient = useQueryClient();
   const [isPlayBgm, setIsPlayBgm] = useState(true);
@@ -203,6 +206,22 @@ export default function MenuHeader({
               label="환경 설정"
               onClick={onSettingsModalOpen}
             />
+            <DropdownItem
+              icon={
+                <Image
+                  src={"/images/avatar/blue_pawn.png"}
+                  width={24}
+                  height={24}
+                  alt="리브아일랜드에 힘을 주세요"
+                />
+              }
+              label={
+                <>
+                  리브아일랜드에 <br /> 힘을 주세요
+                </>
+              }
+              onClick={onDevModalOpen}
+            />
           </div>
         )}
       </div>
@@ -236,7 +255,7 @@ function DropdownItem({
   onClick,
 }: {
   icon: React.ReactNode;
-  label: string;
+  label: string | React.ReactNode;
   onClick?: () => void;
 }) {
   return (

@@ -26,6 +26,7 @@ import SettingsModal from "@/components/SettingsModal";
 import IslandListModal from "@/components/islands/IslandListModal";
 import { ISLAND_SCENE } from "@/constants/game/islands/island";
 import ControlGuide from "@/components/ControlGuide";
+import HelpModal from "@/components/HelpModal";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -69,6 +70,11 @@ export default function GameWrapper({
     isModalOpen: isSettingsModalOpen,
     onClose: onSettingsModalClose,
     onOpen: onSettingsModalOpen,
+  } = useModal();
+  const {
+    isModalOpen: isDevModalOpen,
+    onOpen: onDevOpen,
+    onClose: onDevClose,
   } = useModal();
   const [isVisibleChat, setIsVisibleChat] = useState(false);
   const {
@@ -204,6 +210,7 @@ export default function GameWrapper({
         <MenuHeader
           changeFriendModalOpen={changeFriendModalOpen}
           onSettingsModalOpen={onSettingsModalOpen}
+          onDevModalOpen={onDevOpen}
         />
       ) : null}
 
@@ -245,6 +252,9 @@ export default function GameWrapper({
       {isVisibleChat ? <ChatPanel /> : null}
       {isVisibleChat ? <ParticipantPanel /> : null}
       {<ControlGuide />}
+      {isDevModalOpen ? (
+        <HelpModal isOpen={isDevModalOpen} onClose={onDevClose} />
+      ) : null}
     </div>
   );
 }

@@ -46,8 +46,8 @@ export const metadata: Metadata = {
     images: ["https://cdn.metamorn.com/vanner/ad-vanner.png"],
     site: "@livisland",
   },
-  manifest: "/manifest.json",
-  category: "games",
+  // manifest: "/manifest.json",
+  // category: "games",
 };
 
 const CookiRun = localFont({
