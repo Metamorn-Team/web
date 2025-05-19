@@ -170,6 +170,7 @@ export class MetamornScene extends Phaser.Scene {
   }
 
   protected onMapResize(mapWith: number) {
+    this.adjustZoomBasedOnWidth(mapWith);
     this.scale.on("resize", () => {
       this.adjustZoomBasedOnWidth(mapWith);
     });
