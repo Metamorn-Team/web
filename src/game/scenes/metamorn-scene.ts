@@ -184,12 +184,18 @@ export class MetamornScene extends Phaser.Scene {
   protected adjustZoomBasedOnWidth(mapWidth: number) {
     const width = this.scale.width;
 
-    let zoom = 1.3;
+    let zoom = 3;
 
     if (width <= 640) {
       zoom = 0.85;
-    } else if (width <= 1024) {
+    } else if (width <= 1680) {
       zoom = 1.3;
+    } else if (width <= 1920) {
+      zoom = 1.6;
+    } else if (width <= 2560) {
+      zoom = 2.1;
+    } else if (width <= 3840) {
+      zoom = 3;
     }
 
     const minZoomX = width / mapWidth;
