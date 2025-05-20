@@ -226,17 +226,18 @@ export default function GameWrapper({
         onClose={onSettingsModalClose}
       />
 
-      <IslandListModal
-        isOpen={isIslandListModalOpen}
-        onClose={onIslandListModalClose}
-        onSelectIsland={() => {}}
-        onCreateIsland={() => {}}
-        onJoinRandomIsland={() => {
-          EventWrapper.emitToGame("joinDesertedIsland");
-          onIslandListModalClose();
-        }}
-      />
-
+      {isIslandListModalOpen ? (
+        <IslandListModal
+          isOpen={isIslandListModalOpen}
+          onClose={onIslandListModalClose}
+          onSelectIsland={() => {}}
+          onCreateIsland={() => {}}
+          onJoinRandomIsland={() => {
+            EventWrapper.emitToGame("joinDesertedIsland");
+            onIslandListModalClose();
+          }}
+        />
+      ) : null}
       {isVisibleChat ? <ChatPanel /> : null}
       {isVisibleChat ? <ParticipantPanel /> : null}
       {<ControlGuide />}
