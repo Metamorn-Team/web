@@ -17,9 +17,17 @@ export async function login(
   return response.data;
 }
 
+export const logout = async () => {
+  return await http.delete("/auth/logout");
+};
+
 export async function register(
   body: RegisterRequest
 ): Promise<RegisterResponse> {
   const response = await http.post<RegisterResponse>("/auth/register", body);
   return response.data;
 }
+
+export const refreshAuthToken = async () => {
+  return await http.post("/auth/token");
+};

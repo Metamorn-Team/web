@@ -24,6 +24,8 @@ import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { useGetUnreadFriendRequest } from "@/hook/queries/useGetUnreadFriendRequest";
 import { QUERY_KEY as UNREAD_COUNT_QUERY_KEY } from "@/hook/queries/useGetUnreadFriendRequest";
 import Image from "next/image";
+import { useLogout } from "@/hook/queries/useLogout";
+import Alert from "@/utils/alert";
 
 interface MenuHeaderProps {
   changeFriendModalOpen: (state: boolean) => void;
@@ -44,6 +46,15 @@ export default function MenuHeader({
 
   const [showNewRequestMessage, setShowNewRequestMessage] = useState(false);
   const { data: unreadRequestCount } = useGetUnreadFriendRequest();
+  const { mutate: logoutMutate } = useLogout(
+    () => {
+      removeItem("access_token");
+      removeItem("profile");
+      setItem("current_scene", "LobyScene");
+      window.location.reload();
+    },
+    () => Alert.error("로그아웃에 실패했어요.. 나중에 다시 시도해주세요.")
+  );
 
   const isLogined = !!getPersistenceItem("access_token");
 
@@ -89,12 +100,7 @@ export default function MenuHeader({
     setIsPlayBgm(!isPlayBgm);
   };
 
-  const onLogout = () => {
-    removeItem("access_token");
-    removeItem("profile");
-    setItem("current_scene", "LobyScene");
-    window.location.reload();
-  };
+  const onLogout = () => logoutMutate();
 
   const onClickStore = () => {
     window.open("/store", "_blank");
