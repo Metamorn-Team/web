@@ -9,10 +9,12 @@ import React, {
 } from "react";
 import { Phaser } from "@/game/phaser";
 import FontFaceObserver from "fontfaceobserver";
+import classNames from "classnames";
 
 interface StoreGameProps {
   ref: RefObject<GameRef | null>;
   currentActiveScene: (scene: Phaser.Scene) => void;
+  className?: string;
 }
 
 export interface GameRef {
@@ -20,7 +22,7 @@ export interface GameRef {
   currnetScene: Phaser.Scene | null;
 }
 
-const StoreGame = ({ ref }: StoreGameProps) => {
+const StoreGame = ({ ref, className }: StoreGameProps) => {
   const gameRef = useRef<Phaser.Game | null>(null);
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
@@ -74,9 +76,9 @@ const StoreGame = ({ ref }: StoreGameProps) => {
   }, [ref, fontsLoaded]);
 
   return (
-    <div className="relative w-[288px] h-[288px]">
+    <div className={classNames("relative w-[288px] h-[288px]", className)}>
       <div id="game-container" className="w-full h-full" />
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs px-3 py-1 rounded shadow z-10 w-3/4">
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs px-3 py-1 rounded shadow z-10 w-4/5 text-center">
         <p>💡 상점 기능은 아직 준비 중이에요..</p>
         <p>하지만 자유롭게 장착해볼 수 있어요!</p>
       </div>
