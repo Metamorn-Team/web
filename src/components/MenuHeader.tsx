@@ -169,11 +169,13 @@ export default function MenuHeader({
         )}
 
         {isLogined && (
-          <StyledMenuItem
-            icon={<FiShoppingBag size={20} />}
-            label="상점"
-            onClick={onClickStore}
-          />
+          <div className="hidden sm:flex">
+            <StyledMenuItem
+              icon={<FiShoppingBag size={20} />}
+              label="상점"
+              onClick={onClickStore}
+            />
+          </div>
         )}
       </div>
 
