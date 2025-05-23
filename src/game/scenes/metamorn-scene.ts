@@ -142,10 +142,10 @@ export class MetamornScene extends Phaser.Scene {
       this.add
         .text(x, y, label, {
           fontFamily: "CookieRun",
-          fontSize: "14px",
+          fontSize: "16px",
           color: "#2a1f14",
           fontStyle: "bold",
-          resolution: 2,
+          resolution: 0.85,
         })
         .setOrigin(0.5)
         .setScrollFactor(0)
