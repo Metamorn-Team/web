@@ -11,6 +11,7 @@ interface OauthButtonProps {
 const OauthButton: React.FC<OauthButtonProps> = ({ type, onClick }) => {
   return (
     <button
+      type="button"
       className={`${commonStyles.button} ${buttonStyles[type].button} shadow-[4px_4px_0_#8c7a5c] border border-[#bfae96] transition hover:brightness-105`}
       onClick={onClick}
     >
@@ -19,7 +20,7 @@ const OauthButton: React.FC<OauthButtonProps> = ({ type, onClick }) => {
         {type === "GOOGLE" ? "구글" : type === "KAKAO" ? "카카오" : "네이버"}로
         시작하기
       </p>
-      <div className="w-7"></div>
+      <div className="w-7" />
     </button>
   );
 };
@@ -37,7 +38,7 @@ const commonStyles = {
 
 const buttonStyles = {
   GOOGLE: {
-    button: "bg-white  hover:bg-gray-100 ",
+    button: "bg-white hover:bg-gray-100",
     text: "text-black",
   },
   KAKAO: {
