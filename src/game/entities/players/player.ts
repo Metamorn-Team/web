@@ -16,7 +16,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   private playerInfo: UserInfo;
   private label = "PLAYER";
-  public speed = 2.2;
+  public speed = 150;
 
   protected isControllable: boolean;
   protected isBeingBorn = true;
@@ -117,13 +117,13 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   protected abstract setBodyConfig(): void;
 
-  update(): void {
+  update(delta: number): void {
     if (this.fsm) {
       const keys = this.isControllable
         ? this.inputManager?.getPressedKeys() || []
         : undefined;
 
-      this.fsm.update(keys);
+      this.fsm.update(delta, keys);
     }
 
     this.setSpeechBubblePosition();

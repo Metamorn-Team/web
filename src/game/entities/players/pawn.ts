@@ -41,10 +41,10 @@ export class Pawn extends Player {
     });
   }
 
-  update(): void {
+  update(delta: number): void {
     if (this.isBeingBorn) return;
 
-    super.update();
+    super.update(delta);
   }
 
   walk(side: "right" | "left" | "none"): void {

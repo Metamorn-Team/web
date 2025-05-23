@@ -70,9 +70,10 @@ export class LobyScene extends MetamornScene {
     this.isCreated = true;
   }
 
-  update(): void {
+  update(time: number, delta: number): void {
     if (this.player?.body) {
-      this.player.update();
+      console.log(delta);
+      this.player.update(delta);
 
       this.checkNearNpc();
       if (this.inputManager.isKeyJustDown(Keys.E)) {

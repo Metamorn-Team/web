@@ -47,9 +47,9 @@ export default class PhotoScene extends MetamornScene {
     this.showAura();
   }
 
-  update(): void {
+  update(time: number, delta: number): void {
     if (this.player) {
-      this.player.update();
+      this.player.update(delta);
     }
   }
 

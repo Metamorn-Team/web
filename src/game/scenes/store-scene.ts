@@ -49,9 +49,9 @@ export class StoreScene extends MetamornScene {
     });
   }
 
-  update() {
+  update(time: number, delta: number) {
     if (this.player) {
-      this.player.update();
+      this.player.update(delta);
     }
   }
 

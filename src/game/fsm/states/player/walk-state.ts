@@ -12,7 +12,7 @@ export class WalkState implements State<PlayerState> {
 
   enter() {}
 
-  update(input: Keys[]) {
+  update(delta: number, input: Keys[]) {
     if (input.includes(Keys.Z)) {
       this.parent.setState(PlayerState.ATTACK);
       this.parent.gameObject.setVelocity(0, 0);
@@ -51,10 +51,13 @@ export class WalkState implements State<PlayerState> {
       velocityY /= length;
     }
 
+    const speed = this.parent.gameObject.speed;
+    const dt = delta / 1000;
+
     this.parent.gameObject.x =
-      this.parent.gameObject.x + velocityX * this.parent.gameObject.speed;
+      this.parent.gameObject.x + velocityX * speed * dt;
     this.parent.gameObject.y =
-      this.parent.gameObject.y + velocityY * this.parent.gameObject.speed;
+      this.parent.gameObject.y + velocityY * speed * dt;
 
     this.parent.gameObject.walk(
       velocityX > 0 ? "right" : velocityX < 0 ? "left" : "none"

@@ -15,7 +15,7 @@ export class JumpState implements State<PlayerState> {
     this.isJump = true;
   }
 
-  update(input: Keys[]) {
+  update(delta: number, input: Keys[]) {
     let velocityX = 0;
     let velocityY = 0;
 
@@ -38,10 +38,13 @@ export class JumpState implements State<PlayerState> {
       velocityY /= length;
     }
 
+    const speed = this.parent.gameObject.speed;
+    const dt = delta / 1000;
+
     this.parent.gameObject.x =
-      this.parent.gameObject.x + velocityX * this.parent.gameObject.speed;
+      this.parent.gameObject.x + velocityX * speed * dt;
     this.parent.gameObject.y =
-      this.parent.gameObject.y + velocityY * this.parent.gameObject.speed;
+      this.parent.gameObject.y + velocityY * speed * dt;
 
     const side = velocityX > 0 ? "right" : velocityX < 0 ? "left" : "none";
 

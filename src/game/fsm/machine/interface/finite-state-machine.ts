@@ -33,9 +33,9 @@ export abstract class FiniteStateMachine<E> {
     state.enter(this.currentState);
   }
 
-  update(input?: Keys[]) {
+  update(delta: number, input?: Keys[]) {
     if (this.currentState) {
-      this.currentState.update(input);
+      this.currentState.update(delta, input);
     }
   }
 }

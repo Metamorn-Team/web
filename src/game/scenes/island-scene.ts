@@ -106,10 +106,10 @@ export class IslandScene extends MetamornScene {
     return dx >= POSITION_CHANGE_THRESHOLD || dy >= POSITION_CHANGE_THRESHOLD;
   }
 
-  update(): void {
+  update(time: number, delta: number): void {
     if (!this.player?.body) return;
 
-    this.player.update();
+    this.player.update(delta);
 
     if (
       this.isActiveChat === false &&
@@ -130,7 +130,7 @@ export class IslandScene extends MetamornScene {
     }
 
     for (const player of playerStore.getAllPlayers().values()) {
-      player.update();
+      player.update(delta);
     }
   }
 
