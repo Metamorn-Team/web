@@ -6,8 +6,6 @@
   font-family: "DungGeunMo";
   src: url("../fonts/NeoDunggeunmoPro-Regular.woff");
   font-display: swap;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 @font-face {
@@ -19,8 +17,24 @@
 }
 
 @font-face {
-  font-family: "Pretendard";
+  font-family: "Pretendard-Regular";
   src: url("../fonts/Pretendard-Regular.otf");
+  font-display: swap;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+  font-family: "Pretendard-Medium";
+  src: url("../fonts/Pretendard-Medium.woff");
+  font-display: swap;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+  font-family: "Pretendard-SemiBold";
+  src: url("../fonts/Pretendard-SemiBold.woff");
   font-display: swap;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

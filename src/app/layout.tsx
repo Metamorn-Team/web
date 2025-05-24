@@ -50,8 +50,12 @@ export const metadata: Metadata = {
   // category: "games",
 };
 
-const CookiRun = localFont({
-  src: "../fonts/CookieRun_Regular.otf",
+// const CookiRun = localFont({
+//   src: "../fonts/CookieRun_Regular.otf",
+// });
+
+const DungGeunMo = localFont({
+  src: "../fonts/NeoDunggeunmoPro-Regular.woff",
 });
 
 const RootLayout = ({
@@ -90,7 +94,7 @@ const RootLayout = ({
           }}
         />
       </head>
-      <body className={CookiRun.className}>
+      <body className={DungGeunMo.className}>
         <AlertProvider />
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID ? (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
