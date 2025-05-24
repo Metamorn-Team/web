@@ -196,7 +196,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
     this.playerNameText = scene.add
       .text(this.x, this.y - this.displayHeight / 2, this.playerInfo.nickname, {
-        fontFamily: "CookieRun",
+        fontFamily: "DungGeunMo",
         fontSize: "16px",
         padding: { bottom: 14 },
         color: this.isControllable ? "#81D4FA" : "#FFFFFF",

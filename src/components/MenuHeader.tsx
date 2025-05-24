@@ -218,7 +218,7 @@ export default function MenuHeader({
               icon={
                 <Image
                   src={`${process.env.NEXT_PUBLIC_CDN_BASE_URL}/asset/image/axe_pawn.png`}
-                  width={40}
+                  width={34}
                   height={40}
                   alt="리브아일랜드에 힘을 주세요"
                 />

@@ -141,10 +141,9 @@ export class MetamornScene extends Phaser.Scene {
 
       this.add
         .text(x, y, label, {
-          fontFamily: "CookieRun",
-          fontSize: "16px",
-          color: "#2a1f14",
-          fontStyle: "bold",
+          fontFamily: "DungGeunMo",
+          fontSize: "14px",
+          color: "#000000",
           resolution: 0.85,
         })
         .setOrigin(0.5)
@@ -189,7 +188,7 @@ export class MetamornScene extends Phaser.Scene {
     if (width <= 640) {
       zoom = 0.85;
     } else if (width <= 1680) {
-      zoom = 1.1;
+      zoom = 1.2;
     } else if (width <= 1920) {
       zoom = 1.3;
     } else if (width <= 2560) {

@@ -16,7 +16,7 @@ export class SpeechBubbleRenderer {
 
     const text = scene.add
       .text(0, 0, message, {
-        fontFamily: "CookieRun",
+        fontFamily: "Pretendard-SemiBold",
         fontSize: `${fontSize}px`,
         color: "#000000",
         wordWrap: { width: 200, useAdvancedWrap: true },
@@ -38,7 +38,7 @@ export class SpeechBubbleRenderer {
       -bubbleHeight - tailHeight,
       bubbleWidth,
       bubbleHeight,
-      15
+      8
     );
     bubble.fillTriangle(-10, -tailHeight, 10, -tailHeight, 0, 0);
 
