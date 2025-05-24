@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Providers from "@/app/provider";
 import AlertProvider from "@/components/common/AlertProvider";
+import GoogleAnalytics from "@/app/GoogleAnalytics";
 
 export const metadata: Metadata = {
   title: "🏝️섬으로 떠나 친구를 만나요~!",
@@ -91,6 +92,9 @@ const RootLayout = ({
       </head>
       <body className={CookiRun.className}>
         <AlertProvider />
+        {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID ? (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
+        ) : null}
         <Providers>{children}</Providers>
       </body>
     </html>
