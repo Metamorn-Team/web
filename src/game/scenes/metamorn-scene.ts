@@ -106,16 +106,17 @@ export class MetamornScene extends Phaser.Scene {
   }
 
   private initJoystickInputManager(): InputManager {
-    const base = this.add
-      .image(0, 0, "base")
-      .setDisplaySize(100, 100)
-      .setScrollFactor(0)
-      .setDepth(1000);
-    const thumb = this.add
-      .image(0, 0, "thumb")
-      .setDisplaySize(44, 44)
-      .setScrollFactor(0)
-      .setDepth(1000);
+    const baseGfx = this.add.graphics();
+    baseGfx.lineStyle(3, 0xffffff, 0.7);
+    baseGfx.strokeCircle(0, 0, 50);
+    baseGfx.setScrollFactor(0).setDepth(1000);
+    const base = baseGfx.setPosition(0, 0);
+
+    const thumbGfx = this.add.graphics();
+    thumbGfx.fillStyle(0xffffff, 0.7);
+    thumbGfx.fillCircle(0, 0, 22);
+    thumbGfx.setScrollFactor(0).setDepth(1000);
+    const thumb = thumbGfx.setPosition(0, 0);
 
     const joystick = new VirtualJoystick(this, {
       x: 85,
@@ -165,7 +166,8 @@ export class MetamornScene extends Phaser.Scene {
     const baseY = this.scale.height - 170;
     createButton(this.scale.width - 165, baseY, Keys.E, "E");
     createButton(this.scale.width - 110, baseY, Keys.Z, "공격");
-    createButton(this.scale.width - 55, baseY, Keys.SPACE, "점프");
+    createButton(this.scale.width - 55, baseY, Keys.X, "강공격");
+    createButton(this.scale.width, baseY, Keys.SPACE, "점프");
   }
 
   protected onMapResize(mapWith: number) {
