@@ -145,7 +145,7 @@ export default function GameWrapper({
             return;
           }
 
-          Alert.error("서버에 문제가 생겼어요 🛠️ 잠시후 다시 시도해주세요..");
+          Alert.error("서버에 문제가 생겼어요 잠시후 다시 시도해주세요..");
         }
       }
     };
