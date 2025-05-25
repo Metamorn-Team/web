@@ -63,6 +63,10 @@ export class KeyboardInputManager implements InputManager {
       Keys.Z,
       scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z)
     );
+    this.registerKey(
+      Keys.X,
+      scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X)
+    );
   }
 
   registerKey(keyEnum: Keys, keyCode: Phaser.Input.Keyboard.Key): void {

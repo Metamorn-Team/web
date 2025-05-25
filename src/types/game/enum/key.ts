@@ -6,6 +6,7 @@ export enum Keys {
   SPACE,
   ENTER,
   Z,
+  X,
   W,
   A,
   S,
