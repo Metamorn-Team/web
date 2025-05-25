@@ -78,7 +78,7 @@ export class Warrior extends Player {
 
     this.play(WARRIOR_ATTACK(this.color), true);
 
-    if (attackType === AttackType.VISUAL) return;
+    if (attackType === AttackType.STRONG_ATTACK) return;
   }
 
   public jump(side: "right" | "left" | "none"): void {
