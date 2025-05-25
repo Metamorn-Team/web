@@ -20,6 +20,7 @@ import {
   PAWN_ATTACK,
   PAWN_IDLE,
   PAWN_JUMP,
+  PAWN_STRONG_ATTACK,
   PAWN_WALK,
 } from "@/game/animations/keys/pawn";
 import { TORCH_GOBLIN_IDLE } from "@/game/animations/keys/torch-goblin";
@@ -105,6 +106,15 @@ export const defineAnimation = (scene: Phaser.Scene) => {
       frames: scene.anims.generateFrameNumbers(PAWN(color), {
         start: 12,
         end: 17,
+      }),
+      frameRate: 13,
+    });
+
+    scene.anims.create({
+      key: PAWN_STRONG_ATTACK(color),
+      frames: scene.anims.generateFrameNumbers(PAWN(color), {
+        start: 18,
+        end: 23,
       }),
       frameRate: 13,
     });
