@@ -17,9 +17,13 @@ export class IdleState implements State<PlayerState> {
   }
 
   update(delta: number, input: Keys[]) {
-    if (input.includes(Keys.Z) && !this.spaceKeyJustPressed) {
-      this.spaceKeyJustPressed = true;
+    if (input.includes(Keys.Z)) {
       this.parent.setState(PlayerState.ATTACK);
+      return;
+    }
+
+    if (input.includes(Keys.X)) {
+      this.parent.setState(PlayerState.STRONG_ATTACK);
       return;
     }
 

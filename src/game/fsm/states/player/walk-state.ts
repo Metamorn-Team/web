@@ -19,6 +19,12 @@ export class WalkState implements State<PlayerState> {
       return;
     }
 
+    if (input.includes(Keys.X)) {
+      this.parent.setState(PlayerState.STRONG_ATTACK);
+      this.parent.gameObject.setVelocity(0, 0);
+      return;
+    }
+
     if (input.includes(Keys.SPACE)) {
       this.parent.setState(PlayerState.JUMP);
       return;

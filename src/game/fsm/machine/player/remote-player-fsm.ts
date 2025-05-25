@@ -5,6 +5,7 @@ import { State } from "@/game/fsm/states/interface/state";
 import { AttackState } from "@/game/fsm/states/remote-player/attack-state";
 import { IdleState } from "@/game/fsm/states/remote-player/idle-state";
 import { JumpState } from "@/game/fsm/states/remote-player/jump-state";
+import { StrongAttackState } from "@/game/fsm/states/remote-player/strong-attack-state";
 import { WalkState } from "@/game/fsm/states/remote-player/walk-state";
 
 export class RemotePlayerFSM extends FiniteStateMachine<PlayerState> {
@@ -23,6 +24,7 @@ export class RemotePlayerFSM extends FiniteStateMachine<PlayerState> {
     this.addState(PlayerState.IDLE, new IdleState(this))
       .addState(PlayerState.WALK, new WalkState(this))
       .addState(PlayerState.ATTACK, new AttackState(this))
+      .addState(PlayerState.STRONG_ATTACK, new StrongAttackState(this))
       .addState(PlayerState.JUMP, new JumpState(this));
 
     this.setState(PlayerState.IDLE);

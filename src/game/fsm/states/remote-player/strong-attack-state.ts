@@ -3,7 +3,7 @@ import { PlayerState } from "@/game/fsm/states/enum/player/player-state";
 import { State } from "@/game/fsm/states/interface/state";
 import { AttackType } from "@/types/game/enum/state";
 
-export class AttackState implements State<PlayerState> {
+export class StrongAttackState implements State<PlayerState> {
   protected parent: RemotePlayerFSM;
 
   constructor(parent: RemotePlayerFSM) {
@@ -15,7 +15,7 @@ export class AttackState implements State<PlayerState> {
   }
 
   enter(): void {
-    this.parent.gameObject.attack(AttackType.ATTACK);
+    this.parent.gameObject.attack(AttackType.STRONG_ATTACK);
     this.parent.gameObject.once(
       Phaser.Animations.Events.ANIMATION_COMPLETE,
       () => {

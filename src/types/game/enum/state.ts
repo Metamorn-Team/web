@@ -1,4 +1,4 @@
 export enum AttackType {
-  REAL,
-  VISUAL,
+  ATTACK,
+  STRONG_ATTACK,
 }

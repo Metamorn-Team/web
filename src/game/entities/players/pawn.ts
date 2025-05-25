@@ -3,6 +3,7 @@ import {
   PAWN_ATTACK,
   PAWN_IDLE,
   PAWN_JUMP,
+  PAWN_STRONG_ATTACK,
   PAWN_WALK,
 } from "@/game/animations/keys/pawn";
 import { Player } from "@/game/entities/players/player";
@@ -76,9 +77,12 @@ export class Pawn extends Player {
       this.scene.sound.play("hit", { volume: 0.1 });
     });
 
-    this.play(PAWN_ATTACK(this.color), true);
-
-    if (attackType === AttackType.VISUAL) return;
+    this.play(
+      attackType === AttackType.STRONG_ATTACK
+        ? PAWN_STRONG_ATTACK(this.color)
+        : PAWN_ATTACK(this.color),
+      true
+    );
   }
 
   public jump(side: "right" | "left" | "none"): void {

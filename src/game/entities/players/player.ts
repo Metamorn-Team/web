@@ -279,13 +279,25 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   onAttack() {
     if (this.isControllable) {
-      this.attack();
+      this.attack(AttackType.ATTACK);
       this.io?.emit("attack");
       return;
     }
 
     if (this.fsm) {
       this.fsm.setState(PlayerState.ATTACK);
+    }
+  }
+
+  onStrongAttack() {
+    if (this.isControllable) {
+      this.attack(AttackType.STRONG_ATTACK);
+      this.io?.emit("attack");
+      return;
+    }
+
+    if (this.fsm) {
+      this.fsm.setState(PlayerState.STRONG_ATTACK);
     }
   }
 
