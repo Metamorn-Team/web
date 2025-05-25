@@ -291,6 +291,10 @@ export class IslandScene extends MetamornScene {
       this.handleAttacked(data.attackerId, data.attackedPlayerIds);
     });
 
+    this.io.on("strongAttacked", (data) => {
+      this.handleStrongAttacked(data.attackerId, data.attackedPlayerIds);
+    });
+
     this.io.on("jump", (userId: string) => {
       this.handleJump(userId);
     });
@@ -360,6 +364,25 @@ export class IslandScene extends MetamornScene {
     if (!player && attackerId !== this.player.getPlayerInfo().id) return;
 
     player?.onAttack();
+
+    this.time.delayedCall(200, () => {
+      if (attackedPlayerIds.includes(this.player.getPlayerInfo().id)) {
+        // EventWrapper.emitToUi("attacked");
+        this.player.hit();
+      }
+
+      attackedPlayerIds
+        .map((id) => playerStore.getPlayer(id))
+        .forEach((player) => player?.hit());
+    });
+  }
+
+  // TODO 오브젝트 공격 추가되면 수정
+  handleStrongAttacked(attackerId: string, attackedPlayerIds: string[]) {
+    const player = playerStore.getPlayer(attackerId);
+    if (!player && attackerId !== this.player.getPlayerInfo().id) return;
+
+    player?.onStrongAttack();
 
     this.time.delayedCall(200, () => {
       if (attackedPlayerIds.includes(this.player.getPlayerInfo().id)) {

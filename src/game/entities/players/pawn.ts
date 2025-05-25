@@ -74,7 +74,10 @@ export class Pawn extends Player {
     }
 
     this.scene.time.delayedCall(250, () => {
-      this.scene.sound.play("hit", { volume: 0.1 });
+      this.scene.sound.play(
+        attackType === AttackType.STRONG_ATTACK ? "strong-hit" : "hit",
+        { volume: 0.1 }
+      );
     });
 
     this.play(

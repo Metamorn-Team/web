@@ -145,7 +145,6 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
     const originalX = this.x;
 
-    this.scene.sound.play("hit");
     this.scene.tweens.add({
       targets: this,
       x: {
@@ -292,7 +291,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   onStrongAttack() {
     if (this.isControllable) {
       this.attack(AttackType.STRONG_ATTACK);
-      this.io?.emit("attack");
+      this.io?.emit("strongAttack");
       return;
     }
 
