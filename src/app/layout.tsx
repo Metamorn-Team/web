@@ -46,16 +46,21 @@ export const metadata: Metadata = {
     images: ["https://cdn.metamorn.com/vanner/ad-vanner.png"],
     site: "@livisland",
   },
-  // manifest: "/manifest.json",
-  // category: "games",
 };
 
-// const CookiRun = localFont({
-//   src: "../fonts/CookieRun_Regular.otf",
-// });
-
-const DungGeunMo = localFont({
-  src: "../fonts/NeoDunggeunmoPro-Regular.woff",
+const MapleStory = localFont({
+  src: [
+    {
+      path: "../fonts/Maplestory_Bold.ttf",
+      weight: "700",
+      style: "bold",
+    },
+    {
+      path: "../fonts/Maplestory_Light.ttf",
+      weight: "500",
+      style: "normal",
+    },
+  ],
 });
 
 const RootLayout = ({
@@ -94,7 +99,7 @@ const RootLayout = ({
           }}
         />
       </head>
-      <body className={DungGeunMo.className}>
+      <body className={MapleStory.className}>
         <AlertProvider />
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID ? (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />

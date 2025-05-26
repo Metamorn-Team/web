@@ -20,7 +20,8 @@ export abstract class InteractiveObject extends Phaser.Physics.Matter.Sprite {
   private createInteractionUI() {
     this.interactionIndicator = this.scene.add
       .text(this.x, this.y + this.promptOffsetY, this.promptText, {
-        fontFamily: "DungGeunMo",
+        fontFamily: "MapleStory",
+        fontStyle: "bold",
         fontSize: "18px",
         resolution: this.scene.cameras.main.zoom,
         color: "#FFFFFF",

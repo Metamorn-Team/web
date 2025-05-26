@@ -27,16 +27,8 @@ const Game = ({ ref }: GameProps) => {
   useEffect(() => {
     const checkFonts = async () => {
       try {
-        // const cookieRun = new FontFaceObserver("CookieRun");
-        // const pretendardR = new FontFaceObserver("Pretendard-Regular");
-        // const pretendardM = new FontFaceObserver("Pretendard-Medium");
-        const pretendardSM = new FontFaceObserver("Pretendard-SemiBold");
-        const dungGeunMo = new FontFaceObserver("DungGeunMo");
-        // await cookieRun.load();
-        // await pretendardR.load();
-        // await pretendardM.load();
-        await pretendardSM.load();
-        await dungGeunMo.load();
+        const mapleStory = new FontFaceObserver("MapleStory");
+        await mapleStory.load();
 
         setFontsLoaded(true);
       } catch (err) {

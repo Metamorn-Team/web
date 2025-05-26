@@ -7,7 +7,7 @@ export class SpeechBubbleRenderer {
     x: number,
     y: number,
     message: string,
-    fontSize = 12
+    fontSize = 14
   ): Phaser.GameObjects.Container {
     const container = scene.add.container(x, y);
     container.setDepth(99999);
@@ -16,7 +16,7 @@ export class SpeechBubbleRenderer {
 
     const text = scene.add
       .text(0, 0, message, {
-        fontFamily: "Pretendard-SemiBold",
+        fontFamily: "MapleStory",
         fontSize: `${fontSize}px`,
         color: "#000000",
         wordWrap: { width: 200, useAdvancedWrap: true },
