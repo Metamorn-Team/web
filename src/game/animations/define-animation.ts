@@ -107,7 +107,7 @@ export const defineAnimation = (scene: Phaser.Scene) => {
         start: 12,
         end: 17,
       }),
-      frameRate: 13,
+      frameRate: 12,
     });
 
     scene.anims.create({
@@ -116,7 +116,7 @@ export const defineAnimation = (scene: Phaser.Scene) => {
         start: 18,
         end: 23,
       }),
-      frameRate: 13,
+      frameRate: 12,
     });
 
     scene.anims.create({
