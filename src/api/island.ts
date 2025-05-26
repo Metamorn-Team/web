@@ -1,6 +1,7 @@
 import { http } from "@/api/http";
 import {
   CreateIslandRequest,
+  GetIslandDetailResponse,
   GetLiveIslandListReqeust,
   GetLiveIslandListResponse,
 } from "mmorntype";
@@ -15,6 +16,13 @@ export const getActiveIslands = async (query: GetLiveIslandListReqeust) => {
     {
       params: query,
     }
+  );
+  return response.data;
+};
+
+export const getIslandInfo = async (islandId: string) => {
+  const response = await http.get<GetIslandDetailResponse>(
+    `/islands/${islandId}`
   );
   return response.data;
 };

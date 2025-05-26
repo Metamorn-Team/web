@@ -27,6 +27,7 @@ import IslandListModal from "@/components/islands/IslandListModal";
 import { ISLAND_SCENE } from "@/constants/game/islands/island";
 import ControlGuide from "@/components/ControlGuide";
 import HelpModal from "@/components/HelpModal";
+import IslandInfoModal from "@/components/IslandInfoModal";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -55,6 +56,11 @@ export default function GameWrapper({
     isModalOpen: isFriendModalOpen,
     changeModalOpen: changeFriendModalOpen,
     onClose: onFriendClose,
+  } = useModal();
+  const {
+    isModalOpen: isIslandInfoModalOpen,
+    onOpen: onIslandInfoModalOpen,
+    onClose: onIslandInfoModalClose,
   } = useModal();
   const {
     isModalOpen: isHelpModalOpen,
@@ -199,6 +205,7 @@ export default function GameWrapper({
           changeFriendModalOpen={changeFriendModalOpen}
           onSettingsModalOpen={onSettingsModalOpen}
           onDevModalOpen={onDevOpen}
+          onIslandInfoModalOpen={onIslandInfoModalOpen}
         />
       ) : null}
 
@@ -214,6 +221,11 @@ export default function GameWrapper({
       ) : null}
 
       {isFriendModalOpen ? <FriendModal onClose={onFriendClose} /> : null}
+
+      <IslandInfoModal
+        isOpen={isIslandInfoModalOpen}
+        onClose={onIslandInfoModalClose}
+      />
 
       {isPlayerModalOpen ? (
         <PlayerInfoModal onClose={onPlayerModalClose} playerInfo={playerInfo} />

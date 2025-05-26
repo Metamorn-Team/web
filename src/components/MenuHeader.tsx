@@ -26,17 +26,20 @@ import { QUERY_KEY as UNREAD_COUNT_QUERY_KEY } from "@/hook/queries/useGetUnread
 import Image from "next/image";
 import { useLogout } from "@/hook/queries/useLogout";
 import Alert from "@/utils/alert";
+import { FaCompass } from "react-icons/fa";
 
 interface MenuHeaderProps {
   changeFriendModalOpen: (state: boolean) => void;
   onSettingsModalOpen: () => void;
   onDevModalOpen: () => void;
+  onIslandInfoModalOpen: () => void;
 }
 
 export default function MenuHeader({
   changeFriendModalOpen,
   onSettingsModalOpen,
   onDevModalOpen,
+  onIslandInfoModalOpen,
 }: MenuHeaderProps) {
   const queryClient = useQueryClient();
   const [isPlayBgm, setIsPlayBgm] = useState(true);
@@ -180,6 +183,13 @@ export default function MenuHeader({
       </div>
 
       <div className="relative flex gap-2 sm:gap-3" ref={menuRef}>
+        {isVisibleExit && (
+          <StyledMenuItem
+            icon={<FaCompass size={20} />}
+            label="섬 정보"
+            onClick={onIslandInfoModalOpen}
+          />
+        )}
         {isVisibleExit && (
           <StyledMenuItem
             icon={<GiSailboat size={20} />}

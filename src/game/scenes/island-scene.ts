@@ -36,6 +36,7 @@ import {
 import { SpeechBubbleRenderer } from "@/game/managers/speech-bubble-renderer";
 import Reload from "@/utils/reload";
 import { HAS_NEW_VERSION } from "@/constants/message/info-message";
+import { useIslandStore } from "@/stores/useIslandStore";
 
 export class IslandScene extends MetamornScene {
   protected override player: Player;
@@ -66,6 +67,7 @@ export class IslandScene extends MetamornScene {
       if (data.type === "NORMAL" && data.islandId) {
         setItem("current_island_id", data.islandId);
         setItem("current_island_type", data.type);
+        useIslandStore.getState().setIsland(data.islandId);
         this.currentIslandId = data.islandId;
         this.islandType = data.type;
         return;
@@ -76,6 +78,7 @@ export class IslandScene extends MetamornScene {
     const islandId = getItem("current_island_id");
     const type = getItem("current_island_type");
 
+    useIslandStore.getState().setIsland(islandId);
     this.currentIslandId = islandId;
     this.islandType = type;
   }
