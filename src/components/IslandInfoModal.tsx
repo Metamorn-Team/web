@@ -187,7 +187,13 @@ function NormalIslandInfo({ islandId }: { islandId: string }) {
 
   if (isLoading) return <div className="text-[#3d2c1b]">로딩 중...</div>;
   if (!island)
-    return <div className="text-[#3d2c1b]">무언가 잘못된 섬이에요..</div>;
+    return (
+      <div className="text-[#3d2c1b]">
+        섬으로 향하는 길이 끊어졌어요
+        <br />
+        ⛵️ 떠나는 게 좋을 것 같아요..
+      </div>
+    );
 
   const isOwner = island.owner.id === myProfile?.id;
 
