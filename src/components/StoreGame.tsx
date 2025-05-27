@@ -29,12 +29,8 @@ const StoreGame = ({ ref, className }: StoreGameProps) => {
   useEffect(() => {
     const checkFonts = async () => {
       try {
-        const cookieRun = new FontFaceObserver("CookieRun");
-        const pretendard = new FontFaceObserver("Pretendard");
-        const dungGeunMo = new FontFaceObserver("DungGeunMo");
-        await cookieRun.load();
-        await pretendard.load();
-        await dungGeunMo.load();
+        const mapleStory = new FontFaceObserver("MapleStory");
+        await mapleStory.load();
 
         setFontsLoaded(true);
       } catch (err) {
@@ -76,7 +72,7 @@ const StoreGame = ({ ref, className }: StoreGameProps) => {
   }, [ref, fontsLoaded]);
 
   return (
-    <div className={classNames("relative w-[288px] h-[288px]", className)}>
+    <div className={classNames("relative", className)}>
       <div id="game-container" className="w-full h-full" />
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs px-3 py-1 rounded shadow z-10 w-4/5 text-center">
         <p>💡 상점 기능은 아직 준비 중이에요..</p>
