@@ -281,7 +281,7 @@ export default function ChatPanel() {
         : "group bottom-4 left-4 w-80 rounded-2xl"
     }
     ${isMobile ? "bg-[#f9f5ec]/90" : "bg-transparent hover:bg-[#f9f5ec]/90"}
-    border border-[#d6c6aa] flex flex-col overflow-hidden`}
+     flex flex-col overflow-hidden`}
       style={{
         height:
           isMobile && !isChatVisible ? "auto" : isMobile ? "60vh" : "448px",
