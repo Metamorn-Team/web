@@ -9,6 +9,7 @@ import {
   FiXCircle,
 } from "react-icons/fi";
 import Alert from "@/utils/alert";
+import { renderMultilineMessage } from "@/game/utils/render-multilline-message";
 
 type AlertType = "info" | "warn" | "error" | "done";
 
@@ -93,7 +94,11 @@ export default function AlertProvider() {
             className={`${bg} ${text} border ${border} rounded-lg shadow-lg p-4 flex items-center gap-3 max-w-lg mx-auto`}
           >
             {iconVisible ? <Icon size={18} /> : null}
-            <span className="text-sm font-medium">{message}</span>
+            <span className="text-sm font-medium">
+              {typeof message === "string"
+                ? renderMultilineMessage(message)
+                : message}
+            </span>
           </div>
         </motion.div>
       )}
