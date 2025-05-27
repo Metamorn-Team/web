@@ -13,6 +13,7 @@ import Alert from "@/utils/alert";
 import { getPresignedUrl, uploadImage } from "@/api/file";
 import { BUCKET_PATH, CDN_URL } from "@/constants/image-path";
 import { FiCamera } from "react-icons/fi";
+import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
 
 type UpdateData = Required<{
   -readonly [k in keyof UpdateIslandInfoRequest]: UpdateIslandInfoRequest[k];
@@ -28,7 +29,6 @@ export default function IslandInfoModal({
   onClose,
 }: IslandInfoModalProps) {
   const currentIslandId = useIslandStore((state) => state.id);
-  console.log("currentIslandId", currentIslandId);
 
   return (
     <RetroModal isOpen={isOpen} onClose={onClose} className="!max-w-xl">
@@ -55,6 +55,7 @@ function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
 function NormalIslandInfo({ islandId }: { islandId: string }) {
   const { data: island, isLoading } = useGetIslandInfo(islandId);
   const [isEditing, setIsEditing] = useState(false);
+  const { data: myProfile } = useGetMyProfile();
 
   const [data, setData] = useState<UpdateData>({
     id: islandId,
@@ -188,7 +189,7 @@ function NormalIslandInfo({ islandId }: { islandId: string }) {
   if (!island)
     return <div className="text-[#3d2c1b]">무언가 잘못된 섬이에요..</div>;
 
-  const isOwner = true; // TODO: 실제 유저 정보와 비교하여 섬 주인 여부 결정
+  const isOwner = island.owner.id === myProfile?.id;
 
   const handleSave = () => {
     const errors = validateFields();
