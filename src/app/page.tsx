@@ -12,7 +12,7 @@ export default function MainPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <main>
+    <main className="overflow-hidden relative w-full h-full">
       {isLoading ? <LoadingPage /> : null}
       <DynamicGameWrapper
         isLoading={isLoading}
