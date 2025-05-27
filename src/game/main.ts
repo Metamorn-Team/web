@@ -40,6 +40,15 @@ export class GameSingleton {
         width: "100%",
         height: "100%",
       },
+      plugins: {
+        scene: [
+          {
+            key: "LightsPlugin",
+            plugin: Phaser.GameObjects.LightsPlugin,
+            mapping: "lights",
+          },
+        ],
+      },
     });
 
     return this.instance;
@@ -51,7 +60,7 @@ export class GameSingleton {
       type: Phaser.AUTO,
       width,
       height,
-      // canvasStyle: "display: none",
+      canvasStyle: "opacity: 0",
       parent: "game-container",
       scene: [StoreScene],
       render: {
