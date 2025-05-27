@@ -299,7 +299,7 @@ function NormalIslandInfo({ islandId }: { islandId: string }) {
           value={
             isEditing ? (
               <textarea
-                className="border border-[#c4b89c] rounded px-2 py-1 text-sm w-full h-20"
+                className="border border-[#c4b89c] rounded px-2 py-1 text-sm w-full h-20 resize-none"
                 value={data.description}
                 onChange={(e) => onChange("description", e.target.value)}
               />
