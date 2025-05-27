@@ -27,6 +27,7 @@ import Image from "next/image";
 import { useLogout } from "@/hook/queries/useLogout";
 import Alert from "@/utils/alert";
 import { FaCompass } from "react-icons/fa";
+import { QUERY_KEY as ISLAND_INFO_QUERY_KEY } from "@/hook/queries/useGetIslandInfo";
 
 interface MenuHeaderProps {
   changeFriendModalOpen: (state: boolean) => void;
@@ -64,7 +65,7 @@ export default function MenuHeader({
   useEffect(() => {
     const socket = socketManager.connect(SOCKET_NAMESPACES.ISLAND);
 
-    socket?.on("receiveFriendRequest", () => {
+    const handleReceiveFriendRequest = () => {
       const prev = queryClient.getQueryData<{ count: number }>([
         UNREAD_COUNT_QUERY_KEY,
       ]);
@@ -79,10 +80,20 @@ export default function MenuHeader({
 
       setShowNewRequestMessage(true);
       setTimeout(() => setShowNewRequestMessage(false), 5000);
-    });
+    };
+
+    const hadleIslandInfoUpdated = (data: { islandId: string }) => {
+      queryClient.invalidateQueries({
+        queryKey: [ISLAND_INFO_QUERY_KEY, data.islandId],
+      });
+    };
+
+    socket?.on("receiveFriendRequest", handleReceiveFriendRequest);
+    socket?.on("islandInfoUpdated", hadleIslandInfoUpdated);
 
     return () => {
       socket?.off("receiveFriendRequest");
+      socket?.off("islandInfoUpdated");
     };
   }, []);
 

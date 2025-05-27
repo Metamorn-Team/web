@@ -337,6 +337,8 @@ export class IslandScene extends MetamornScene {
         case "LOCK_ACQUIRED_FAILED":
           alertAndChangeToLoby(CONFLIC_MESSAGE);
           break;
+        case "TOO_MANY_PARTICIPANTS":
+          Alert.error("참가 중인 인원이 더 많아요..");
         default:
           return;
       }
