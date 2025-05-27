@@ -142,7 +142,7 @@ export class MetamornScene extends Phaser.Scene {
 
       this.add
         .text(x, y, label, {
-          fontFamily: "DungGeunMo",
+          fontFamily: "MapleStory",
           fontSize: "14px",
           color: "#000000",
           resolution: 0.85,
