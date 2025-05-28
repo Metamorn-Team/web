@@ -184,7 +184,8 @@ export default function GameWrapper({
       isFriendModalOpen ||
       isPlayerModalOpen ||
       isLoginModalOpen ||
-      isIslandListModalOpen
+      isIslandListModalOpen ||
+      isIslandInfoModalOpen
     ) {
       EventWrapper.emitToGame("disableGameInput");
     } else {
@@ -196,6 +197,7 @@ export default function GameWrapper({
     isIslandListModalOpen,
     isLoginModalOpen,
     isPlayerModalOpen,
+    isIslandInfoModalOpen,
   ]);
 
   return (
