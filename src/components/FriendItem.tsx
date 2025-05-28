@@ -39,7 +39,7 @@ export default function FriendItem({ friend, className }: FriendItem) {
   });
 
   const handleRemoveFriend = () => {
-    mutate(friend.friendshipId);
+    mutate(friend.id);
   };
 
   return (

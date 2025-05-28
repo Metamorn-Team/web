@@ -1,13 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ScrollView from "@/components/common/ScrollView";
 import SquareButton from "@/components/common/SquareButton";
 import { useInfiniteUserSearch } from "@/hook/queries/useInfiniteUserSearch";
 import SearchUserItem from "@/components/friend/SearchUserItem";
+import { socketManager } from "@/game/managers/socket-manager";
+import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
+import { InfiniteData, useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEY as USER_SEARCH_QUERY_KEY } from "@/hook/queries/useInfiniteUserSearch";
 import { SearchVarient } from "mmorntype/dist/src/domain/types/uesr.types";
+import { SearchUserResponse } from "mmorntype";
+import { FriendRequestStatus } from "mmorntype/dist/src/presentation/dto/shared";
 
 const SearchFriendList = () => {
+  const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
   const [searchType, setSearchType] = useState<SearchVarient>("NICKNAME");
   const types = ["NICKNAME", "TAG"] as const;
@@ -21,6 +28,36 @@ const SearchFriendList = () => {
     isFetchingNextPage,
     hasNextPage,
   } = useInfiniteUserSearch(query, searchType, 10);
+
+  const onSuccess = (targetId: string, status: FriendRequestStatus) =>
+    queryClient.setQueryData<InfiniteData<SearchUserResponse>>(
+      [USER_SEARCH_QUERY_KEY, query, searchType], // query/searchType은 상태에서 가져와야 함
+      (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          pages: old.pages.map((page) => ({
+            ...page,
+            data: page.data.map((user) =>
+              user.id === targetId ? { ...user, friendStatus: status } : user
+            ),
+          })),
+        };
+      }
+    );
+
+  useEffect(() => {
+    const socket = socketManager.connect(SOCKET_NAMESPACES.ISLAND);
+    const handleFriendRequestSuccess = (data: { targetUserId: string }) => {
+      onSuccess(data.targetUserId, "SENT");
+    };
+
+    socket?.on("sendFriendRequestSuccess", handleFriendRequestSuccess);
+
+    return () => {
+      socket?.off("sendFriendRequestSuccess", handleFriendRequestSuccess);
+    };
+  }, [query, searchType, queryClient]);
 
   return (
     <div className="flex flex-col gap-4 w-full h-full">
@@ -81,10 +118,11 @@ const SearchFriendList = () => {
               {users.map((user) => (
                 <SearchUserItem
                   key={user.id}
-                  friend={{
+                  user={{
                     ...user,
                     profileImageUrl: `/images/avatar/${user.avatarKey}.png`,
                   }}
+                  onSuccess={onSuccess}
                 />
               ))}
               {isFetchingNextPage && (

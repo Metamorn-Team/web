@@ -3,6 +3,8 @@ import { searchUsers } from "@/api/user";
 import { useMemo } from "react";
 import { SearchVarient } from "mmorntype/dist/src/domain/types/uesr.types";
 
+export const QUERY_KEY = "user-search";
+
 export const useInfiniteUserSearch = (
   search: string,
   varient: SearchVarient,
@@ -17,7 +19,7 @@ export const useInfiniteUserSearch = (
     refetch,
     hasNextPage,
   } = useInfiniteQuery({
-    queryKey: ["userSearch", search, varient],
+    queryKey: [QUERY_KEY, search, varient],
     queryFn: async (
       context: QueryFunctionContext<string[], string | undefined>
     ) => {
