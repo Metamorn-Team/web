@@ -7,15 +7,13 @@ import SquareButton from "@/components/common/SquareButton";
 import { FriendRequest } from "@/types/client/friend.types";
 
 interface FriendRequestItemProps {
-  id: string;
   user: FriendRequest;
   status: "RECEIVED" | "SENT";
-  onAccept?: (requestId: string) => void;
-  onReject: (requestId: string) => void;
+  onAccept?: (targetId: string) => void;
+  onReject: (targetId: string) => void;
 }
 
 const FriendRequestItem = ({
-  id,
   user,
   status,
   onAccept,
@@ -38,14 +36,14 @@ const FriendRequestItem = ({
         {status === "RECEIVED" && onAccept ? (
           <SquareButton
             color="blue"
-            onClick={() => onAccept(id)}
+            onClick={() => onAccept(user.id)}
             title="O"
             width={"45%"}
           />
         ) : null}
         <SquareButton
           color="red"
-          onClick={() => onReject(id)}
+          onClick={() => onReject(user.id)}
           title="X"
           width={"45%"}
         />

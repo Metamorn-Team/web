@@ -28,12 +28,12 @@ export const getFriendRequests = async (query: GetFriendRequestListRequest) => {
   return response.data;
 };
 
-export const acceptFriend = async (requestId: string) => {
-  return await http.patch(`/friends/requests/${requestId}/accept`);
+export const acceptFriend = async (targetId: string) => {
+  return await http.patch(`/friends/requests/${targetId}/accept`);
 };
 
-export const rejectFriend = async (requestId: string) => {
-  return await http.patch(`/friends/requests/${requestId}/reject`);
+export const rejectFriend = async (targetId: string) => {
+  return await http.patch(`/friends/requests/${targetId}/reject`);
 };
 
 export const getFriends = async (query: GetFriendsRequest) => {

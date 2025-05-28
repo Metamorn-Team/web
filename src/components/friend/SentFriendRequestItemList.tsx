@@ -3,9 +3,12 @@ import ScrollView from "@/components/common/ScrollView";
 import FriendRequestItem from "@/components/friend/FriendRequestItem";
 import { useInfiniteGetFriendRequests } from "@/hook/queries/useInfiniteGetFriendRequests";
 import { useRejectFriendRequest } from "@/hook/queries/useRejectFriendRequest";
+import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
+import { QUERY_KEY as FRIEND_REQUEST_QUERY_KEY } from "@/hook/queries/useInfiniteGetFriendRequests";
 
 export default function SentFriendRequestItemList() {
+  const queryClient = useQueryClient();
   const {
     friendRequests,
     isLoading,
@@ -19,11 +22,16 @@ export default function SentFriendRequestItemList() {
   });
 
   const { mutate: rejectMutate } = useRejectFriendRequest(
-    FriendRequestDirection.SENT
+    FriendRequestDirection.SENT,
+    () => {
+      queryClient.invalidateQueries({
+        queryKey: [FRIEND_REQUEST_QUERY_KEY, FriendRequestDirection.SENT],
+      });
+    }
   );
 
-  const onReject = (requestId: string) => {
-    rejectMutate(requestId);
+  const onReject = (targetId: string) => {
+    rejectMutate(targetId);
   };
 
   return (
@@ -37,7 +45,6 @@ export default function SentFriendRequestItemList() {
           {friendRequests.map((request) => (
             <FriendRequestItem
               key={request.id}
-              id={request.id}
               user={{
                 ...request.user,
                 profileImageUrl: `/images/avatar/${request.user.avatarKey}.png`,

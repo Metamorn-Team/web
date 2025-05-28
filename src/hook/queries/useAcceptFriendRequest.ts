@@ -1,18 +1,14 @@
 import { acceptFriend, FriendRequestDirection } from "@/api/friend";
-import { QUERY_KEY as FRIEND_REQUEST_QUERY_KEY } from "@/hook/queries/useInfiniteGetFriendRequests";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
-export const useAcceptFriendRequest = (direction: FriendRequestDirection) => {
-  const queryClient = useQueryClient();
-
-  const fetcher = (requestId: string) => acceptFriend(requestId);
+export const useAcceptFriendRequest = (
+  direction: FriendRequestDirection,
+  onSuccess: () => void
+) => {
+  const fetcher = (targetId: string) => acceptFriend(targetId);
 
   return useMutation({
     mutationFn: fetcher,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [FRIEND_REQUEST_QUERY_KEY, direction],
-      });
-    },
+    onSuccess,
   });
 };
