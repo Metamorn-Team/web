@@ -28,6 +28,7 @@ import { ISLAND_SCENE } from "@/constants/game/islands/island";
 import ControlGuide from "@/components/ControlGuide";
 import HelpModal from "@/components/HelpModal";
 import IslandInfoModal from "@/components/IslandInfoModal";
+import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -89,6 +90,19 @@ export default function GameWrapper({
     onOpen: onIslandListModalOpen,
   } = useModal();
   useAttackedSound();
+
+  const { data: profile } = useGetMyProfile();
+
+  useEffect(() => {
+    if (profile) {
+      persistItem("profile", {
+        id: profile.id,
+        avatarKey: profile.avatarKey,
+        nickname: profile.nickname,
+        tag: profile.tag,
+      });
+    }
+  }, [profile]);
 
   useEffect(() => {
     const handleSceneReady = (data: {
