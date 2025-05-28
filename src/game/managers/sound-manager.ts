@@ -5,6 +5,7 @@ export class SoundManager {
   private currentScene: Phaser.Scene;
   private sound: Phaser.Sound.BaseSoundManager;
   private bgm: Phaser.Sound.BaseSound | null = null;
+  private isFocused = true;
 
   private baseVolume = 0.15;
   private volumeWeight = 1;
@@ -12,6 +13,14 @@ export class SoundManager {
   private constructor(scene: Phaser.Scene) {
     this.currentScene = scene;
     this.sound = scene.sound;
+
+    window.addEventListener("blur", () => {
+      this.isFocused = false;
+    });
+
+    window.addEventListener("focus", () => {
+      this.isFocused = true;
+    });
   }
 
   public static init(scene: Phaser.Scene) {
@@ -72,7 +81,9 @@ export class SoundManager {
   }
 
   public playSfx(key: string, volume = 1) {
-    this.sound.play(key, { volume });
+    if (this.isFocused) {
+      this.sound.play(key, { volume });
+    }
   }
 
   public stopAll() {

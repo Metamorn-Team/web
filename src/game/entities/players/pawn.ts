@@ -8,6 +8,7 @@ import {
 } from "@/game/animations/keys/pawn";
 import { Player } from "@/game/entities/players/player";
 import { InputManager } from "@/game/managers/input/input-manager";
+import { SoundManager } from "@/game/managers/sound-manager";
 import { AttackType } from "@/types/game/enum/state";
 import { TypedSocket } from "@/types/socket-io";
 import { UserInfo } from "@/types/socket-io/response";
@@ -74,9 +75,9 @@ export class Pawn extends Player {
     }
 
     this.scene.time.delayedCall(250, () => {
-      this.scene.sound.play(
-        attackType === AttackType.STRONG_ATTACK ? "strong-hit" : "hit",
-        { volume: 0.1 }
+      SoundManager.getInstance().playSfx(
+        AttackType.STRONG_ATTACK ? "strong-hit" : "hit",
+        0.3
       );
     });
 
@@ -90,7 +91,7 @@ export class Pawn extends Player {
 
   public jump(side: "right" | "left" | "none"): void {
     this.play(PAWN_JUMP(this.color), true);
-    this.scene.sound.play("jump", { volume: 0.05 });
+    SoundManager.getInstance().playSfx("jump", 0.05);
 
     if (side === "right") {
       this.setFlipX(false);
