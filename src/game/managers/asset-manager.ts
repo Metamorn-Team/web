@@ -6,6 +6,12 @@ import {
   WARRIOR,
   warriorColors,
 } from "@/constants/game/entities";
+import {
+  STORE,
+  TOWN,
+  WOODLAND_FANTASY,
+} from "@/constants/game/sounds/bgm/bgms";
+import { HIT, JUMP, STRONG_HIT } from "@/constants/game/sounds/sfx/sfxs";
 import { SKULL_SIGN, TREE } from "@/constants/game/sprites/nature";
 import {
   FOAM,
@@ -130,12 +136,12 @@ export class AssetManager {
   }
 
   loadAudios(scene: Phaser.Scene) {
-    scene.load.audio("town", "/game/sounds/town.mp3");
-    scene.load.audio("store", "/game/sounds/store.mp3");
-    scene.load.audio("woodland-fantasy", "/game/sounds/woodland-fantasy.mp3");
-    scene.load.audio("hit", "/game/sounds/hit.wav");
-    scene.load.audio("strong-hit", "/game/sounds/strong-hit.wav");
-    scene.load.audio("jump", "/game/sounds/jump.wav");
+    scene.load.audio(TOWN, "/game/sounds/town.mp3");
+    scene.load.audio(STORE, "/game/sounds/store.mp3");
+    scene.load.audio(WOODLAND_FANTASY, "/game/sounds/woodland-fantasy.mp3");
+    scene.load.audio(HIT, "/game/sounds/hit.wav");
+    scene.load.audio(STRONG_HIT, "/game/sounds/strong-hit.wav");
+    scene.load.audio(JUMP, "/game/sounds/jump.wav");
   }
 }
 

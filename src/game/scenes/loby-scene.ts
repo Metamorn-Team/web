@@ -1,5 +1,6 @@
 import { INITIAL_PROFILE } from "@/constants/game/initial-profile";
 import { ISLAND_SCENE, LOBY_SCENE } from "@/constants/game/islands/island";
+import { WOODLAND_FANTASY } from "@/constants/game/sounds/bgm/bgms";
 import { NPC_INTERACTABLE_DISTANCE } from "@/constants/game/threshold";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { InteractiveObject } from "@/game/entities/interactive-object";
@@ -27,7 +28,7 @@ export class LobyScene extends MetamornScene {
   private isCreated = false;
   private isChangingScene = false;
 
-  private bgmKey = "woodland-fantasy";
+  private bgmKey = WOODLAND_FANTASY;
   private mine: Mine;
   private npcs: Npc[] = [];
 

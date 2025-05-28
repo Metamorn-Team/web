@@ -37,11 +37,12 @@ import { SpeechBubbleRenderer } from "@/game/managers/speech-bubble-renderer";
 import Reload from "@/utils/reload";
 import { HAS_NEW_VERSION } from "@/constants/message/info-message";
 import { useIslandStore } from "@/stores/useIslandStore";
+import { TOWN } from "@/constants/game/sounds/bgm/bgms";
 
 export class IslandScene extends MetamornScene {
   protected override player: Player;
 
-  private bgmKey = "town";
+  private bgmKey = TOWN;
   private map: Phaser.Tilemaps.Tilemap;
   private mapWidth: number;
   private mapHeight: number;

@@ -1,5 +1,6 @@
 import { ProductType } from "@/api/product";
 import { INITIAL_PROFILE } from "@/constants/game/initial-profile";
+import { STORE } from "@/constants/game/sounds/bgm/bgms";
 import { defineAnimation } from "@/game/animations/define-animation";
 import { EventWrapper } from "@/game/event/EventBus";
 import { assetManager } from "@/game/managers/asset-manager";
@@ -11,7 +12,7 @@ import { MetamornScene } from "@/game/scenes/metamorn-scene";
 import { UserInfo } from "@/types/socket-io/response";
 
 export class StoreScene extends MetamornScene {
-  private bgmKey = "store";
+  private bgmKey = STORE;
 
   private map: Phaser.Tilemaps.Tilemap;
   private mapWidth: number;

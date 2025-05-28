@@ -58,6 +58,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.playerCommonBodyConfig();
 
     this.listenInteractionEvent();
+    // this.setPipeline("Light2D");
 
     // 나
     if (this.playerInfo.id === "ebf2f847-01fd-4a5b-8e1e-79e3a94175fa") {

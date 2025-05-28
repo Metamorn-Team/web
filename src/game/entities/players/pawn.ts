@@ -1,4 +1,5 @@
 import { PAWN, PawnColor } from "@/constants/game/entities";
+import { HIT, JUMP, STRONG_HIT } from "@/constants/game/sounds/sfx/sfxs";
 import {
   PAWN_ATTACK,
   PAWN_IDLE,
@@ -74,9 +75,9 @@ export class Pawn extends Player {
       this.awake();
     }
 
-    this.scene.time.delayedCall(250, () => {
+    this.scene.time.delayedCall(240, () => {
       SoundManager.getInstance().playSfx(
-        AttackType.STRONG_ATTACK ? "strong-hit" : "hit",
+        attackType === AttackType.STRONG_ATTACK ? STRONG_HIT : HIT,
         0.3
       );
     });
@@ -91,7 +92,7 @@ export class Pawn extends Player {
 
   public jump(side: "right" | "left" | "none"): void {
     this.play(PAWN_JUMP(this.color), true);
-    SoundManager.getInstance().playSfx("jump", 0.05);
+    SoundManager.getInstance().playSfx(JUMP, 0.05);
 
     if (side === "right") {
       this.setFlipX(false);
