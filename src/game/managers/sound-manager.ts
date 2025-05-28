@@ -49,8 +49,6 @@ export class SoundManager {
     if (volumeWeight > 1) volumeWeight = 1;
 
     const volume = this.baseVolume * volumeWeight;
-    console.log(volume);
-    console.log(this.sound);
     this.sound.volume = volume;
 
     if (this.bgm?.isPlaying) {
@@ -58,9 +56,6 @@ export class SoundManager {
     }
     this.bgm = this.sound.add(key, { loop });
     this.bgm.play();
-
-    console.log(this.sound.volume);
-    console.log(this.sound);
   }
 
   public pauseBgm() {
@@ -77,7 +72,6 @@ export class SoundManager {
 
   public stopBgm() {
     this.bgm?.pause();
-    // this.bgm = null;
   }
 
   public playSfx(key: string, volume = 1) {
@@ -96,12 +90,5 @@ export class SoundManager {
 
     this.sound.volume = volume;
     persistItem("sound_volume", volumeWeight);
-
-    console.log(
-      "[setVolume] volumeWeight:",
-      volumeWeight,
-      "final volume:",
-      volume
-    );
   }
 }
