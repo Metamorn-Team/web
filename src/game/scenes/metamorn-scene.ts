@@ -78,7 +78,7 @@ export class MetamornScene extends Phaser.Scene {
     return user;
   }
 
-  protected ready(nsp: string) {
+  protected ready(nsp?: string) {
     EventWrapper.emitToUi("current-scene-ready", {
       scene: this,
       socketNsp: nsp,

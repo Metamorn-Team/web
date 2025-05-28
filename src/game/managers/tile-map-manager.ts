@@ -3,7 +3,7 @@ import { skullSpawner } from "@/game/managers/spawners/skull-sign-spawner";
 import { treeSpawner } from "@/game/managers/tree-spawner";
 import { Phaser } from "@/game/phaser";
 
-type MapKeys = "island" | "loby" | "store";
+export type MapKeys = "island" | "loby" | "store";
 
 class TileMapManager {
   private scene: Phaser.Scene;
@@ -11,6 +11,7 @@ class TileMapManager {
   registerTileMap(scene: Phaser.Scene, mapKey: MapKeys) {
     this.scene = scene;
 
+    console.log(scene);
     const map = scene.make.tilemap({ key: mapKey });
 
     if (mapKey === "island") {

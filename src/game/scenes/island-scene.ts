@@ -19,7 +19,6 @@ import {
   setItem,
 } from "@/utils/session-storage";
 import { playerStore } from "@/game/managers/player-store";
-import { tileMapManager } from "@/game/managers/tile-map-manager";
 import { controllablePlayerManager } from "@/game/managers/controllable-player-manager";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import Alert from "@/utils/alert";
@@ -38,15 +37,14 @@ import Reload from "@/utils/reload";
 import { HAS_NEW_VERSION } from "@/constants/message/info-message";
 import { useIslandStore } from "@/stores/useIslandStore";
 import { TOWN } from "@/constants/game/sounds/bgm/bgms";
+import { TilemapComponent } from "@/game/components/tile-map.component";
 
 export class IslandScene extends MetamornScene {
   protected override player: Player;
 
   private bgmKey = TOWN;
-  private map: Phaser.Tilemaps.Tilemap;
-  private mapWidth: number;
-  private mapHeight: number;
-  private centerOfMap: { x: number; y: number };
+
+  private mapComponent: TilemapComponent;
 
   private io: Socket<ServerToClient, ClientToServer>;
   private socketNsp = SOCKET_NAMESPACES.ISLAND;
@@ -86,8 +84,9 @@ export class IslandScene extends MetamornScene {
 
   create() {
     super.create();
-    this.initWorld();
-    this.onMapResize(this.mapWidth);
+
+    this.mapComponent = new TilemapComponent(this, "island");
+    this.onMapResize(this.mapComponent.mapWidth);
 
     this.listenLocalEvents();
 
@@ -138,23 +137,6 @@ export class IslandScene extends MetamornScene {
     }
   }
 
-  initWorld() {
-    this.map = tileMapManager.registerTileMap(this, "island");
-
-    this.mapWidth = this.map.widthInPixels;
-    this.mapHeight = this.map.heightInPixels;
-    this.centerOfMap = {
-      x: this.mapWidth / 2,
-      y: this.mapHeight / 2,
-    };
-
-    this.matter.world.setBounds(0, 0, this.mapWidth, this.mapHeight);
-
-    this.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
-    // this.cameras.main.setZoom(this.isMobile() ? 0.9 : 1.1);
-    this.cameras.main.setScroll(this.centerOfMap.x, this.centerOfMap.y);
-  }
-
   spawnActiveUsers(activeUsers: ActivePlayerResponse) {
     activeUsers.forEach((activeUser) => {
       this.addPlayer(activeUser);
@@ -199,8 +181,8 @@ export class IslandScene extends MetamornScene {
   listenSocketEvents() {
     const joinIsland = () => {
       const position = {
-        x: this.centerOfMap.x,
-        y: this.centerOfMap.y,
+        x: this.mapComponent.centerOfMap.x,
+        y: this.mapComponent.centerOfMap.y,
       };
 
       if (this.islandType === "NORMAL") {
@@ -494,7 +476,7 @@ export class IslandScene extends MetamornScene {
 
     playerStore.clear();
 
-    this.map?.destroy();
+    this.mapComponent.destroy();
     this.matter.world.setBounds(0, 0, 0, 0);
 
     this.sound.stopAll();
