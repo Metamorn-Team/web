@@ -2,6 +2,7 @@ import { LOBY_SCENE, MY_ISLAND_SCENE } from "@/constants/game/islands/island";
 import { STORE } from "@/constants/game/sounds/bgm/bgms";
 import { TilemapComponent } from "@/game/components/tile-map.component";
 import { Pawn } from "@/game/entities/players/pawn";
+import { Sheep } from "@/game/entities/sheep";
 import { EventWrapper } from "@/game/event/EventBus";
 import { controllablePlayerManager } from "@/game/managers/controllable-player-manager";
 import { SoundManager } from "@/game/managers/sound-manager";
@@ -10,6 +11,7 @@ import { changeScene } from "@/game/utils/change-scene";
 
 export class MyIslandScene extends MetamornScene {
   private mapComponent: TilemapComponent;
+  private sheeps: Sheep[] = [];
 
   constructor() {
     super(MY_ISLAND_SCENE);
@@ -25,12 +27,34 @@ export class MyIslandScene extends MetamornScene {
     this.onMapResize(this.mapComponent.mapWidth, this.mapComponent.mapHeight);
     SoundManager.init(this).playBgm(STORE);
 
+    this.spawnSheeps();
+
     this.ready();
   }
 
   update(time: number, delta: number): void {
     if (!this.player?.body) return;
     this.player.update(delta);
+
+    if (this.sheeps.length) {
+      this.sheeps.forEach((sheep) => {
+        if (sheep.body) {
+          sheep.update(delta);
+        }
+      });
+    }
+  }
+
+  async spawnSheeps() {
+    const centerX = this.mapComponent.centerOfMap.x;
+    const centerY = this.mapComponent.centerOfMap.y;
+
+    for (let i = 0; i < 3; i++) {
+      const offsetX = Phaser.Math.Between(-100, 100);
+      const offsetY = Phaser.Math.Between(-100, 100);
+      const sheep = new Sheep(this, centerX + offsetX, centerY + offsetY);
+      this.sheeps.push(sheep);
+    }
   }
 
   async spwanMyPlayer() {

@@ -15,6 +15,7 @@ import {
   ROCK_XL,
 } from "@/constants/game/sprites/tile";
 import { BORN, DEAD } from "@/game/animations/keys/common";
+import { SHEEP } from "@/game/animations/keys/creatures/sheep/sheep";
 import { TREE_IDLE } from "@/game/animations/keys/objects/tree";
 import {
   PAWN_ATTACK,
@@ -168,6 +169,26 @@ export const defineAnimation = (scene: Phaser.Scene) => {
       end: 3,
     }),
     frameRate: 6,
+    repeat: -1,
+  });
+
+  scene.anims.create({
+    key: SHEEP.IDLE,
+    frames: scene.anims.generateFrameNumbers("sheep", {
+      start: 0,
+      end: 7,
+    }),
+    frameRate: 10,
+    repeat: -1,
+  });
+
+  scene.anims.create({
+    key: SHEEP.JUMP,
+    frames: scene.anims.generateFrameNumbers("sheep", {
+      start: 8,
+      end: 13,
+    }),
+    frameRate: 10,
     repeat: -1,
   });
 
