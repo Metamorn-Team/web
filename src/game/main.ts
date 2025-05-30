@@ -4,6 +4,7 @@ import { LobyScene } from "@/game/scenes/loby-scene";
 import { IslandScene } from "@/game/scenes/island-scene";
 import { StoreScene } from "@/game/scenes/store-scene";
 import PhotoScene from "@/game/scenes/photo-scene";
+import { MyIslandScene } from "@/game/scenes/my-island-scene";
 
 export class GameSingleton {
   private static instance: Phaser.Game | null = null;
@@ -17,7 +18,7 @@ export class GameSingleton {
       type: Phaser.AUTO,
       canvasStyle: "opacity: 0",
       parent: "game-container",
-      scene: [BootScene, LobyScene, IslandScene, PhotoScene],
+      scene: [BootScene, LobyScene, IslandScene, PhotoScene, MyIslandScene],
       render: {
         antialias: false,
         pixelArt: true,
@@ -37,8 +38,8 @@ export class GameSingleton {
       scale: {
         mode: Phaser.Scale.RESIZE,
         parent: "game-container",
-        width: "100%",
-        height: "100%",
+        width: window.innerWidth,
+        height: window.innerHeight,
       },
       plugins: {
         scene: [
