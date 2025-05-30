@@ -7,6 +7,7 @@ import {
   FiMenu,
   FiLogOut,
   FiShoppingBag,
+  FiHome,
 } from "react-icons/fi";
 import { useQueryClient } from "@tanstack/react-query";
 import { BsMusicNoteBeamed } from "react-icons/bs";
@@ -28,12 +29,14 @@ import { useLogout } from "@/hook/queries/useLogout";
 import Alert from "@/utils/alert";
 import { FaCompass } from "react-icons/fa";
 import { QUERY_KEY as ISLAND_INFO_QUERY_KEY } from "@/hook/queries/useGetIslandInfo";
+import { ISLAND_SCENE, LOBY_SCENE } from "@/constants/game/islands/island";
 
 interface MenuHeaderProps {
   changeFriendModalOpen: (state: boolean) => void;
   onSettingsModalOpen: () => void;
   onDevModalOpen: () => void;
   onIslandInfoModalOpen: () => void;
+  currentScene: string;
 }
 
 export default function MenuHeader({
@@ -41,6 +44,7 @@ export default function MenuHeader({
   onSettingsModalOpen,
   onDevModalOpen,
   onIslandInfoModalOpen,
+  currentScene,
 }: MenuHeaderProps) {
   const queryClient = useQueryClient();
   const [isPlayBgm, setIsPlayBgm] = useState(true);
@@ -99,6 +103,10 @@ export default function MenuHeader({
 
   const onLeftIsland = useCallback(() => {
     EventWrapper.emitToGame("left-island");
+  }, []);
+
+  const onMoveToMyIsland = useCallback(() => {
+    EventWrapper.emitToGame("changeToMyIsland");
   }, []);
 
   const onPlayBgmToggle = () => {
@@ -191,17 +199,27 @@ export default function MenuHeader({
             />
           </div>
         )}
+
+        {isLogined && currentScene === LOBY_SCENE && (
+          <div className="hidden sm:flex">
+            <StyledMenuItem
+              icon={<FiHome size={20} />}
+              label="내 섬"
+              onClick={onMoveToMyIsland}
+            />
+          </div>
+        )}
       </div>
 
       <div className="relative flex gap-2 sm:gap-3" ref={menuRef}>
-        {isVisibleExit && (
+        {isVisibleExit && currentScene === ISLAND_SCENE && (
           <StyledMenuItem
             icon={<FaCompass size={20} />}
             label="섬 정보"
             onClick={onIslandInfoModalOpen}
           />
         )}
-        {isVisibleExit && (
+        {isVisibleExit && currentScene === ISLAND_SCENE && (
           <StyledMenuItem
             icon={<GiSailboat size={20} />}
             label="섬 떠나기"

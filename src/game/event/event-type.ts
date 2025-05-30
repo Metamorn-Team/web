@@ -53,4 +53,5 @@ export interface UiToGameEvent {
 
   tryOnProduct: (type: string, key: string) => void;
   goIsland: () => void;
+  changeToMyIsland: () => void;
 }

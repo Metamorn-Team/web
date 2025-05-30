@@ -3,7 +3,7 @@ import { skullSpawner } from "@/game/managers/spawners/skull-sign-spawner";
 import { treeSpawner } from "@/game/managers/tree-spawner";
 import { Phaser } from "@/game/phaser";
 
-export type MapKeys = "island" | "loby" | "store";
+export type MapKeys = "island" | "loby" | "store" | "tiny-island";
 
 class TileMapManager {
   private scene: Phaser.Scene;
@@ -23,6 +23,9 @@ class TileMapManager {
     if (mapKey === "store") {
       this.createStoreMapLayer(map);
     }
+    if (mapKey === "tiny-island") {
+      this.createTinyIslandLayer(map);
+    }
 
     return map;
   }
@@ -33,6 +36,26 @@ class TileMapManager {
     if (groundTileset) {
       map.createLayer("ground", groundTileset);
     }
+  }
+
+  createTinyIslandLayer(map: Phaser.Tilemaps.Tilemap) {
+    const shadowTileset = map.addTilesetImage("shadow", "shadow");
+    const seaTileset = map.addTilesetImage("water", "water");
+    const groundTileset = map.addTilesetImage("ground", "ground");
+
+    this.createLayer(map, "sea", seaTileset);
+    const foamLayer = this.createLayer(map, "foam", shadowTileset);
+    const foams = foamLayer?.createFromTiles(46, -1, {
+      key: FOAM,
+      origin: 0.33,
+    });
+
+    if (foams) {
+      this.scene.anims.staggerPlay(FOAM, foams, 50);
+    }
+
+    this.createLayer(map, "ground", groundTileset);
+    this.setRectanleCollisionObjects(map);
   }
 
   createIslandMapLayer(map: Phaser.Tilemaps.Tilemap) {
@@ -178,6 +201,16 @@ class TileMapManager {
           }
         }
       });
+    }
+  }
+
+  createLayer(
+    map: Phaser.Tilemaps.Tilemap,
+    name: string,
+    tile: Phaser.Tilemaps.Tileset | null
+  ) {
+    if (tile) {
+      return map.createLayer(name, tile);
     }
   }
 }

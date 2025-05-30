@@ -24,11 +24,12 @@ import Alert from "@/utils/alert";
 import ParticipantPanel from "@/components/ParticipantsPanel";
 import SettingsModal from "@/components/SettingsModal";
 import IslandListModal from "@/components/islands/IslandListModal";
-import { ISLAND_SCENE } from "@/constants/game/islands/island";
+import { ISLAND_SCENE, MY_ISLAND_SCENE } from "@/constants/game/islands/island";
 import ControlGuide from "@/components/ControlGuide";
 import HelpModal from "@/components/HelpModal";
 import IslandInfoModal from "@/components/IslandInfoModal";
 import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
+import MyIsland from "@/components/my-island/MyIsland";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -47,6 +48,7 @@ export default function GameWrapper({
     avatarKey: "",
     nickname: "",
   });
+  const [currentScene, setCurrentScene] = useState("");
 
   const {
     isModalOpen: isLoginModalOpen,
@@ -110,9 +112,11 @@ export default function GameWrapper({
       socketNsp?: string;
     }) => {
       const { scene } = data;
-
       if (gameRef.current) {
-        setItem("current_scene", data.scene.scene.key);
+        const currentSceneKey = data.scene.scene.key;
+
+        setItem("current_scene", currentSceneKey);
+        setCurrentScene(currentSceneKey);
         gameRef.current.game.canvas.style.opacity = "1";
         gameRef.current.currnetScene = data.scene;
 
@@ -222,6 +226,7 @@ export default function GameWrapper({
           onSettingsModalOpen={onSettingsModalOpen}
           onDevModalOpen={onDevOpen}
           onIslandInfoModalOpen={onIslandInfoModalOpen}
+          currentScene={currentScene}
         />
       ) : null}
 
@@ -272,6 +277,8 @@ export default function GameWrapper({
       {isDevModalOpen ? (
         <HelpModal isOpen={isDevModalOpen} onClose={onDevClose} />
       ) : null}
+
+      {currentScene === MY_ISLAND_SCENE ? <MyIsland /> : null}
     </div>
   );
 }

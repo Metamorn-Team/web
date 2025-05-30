@@ -109,6 +109,7 @@ export class AssetManager {
     scene.load.tilemapTiledJSON("loby", "/game/maps/tiny_sward.json");
     scene.load.tilemapTiledJSON("island", "/game/maps/island.json");
     scene.load.tilemapTiledJSON("store", "/game/maps/store.json");
+    scene.load.tilemapTiledJSON("tiny-island", "/game/maps/tiny-island.json");
   }
 
   loadTileImages(scene: Phaser.Scene) {
