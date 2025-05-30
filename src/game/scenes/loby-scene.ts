@@ -30,7 +30,6 @@ import { Socket } from "socket.io-client";
 
 export class LobyScene extends MetamornScene {
   private isCreated = false;
-  private isChangingScene = false;
 
   private bgmKey = WOODLAND_FANTASY;
   private mine: Mine;
