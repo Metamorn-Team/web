@@ -57,4 +57,5 @@ export interface UiToGameEvent {
   changeToMyIsland: () => void;
   changeToLoby: () => void;
   changeAvatarColor: (color: PawnColor) => void;
+  changeNickname: (nickname: string) => void;
 }

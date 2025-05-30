@@ -52,6 +52,10 @@ export class MyIslandScene extends MetamornScene {
       }
     });
 
+    EventWrapper.onGameEvent("changeNickname", (nickname) => {
+      this.player.setNicknameText(nickname);
+    });
+
     EventWrapper.onGameEvent("changeToLoby", () => {
       changeScene(this, LOBY_SCENE, this.clearBeforeLeft);
     });

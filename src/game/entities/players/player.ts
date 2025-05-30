@@ -102,6 +102,14 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.fsm = fsm;
   }
 
+  setNicknameText(newNickname: string) {
+    this.playerInfo.nickname = newNickname;
+
+    if (this.playerNameText) {
+      this.playerNameText.setText(newNickname);
+    }
+  }
+
   private playerCommonBodyConfig() {
     this.setCollisionCategory(COLLISION_CATEGORIES.PLAYER);
     this.setCollidesWith(COLLISION_CATEGORIES.WORLD);
