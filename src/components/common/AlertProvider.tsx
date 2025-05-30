@@ -88,10 +88,10 @@ export default function AlertProvider() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -30 }}
           transition={{ duration: 0.3 }}
-          className="fixed top-24 inset-x-0 flex justify-center z-[99]"
+          className="fixed top-24 inset-x-0 flex justify-center z-[99] pointer-events-none"
         >
           <div
-            className={`${bg} ${text} border ${border} rounded-lg shadow-lg p-4 flex items-center gap-3 max-w-lg mx-auto`}
+            className={`${bg} ${text} border ${border} rounded-lg shadow-lg p-4 flex items-center gap-3 max-w-lg mx-auto pointer-events-auto`}
           >
             {iconVisible ? <Icon size={18} /> : null}
             <span className="text-sm font-medium">
