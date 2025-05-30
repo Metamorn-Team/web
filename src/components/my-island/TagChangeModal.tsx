@@ -35,6 +35,12 @@ export default function ChangeTagModal({
       setError("4~15자의 영문, 숫자, 밑줄(_)만 사용할 수 있어요.");
       return;
     }
+
+    if (tag === currentTag) {
+      onClose();
+      return;
+    }
+
     setError("");
     changeTag({ tag });
   };

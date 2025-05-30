@@ -13,16 +13,16 @@ import { EventWrapper } from "@/game/event/EventBus";
 interface NicknameChangeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  currentName: string;
+  currentNickname: string;
 }
 
 export default function NicknameChangeModal({
   isOpen,
   onClose,
-  currentName,
+  currentNickname,
 }: NicknameChangeModalProps) {
   const queryClient = useQueryClient();
-  const [nickname, setNickname] = useState(currentName);
+  const [nickname, setNickname] = useState(currentNickname);
   const [error, setError] = useState("");
 
   const { mutate: changeName } = useChangeNickname(() => {
@@ -40,6 +40,12 @@ export default function NicknameChangeModal({
       setError("이름은 2~20자 사이여야 해요.");
       return;
     }
+
+    if (nickname === currentNickname) {
+      onClose();
+      return;
+    }
+
     setError("");
     changeName({ nickname });
   };

@@ -87,7 +87,7 @@ export default function MyIsland() {
         <NicknameChangeModal
           isOpen={isNicknameOpen}
           onClose={onNicknameClose}
-          currentName={profile?.nickname || ""}
+          currentNickname={profile?.nickname || ""}
         />
       ) : null}
     </div>
