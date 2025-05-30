@@ -7,11 +7,10 @@ import {
   FiMenu,
   FiLogOut,
   FiShoppingBag,
-  FiHome,
 } from "react-icons/fi";
 import { useQueryClient } from "@tanstack/react-query";
 import { BsMusicNoteBeamed } from "react-icons/bs";
-import { GiSailboat } from "react-icons/gi";
+import { GiIsland, GiSailboat } from "react-icons/gi";
 import { getItem, setItem } from "@/utils/session-storage";
 import { EventWrapper } from "@/game/event/EventBus";
 import {
@@ -210,9 +209,9 @@ export default function MenuHeader({
         )}
 
         {isLogined && currentScene === LOBY_SCENE && (
-          <div className="hidden sm:flex">
+          <div>
             <StyledMenuItem
-              icon={<FiHome size={20} />}
+              icon={<GiIsland size={20} />}
               label="내 섬"
               onClick={onMoveToMyIsland}
             />
