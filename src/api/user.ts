@@ -1,6 +1,7 @@
 import { http } from "@/api/http";
 import { Provider } from "@/types/client/unions";
 import {
+  ChangeAvatarRequest,
   ChangeBioRequest,
   GetGoldBalance,
   GetUserResponse,
@@ -52,4 +53,8 @@ export const searchUsers = async (query: SearchUsersRequest) => {
 
 export const changeBio = async (body: ChangeBioRequest) => {
   return await http.patch("/users/bio", body);
+};
+
+export const changeAvatar = async (body: ChangeAvatarRequest) => {
+  return await http.patch("/users/avatar", body);
 };
