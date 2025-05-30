@@ -18,7 +18,6 @@ export class MoveState implements State<SheepState> {
   }
 
   enter(): void {
-    console.log("무브");
     this.speed = this.parent.gameObject.speed;
     this.timer = 0;
     this.moveDuration = Phaser.Math.Between(1000, 3000);

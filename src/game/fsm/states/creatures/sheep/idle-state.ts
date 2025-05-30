@@ -16,7 +16,6 @@ export class IdleState implements State<SheepState> {
   }
 
   enter(): void {
-    console.log("아이들");
     this.parent.gameObject.onIdle();
     this.timer = 0;
     this.moveDuration = Phaser.Math.Between(2000, 5000);
