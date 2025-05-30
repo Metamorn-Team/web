@@ -12,6 +12,8 @@ import { Keys } from "@/types/game/enum/key";
 export class MetamornScene extends Phaser.Scene {
   protected player: Player;
   protected inputManager: InputManager;
+  public isChangingScene = false;
+  public isIntentionalDisconnect = false;
 
   constructor(sceneKey: string) {
     super({ key: sceneKey });

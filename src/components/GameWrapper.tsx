@@ -30,6 +30,7 @@ import HelpModal from "@/components/HelpModal";
 import IslandInfoModal from "@/components/IslandInfoModal";
 import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
 import MyIsland from "@/components/my-island/MyIsland";
+import { useCurrentSceneStore } from "@/stores/useCurrentSceneStore";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -48,7 +49,7 @@ export default function GameWrapper({
     avatarKey: "",
     nickname: "",
   });
-  const [currentScene, setCurrentScene] = useState("");
+  const { currentScene, setCurrentScene } = useCurrentSceneStore();
 
   const {
     isModalOpen: isLoginModalOpen,
@@ -226,7 +227,6 @@ export default function GameWrapper({
           onSettingsModalOpen={onSettingsModalOpen}
           onDevModalOpen={onDevOpen}
           onIslandInfoModalOpen={onIslandInfoModalOpen}
-          currentScene={currentScene}
         />
       ) : null}
 

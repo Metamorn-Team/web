@@ -29,14 +29,19 @@ import { useLogout } from "@/hook/queries/useLogout";
 import Alert from "@/utils/alert";
 import { FaCompass } from "react-icons/fa";
 import { QUERY_KEY as ISLAND_INFO_QUERY_KEY } from "@/hook/queries/useGetIslandInfo";
-import { ISLAND_SCENE, LOBY_SCENE } from "@/constants/game/islands/island";
+import {
+  ISLAND_SCENE,
+  LOBY_SCENE,
+  MY_ISLAND_SCENE,
+} from "@/constants/game/islands/island";
+import { useCurrentSceneStore } from "@/stores/useCurrentSceneStore";
+import Reload from "@/utils/reload";
 
 interface MenuHeaderProps {
   changeFriendModalOpen: (state: boolean) => void;
   onSettingsModalOpen: () => void;
   onDevModalOpen: () => void;
   onIslandInfoModalOpen: () => void;
-  currentScene: string;
 }
 
 export default function MenuHeader({
@@ -44,13 +49,13 @@ export default function MenuHeader({
   onSettingsModalOpen,
   onDevModalOpen,
   onIslandInfoModalOpen,
-  currentScene,
 }: MenuHeaderProps) {
   const queryClient = useQueryClient();
   const [isPlayBgm, setIsPlayBgm] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const [isVisibleExit, setIsVisibleExit] = useState(true);
+  const { currentScene } = useCurrentSceneStore();
 
   const [showNewRequestMessage, setShowNewRequestMessage] = useState(false);
   const { data: unreadRequestCount } = useGetUnreadFriendRequest();
@@ -107,6 +112,10 @@ export default function MenuHeader({
 
   const onMoveToMyIsland = useCallback(() => {
     EventWrapper.emitToGame("changeToMyIsland");
+  }, []);
+
+  const onMoveToLoby = useCallback(() => {
+    EventWrapper.emitToGame("changeToLoby");
   }, []);
 
   const onPlayBgmToggle = () => {
@@ -219,11 +228,21 @@ export default function MenuHeader({
             onClick={onIslandInfoModalOpen}
           />
         )}
-        {isVisibleExit && currentScene === ISLAND_SCENE && (
+        {isVisibleExit && currentScene !== LOBY_SCENE && (
           <StyledMenuItem
             icon={<GiSailboat size={20} />}
             label="섬 떠나기"
-            onClick={onLeftIsland}
+            onClick={
+              currentScene === ISLAND_SCENE
+                ? onLeftIsland
+                : currentScene === MY_ISLAND_SCENE
+                ? onMoveToLoby
+                : () => {
+                    Reload.open(
+                      "문제가 발생했어요 새로고침 시 해결될 거에요!.."
+                    );
+                  }
+            }
           />
         )}
 

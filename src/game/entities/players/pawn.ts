@@ -15,7 +15,7 @@ import { TypedSocket } from "@/types/socket-io";
 import { UserInfo } from "@/types/socket-io/response";
 
 export class Pawn extends Player {
-  private readonly color: PawnColor;
+  private color: PawnColor;
 
   constructor(
     scene: Phaser.Scene,
@@ -101,5 +101,11 @@ export class Pawn extends Player {
     if (side === "left") {
       this.setFlipX(true);
     }
+  }
+
+  setColor(newColor: PawnColor) {
+    this.color = newColor;
+    this.setTexture(PAWN(newColor));
+    this.idle();
   }
 }

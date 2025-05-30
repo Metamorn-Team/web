@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { PawnColor } from "@/constants/game/entities";
 import { Npc } from "@/game/entities/npc/npc";
 import { Phaser } from "@/game/phaser";
 import { UserInfo } from "@/types/socket-io/response";
@@ -54,4 +55,6 @@ export interface UiToGameEvent {
   tryOnProduct: (type: string, key: string) => void;
   goIsland: () => void;
   changeToMyIsland: () => void;
+  changeToLoby: () => void;
+  changeAvatarColor: (color: PawnColor) => void;
 }

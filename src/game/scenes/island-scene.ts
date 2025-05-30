@@ -51,9 +51,7 @@ export class IslandScene extends MetamornScene {
   private currentIslandId?: string;
 
   private isActiveChat = false;
-  private isIntentionalDisconnect = false;
   private islandType: "NORMAL" | "DESERTED";
-  private isChangingScene = false;
 
   constructor() {
     super(ISLAND_SCENE);

@@ -6,6 +6,10 @@ import Pawn from "@/components/common/Pawn";
 import { pawnColors, PAWN } from "@/constants/game/entities";
 import useRegisterPayloadStore from "@/stores/useRegisterPayloadStore";
 import RetroButton from "@/components/common/RetroButton";
+import { useChangeAvatar } from "@/hook/queries/useChangeAvatar";
+import { EventWrapper } from "@/game/event/EventBus";
+import Alert from "@/utils/alert";
+import { removeItem } from "@/utils/persistence";
 
 interface OutfitChangeModalProps {
   isOpen: boolean;
@@ -18,6 +22,14 @@ export default function OutfitChangeModal({
 }: OutfitChangeModalProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { updatePayload } = useRegisterPayloadStore();
+  const { mutate: changeAvatar } = useChangeAvatar(
+    () => {
+      EventWrapper.emitToGame("changeAvatarColor", pawnColors[currentIndex]);
+      removeItem("profile");
+      onClose();
+    },
+    () => Alert.error("문제가 생겼어요 잠시후 다시 갈아입어주세요..")
+  );
 
   const onPrev = () => {
     setCurrentIndex(
@@ -27,6 +39,10 @@ export default function OutfitChangeModal({
 
   const onNext = () => {
     setCurrentIndex((prev) => (prev + 1) % pawnColors.length);
+  };
+
+  const onConfirm = () => {
+    changeAvatar({ avatarKey: PAWN(pawnColors[currentIndex]) });
   };
 
   const currentColor = pawnColors[currentIndex];
@@ -41,11 +57,6 @@ export default function OutfitChangeModal({
       case "purple":
         return "보라";
     }
-  };
-
-  const onConfirm = () => {
-    updatePayload({ avatarKey: PAWN(currentColor) });
-    onClose();
   };
 
   useEffect(() => {
