@@ -3,6 +3,7 @@ import { Provider } from "@/types/client/unions";
 import {
   ChangeAvatarRequest,
   ChangeBioRequest,
+  ChangeTagRequest,
   GetGoldBalance,
   GetUserResponse,
   SearchUserResponse,
@@ -57,4 +58,8 @@ export const changeBio = async (body: ChangeBioRequest) => {
 
 export const changeAvatar = async (body: ChangeAvatarRequest) => {
   return await http.patch("/users/avatar", body);
+};
+
+export const changeTag = async (body: ChangeTagRequest) => {
+  return await http.patch("/users/tag", body);
 };

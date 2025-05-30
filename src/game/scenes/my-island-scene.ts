@@ -60,5 +60,6 @@ export class MyIslandScene extends MetamornScene {
   clearBeforeLeft() {
     EventWrapper.offGameEvent("changeAvatarColor");
     EventWrapper.offGameEvent("changeToLoby");
+    SoundManager.getInstance().stopAll();
   }
 }
