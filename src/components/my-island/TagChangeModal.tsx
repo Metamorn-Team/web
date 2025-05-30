@@ -46,7 +46,7 @@ export default function ChangeTagModal({
   };
 
   return (
-    <RetroModal isOpen={isOpen} onClose={onClose}>
+    <RetroModal isOpen={isOpen} onClose={onClose} className="!max-w-[400px]">
       <div className="space-y-4">
         <h2 className="text-xl font-bold">🔖 태그 변경</h2>
 
