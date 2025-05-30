@@ -86,7 +86,7 @@ export class IslandScene extends MetamornScene {
     super.create();
 
     this.mapComponent = new TilemapComponent(this, "island");
-    this.onMapResize(this.mapComponent.mapWidth);
+    this.onMapResize(this.mapComponent.mapWidth, this.mapComponent.mapHeight);
 
     this.listenLocalEvents();
 

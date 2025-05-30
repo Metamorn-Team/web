@@ -170,10 +170,10 @@ export class MetamornScene extends Phaser.Scene {
     createButton(this.scale.width, baseY, Keys.SPACE, "점프");
   }
 
-  protected onMapResize(mapWith: number) {
-    this.adjustZoomBasedOnWidth(mapWith);
+  protected onMapResize(mapWith: number, mapHeight: number) {
+    this.adjustZoomBasedOnWidth(mapWith, mapHeight);
     this.scale.on("resize", () => {
-      this.adjustZoomBasedOnWidth(mapWith);
+      this.adjustZoomBasedOnWidth(mapWith, mapHeight);
 
       const width = this.scale.width;
       const height = this.scale.height;
@@ -182,8 +182,9 @@ export class MetamornScene extends Phaser.Scene {
     });
   }
 
-  protected adjustZoomBasedOnWidth(mapWidth: number) {
+  protected adjustZoomBasedOnWidth(mapWidth: number, mapHeight: number) {
     const width = this.scale.width;
+    const height = this.scale.height;
 
     let zoom = 3;
 
@@ -200,7 +201,8 @@ export class MetamornScene extends Phaser.Scene {
     }
 
     const minZoomX = width / mapWidth;
-    zoom = Math.max(zoom, minZoomX);
+    const minZoomY = height / mapHeight;
+    zoom = Math.max(zoom, minZoomX, minZoomY);
 
     this.setZoom(zoom);
   }

@@ -2,7 +2,7 @@ import { INITIAL_PROFILE } from "@/constants/game/initial-profile";
 import {
   ISLAND_SCENE,
   LOBY_SCENE,
-  MY_SCENE,
+  MY_ISLAND_SCENE,
 } from "@/constants/game/islands/island";
 import { WOODLAND_FANTASY } from "@/constants/game/sounds/bgm/bgms";
 import { NPC_INTERACTABLE_DISTANCE } from "@/constants/game/threshold";
@@ -56,7 +56,7 @@ export class LobyScene extends MetamornScene {
 
     this.mapComponent = new TilemapComponent(this, "loby");
 
-    this.onMapResize(this.mapComponent.mapWidth);
+    this.onMapResize(this.mapComponent.mapWidth, this.mapComponent.mapHeight);
 
     this.io = socketManager.connect(this.socketNsp)!;
 
@@ -71,8 +71,7 @@ export class LobyScene extends MetamornScene {
 
     this.listenEvents();
 
-    SoundManager.init(this);
-    SoundManager.getInstance().playBgm(this.bgmKey);
+    SoundManager.init(this).playBgm(this.bgmKey);
 
     this.ready(this.socketNsp);
     this.isCreated = true;
@@ -171,7 +170,7 @@ export class LobyScene extends MetamornScene {
 
       this.scene.stop(LOBY_SCENE);
       this.cleanup();
-      this.scene.start(MY_SCENE);
+      this.scene.start(MY_ISLAND_SCENE);
     });
   }
 
