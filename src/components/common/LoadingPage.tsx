@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 // import GoblinTorch from "@/components/common/GoblinTorch";
 import Pawn from "@/components/common/Pawn";
+import { DotLoader } from "@/components/common/DotLoader";
 
 const commonMessage = "섬을 만드는 중";
 
@@ -39,26 +40,7 @@ export default function LoadingPage() {
   return (
     <div className="absolute w-screen h-screen bg-darkBg flex flex-col justify-center items-center -z-50 gap-4">
       {loader.loader}
-      <Dots />
+      <DotLoader loadingText={commonMessage} />
     </div>
   );
 }
-
-const Dots = () => {
-  const [dots, setDots] = useState(".");
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDots((prev) => (prev.length < 4 ? prev + "." : "."));
-    }, 250);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <p className="text-4xl text-white font-bold mt-4">
-      {commonMessage}
-      {dots}
-    </p>
-  );
-};
