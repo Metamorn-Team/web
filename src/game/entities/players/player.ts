@@ -9,10 +9,13 @@ import { AttackType } from "@/types/game/enum/state";
 import { PlayerState } from "@/game/fsm/states/enum/player/player-state";
 import { FiniteStateMachine } from "@/game/fsm/machine/interface/finite-state-machine";
 import { InputManager } from "@/game/managers/input/input-manager";
+import { AuraEffect } from "@/game/components/aura-effect";
+import { ItemGrade } from "mmorntype/dist/src/domain/types/item.types";
 
 export abstract class Player extends Phaser.Physics.Matter.Sprite {
   private inputManager?: InputManager;
   protected fsm: FiniteStateMachine<PlayerState> | null = null;
+  protected auraEffect: AuraEffect;
 
   private playerInfo: UserInfo;
   private label = "PLAYER";
@@ -197,6 +200,10 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
   setVisibleNickname(visible: boolean) {
     this.playerNameText.setVisible(visible);
+  }
+
+  setAura(key: string, grade: ItemGrade) {
+    this.auraEffect.changeAura(key, grade);
   }
 
   private setNickname(scene: Phaser.Scene) {

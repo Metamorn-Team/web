@@ -7,6 +7,7 @@ import {
   PAWN_STRONG_ATTACK,
   PAWN_WALK,
 } from "@/game/animations/keys/pawn";
+import { AuraEffect } from "@/game/components/aura-effect";
 import { Player } from "@/game/entities/players/player";
 import { InputManager } from "@/game/managers/input/input-manager";
 import { SoundManager } from "@/game/managers/sound-manager";
@@ -29,6 +30,7 @@ export class Pawn extends Player {
   ) {
     super(scene, x, y, PAWN(color), userInfo, isControllable, inputManager, io);
     this.color = color;
+    this.auraEffect = new AuraEffect(this);
 
     this.isBeingBorn = false;
   }
