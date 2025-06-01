@@ -21,7 +21,11 @@ export default function MyIsland() {
     onOpen: onOutfitOpen,
     onClose: onOutfitClose,
   } = useModal();
-  const { isModalOpen: isAuraOpen, onClose: onAuraClose } = useModal();
+  const {
+    isModalOpen: isAuraOpen,
+    onOpen: onAuraOpen,
+    onClose: onAuraClose,
+  } = useModal();
   const {
     isModalOpen: isTagOpen,
     onOpen: onTagOpen,
@@ -50,7 +54,7 @@ export default function MyIsland() {
         <FaPalette className="mr-1" />
         <p>옷</p>
       </RetroButton>
-      <RetroButton onClick={onSoon} className={buttonStyle}>
+      <RetroButton onClick={() => onAuraOpen()} className={buttonStyle}>
         <GiSparkles />
         <p>오라</p>
       </RetroButton>

@@ -10,6 +10,7 @@ import {
   PlayerLeftResponse,
   ReceiveMessage,
 } from "mmorntype";
+import { ItemGrade } from "mmorntype/dist/src/domain/types/item.types";
 
 export interface Events {
   [name: string]: any;
@@ -58,4 +59,5 @@ export interface UiToGameEvent {
   changeToLoby: () => void;
   changeAvatarColor: (color: PawnColor) => void;
   changeNickname: (nickname: string) => void;
+  changeAura: (key: string, grade: ItemGrade) => void;
 }

@@ -83,6 +83,10 @@ export class MyIslandScene extends MetamornScene {
     EventWrapper.onGameEvent("changeToLoby", () => {
       changeScene(this, LOBY_SCENE, this.clearBeforeLeft);
     });
+
+    EventWrapper.onGameEvent("changeAura", (key, grade) => {
+      this.player.setAura(key, grade);
+    });
   }
 
   clearBeforeLeft() {
