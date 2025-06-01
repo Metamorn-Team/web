@@ -8,7 +8,7 @@ export class Sheep extends Phaser.Physics.Matter.Sprite {
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene.matter.world, x, y, "sheep");
     scene.add.existing(this);
-    this.setCircle(15);
+    this.setCircle(10);
     this.setFixedRotation();
 
     this.fsm = new SheepFSM(this);
@@ -17,6 +17,7 @@ export class Sheep extends Phaser.Physics.Matter.Sprite {
   }
 
   update(delta: number): void {
+    this.setDepth(this.y);
     this.fsm.update(delta);
   }
 
