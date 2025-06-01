@@ -29,8 +29,10 @@ const HelpModal = ({ isOpen, onClose, className }: HelpModalProps) => {
         <p>
           리브아일랜드에 대해 궁금한 점이 있다면 언제든 편하게 연락 주세요! 📨
         </p>
+        <p>커피챗도 환영이에요! ☕️</p>
 
         <ul className="list-disc pl-5 space-y-1 mt-4">
+          <li>📬 이메일: koh1260@naver.com</li>
           <li>
             💬 문의:{" "}
             <a
