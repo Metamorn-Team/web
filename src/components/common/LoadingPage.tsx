@@ -11,21 +11,30 @@ export default function LoadingPage() {
   const loaders = [
     // { loader: <GoblinTorch key={"goblin"} />, message: "불을 밝히러 가는 중" },
     {
-      loader: <Pawn key={"red_pawn"} color="blue" animation="run" />,
-      message: "검사가 되기 위해 수련 중",
+      loader: <Pawn key={"blue_pawn"} color="blue" animation="run" />,
     },
     {
-      loader: <Pawn key={"red_pawn"} color="purple" animation="run" />,
-      message: "활을 제작하는 중",
+      loader: <Pawn key={"purple_pawn"} color="purple" animation="run" />,
     },
     {
       loader: <Pawn key={"red_pawn"} color="red" animation="run" />,
-      message: "빨간 버섯을 캐러 가는 중",
     },
 
     {
-      loader: <Pawn key={"red_pawn"} color="yellow" animation="run" />,
-      message: "망치를 가지러 가는 중",
+      loader: <Pawn key={"yellow_pawn"} color="yellow" animation="run" />,
+    },
+    {
+      loader: (
+        <Pawn key={"forest_green_pawn"} color="forest_green" animation="run" />
+      ),
+    },
+    {
+      loader: <Pawn key={"orange"} color="orange" animation="run" />,
+    },
+    {
+      loader: (
+        <Pawn key={"pure_shadow_pawn"} color="pure_shadow" animation="run" />
+      ),
     },
   ] as const;
   const [loader, setLoader] = useState<(typeof loaders)[number] | null>(null);
