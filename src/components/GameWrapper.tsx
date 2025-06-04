@@ -98,12 +98,7 @@ export default function GameWrapper({
 
   useEffect(() => {
     if (profile) {
-      persistItem("profile", {
-        id: profile.id,
-        avatarKey: profile.avatarKey,
-        nickname: profile.nickname,
-        tag: profile.tag,
-      });
+      persistItem("profile", profile);
     }
   }, [profile]);
 

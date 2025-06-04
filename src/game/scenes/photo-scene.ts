@@ -34,8 +34,7 @@ export default class PhotoScene extends MetamornScene {
         nickname: "",
         tag: "",
       },
-      200,
-      200,
+      { x: 200, y: 200 },
       this.inputManager
     );
 

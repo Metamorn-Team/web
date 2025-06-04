@@ -22,10 +22,9 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     setStep(0);
   };
 
-  const onSuccessLogin = (response: RegisterResponse) => {
-    const { accessToken, ...user } = response;
+  const onSuccessLogin = async (response: RegisterResponse) => {
+    const { accessToken } = response;
     persistItem("access_token", accessToken);
-    persistItem("profile", user);
 
     onCloseWithStateClear();
 
