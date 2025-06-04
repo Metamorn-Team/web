@@ -30,7 +30,7 @@ const Message = ({
     >
       <div className="relative w-8 h-8 flex-shrink-0">
         <Image
-          src={`/images/avatar/${avatarKey}.png`}
+          src={`${process.env.NEXT_PUBLIC_CDN_BASE_URL}/image/avatar/${avatarKey}_avatar.png`}
           fill
           className={isMine ? "scale-x-[-1]" : ""}
           alt="avatar"
