@@ -10,6 +10,7 @@ import { useChangeAvatar } from "@/hook/queries/useChangeAvatar";
 import { EventWrapper } from "@/game/event/EventBus";
 import Alert from "@/utils/alert";
 import { removeItem } from "@/utils/persistence";
+import { mapPawnColor } from "@/utils/map-color";
 
 interface OutfitChangeModalProps {
   isOpen: boolean;
@@ -46,24 +47,6 @@ export default function OutfitChangeModal({
   };
 
   const currentColor = pawnColors[currentIndex];
-  const mapColor = () => {
-    switch (currentColor) {
-      case "blue":
-        return "파랑";
-      case "red":
-        return "빨강";
-      case "yellow":
-        return "노랑";
-      case "purple":
-        return "보라";
-      case "forest_green":
-        return "숲초록";
-      case "pure_shadow":
-        return "그림자";
-      case "orange":
-        return "오렌지";
-    }
-  };
 
   useEffect(() => {
     updatePayload({ avatarKey: PAWN(currentColor) });
@@ -85,7 +68,7 @@ export default function OutfitChangeModal({
               animation="idle"
               className="w-3/5 aspect-[1/1] h-auto"
             />
-            <h2>{mapColor()}</h2>
+            <h2>{mapPawnColor(currentColor)}</h2>
           </div>
           <div className="flex items-center">
             <RetroButton onClick={onNext} variant="ghost">

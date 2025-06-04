@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { AxiosError } from "axios";
-import Image from "next/image";
 import { RegisterResponse } from "mmorntype";
 import { register } from "@/api/auth";
 import Button from "@/components/common/Button";
 import useRegisterPayloadStore from "@/stores/useRegisterPayloadStore";
 import RetroInput from "@/components/common/RetroInput";
 import Alert from "@/utils/alert";
+import Pawn from "@/components/common/Pawn";
+import { pawnColors } from "@/constants/game/entities";
 
 interface RegisterStepProps {
   onSuccessLogin: (response: RegisterResponse) => void;
@@ -65,7 +66,7 @@ const RegisterStep = ({ onSuccessLogin }: RegisterStepProps) => {
         isValidNicknameChars &&
         isValidTagLength &&
         isValidTagChars
-        ? "💜"
+        ? "♥️"
         : "💢"
     );
   };
@@ -105,16 +106,17 @@ const RegisterStep = ({ onSuccessLogin }: RegisterStepProps) => {
     <div className="flex flex-col items-center justify-between w-full flex-grow">
       <div className="flex flex-col justify-center text-lg h-full">
         <div className="relative w-12 h-12 mb-4">
-          <p className="absolute -top-2 -right-1 z-50 animate-ping">
+          <p className="absolute -top-1 -right-1 z-50 animate-ping">
             {avatarEmotion}
           </p>
-          <Image
-            src={`/images/avatar/${
-              restPayload.avatarKey || "purple_pawn_avatar"
-            }.png`}
-            alt="메타몬"
-            priority
-            fill
+          <Pawn
+            color={
+              pawnColors.find((c) =>
+                restPayload.avatarKey.startsWith(c + "_")
+              ) ?? "blue"
+            }
+            animation="idle"
+            className="w-full h-full"
           />
         </div>
       </div>
