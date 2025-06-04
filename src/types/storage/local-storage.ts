@@ -1,13 +1,8 @@
-interface PlayerProfile {
-  id: string;
-  tag: string;
-  nickname: string;
-  avatarKey: string;
-}
+import { GetMyResponse } from "mmorntype";
 
 export interface LocalStorageData {
   access_token: string;
-  profile: PlayerProfile;
+  profile: GetMyResponse;
   play_bgm: boolean;
   sound_volume: number;
   fps_limit: number;

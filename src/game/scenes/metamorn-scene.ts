@@ -6,7 +6,7 @@ import { KeyboardInputManager } from "@/game/managers/input/keyboard-input-manag
 import { InputManager } from "@/game/managers/input/input-manager";
 import { VirtualJoystickInputManager } from "@/game/managers/input/virtual-joystick-input-manager";
 import { Phaser } from "@/game/phaser";
-import { getItem, persistItem } from "@/utils/persistence";
+import { persistItem } from "@/utils/persistence";
 import { Keys } from "@/types/game/enum/key";
 
 export class MetamornScene extends Phaser.Scene {
@@ -69,8 +69,7 @@ export class MetamornScene extends Phaser.Scene {
   }
 
   protected async getPlayerInfo() {
-    const storedProfile = getItem("profile");
-    return storedProfile || this.fetchFreshPlayerInfo();
+    return this.fetchFreshPlayerInfo();
   }
 
   protected async fetchFreshPlayerInfo() {

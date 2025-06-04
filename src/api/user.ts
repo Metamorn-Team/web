@@ -6,6 +6,7 @@ import {
   ChangeNicknameRequest,
   ChangeTagRequest,
   GetGoldBalance,
+  GetMyResponse,
   GetUserResponse,
   SearchUserResponse,
   SearchUsersRequest,
@@ -32,7 +33,7 @@ export interface AdditionalRegisterData {
 }
 
 export const getMyProfile = async () => {
-  const response = await http.get<GetUserResponse>("/users/my");
+  const response = await http.get<GetMyResponse>("/users/my");
   return response.data;
 };
 

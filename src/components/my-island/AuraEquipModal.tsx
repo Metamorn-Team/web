@@ -10,6 +10,7 @@ import { ItemGrade } from "mmorntype/dist/src/domain/types/item.types";
 import { DotLoader } from "@/components/common/DotLoader";
 import { ITEM_GRADE, ITEM_GRADE_KR } from "@/constants/item";
 import { EventWrapper } from "@/game/event/EventBus";
+import { useEquipItem } from "@/hook/queries/useEquipItem";
 
 interface AuraEquipModalProps {
   isOpen: boolean;
@@ -65,9 +66,22 @@ export default function AuraEquipModal({
 
 const AuraList = ({ grade }: { grade: ItemGrade }) => {
   const { data: items } = useGetAllOwnedItems("AURA", grade);
+  const { mutate: equip } = useEquipItem();
+  const [currentAura, setCurrentAura] = useState("");
 
-  const onChangeAura = (key: string, grade: ItemGrade) =>
-    EventWrapper.emitToGame("changeAura", key, grade);
+  const onEquip = (auraId: string, key: string, grade: ItemGrade) => {
+    if (auraId === currentAura) return;
+
+    setCurrentAura(auraId);
+    equip(
+      { itemId: auraId, slot: "AURA" },
+      {
+        onSuccess: () => {
+          EventWrapper.emitToGame("changeAura", key, grade);
+        },
+      }
+    );
+  };
 
   return (
     <div className="flex w-full justify-center items-center">
@@ -86,7 +100,7 @@ const AuraList = ({ grade }: { grade: ItemGrade }) => {
               <p className="text-sm font-bold text-center">{aura.name}</p>
               <RetroButton
                 className="w-full text-xs mt-2"
-                onClick={() => onChangeAura(aura.key, aura.grade)}
+                onClick={() => onEquip(aura.id, aura.key, aura.grade)}
               >
                 장착
               </RetroButton>

@@ -1,7 +1,6 @@
 import { NORMAL_AURAS } from "@/constants/game/products/auras";
 import { Component } from "@/game/components/interface/component";
 import { Phaser } from "@/game/phaser";
-import { ItemGrade } from "mmorntype/dist/src/domain/types/item.types";
 
 export class AuraEffect implements Component {
   private gameObj: Phaser.GameObjects.Sprite;
@@ -9,30 +8,28 @@ export class AuraEffect implements Component {
 
   constructor(
     sprite: Phaser.GameObjects.Sprite,
-    config?: { key: string; grade: ItemGrade }
+    config?: { key: string; name: string } | null
   ) {
     this.gameObj = sprite;
 
     if (config) {
-      this.changeAura(config.key, config.grade);
+      this.changeAura(config.key);
     }
   }
 
-  changeAura(key: string, grade: ItemGrade) {
+  changeAura(key: string) {
     this.activeFX?.destroy();
     this.gameObj.preFX?.clear();
 
-    if (grade === "NORMAL") {
-      const config = NORMAL_AURAS[key];
-      const { color, innerStrength, outerStrength } = config;
+    const config = NORMAL_AURAS[key];
+    const { color, innerStrength, outerStrength } = config;
 
-      if (config && this.gameObj.preFX) {
-        this.activeFX = this.gameObj.preFX.addGlow(
-          color,
-          outerStrength,
-          innerStrength
-        );
-      }
+    if (config && this.gameObj.preFX) {
+      this.activeFX = this.gameObj.preFX.addGlow(
+        color,
+        outerStrength,
+        innerStrength
+      );
     }
   }
 

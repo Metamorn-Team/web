@@ -8,6 +8,7 @@ import {
   PAWN_WALK,
 } from "@/game/animations/keys/pawn";
 import { AuraEffect } from "@/game/components/aura-effect";
+import { EquipmentState } from "@/game/components/equipment-state";
 import { Player } from "@/game/entities/players/player";
 import { InputManager } from "@/game/managers/input/input-manager";
 import { SoundManager } from "@/game/managers/sound-manager";
@@ -24,13 +25,24 @@ export class Pawn extends Player {
     y: number,
     color: PawnColor,
     userInfo: UserInfo,
+    equipmentState: EquipmentState,
     isControllable?: boolean,
     inputManager?: InputManager,
     io?: TypedSocket
   ) {
-    super(scene, x, y, PAWN(color), userInfo, isControllable, inputManager, io);
+    super(
+      scene,
+      x,
+      y,
+      PAWN(color),
+      userInfo,
+      isControllable,
+      equipmentState,
+      inputManager,
+      io
+    );
     this.color = color;
-    this.auraEffect = new AuraEffect(this);
+    this.auraEffect = new AuraEffect(this, this.equipmentState.aura);
 
     this.isBeingBorn = false;
   }

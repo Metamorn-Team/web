@@ -7,6 +7,7 @@ import {
 import { WOODLAND_FANTASY } from "@/constants/game/sounds/bgm/bgms";
 import { NPC_INTERACTABLE_DISTANCE } from "@/constants/game/threshold";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
+import { EquipmentState } from "@/game/components/equipment-state";
 import { TilemapComponent } from "@/game/components/tile-map.component";
 import { InteractiveObject } from "@/game/entities/interactive-object";
 import { Npc } from "@/game/entities/npc/npc";
@@ -19,11 +20,11 @@ import { Mine } from "@/game/objects/mine";
 import { Phaser } from "@/game/phaser";
 import { MetamornScene } from "@/game/scenes/metamorn-scene";
 import { Keys } from "@/types/game/enum/key";
-import { UserInfo } from "@/types/socket-io/response";
 import Alert from "@/utils/alert";
 import {
   CanJoinIslandResponse,
   ClientToServer,
+  GetMyResponse,
   ServerToClient,
 } from "mmorntype";
 import { Socket } from "socket.io-client";
@@ -116,7 +117,7 @@ export class LobyScene extends MetamornScene {
   }
 
   async spwanMyPlayer() {
-    let userInfo: UserInfo;
+    let userInfo: GetMyResponse;
 
     try {
       userInfo = await this.getPlayerInfo();
@@ -125,12 +126,18 @@ export class LobyScene extends MetamornScene {
       userInfo = INITIAL_PROFILE;
     }
 
+    const { equipmentState: equipmentStateProto, ...playerInfo } = userInfo;
+    const equipmentState = new EquipmentState(equipmentStateProto.AURA);
+
     this.player = await controllablePlayerManager.spawnControllablePlayer(
       this,
-      userInfo,
-      this.mapComponent.centerOfMap.x,
-      this.mapComponent.centerOfMap.y,
-      this.inputManager
+      playerInfo,
+      {
+        x: this.mapComponent.centerOfMap.x,
+        y: this.mapComponent.centerOfMap.y,
+      },
+      this.inputManager,
+      equipmentState
     );
   }
 

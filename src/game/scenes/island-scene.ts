@@ -1,5 +1,6 @@
 import { Socket } from "socket.io-client";
 import {
+  ActivePlayer,
   ActivePlayerResponse,
   ClientToServer,
   MessageSent,
@@ -38,6 +39,7 @@ import { HAS_NEW_VERSION } from "@/constants/message/info-message";
 import { useIslandStore } from "@/stores/useIslandStore";
 import { TOWN } from "@/constants/game/sounds/bgm/bgms";
 import { TilemapComponent } from "@/game/components/tile-map.component";
+import { EquipmentState } from "@/game/components/equipment-state";
 
 export class IslandScene extends MetamornScene {
   protected override player: Player;
@@ -214,6 +216,7 @@ export class IslandScene extends MetamornScene {
     });
 
     this.io.on("activePlayers", (activeUsers) => {
+      console.log(activeUsers);
       this.spawnActiveUsers(activeUsers);
 
       EventWrapper.emitToUi("updateParticipantsPanel");
@@ -233,13 +236,15 @@ export class IslandScene extends MetamornScene {
           this.player.destroy(true);
         }
 
-        const userInfo = await this.getPlayerInfo();
+        const { equipmentState: equipmentStateProto, ...userInfo } =
+          await this.getPlayerInfo();
+        const equipmentState = new EquipmentState(equipmentStateProto.AURA);
         this.player = await controllablePlayerManager.spawnControllablePlayer(
           this,
           userInfo,
-          data.x,
-          data.y,
+          { x: data.x, y: data.y },
           this.inputManager,
+          equipmentState,
           this.io
         );
       } catch (e: unknown) {
@@ -414,18 +419,17 @@ export class IslandScene extends MetamornScene {
     playerStore.deletePlayer(playerId);
   }
 
-  addPlayer(data: {
-    readonly id: string;
-    readonly nickname: string;
-    readonly tag: string;
-    readonly avatarKey: string;
-    readonly x: number;
-    readonly y: number;
-  }) {
+  addPlayer(data: ActivePlayer) {
     const { x, y, ...userInfo } = data;
     if (playerStore.has(userInfo.id)) return;
 
-    const player = spawnManager.spawnPlayer(this, userInfo, x, y);
+    const equipmentState = new EquipmentState(data.equipmentState.AURA);
+    const player = spawnManager.spawnPlayer(
+      this,
+      userInfo,
+      { x, y },
+      equipmentState
+    );
 
     playerStore.addPlayer(userInfo.id, player);
   }

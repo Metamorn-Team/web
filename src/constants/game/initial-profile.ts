@@ -6,4 +6,10 @@ export const INITIAL_PROFILE = {
   nickname: " ",
   tag: "hello_livisland",
   bio: "섬으로 떠나자!!",
+  email: "",
+  provider: "GOOGLE" as const,
+  equipmentState: {
+    AURA: null,
+    SPEECH_BUBBLE: null,
+  },
 };

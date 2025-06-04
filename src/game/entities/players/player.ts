@@ -10,12 +10,13 @@ import { PlayerState } from "@/game/fsm/states/enum/player/player-state";
 import { FiniteStateMachine } from "@/game/fsm/machine/interface/finite-state-machine";
 import { InputManager } from "@/game/managers/input/input-manager";
 import { AuraEffect } from "@/game/components/aura-effect";
-import { ItemGrade } from "mmorntype/dist/src/domain/types/item.types";
+import { EquipmentState } from "@/game/components/equipment-state";
 
 export abstract class Player extends Phaser.Physics.Matter.Sprite {
   private inputManager?: InputManager;
   protected fsm: FiniteStateMachine<PlayerState> | null = null;
   protected auraEffect: AuraEffect;
+  protected equipmentState: EquipmentState;
 
   private playerInfo: UserInfo;
   private label = "PLAYER";
@@ -42,6 +43,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     texture: string,
     playerInfo: UserInfo,
     isControllable = false,
+    equipmentState: EquipmentState,
     inputManager?: InputManager,
     io?: Socket
   ) {
@@ -49,6 +51,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
     scene.add.existing(this);
 
+    this.equipmentState = equipmentState;
     this.isControllable = isControllable;
     this.inputManager = inputManager;
     this.io = io;
@@ -62,23 +65,6 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
 
     this.listenInteractionEvent();
     // this.setPipeline("Light2D");
-
-    // 나
-    if (this.playerInfo.id === "ebf2f847-01fd-4a5b-8e1e-79e3a94175fa") {
-      this.preFX?.addGlow(0xfbb6ce);
-      // const phantom = 0xb68df4;
-      // this.preFX?.addGlow(phantom, 3);
-      // this.scene.tweens.add({
-      //   targets: this,
-      //   alpha: { from: 1, to: 0.5 },
-      //   duration: 900,
-      //   yoyo: true,
-      //   repeat: -1,
-      // });
-    }
-
-    if (this.playerInfo.id === "601ecbae-ee0e-4a75-9fb1-61d068668046") {
-    }
   }
 
   getSpeed() {
@@ -202,8 +188,8 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.playerNameText.setVisible(visible);
   }
 
-  setAura(key: string, grade: ItemGrade) {
-    this.auraEffect.changeAura(key, grade);
+  setAura(key: string) {
+    this.auraEffect.changeAura(key);
   }
 
   private setNickname(scene: Phaser.Scene) {

@@ -6,18 +6,19 @@ import { PawnColor, pawnColors } from "@/constants/game/entities";
 import { RemotePlayerFSM } from "@/game/fsm/machine/player/remote-player-fsm";
 import { PlayerFSM } from "@/game/fsm/machine/player/player-fsm";
 import { InputManager } from "@/game/managers/input/input-manager";
+import { Position } from "@/types/game/game";
+import { EquipmentState } from "@/game/components/equipment-state";
 
 class SpawnManager {
   spawnPlayer(
     scene: Phaser.Scene,
     userInfo: UserInfo,
-    x: number,
-    y: number,
+    position: Position,
+    equipmentState = new EquipmentState(null),
     isControllable = false,
     inputManager?: InputManager,
     io?: Socket
   ) {
-    console.log(userInfo.id);
     const { avatarKey } = userInfo;
     const avatarInfo = avatarKey.split("_");
     const color = avatarInfo[0] as PawnColor;
@@ -25,10 +26,11 @@ class SpawnManager {
 
     const player = new Pawn(
       scene,
-      x,
-      y,
+      position.x,
+      position.y,
       hasColor ? color : "blue",
       userInfo,
+      equipmentState,
       isControllable,
       inputManager,
       io

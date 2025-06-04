@@ -1,5 +1,6 @@
 import { LOBY_SCENE, MY_ISLAND_SCENE } from "@/constants/game/islands/island";
 import { STORE } from "@/constants/game/sounds/bgm/bgms";
+import { EquipmentState } from "@/game/components/equipment-state";
 import { TilemapComponent } from "@/game/components/tile-map.component";
 import { Pawn } from "@/game/entities/players/pawn";
 import { Sheep } from "@/game/entities/sheep";
@@ -58,14 +59,18 @@ export class MyIslandScene extends MetamornScene {
   }
 
   async spwanMyPlayer() {
-    const userInfo = await this.getPlayerInfo();
-
+    const { equipmentState: equipmentStateProto, ...userInfo } =
+      await this.getPlayerInfo();
+    const equipmentState = new EquipmentState(equipmentStateProto.AURA);
     this.player = await controllablePlayerManager.spawnControllablePlayer(
       this,
       userInfo,
-      this.mapComponent.centerOfMap.x,
-      this.mapComponent.centerOfMap.y,
-      this.inputManager
+      {
+        x: this.mapComponent.centerOfMap.x,
+        y: this.mapComponent.centerOfMap.y,
+      },
+      this.inputManager,
+      equipmentState
     );
   }
 
@@ -84,8 +89,8 @@ export class MyIslandScene extends MetamornScene {
       changeScene(this, LOBY_SCENE, this.clearBeforeLeft);
     });
 
-    EventWrapper.onGameEvent("changeAura", (key, grade) => {
-      this.player.setAura(key, grade);
+    EventWrapper.onGameEvent("changeAura", (key) => {
+      this.player.setAura(key);
     });
   }
 
