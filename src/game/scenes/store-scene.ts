@@ -1,15 +1,14 @@
-import { ProductType } from "@/api/product";
 import { INITIAL_PROFILE } from "@/constants/game/initial-profile";
 import { STORE } from "@/constants/game/sounds/bgm/bgms";
 import { defineAnimation } from "@/game/animations/define-animation";
+import { EquipmentState } from "@/game/components/equipment-state";
 import { EventWrapper } from "@/game/event/EventBus";
 import { assetManager } from "@/game/managers/asset-manager";
 import { controllablePlayerManager } from "@/game/managers/controllable-player-manager";
-import { preFxManager } from "@/game/managers/preFxManger";
 import { SoundManager } from "@/game/managers/sound-manager";
 import { tileMapManager } from "@/game/managers/tile-map-manager";
 import { MetamornScene } from "@/game/scenes/metamorn-scene";
-import { UserInfo } from "@/types/socket-io/response";
+import { GetMyResponse } from "mmorntype";
 
 export class StoreScene extends MetamornScene {
   private bgmKey = STORE;
@@ -57,7 +56,7 @@ export class StoreScene extends MetamornScene {
   }
 
   async spawnPlayer() {
-    let userInfo: UserInfo;
+    let userInfo: GetMyResponse;
 
     try {
       userInfo = await this.getPlayerInfo();
@@ -66,12 +65,15 @@ export class StoreScene extends MetamornScene {
       userInfo = INITIAL_PROFILE;
     }
 
+    const { equipmentState: equipmentStateProto, ...playerInfo } = userInfo;
+    const equipmentState = new EquipmentState(equipmentStateProto.AURA);
+
     this.player = await controllablePlayerManager.spawnControllablePlayer(
       this,
-      userInfo,
-      160,
-      160,
-      this.inputManager
+      playerInfo,
+      { x: 160, y: 160 },
+      this.inputManager,
+      equipmentState
     );
   }
 
@@ -102,8 +104,10 @@ export class StoreScene extends MetamornScene {
 
   listenEvent() {
     EventWrapper.onGameEvent("tryOnProduct", (type, key) => {
-      if (type === ProductType.AURA) {
-        preFxManager.applyEffect(this.player, type, key);
+      console.log(key);
+      console.log(type);
+      if (type === "AURA") {
+        this.player.setAura(key);
       }
     });
   }
