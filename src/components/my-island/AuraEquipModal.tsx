@@ -46,18 +46,20 @@ export default function AuraEquipModal({
         </div>
 
         {/* 오라 목록 */}
-        <div className="flex justify-center w-full min-h-[300px] min-w-[350px] mt-4">
-          <Suspense
-            fallback={
-              <DotLoader
-                loadingText="오라를 찾는 중"
-                className="text-lg text-slate-900 mt-4"
-                dotInterval={130}
-              />
-            }
-          >
-            <AuraList grade={selectedTier} />
-          </Suspense>
+        <div className="flex justify-center w-full min-w-[300px] sm:min-w-[350px] mt-4 h-[320px]">
+          <div className="w-full overflow-y-auto pr-1 flex justify-center">
+            <Suspense
+              fallback={
+                <DotLoader
+                  loadingText="오라를 찾는 중"
+                  className="text-lg text-slate-900 mt-4"
+                  dotInterval={130}
+                />
+              }
+            >
+              <AuraList grade={selectedTier} />
+            </Suspense>
+          </div>
         </div>
       </div>
     </RetroSideModal>
