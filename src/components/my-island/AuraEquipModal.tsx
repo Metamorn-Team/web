@@ -26,9 +26,9 @@ export default function AuraEquipModal({
   return (
     <RetroSideModal isOpen={isOpen} onClose={onClose}>
       <h2 className="text-lg font-bold mb-4">🌀 오라 장착</h2>
-      <div className="flex w-full">
+      <div className="flex flex-col w-full">
         {/* 좌측 등급 메뉴 */}
-        <div className="flex flex-col gap-2 pr-4 border-r border-[#bfae96] min-w-[90px]">
+        <div className="flex flex-row gap-2 border-[#bfae96]">
           {ITEM_GRADE.map((tier, i) => (
             <button
               key={tier}
@@ -45,13 +45,13 @@ export default function AuraEquipModal({
           ))}
         </div>
 
-        {/* 우측 오라 목록 */}
-        <div className="flex items-center justify-center min-w-[300px] min-h-[300px]">
+        {/* 오라 목록 */}
+        <div className="flex justify-center w-full min-h-[300px] min-w-[350px] mt-4">
           <Suspense
             fallback={
               <DotLoader
                 loadingText="오라를 찾는 중"
-                className="text-lg text-slate-900"
+                className="text-lg text-slate-900 mt-4"
                 dotInterval={130}
               />
             }
@@ -84,15 +84,15 @@ const AuraList = ({ grade }: { grade: ItemGrade }) => {
   };
 
   return (
-    <div className="flex w-full justify-center items-center">
+    <div className="flex w-full justify-center">
       {items.length === 0 ? (
-        <p>멋진 오라를 구매해보아요 ✨</p>
+        <p className="mt-4">멋진 오라를 구매해보아요 ✨</p>
       ) : (
-        <div className="grid grid-cols-3 gap-4 pl-4 w-full">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 w-full">
           {items.map((aura) => (
             <div
               key={aura.id}
-              className="border border-[#bfae96] p-3 rounded bg-white flex flex-col items-center"
+              className="border border-[#bfae96] p-3 rounded bg-white flex flex-col items-center h-[150px]"
             >
               <div className="relative w-14 h-14 mb-2">
                 <Image src={aura.image} fill alt="오라" />

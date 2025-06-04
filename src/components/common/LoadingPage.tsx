@@ -49,7 +49,10 @@ export default function LoadingPage() {
   return (
     <div className="absolute w-screen h-screen bg-darkBg flex flex-col justify-center items-center -z-50 gap-4">
       {loader.loader}
-      <DotLoader loadingText={commonMessage} />
+      <DotLoader
+        loadingText={commonMessage}
+        className="text-white text-4xl font-bold mt-4"
+      />
     </div>
   );
 }

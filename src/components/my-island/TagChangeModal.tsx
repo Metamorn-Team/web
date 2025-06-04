@@ -61,7 +61,7 @@ export default function ChangeTagModal({
             type="text"
             value={tag}
             onChange={(e) => setTag(e.target.value)}
-            className="w-full px-3 py-2 border border-[#8c7a5c] rounded bg-[#fdf8ef] text-sm"
+            className="w-full px-3 py-2 border border-[#8c7a5c] rounded bg-[#fdf8ef]"
             placeholder="예: i_love_livisland"
           />
           {error && <p className="text-red-600 text-xs mt-1">{error}</p>}

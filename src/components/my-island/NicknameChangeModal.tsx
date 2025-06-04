@@ -64,7 +64,7 @@ export default function NicknameChangeModal({
             type="text"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
-            className="w-full px-3 py-2 border border-[#8c7a5c] rounded bg-[#fdf8ef] text-sm"
+            className="w-full px-3 py-2 border border-[#8c7a5c] rounded bg-[#fdf8ef]"
             placeholder="예: 리아최고"
           />
           {error && <p className="text-red-600 text-xs mt-1">{error}</p>}

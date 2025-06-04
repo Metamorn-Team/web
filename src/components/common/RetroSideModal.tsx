@@ -33,11 +33,11 @@ export default function RetroSideModal({
       <div
         className={classNames(
           `
-          bg-[#fdf8ef] border border-[#bfae96]
-          shadow-[6px_6px_0_#8c7a5c]
-          rounded-[12px] w-max-[500px] max-h-[90vh]
-          overflow-y-auto animate-fadeIn duration-200 relative
-        `
+    bg-[#fdf8ef] border border-[#bfae96]
+    shadow-[6px_6px_0_#8c7a5c]
+    rounded-[12px] w-full sm:w-auto max-w-[90vw] sm:max-w-[500px] max-h-[90vh]
+    overflow-y-auto animate-fadeIn duration-200 relative
+  `
         )}
       >
         <button

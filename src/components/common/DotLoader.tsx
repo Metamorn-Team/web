@@ -1,4 +1,3 @@
-import classNames from "classnames";
 import { useEffect, useState } from "react";
 
 interface DotLoaderProps {
@@ -23,7 +22,7 @@ export const DotLoader = ({
   }, []);
 
   return (
-    <p className={classNames("text-4xl text-white font-bold mt-4", className)}>
+    <p className={className}>
       {loadingText}
       {dots}
     </p>
