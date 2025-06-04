@@ -23,7 +23,7 @@ const ConfirmPurchaseModal = ({
   const [isEnoughGold, setIsEnoughGold] = useState(true);
 
   useEffect(() => {
-    setIsEnoughGold(goldBalance > totalPrice);
+    setIsEnoughGold(goldBalance >= totalPrice);
   }, [goldBalance, totalPrice]);
 
   useEffect(() => {
