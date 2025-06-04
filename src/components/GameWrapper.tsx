@@ -31,6 +31,7 @@ import IslandInfoModal from "@/components/IslandInfoModal";
 import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
 import MyIsland from "@/components/my-island/MyIsland";
 import { useCurrentSceneStore } from "@/stores/useCurrentSceneStore";
+import UpdateNoteModal from "@/components/UpdateNoteModal";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -85,6 +86,11 @@ export default function GameWrapper({
     isModalOpen: isDevModalOpen,
     onOpen: onDevOpen,
     onClose: onDevClose,
+  } = useModal();
+  const {
+    isModalOpen: isUpdateModalOpen,
+    onOpen: onUpdateOpen,
+    onClose: onUpdateClose,
   } = useModal();
   const [isVisibleChat, setIsVisibleChat] = useState(false);
   const {
@@ -221,6 +227,7 @@ export default function GameWrapper({
           changeFriendModalOpen={changeFriendModalOpen}
           onSettingsModalOpen={onSettingsModalOpen}
           onDevModalOpen={onDevOpen}
+          onUpdateOpen={onUpdateOpen}
           onIslandInfoModalOpen={onIslandInfoModalOpen}
         />
       ) : null}
@@ -271,6 +278,10 @@ export default function GameWrapper({
       {<ControlGuide />}
       {isDevModalOpen ? (
         <HelpModal isOpen={isDevModalOpen} onClose={onDevClose} />
+      ) : null}
+
+      {isUpdateModalOpen ? (
+        <UpdateNoteModal isOpen={isUpdateModalOpen} onClose={onUpdateClose} />
       ) : null}
 
       {currentScene === MY_ISLAND_SCENE ? <MyIsland /> : null}
