@@ -15,7 +15,7 @@ import { socketManager } from "@/game/managers/socket-manager";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { INITIAL_PROFILE } from "@/constants/game/initial-profile";
 import Pawn from "@/components/common/Pawn";
-import { PawnColor } from "@/constants/game/entities";
+import { pawnColors } from "@/constants/game/entities";
 
 interface PlayerInfoModalProps {
   playerInfo: UserInfo;
@@ -117,9 +117,9 @@ const PlayerInfoModal = ({
           <div>
             <Pawn
               color={
-                (displayedUser.avatarKey || "purple_pawn").split(
-                  "_"
-                )[0] as PawnColor
+                pawnColors.find((color) =>
+                  displayedUser.avatarKey.startsWith(color)
+                ) || "blue"
               }
               animation="idle"
               className="w-[60px] h-[60px] sm:w-[72px] sm:h-[72px]"
