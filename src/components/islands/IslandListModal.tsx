@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { FiRotateCcw } from "react-icons/fi";
 import RetroModal from "@/components/common/RetroModal";
 import RetroButton from "@/components/common/RetroButton";
@@ -23,6 +22,7 @@ import { useGetAllTags } from "@/hook/queries/useGetAllTags";
 import { Socket } from "socket.io-client";
 import { usePageGroup } from "@/hook/usePageGroup";
 import Tag from "@/components/islands/Tag";
+import ImageWithFallback from "@/components/common/ImageWithFallback";
 
 interface Island {
   id: string;
@@ -245,12 +245,11 @@ export default function IslandListModal({
                       className="flex flex-col border border-[#d2c4ad] rounded-[6px] bg-[#f9f5ec] shadow-[3px_3px_0_#8c7a5c] overflow-hidden"
                     >
                       <div className="relative w-full aspect-[4/3] bg-[#ebe3d4]">
-                        <Image
+                        <ImageWithFallback
                           src={island.coverImage}
                           fill
                           alt={island.name}
-                          objectFit="cover"
-                          className="image-render-pixel"
+                          className="object-cover"
                         />
                         <div className="absolute bottom-2 right-2 bg-[#5c4b32] text-white text-xs px-2 py-1 rounded-[4px] shadow-[2px_2px_0_#3d2c1b]">
                           {island.countParticipants}/{island.maxMembers}명
