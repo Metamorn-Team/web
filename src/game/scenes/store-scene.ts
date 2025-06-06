@@ -41,8 +41,7 @@ export class StoreScene extends MetamornScene {
 
     this.listenEvent();
 
-    SoundManager.init(this);
-    SoundManager.getInstance().playBgm(this.bgmKey, 0.1);
+    SoundManager.init(this).playBgm(this.bgmKey, 0.1);
 
     EventWrapper.emitToUi("current-scene-ready", {
       scene: this,

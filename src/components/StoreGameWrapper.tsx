@@ -20,6 +20,8 @@ import ConfirmPurchaseModal from "@/components/store/ConfirmPurchaseModal";
 import EquippedItemList from "@/components/store/EquippedItemList";
 import { EventWrapper } from "@/game/event/EventBus";
 import Pawn from "@/components/common/Pawn";
+import { SoundManager } from "@/game/managers/sound-manager";
+import { CASH } from "@/constants/game/sounds/sfx/sfxs";
 
 const DynamicStoreGame = dynamic(() => import("@/components/StoreGame"), {
   ssr: false,
@@ -104,7 +106,14 @@ export default function StoreGameWrapper() {
   };
 
   const onPurchase = () => {
-    mutate({ productIds: equippedItems.map((i) => i.id) });
+    mutate(
+      { productIds: equippedItems.map((i) => i.id) },
+      {
+        onSuccess: () => {
+          SoundManager.getInstance().playSfx(CASH, 1.5);
+        },
+      }
+    );
   };
 
   const onEquippedItemRemove = useCallback((id: string) => {

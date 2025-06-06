@@ -11,7 +11,7 @@ import {
   TOWN,
   WOODLAND_FANTASY,
 } from "@/constants/game/sounds/bgm/bgms";
-import { HIT, JUMP, STRONG_HIT } from "@/constants/game/sounds/sfx/sfxs";
+import { CASH, HIT, JUMP, STRONG_HIT } from "@/constants/game/sounds/sfx/sfxs";
 import { SKULL_SIGN, TREE } from "@/constants/game/sprites/nature";
 import {
   FOAM,
@@ -143,6 +143,7 @@ export class AssetManager {
     scene.load.audio(HIT, "/game/sounds/hit.wav");
     scene.load.audio(STRONG_HIT, "/game/sounds/strong-hit.wav");
     scene.load.audio(JUMP, "/game/sounds/jump.wav");
+    scene.load.audio(CASH, "/game/sounds/cash.mp3");
   }
 }
 
