@@ -10,7 +10,6 @@ import {
 } from "mmorntype";
 import { EventWrapper } from "@/game/event/EventBus";
 import { MetamornScene } from "@/game/scenes/metamorn-scene";
-import { spawnManager } from "@/game/managers/spawn-manager";
 import { Player } from "@/game/entities/players/player";
 import { socketManager } from "@/game/managers/socket-manager";
 import {
@@ -20,7 +19,6 @@ import {
   setItem,
 } from "@/utils/session-storage";
 import { playerStore } from "@/game/managers/player-store";
-import { controllablePlayerManager } from "@/game/managers/controllable-player-manager";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import Alert from "@/utils/alert";
 import { Keys } from "@/types/game/enum/key";
@@ -39,7 +37,7 @@ import { HAS_NEW_VERSION } from "@/constants/message/info-message";
 import { useIslandStore } from "@/stores/useIslandStore";
 import { TOWN } from "@/constants/game/sounds/bgm/bgms";
 import { TilemapComponent } from "@/game/components/tile-map.component";
-import { EquipmentState } from "@/game/components/equipment-state";
+import { playerSpawner } from "@/game/managers/spawners/player-spawner";
 
 export class IslandScene extends MetamornScene {
   protected override player: Player;
@@ -152,14 +150,16 @@ export class IslandScene extends MetamornScene {
     });
 
     EventWrapper.onGameEvent("mySpeechBubble", async (data: MessageSent) => {
-      const me = await this.getPlayerInfo();
-      this.showSpeechBubble(me.id, data.message, true);
+      this.player.speech(data.message);
     });
 
     EventWrapper.onGameEvent(
       "otherSpeechBubble",
       async (data: ReceiveMessage) => {
-        this.showSpeechBubble(data.senderId, data.message);
+        const { senderId, message } = data;
+
+        const player = playerStore.getPlayer(senderId);
+        player?.speech(message);
       }
     );
 
@@ -229,32 +229,35 @@ export class IslandScene extends MetamornScene {
       EventWrapper.emitToUi("updateParticipantsPanel");
     });
 
-    this.io.on("playerJoinSuccess", async (data: { x: number; y: number }) => {
-      // this.io.emit("islandHearbeat");
-      try {
-        if (this.player) {
-          this.player.destroy(true);
+    this.io.on(
+      "playerJoinSuccess",
+      async (position: { x: number; y: number }) => {
+        // this.io.emit("islandHearbeat");
+        try {
+          if (this.player) {
+            this.player.destroy(true);
+          }
+
+          const { equipmentState, ...playerInfo } = await this.getPlayerInfo();
+          this.player = playerSpawner.spawnPlayer({
+            scene: this,
+            equipment: equipmentState,
+            playerInfo,
+            position,
+            texture: playerInfo.avatarKey,
+            inputManager: this.inputManager,
+            io: this.io,
+          });
+          this.followPlayerCamera();
+        } catch (e: unknown) {
+          // TODO 토큰 재발급 추가하면 401시 그쪽에서 처리
+          console.log(e);
+
+          removeSessionItem("current_scene");
+          window.location.reload();
         }
-
-        const { equipmentState: equipmentStateProto, ...userInfo } =
-          await this.getPlayerInfo();
-        const equipmentState = new EquipmentState(equipmentStateProto.AURA);
-        this.player = await controllablePlayerManager.spawnControllablePlayer(
-          this,
-          userInfo,
-          { x: data.x, y: data.y },
-          this.inputManager,
-          equipmentState,
-          this.io
-        );
-      } catch (e: unknown) {
-        // TODO 토큰 재발급 추가하면 401시 그쪽에서 처리
-        console.log(e);
-
-        removeSessionItem("current_scene");
-        window.location.reload();
       }
-    });
+    );
 
     this.io.on("playerLeftSuccess", () => {
       this.changeToLoby();
@@ -420,18 +423,17 @@ export class IslandScene extends MetamornScene {
   }
 
   addPlayer(data: ActivePlayer) {
-    const { x, y, ...userInfo } = data;
-    if (playerStore.has(userInfo.id)) return;
+    const { x, y, ...playerInfo } = data;
+    if (playerStore.has(playerInfo.id)) return;
 
-    const equipmentState = new EquipmentState(data.equipmentState.AURA);
-    const player = spawnManager.spawnPlayer(
-      this,
-      userInfo,
-      { x, y },
-      equipmentState
-    );
-
-    playerStore.addPlayer(userInfo.id, player);
+    const player = playerSpawner.spawnPlayer({
+      scene: this,
+      equipment: data.equipmentState,
+      playerInfo: playerInfo,
+      position: { x, y },
+      texture: playerInfo.avatarKey,
+    });
+    playerStore.addPlayer(playerInfo.id, player);
   }
 
   showSpeechBubble(playerId: string, message: string, isMe = false) {
