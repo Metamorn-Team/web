@@ -7,87 +7,69 @@ import {
   PAWN_STRONG_ATTACK,
   PAWN_WALK,
 } from "@/game/animations/keys/pawn";
-import { AuraEffect } from "@/game/components/aura-effect";
 import { EquipmentState } from "@/game/components/equipment-state";
-import { Player } from "@/game/entities/players/player";
-import { InputManager } from "@/game/managers/input/input-manager";
+import { NameLabel } from "@/game/components/name-label";
+import { Renderer } from "@/game/components/renderer";
+import { Player, PlayerOptions } from "@/game/entities/players/player";
 import { SoundManager } from "@/game/managers/sound-manager";
 import { AttackType } from "@/types/game/enum/state";
-import { TypedSocket } from "@/types/socket-io";
-import { UserInfo } from "@/types/socket-io/response";
+
+interface PawnOptions extends PlayerOptions {
+  color: PawnColor;
+}
 
 export class Pawn extends Player {
   private color: PawnColor;
 
-  constructor(
-    scene: Phaser.Scene,
-    x: number,
-    y: number,
-    color: PawnColor,
-    userInfo: UserInfo,
-    equipmentState: EquipmentState,
-    isControllable?: boolean,
-    inputManager?: InputManager,
-    io?: TypedSocket
-  ) {
-    super(
-      scene,
-      x,
-      y,
-      PAWN(color),
-      userInfo,
-      isControllable,
-      equipmentState,
-      inputManager,
-      io
-    );
-    this.color = color;
-    this.auraEffect = new AuraEffect(this, this.equipmentState.aura);
+  constructor(options: PawnOptions) {
+    super({
+      ...options,
+      texture: PAWN(options.color),
+      nameLabelGap: 42,
+      speechBubbleGap: 55,
+    });
 
     this.isBeingBorn = false;
+    this.color = options.color;
+
+    this.addComponent(new EquipmentState(options.equipment.AURA));
   }
 
-  getColor() {
-    return this.color;
-  }
-
-  protected setBodyConfig(): void {
-    this.setScale(0.7);
-    this.setCircle(15, {
-      label: this.isControllable ? "MY_PLAYER" : "PLAYER",
-    });
-  }
-
-  update(delta: number): void {
+  public update(delta: number): void {
     if (this.isBeingBorn) return;
 
     super.update(delta);
   }
 
-  walk(side: "right" | "left" | "none"): void {
-    if (this.isSleep) {
-      this.awake();
-    }
+  public walk(side: "right" | "left" | "none"): void {
+    this.awake();
 
-    this.play(PAWN_WALK(this.color), true);
+    const renderer = this.getComponent(Renderer);
+    renderer?.play(PAWN_WALK(this.color), true);
 
     if (side === "right") {
-      this.setFlipX(false);
+      renderer?.setFlipX(false);
     }
 
     if (side === "left") {
-      this.setFlipX(true);
+      renderer?.setFlipX(true);
     }
   }
 
-  idle(): void {
-    this.play(PAWN_IDLE(this.color), true);
+  public idle(): void {
+    this.getComponent(Renderer)?.play(PAWN_IDLE(this.color), true);
   }
 
-  attack(attackType: AttackType): void {
-    if (this.isSleep) {
-      this.awake();
-    }
+  public attack(attackType: AttackType): void {
+    this.awake();
+
+    const renderer = this.getComponent(Renderer);
+    renderer?.play(
+      attackType === AttackType.STRONG_ATTACK
+        ? PAWN_STRONG_ATTACK(this.color)
+        : PAWN_ATTACK(this.color),
+      true
+    );
 
     this.scene.time.delayedCall(240, () => {
       SoundManager.getInstance().playSfx(
@@ -95,31 +77,38 @@ export class Pawn extends Player {
         0.3
       );
     });
-
-    this.play(
-      attackType === AttackType.STRONG_ATTACK
-        ? PAWN_STRONG_ATTACK(this.color)
-        : PAWN_ATTACK(this.color),
-      true
-    );
   }
 
   public jump(side: "right" | "left" | "none"): void {
-    this.play(PAWN_JUMP(this.color), true);
+    this.awake();
+
+    const renderer = this.getComponent(Renderer);
+    if (!renderer) return;
+
+    renderer.play(PAWN_JUMP(this.color), true);
+
     SoundManager.getInstance().playSfx(JUMP, 0.05);
 
     if (side === "right") {
-      this.setFlipX(false);
+      renderer.setFlipX(false);
     }
 
     if (side === "left") {
-      this.setFlipX(true);
+      renderer.setFlipX(true);
     }
   }
 
-  setColor(newColor: PawnColor) {
+  public getColor() {
+    return this.color;
+  }
+
+  public setColor(newColor: PawnColor) {
     this.color = newColor;
     this.setTexture(PAWN(newColor));
     this.idle();
+  }
+
+  public setNicknameLabel(newNickname: string) {
+    this.getComponent(NameLabel)?.setText(newNickname);
   }
 }

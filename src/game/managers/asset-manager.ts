@@ -1,6 +1,7 @@
 import {
   PAWN,
   pawnColors,
+  SHEEP,
   TORCH_GOBLIN,
   torchGoblinColors,
   WARRIOR,
@@ -38,7 +39,7 @@ export class AssetManager {
   }
 
   loadSprites(scene: Phaser.Scene) {
-    scene.load.spritesheet("sheep", `${this.spriteUrl}/sheep.png`, {
+    scene.load.spritesheet(SHEEP, `${this.spriteUrl}/sheep.png`, {
       frameWidth: 128,
       frameHeight: 128,
     });

@@ -1,3 +1,4 @@
+import { Renderer } from "@/game/components/renderer";
 import { RemotePlayerFSM } from "@/game/fsm/machine/player/remote-player-fsm";
 import { PlayerState } from "@/game/fsm/states/enum/player/player-state";
 import { State } from "@/game/fsm/states/interface/state";
@@ -31,21 +32,20 @@ export class JumpState implements State<PlayerState> {
 
     const side = dx > 0 ? "left" : dx < 0 ? "right" : "none";
 
+    const renderer = this.parent.gameObject.getComponent(Renderer);
+
     if (side === "right") {
-      this.parent.gameObject.setFlipX(false);
+      renderer?.setFlipX(false);
     }
     if (side === "left") {
-      this.parent.gameObject.setFlipX(true);
+      renderer?.setFlipX(true);
     }
 
     if (this.isJump) {
       this.parent.gameObject.jump(side);
-      this.parent.gameObject.once(
-        Phaser.Animations.Events.ANIMATION_COMPLETE,
-        () => {
-          this.parent.setState(PlayerState.IDLE);
-        }
-      );
+      renderer?.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+        this.parent.setState(PlayerState.IDLE);
+      });
       this.isJump = false;
     }
   }

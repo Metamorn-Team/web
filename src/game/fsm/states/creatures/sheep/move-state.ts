@@ -28,8 +28,7 @@ export class MoveState implements State<SheepState> {
       Math.sin(angle)
     ).normalize();
 
-    this.parent.gameObject.setFlipX(this.direction.x < 0);
-
+    this.parent.gameObject.flipX(this.direction.x < 0);
     this.parent.gameObject.onMove();
   }
 

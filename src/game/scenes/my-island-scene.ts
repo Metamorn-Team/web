@@ -1,12 +1,11 @@
 import { LOBY_SCENE, MY_ISLAND_SCENE } from "@/constants/game/islands/island";
 import { STORE } from "@/constants/game/sounds/bgm/bgms";
-import { EquipmentState } from "@/game/components/equipment-state";
 import { TilemapComponent } from "@/game/components/tile-map.component";
 import { Pawn } from "@/game/entities/players/pawn";
 import { Sheep } from "@/game/entities/sheep";
 import { EventWrapper } from "@/game/event/EventBus";
-import { controllablePlayerManager } from "@/game/managers/controllable-player-manager";
 import { SoundManager } from "@/game/managers/sound-manager";
+import { playerSpawner } from "@/game/managers/spawners/player-spawner";
 import { MetamornScene } from "@/game/scenes/metamorn-scene";
 import { changeScene } from "@/game/utils/change-scene";
 
@@ -33,7 +32,7 @@ export class MyIslandScene extends MetamornScene {
     this.ready();
   }
 
-  update(time: number, delta: number): void {
+  update(_: number, delta: number): void {
     if (!this.player?.body) return;
     this.player.update(delta);
 
@@ -59,30 +58,33 @@ export class MyIslandScene extends MetamornScene {
   }
 
   async spwanMyPlayer() {
-    const { equipmentState: equipmentStateProto, ...userInfo } =
+    const { equipmentState: equipment, ...playerInfo } =
       await this.getPlayerInfo();
-    const equipmentState = new EquipmentState(equipmentStateProto.AURA);
-    this.player = await controllablePlayerManager.spawnControllablePlayer(
-      this,
-      userInfo,
-      {
+
+    this.player = playerSpawner.spawnPlayer({
+      equipment,
+      playerInfo,
+      position: {
         x: this.mapComponent.centerOfMap.x,
         y: this.mapComponent.centerOfMap.y,
       },
-      this.inputManager,
-      equipmentState
-    );
+      scene: this,
+      texture: playerInfo.avatarKey,
+      inputManager: this.inputManager,
+    });
+    this.followPlayerCamera();
   }
 
   listenLocalEvent() {
     EventWrapper.onGameEvent("changeAvatarColor", (color) => {
       if (this.player instanceof Pawn) {
+        console.log("난 폰이야");
         this.player.setColor(color);
       }
     });
 
     EventWrapper.onGameEvent("changeNickname", (nickname) => {
-      this.player.setNicknameText(nickname);
+      this.player.setNameLabel(nickname);
     });
 
     EventWrapper.onGameEvent("changeToLoby", () => {

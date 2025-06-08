@@ -1,3 +1,4 @@
+import { PAWN_AVATAR_URL } from "@/constants/image-path";
 import Image from "next/image";
 import React from "react";
 
@@ -30,7 +31,7 @@ const Message = ({
     >
       <div className="relative w-8 h-8 flex-shrink-0">
         <Image
-          src={`${process.env.NEXT_PUBLIC_CDN_BASE_URL}/image/avatar/${avatarKey}_avatar.png`}
+          src={PAWN_AVATAR_URL(avatarKey)}
           fill
           className={isMine ? "scale-x-[-1]" : ""}
           alt="avatar"

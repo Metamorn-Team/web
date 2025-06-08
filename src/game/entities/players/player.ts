@@ -1,6 +1,5 @@
 import * as Phaser from "phaser";
 import type { Socket } from "socket.io-client";
-import { COLLISION_CATEGORIES } from "@/constants/game/collision-categories";
 import { EventWrapper } from "@/game/event/EventBus";
 import { UserInfo } from "@/types/socket-io/response";
 import { DEAD } from "@/game/animations/keys/common";
@@ -11,60 +10,110 @@ import { FiniteStateMachine } from "@/game/fsm/machine/interface/finite-state-ma
 import { InputManager } from "@/game/managers/input/input-manager";
 import { AuraEffect } from "@/game/components/aura-effect";
 import { EquipmentState } from "@/game/components/equipment-state";
+import { BaseEntity } from "@/game/entities/common/base-entity";
+import { Position } from "@/types/game/game";
+import { Equipment } from "@/types/game/equipment";
+import { Renderer } from "@/game/components/renderer";
+import { CollisionComponent } from "@/game/components/collision";
+import { NameLabel } from "@/game/components/name-label";
+import { PointerInteractionComponent } from "@/game/components/pointer-interaction-component";
+import { SleepParticle } from "@/game/components/sleep-particle";
+import { SpeechBubble } from "@/game/components/speech-bubble";
+import { COLLISION_CATEGORIES } from "@/constants/game/collision-categories";
+import { COLLISION_LABEL } from "@/constants/game/collision-label";
 
-export abstract class Player extends Phaser.Physics.Matter.Sprite {
+export interface PlayerOptions {
+  scene: Phaser.Scene;
+  position: Position;
+  texture: string;
+  playerInfo: UserInfo;
+  equipment: Equipment;
+  nameLabelGap?: number;
+  speechBubbleGap?: number;
+  radius?: number;
+  inputManager?: InputManager;
+  io?: Socket;
+}
+
+export abstract class Player extends BaseEntity {
   private inputManager?: InputManager;
   protected fsm: FiniteStateMachine<PlayerState> | null = null;
-  protected auraEffect: AuraEffect;
   protected equipmentState: EquipmentState;
 
   private playerInfo: UserInfo;
-  private label = "PLAYER";
   public speed = 150;
 
-  protected isControllable: boolean;
   protected isBeingBorn = true;
-  protected isSleep = false;
+  protected isMyPlayer: boolean;
 
-  protected sleepParticle: Phaser.GameObjects.Sprite | null = null;
-  private speechBubble: Phaser.GameObjects.Container | null = null;
-  private playerNameText: Phaser.GameObjects.Text;
-  protected effect: Phaser.FX.Controller | undefined;
-
-  public targetPosition: { x: number; y: number } = { x: 0, y: 0 };
-
-  public lastSentPosition = { x: 0, y: 0 };
+  public targetPosition: Position = { x: 0, y: 0 };
+  public lastSentPosition: Position = { x: 0, y: 0 };
   public io?: TypedSocket;
 
-  constructor(
-    scene: Phaser.Scene,
-    x: number,
-    y: number,
-    texture: string,
-    playerInfo: UserInfo,
-    isControllable = false,
-    equipmentState: EquipmentState,
-    inputManager?: InputManager,
-    io?: Socket
-  ) {
-    super(scene.matter.world, x, y, texture);
+  constructor(options: PlayerOptions) {
+    super(options.scene, options.position.x, options.position.y);
 
-    scene.add.existing(this);
+    options.scene.add.existing(this);
+    this.inputManager = options.inputManager;
+    this.isMyPlayer = !!options.inputManager;
+    this.io = options.io;
+    this.targetPosition = options.position;
+    this.playerInfo = options.playerInfo;
 
-    this.equipmentState = equipmentState;
-    this.isControllable = isControllable;
-    this.inputManager = inputManager;
-    this.io = io;
-    this.targetPosition.x = x;
-    this.targetPosition.y = y;
-    this.playerInfo = playerInfo;
-    this.setNickname(scene);
-
-    this.setBodyConfig();
-    this.playerCommonBodyConfig();
-
+    // -- 필수 컴포넌트 등록 --
+    this.registerComponents(options);
     this.listenInteractionEvent();
-    // this.setPipeline("Light2D");
+    this.setInteractive(
+      new Phaser.Geom.Circle(this.width / 2, this.height / 2, options.radius),
+      Phaser.Geom.Circle.Contains
+    );
+  }
+
+  registerComponents(options: PlayerOptions) {
+    const renderer = new Renderer(this, options.texture).setScale(0.7);
+    const components = [
+      renderer,
+      new CollisionComponent(this, {
+        label: this.isMyPlayer
+          ? COLLISION_LABEL.MY_PLAYER
+          : COLLISION_LABEL.PLAYER,
+        shape: "circle",
+        radius: options.radius,
+        category: COLLISION_CATEGORIES.PLAYER,
+      }),
+      new NameLabel(this, {
+        text: options.playerInfo.nickname,
+        gap: options.nameLabelGap ?? 30,
+        color: this.isMyPlayer ? "#81D4FA" : "#FFFFFF",
+        isMine: this.isMyPlayer,
+      }),
+      new PointerInteractionComponent(this),
+      new SleepParticle(this),
+      new AuraEffect(renderer.sprite, options.equipment.AURA),
+      new SpeechBubble(this, {
+        gap: options.speechBubbleGap ?? 55,
+      }),
+    ];
+
+    components.forEach((c) => this.addComponent(c));
+  }
+
+  public abstract walk(side: "right" | "left" | "none"): void;
+  public abstract idle(): void;
+  public abstract attack(attackTtype?: AttackType): void;
+  public abstract jump(side: "right" | "left" | "none"): void;
+
+  update(delta: number): void {
+    if (this.fsm) {
+      const keys = this.isMyPlayer
+        ? this.inputManager?.getPressedKeys() || []
+        : undefined;
+
+      this.fsm.update(delta, keys);
+    }
+
+    super.update(delta);
+    this.setDepth(this.y);
   }
 
   getSpeed() {
@@ -91,54 +140,12 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     this.fsm = fsm;
   }
 
-  setNicknameText(newNickname: string) {
-    this.playerInfo.nickname = newNickname;
-
-    if (this.playerNameText) {
-      this.playerNameText.setText(newNickname);
-    }
-  }
-
-  private playerCommonBodyConfig() {
-    this.setCollisionCategory(COLLISION_CATEGORIES.PLAYER);
-    this.setCollidesWith(COLLISION_CATEGORIES.WORLD);
-
-    this.setFixedRotation();
-
-    if (this.body) {
-      (this.body as typeof this.body & { label: string }).label = this
-        .isControllable
-        ? "MY_PLAYER"
-        : "PLAYER";
-    }
-  }
-
-  protected abstract setBodyConfig(): void;
-
-  update(delta: number): void {
-    if (this.fsm) {
-      const keys = this.isControllable
-        ? this.inputManager?.getPressedKeys() || []
-        : undefined;
-
-      this.fsm.update(delta, keys);
-    }
-
-    this.setSpeechBubblePosition();
-    this.setNicknamePosition();
-    this.setDepth(this.y);
-  }
-
-  public abstract walk(side: "right" | "left" | "none"): void;
-  public abstract idle(): void;
-  public abstract attack(attackTtype?: AttackType): void;
-  public abstract jump(side: "right" | "left" | "none"): void;
-
   hit() {
-    this.setTintFill(0xffffff);
+    const renderer = this.getComponent(Renderer);
 
+    renderer?.setTint(0xffffff);
     this.scene.time.delayedCall(100, () => {
-      this.clearTint();
+      renderer?.clearTint();
     });
 
     const originalX = this.x;
@@ -160,118 +167,61 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   }
 
   sleep() {
-    if (this.isSleep) return;
+    const sleepParticle = this.getComponent(SleepParticle);
+    if (!sleepParticle) return;
 
-    this.isSleep = true;
-    this.sleepParticle = this.scene.add.sprite(this.x, this.y, "sleep");
-    this.sleepParticle.play("sleep");
+    sleepParticle.sleep();
   }
 
   awake() {
-    if (!this.isSleep) return;
-
-    this.isSleep = false;
-    this.sleepParticle?.destroy();
-    this.sleepParticle = null;
-  }
-
-  setNicknamePosition() {
-    if (this.playerNameText) {
-      this.playerNameText.setPosition(
-        this.x,
-        this.y - this.displayHeight / 2 + 30
-      );
-    }
-  }
-
-  setVisibleNickname(visible: boolean) {
-    this.playerNameText.setVisible(visible);
+    this.getComponent(SleepParticle)?.awake();
   }
 
   setAura(key: string) {
-    this.auraEffect.changeAura(key);
+    const aura = this.getComponent(AuraEffect);
+    aura?.changeAura(key);
   }
 
-  private setNickname(scene: Phaser.Scene) {
-    const cameraZoom = scene.cameras.main.zoom;
-
-    this.playerNameText = scene.add
-      .text(this.x, this.y - this.displayHeight / 2, this.playerInfo.nickname, {
-        fontFamily: "MapleStory",
-        fontStyle: "bold",
-        fontSize: "16px",
-        padding: { bottom: 14 },
-        color: this.isControllable ? "#81D4FA" : "#FFFFFF",
-        stroke: "#000000",
-        strokeThickness: 3,
-        resolution: cameraZoom,
-      })
-      .setScale(1)
-      .setDepth(999999);
-    this.playerNameText.setOrigin(0.5, 0.5);
+  setNameLabel(newNickname: string) {
+    this.getComponent(NameLabel)?.setText(newNickname);
   }
 
-  protected listenInteractionEvent(radius?: number) {
-    this.setInteractive(
-      new Phaser.Geom.Circle(this.width / 2, this.height / 2, radius || 30),
-      Phaser.Geom.Circle.Contains
-    );
+  onPointerover() {
+    const renderer = this.getComponent(Renderer);
+    if (!renderer) return;
 
-    this.on("pointerover", () => {
-      this.effect = this.preFX?.addGlow();
-      console.log(this.playerInfo);
-    });
-
-    this.on("pointerout", () => {
-      if (this.effect) {
-        this.preFX?.remove(this.effect);
-        this.effect = undefined;
-      }
-    });
-
-    this.on("pointerdown", () => {
-      EventWrapper.emitToUi("player-click", {
-        ...this.playerInfo,
-      });
+    this.scene.tweens.add({
+      targets: [renderer.sprite],
+      scale: 0.8,
+      duration: 100,
+      ease: "Power2",
     });
   }
 
-  private setSpeechBubblePosition() {
-    if (this.speechBubble && this.speechBubble.active) {
-      this.speechBubble.setPosition(this.x, this.y - this.displayHeight / 2);
-    }
-  }
+  onPointerout() {
+    const renderer = this.getComponent(Renderer);
+    if (!renderer) return;
 
-  getSpeechBubble() {
-    return this.speechBubble;
-  }
-
-  setSpeechBubble(bubble: Phaser.GameObjects.Container | null) {
-    this.speechBubble = bubble;
-  }
-
-  destroy(fromScene?: boolean): void {
-    this.free(fromScene);
-  }
-
-  destroyWithAnimation(fromScene?: boolean) {
-    this.play(DEAD);
-    this.once("animationcomplete", () => {
-      this.destroy(fromScene);
+    this.scene.tweens.add({
+      targets: [renderer.sprite],
+      scale: 0.7,
+      duration: 100,
+      ease: "Power2",
     });
   }
 
-  free(fromScene?: boolean) {
-    if (this.effect) {
-      this.preFX?.remove(this.effect);
-      this.effect.destroy();
-    }
+  onPointerdown() {
+    EventWrapper.emitToUi("player-click", {
+      ...this.playerInfo,
+    });
+  }
 
-    this.playerNameText.destroy(fromScene);
-    this.preFX?.destroy();
-    this.sleepParticle?.destroy(fromScene);
+  protected listenInteractionEvent() {
+    const pointerInteraction = this.getComponent(PointerInteractionComponent);
 
-    super.destroy(fromScene);
+    pointerInteraction?.registerPointerover(this.onPointerover);
+    pointerInteraction?.registerPointerout(this.onPointerout);
+    pointerInteraction?.registerPointerdown(this.onPointerdown);
   }
 
   onWalk(x: number, y: number) {
@@ -280,7 +230,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   }
 
   onAttack() {
-    if (this.isControllable) {
+    if (this.inputManager) {
       this.attack(AttackType.ATTACK);
       this.io?.emit("attack");
       return;
@@ -292,7 +242,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   }
 
   onStrongAttack() {
-    if (this.isControllable) {
+    if (this.inputManager) {
       this.attack(AttackType.STRONG_ATTACK);
       this.io?.emit("strongAttack");
       return;
@@ -304,7 +254,7 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
   }
 
   onJump(side?: "right" | "left" | "none") {
-    if (this.isControllable) {
+    if (this.inputManager) {
       if (side) {
         this.jump(side);
         this.io?.emit("jump");
@@ -315,5 +265,30 @@ export abstract class Player extends Phaser.Physics.Matter.Sprite {
     if (this.fsm) {
       this.fsm.setState(PlayerState.JUMP);
     }
+  }
+
+  spriteOnce(event: string, callback: () => void) {
+    const render = this.getComponent(Renderer);
+    render?.once(event, callback);
+  }
+
+  public setTexture(key: string) {
+    this.getComponent(Renderer)?.setTexture(key);
+  }
+
+  public speech(text: string) {
+    this.getComponent(SpeechBubble)?.show(text);
+  }
+
+  destroy(fromScene?: boolean): void {
+    super.destroy(fromScene);
+  }
+
+  destroyWithAnimation(fromScene?: boolean) {
+    const renderer = this.getComponent(Renderer);
+    renderer?.play(DEAD);
+    renderer?.once("animationcomplete", () => {
+      this.destroy(fromScene);
+    });
   }
 }

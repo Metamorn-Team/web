@@ -33,6 +33,8 @@ export class AuraEffect implements Component {
     }
   }
 
+  update(): void {}
+
   destroy(): void {
     this.activeFX?.destroy();
     this.gameObj.preFX?.clear();

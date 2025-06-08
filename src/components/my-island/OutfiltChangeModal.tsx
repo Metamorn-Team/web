@@ -29,7 +29,7 @@ export default function OutfitChangeModal({
       removeItem("profile");
       onClose();
     },
-    () => Alert.error("문제가 생겼어요 잠시후 다시 갈아입어주세요..")
+    () => Alert.error("문제가 생겼어요 잠시후 다시 시도해주세요..")
   );
 
   const onPrev = () => {
