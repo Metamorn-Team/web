@@ -7,15 +7,14 @@ import {
 import { WOODLAND_FANTASY } from "@/constants/game/sounds/bgm/bgms";
 import { NPC_INTERACTABLE_DISTANCE } from "@/constants/game/threshold";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
-import { EquipmentState } from "@/game/components/equipment-state";
 import { TilemapComponent } from "@/game/components/tile-map.component";
 import { InteractiveObject } from "@/game/entities/interactive-object";
 import { Npc } from "@/game/entities/npc/npc";
 import { TorchGoblin } from "@/game/entities/npc/torch-goblin";
 import { EventWrapper } from "@/game/event/EventBus";
-import { controllablePlayerManager } from "@/game/managers/controllable-player-manager";
 import { socketManager } from "@/game/managers/socket-manager";
 import { SoundManager } from "@/game/managers/sound-manager";
+import { playerSpawner } from "@/game/managers/spawners/player-spawner";
 import { Mine } from "@/game/objects/mine";
 import { Phaser } from "@/game/phaser";
 import { MetamornScene } from "@/game/scenes/metamorn-scene";
@@ -78,7 +77,7 @@ export class LobyScene extends MetamornScene {
   }
 
   update(time: number, delta: number): void {
-    if (this.player?.body) {
+    if (this.player) {
       this.player.update(delta);
 
       this.checkNearNpc();
@@ -126,19 +125,19 @@ export class LobyScene extends MetamornScene {
       userInfo = INITIAL_PROFILE;
     }
 
-    const { equipmentState: equipmentStateProto, ...playerInfo } = userInfo;
-    const equipmentState = new EquipmentState(equipmentStateProto.AURA);
-
-    this.player = await controllablePlayerManager.spawnControllablePlayer(
-      this,
+    const { equipmentState, ...playerInfo } = userInfo;
+    this.player = playerSpawner.spawnPlayer({
+      equipment: equipmentState,
       playerInfo,
-      {
+      position: {
         x: this.mapComponent.centerOfMap.x,
         y: this.mapComponent.centerOfMap.y,
       },
-      this.inputManager,
-      equipmentState
-    );
+      scene: this,
+      texture: playerInfo.avatarKey,
+      inputManager: this.inputManager,
+    });
+    this.followPlayerCamera();
   }
 
   listenEvents() {

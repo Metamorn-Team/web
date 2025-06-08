@@ -1,6 +1,6 @@
 import { EventWrapper } from "@/game/event/EventBus";
-import { controllablePlayerManager } from "@/game/managers/controllable-player-manager";
 import { SoundManager } from "@/game/managers/sound-manager";
+import { playerSpawner } from "@/game/managers/spawners/player-spawner";
 import { Phaser } from "@/game/phaser";
 import { MetamornScene } from "@/game/scenes/metamorn-scene";
 
@@ -26,17 +26,20 @@ export default class PhotoScene extends MetamornScene {
     this.cameras.main.setBounds(0, 0, 400, 400);
     this.cameras.main.setZoom(1.3);
 
-    this.player = await controllablePlayerManager.spawnControllablePlayer(
-      this,
-      {
-        avatarKey: "purple_pawn",
-        id: "1",
-        nickname: "",
-        tag: "",
-      },
-      { x: 200, y: 200 },
-      this.inputManager
-    );
+    const playerInfo = {
+      avatarKey: "purple_pawn",
+      id: "1",
+      nickname: "",
+      tag: "",
+    };
+    this.player = playerSpawner.spawnPlayer({
+      equipment: { AURA: null },
+      playerInfo,
+      position: { x: 200, y: 300 },
+      scene: this,
+      texture: playerInfo.avatarKey,
+      inputManager: this.inputManager,
+    });
 
     SoundManager.init(this);
 
