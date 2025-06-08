@@ -1,4 +1,5 @@
 export const COLLISION_LABEL = {
   PLAYER: "PLAYER",
   MY_PLAYER: "MY_PLAYER",
+  ANIMAL: "ANIMAL",
 };

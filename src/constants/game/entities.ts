@@ -24,3 +24,6 @@ export type TorchGoblinColor = (typeof torchGoblinColors)[number];
 
 export const TORCH_GOBLIN = (color: TorchGoblinColor) =>
   `${color}_torch_goblin`;
+
+// Animal
+export const SHEEP = "sheep";

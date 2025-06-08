@@ -20,7 +20,6 @@ export class SheepFSM extends FiniteStateMachine<SheepState> {
       SheepState.MOVE,
       new MoveState(this)
     );
-    // .addState(SheepState.JUMP, new JumpState(this));
 
     this.currentState = idle;
     this.currentState.enter();
