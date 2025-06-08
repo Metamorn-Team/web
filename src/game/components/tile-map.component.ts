@@ -21,7 +21,7 @@ export class TilemapComponent implements Component {
     scene.matter.world.setBounds(0, 0, this.mapWidth, this.mapHeight);
 
     scene.cameras.main.setBounds(0, 0, this.mapWidth, this.mapHeight);
-    scene.cameras.main.setScroll(this.centerOfMap.x, this.centerOfMap.y);
+    scene.cameras.main.centerOn(this.centerOfMap.x, this.centerOfMap.y);
   }
 
   update(): void {}
