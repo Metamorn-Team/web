@@ -16,7 +16,8 @@ export class StrongAttackState implements State<PlayerState> {
 
   enter(): void {
     this.parent.gameObject.attack(AttackType.STRONG_ATTACK);
-    this.parent.gameObject.once(
+
+    this.parent.gameObject.spriteOnce(
       Phaser.Animations.Events.ANIMATION_COMPLETE,
       () => {
         this.parent.setState(PlayerState.IDLE);

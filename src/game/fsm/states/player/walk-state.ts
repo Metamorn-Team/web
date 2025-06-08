@@ -15,13 +15,11 @@ export class WalkState implements State<PlayerState> {
   update(delta: number, input: Keys[]) {
     if (input.includes(Keys.Z)) {
       this.parent.setState(PlayerState.ATTACK);
-      this.parent.gameObject.setVelocity(0, 0);
       return;
     }
 
     if (input.includes(Keys.X)) {
       this.parent.setState(PlayerState.STRONG_ATTACK);
-      this.parent.gameObject.setVelocity(0, 0);
       return;
     }
 
