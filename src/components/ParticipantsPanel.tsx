@@ -6,6 +6,7 @@ import { UserInfo } from "@/types/socket-io/response";
 import { playerStore } from "@/game/managers/player-store";
 import { EventWrapper } from "@/game/event/EventBus";
 import { FiX } from "react-icons/fi";
+import { PAWN_AVATAR_URL } from "@/constants/image-path";
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
@@ -89,7 +90,7 @@ export default function ParticipantPanel() {
               <li key={user.id} className="flex items-center gap-3">
                 <div className="relative w-8 h-8 shrink-0">
                   <Image
-                    src={`/images/avatar/${user.avatarKey}.png`}
+                    src={PAWN_AVATAR_URL(user.avatarKey)}
                     alt="avatar"
                     fill
                     className="rounded-full object-cover"
