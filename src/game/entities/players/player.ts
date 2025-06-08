@@ -85,6 +85,7 @@ export abstract class Player extends BaseEntity {
         text: options.playerInfo.nickname,
         gap: options.nameLabelGap ?? 30,
         color: this.isMyPlayer ? "#81D4FA" : "#FFFFFF",
+        isMine: this.isMyPlayer,
       }),
       new PointerInteractionComponent(this),
       new SleepParticle(this),

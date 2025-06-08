@@ -4,6 +4,7 @@ import { BaseEntity } from "@/game/entities/common/base-entity";
 interface NicknameLabelOptions {
   text: string;
   gap: number;
+  isMine?: boolean;
   color?: string;
   offsetY?: number;
 }
@@ -30,7 +31,7 @@ export class NameLabel implements Component {
         resolution: cameraZoom,
       })
       .setOrigin(0.5)
-      .setDepth(999);
+      .setDepth(options.isMine ? 1000 : 999);
   }
 
   update(): void {
