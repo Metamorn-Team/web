@@ -32,7 +32,7 @@ export class MyIslandScene extends MetamornScene {
     this.ready();
   }
 
-  update(time: number, delta: number): void {
+  update(_: number, delta: number): void {
     if (!this.player?.body) return;
     this.player.update(delta);
 
