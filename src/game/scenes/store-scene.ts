@@ -1,23 +1,18 @@
 import { INITIAL_PROFILE } from "@/constants/game/initial-profile";
 import { STORE } from "@/constants/game/sounds/bgm/bgms";
 import { defineAnimation } from "@/game/animations/define-animation";
-import { EquipmentState } from "@/game/components/equipment-state";
+import { TilemapComponent } from "@/game/components/tile-map.component";
 import { EventWrapper } from "@/game/event/EventBus";
 import { assetManager } from "@/game/managers/asset-manager";
-import { controllablePlayerManager } from "@/game/managers/controllable-player-manager";
 import { SoundManager } from "@/game/managers/sound-manager";
-import { tileMapManager } from "@/game/managers/tile-map-manager";
+import { playerSpawner } from "@/game/managers/spawners/player-spawner";
 import { MetamornScene } from "@/game/scenes/metamorn-scene";
 import { GetMyResponse } from "mmorntype";
 
 export class StoreScene extends MetamornScene {
   private bgmKey = STORE;
 
-  private map: Phaser.Tilemaps.Tilemap;
-  private mapWidth: number;
-  private mapHeight: number;
-  private centerOfMap: { x: number; y: number };
-
+  private mapComponent: TilemapComponent;
   private zoomWeight = 1.3;
 
   constructor() {
@@ -33,9 +28,10 @@ export class StoreScene extends MetamornScene {
 
     defineAnimation(this);
 
-    this.initWorld();
+    this.mapComponent = new TilemapComponent(this, "store");
+    this.cameras.main.setZoom(this.zoomWeight);
+
     this.spawnPlayer().then(() => {
-      this.player.setVisibleNickname(false);
       this.player.setSpeed(this.player.getSpeed() * 0.5);
     });
 
@@ -48,7 +44,7 @@ export class StoreScene extends MetamornScene {
     });
   }
 
-  update(time: number, delta: number) {
+  update(_: number, delta: number) {
     if (this.player) {
       this.player.update(delta);
     }
@@ -64,41 +60,16 @@ export class StoreScene extends MetamornScene {
       userInfo = INITIAL_PROFILE;
     }
 
-    const { equipmentState: equipmentStateProto, ...playerInfo } = userInfo;
-    const equipmentState = new EquipmentState(equipmentStateProto.AURA);
-
-    this.player = await controllablePlayerManager.spawnControllablePlayer(
-      this,
+    const { equipmentState: equipment, ...playerInfo } = userInfo;
+    this.player = playerSpawner.spawnPlayer({
+      equipment,
       playerInfo,
-      { x: 160, y: 160 },
-      this.inputManager,
-      equipmentState
-    );
-  }
-
-  initWorld() {
-    this.map = tileMapManager.registerTileMap(this, "store");
-
-    this.mapWidth = this.map.widthInPixels;
-    this.mapHeight = this.map.heightInPixels;
-    this.centerOfMap = {
-      x: this.mapWidth / 2,
-      y: this.mapHeight / 2,
-    };
-
-    this.matter.world.setBounds(
-      0,
-      0,
-      this.mapWidth / this.zoomWeight,
-      this.mapHeight / this.zoomWeight
-    );
-    this.cameras.main.setBounds(
-      0,
-      0,
-      this.mapWidth / this.zoomWeight,
-      this.mapHeight / this.zoomWeight
-    );
-    this.cameras.main.setZoom(1.3);
+      position: { x: 160, y: 160 },
+      scene: this,
+      texture: playerInfo.avatarKey,
+      inputManager: this.inputManager,
+    });
+    this.followPlayerCamera();
   }
 
   listenEvent() {
