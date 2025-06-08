@@ -24,6 +24,8 @@ export class TilemapComponent implements Component {
     scene.cameras.main.setScroll(this.centerOfMap.x, this.centerOfMap.y);
   }
 
+  update(): void {}
+
   destroy(): void {
     this.map.destroy();
   }
