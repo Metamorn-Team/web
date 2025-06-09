@@ -29,6 +29,7 @@ export class AssetManager {
   spriteUrl = `${this.cdnUrl}/asset/sprite`;
   imageUrl = `${this.cdnUrl}/asset/image`;
   tileUrl = `${this.cdnUrl}/asset/tile`;
+  itemUrl = `${this.cdnUrl}/product`;
 
   preloadCommonAsset(scene: Phaser.Scene) {
     this.loadSprites(scene);
@@ -126,6 +127,12 @@ export class AssetManager {
     scene.load.image("bone1", `${this.imageUrl}/bone1.png`);
     scene.load.image("bone2", `${this.imageUrl}/bone2.png`);
     scene.load.image(SKULL_SIGN, `${this.imageUrl}/skull-sign.png`);
+
+    scene.load.image("brown-bubble", `${this.itemUrl}/brown_bubble.png`);
+    scene.load.image("brown-tail", `${this.itemUrl}/brown_tail.png`);
+
+    scene.load.image("white-bubble", `${this.itemUrl}/white_bubble.png`);
+    scene.load.image("white-tail", `${this.itemUrl}/white_tail.png`);
 
     scene.load.image("bridge", `${this.tileUrl}/bridge.png`);
   }
