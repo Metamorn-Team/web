@@ -1,3 +1,4 @@
+import { Renderer } from "@/game/components/renderer";
 import { EventWrapper } from "@/game/event/EventBus";
 import { SoundManager } from "@/game/managers/sound-manager";
 import { playerSpawner } from "@/game/managers/spawners/player-spawner";
@@ -27,19 +28,25 @@ export default class PhotoScene extends MetamornScene {
     this.cameras.main.setZoom(1.3);
 
     const playerInfo = {
-      avatarKey: "purple_pawn",
+      avatarKey: "blue_pawn",
       id: "1",
       nickname: "",
       tag: "",
     };
     this.player = playerSpawner.spawnPlayer({
-      equipment: { AURA: null },
+      equipment: {
+        AURA: { key: "arcane-blue", name: "" },
+        SPEECH_BUBBLE: null,
+      },
       playerInfo,
-      position: { x: 200, y: 300 },
+      position: { x: 100, y: 130 },
       scene: this,
       texture: playerInfo.avatarKey,
       inputManager: this.inputManager,
     });
+    this.followPlayerCamera();
+    const renderer = this.player.getComponent(Renderer);
+    renderer?.sprite.anims.stop();
 
     SoundManager.init(this);
 

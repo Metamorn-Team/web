@@ -14,7 +14,6 @@ export class RemotePlayerFSM extends FiniteStateMachine<PlayerState> {
   constructor(gameObject: Player) {
     super();
     this.gameObject = gameObject;
-    console.log(gameObject);
     this.init();
   }
 
