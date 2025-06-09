@@ -92,6 +92,7 @@ export abstract class Player extends BaseEntity {
       new AuraEffect(renderer.sprite, options.equipment.AURA),
       new SpeechBubble(this, {
         gap: options.speechBubbleGap ?? 55,
+        bubbleTexture: options.equipment.SPEECH_BUBBLE?.key,
       }),
     ];
 
@@ -278,6 +279,10 @@ export abstract class Player extends BaseEntity {
 
   public speech(text: string) {
     this.getComponent(SpeechBubble)?.show(text);
+  }
+
+  play(key: string, isIgnoreIfPlaying?: boolean) {
+    this.getComponent(Renderer)?.play(key, isIgnoreIfPlaying);
   }
 
   destroy(fromScene?: boolean): void {
