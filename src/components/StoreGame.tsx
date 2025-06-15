@@ -74,10 +74,10 @@ const StoreGame = ({ ref, className }: StoreGameProps) => {
   return (
     <div className={classNames("relative", className)}>
       <div id="game-container" className="w-full h-full" />
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs px-3 py-1 rounded shadow z-10 w-4/5 text-center">
-        <p>💡 상점 기능은 아직 준비 중이에요..</p>
-        <p>하지만 자유롭게 장착해볼 수 있어요!</p>
-      </div>
+      {/* <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs px-3 py-1 rounded shadow z-10 w-4/5 text-center">
+        <p>💡 결제 기능은 아직 준비 중이에요..</p>
+        <p>조금만 기다려주세요!</p>
+      </div> */}
     </div>
   );
 };

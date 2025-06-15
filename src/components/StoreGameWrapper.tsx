@@ -13,6 +13,7 @@ import Alert from "@/utils/alert";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEY as PRODUCTS_QUERY_KEY } from "@/hook/queries/useGetProducts";
 import { QUERY_KEY as GOLD_BALANCE_QUERY_KEY } from "@/hook/queries/useGetGoldBalance";
+import { QUERY_KEY as PROMOTION_PRODUCTS_QUERY_KEY } from "@/hook/queries/useGetPromotionProducts";
 import { purchase } from "@/api/purchase";
 import { useGetGoldBalance } from "@/hook/queries/useGetGoldBalance";
 import ConfirmPurchaseModal from "@/components/store/ConfirmPurchaseModal";
@@ -32,9 +33,30 @@ const DynamicStoreGame = dynamic(() => import("@/components/StoreGame"), {
 export default function StoreGameWrapper() {
   const [selectedType, setSelectedType] = useState<string>("promotion");
 
-  const [order, setOrder] = useState(ProductOrder.LATEST);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [promotionPage, setPromotionPage] = useState(1);
+  const [normalPage, setNormalPage] = useState(1);
+  const [promotionOrder, setPromotionOrder] = useState(ProductOrder.LATEST);
+  const [normalOrder, setNormalOrder] = useState(ProductOrder.LATEST);
   const [pageArr, setPageArr] = useState([1]);
+
+  const currentPage = selectedType === "promotion" ? promotionPage : normalPage;
+  const order = selectedType === "promotion" ? promotionOrder : normalOrder;
+
+  const setCurrentPage = (page: number) => {
+    if (selectedType === "promotion") {
+      setPromotionPage(page);
+    } else {
+      setNormalPage(page);
+    }
+  };
+
+  const setOrder = (order: ProductOrder) => {
+    if (selectedType === "promotion") {
+      setPromotionOrder(order);
+    } else {
+      setNormalOrder(order);
+    }
+  };
 
   const { promotions } = useGetAllPromotion();
   const { data: gold } = useGetGoldBalance();
@@ -56,7 +78,15 @@ export default function StoreGameWrapper() {
     mutationFn: purchase,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [PRODUCTS_QUERY_KEY, currentPage, order],
+        queryKey: [
+          PROMOTION_PRODUCTS_QUERY_KEY,
+          promotionPage,
+          promotionOrder,
+          selectedPromotion,
+        ],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [PRODUCTS_QUERY_KEY, normalPage, normalOrder],
       });
       queryClient.invalidateQueries({
         queryKey: [GOLD_BALANCE_QUERY_KEY],
@@ -79,13 +109,10 @@ export default function StoreGameWrapper() {
       if (gameRef.current) {
         gameRef.current.game.canvas.style.opacity = "1";
         gameRef.current.currnetScene = data.scene;
-
         setIsSceneReady(true);
       }
     };
-
     EventWrapper.onUiEvent("current-scene-ready", handleSceneReady);
-
     return () => {
       EventWrapper.offUiEvent("current-scene-ready", handleSceneReady);
     };
@@ -96,7 +123,6 @@ export default function StoreGameWrapper() {
   const onSetPageArr = (productCount: number, limit: number) => {
     const totalPages = Math.floor(productCount / limit);
     const pageArr = Array.from({ length: totalPages }, (_, index) => index + 1);
-
     setPageArr(pageArr.length === 0 ? [1] : pageArr);
   };
 
@@ -105,7 +131,6 @@ export default function StoreGameWrapper() {
       Alert.info("상품을 선택해주세요!");
       return;
     }
-
     onPurchaseModalOpen();
   };
 
@@ -127,9 +152,7 @@ export default function StoreGameWrapper() {
   const onAddEquippedItem = useCallback((item: EquippedItem) => {
     setEquippedItems((prev) => {
       const alreadyExist = prev.some((i) => i.id === item.id);
-      if (alreadyExist) return prev;
-
-      return [...prev, item];
+      return alreadyExist ? prev : [...prev, item];
     });
   }, []);
 
@@ -140,15 +163,11 @@ export default function StoreGameWrapper() {
     >
       <main className="flex flex-1 overflow-hidden gap-6 overflow-y-auto p-6 justify-center">
         <div className="flex flex-col">
-          {/* 카테고리 영역 */}
           <CategorySelector
             selectedType={selectedType}
             setSelectedType={setSelectedType}
           />
-
-          {/* 소분류 영역 */}
           <div className="flex items-center justify-between text-xs text-[#5c4b32] font-bold mb-3 px-1">
-            {/* 소분류 */}
             <div className="flex gap-2">
               {selectedType === "promotion" ? (
                 promotions.map((promotion) => (
@@ -170,10 +189,8 @@ export default function StoreGameWrapper() {
                 </button>
               )}
             </div>
-
             <div className="flex justify-end mb-3 px-1">
               <div className="relative inline-block text-left">
-                {/* 정렬 기준 */}
                 <select
                   value={order}
                   onChange={(e) => setOrder(e.target.value as ProductOrder)}
@@ -189,8 +206,6 @@ export default function StoreGameWrapper() {
               </div>
             </div>
           </div>
-
-          {/* 상품 영역 */}
           <div className="flex-1 overflow-y-auto pr-1 scrollbar-hide">
             {selectedType === "promotion" ? (
               <PromotionProductList
@@ -212,7 +227,6 @@ export default function StoreGameWrapper() {
               />
             )}
           </div>
-
           <div className="flex justify-center mt-8">
             <nav className="inline-flex items-center space-x-1 bg-[#f3ece1] px-4 py-2 rounded-xl border border-[#d6c6aa] shadow-sm">
               {pageArr.map((page) => (
@@ -231,12 +245,11 @@ export default function StoreGameWrapper() {
             </nav>
           </div>
         </div>
-
         <div className="flex flex-col gap-6 items-center pt-[4px]">
           <div className="flex justify-between w-full items-center px-2">
             <div className="flex gap-2 items-center">
               <Image
-                src={"/game/ui/gold.png"}
+                src="/game/ui/gold.png"
                 width={20}
                 height={20}
                 alt="gold"
@@ -247,14 +260,13 @@ export default function StoreGameWrapper() {
             </div>
             <RetroButton>BGM</RetroButton>
           </div>
-
           <div className="overflow-hidden rounded-[8px] border border-[#bfae96] shadow-[4px_4px_0_#8c7a5c] bg-[#fdf8ef]">
             <div className="w-[288px] h-[288px]">
               {!isSceneReady ? (
                 <div className="w-full h-full bg-darkBg flex flex-col justify-center items-center">
                   <Pawn
-                    animation={"run"}
-                    color={"purple"}
+                    animation="run"
+                    color="purple"
                     className="w-[80px] h-[80px]"
                   />
                 </div>
@@ -266,7 +278,6 @@ export default function StoreGameWrapper() {
               />
             </div>
           </div>
-
           <div className="w-72 p-3 rounded-[6px] border border-[#d6c6aa] bg-[#fcf4e4] shadow-[3px_3px_0_#c6b89d]">
             <div className="flex justify-between items-center mb-4">
               <span className="text-sm font-bold text-[#3d2c1b]">
@@ -291,12 +302,11 @@ export default function StoreGameWrapper() {
           </div>
         </div>
       </main>
-
       <ConfirmPurchaseModal
         isOpen={isOpen}
         onClose={onPurchaseModalClose}
         onPurchase={onPurchase}
-        onCharge={() => Alert.warn("준비 중..")}
+        onCharge={() => Alert.warn("준비 중..")} // TODO
         equippedItems={equippedItems}
         goldBalance={gold?.goldBalance ?? 0}
       />
