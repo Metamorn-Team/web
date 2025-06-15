@@ -43,19 +43,30 @@ const ProductCard = ({ product, onAddEquippedItem }: ProductCardProps) => {
       }`}
     >
       <div className="relative w-full aspect-square overflow-hidden border border-[#d2c4ad] rounded-[4px]">
+        {/* 등급 뱃지 (좌측 상단) */}
         <div
-          className={`absolute top-1 left-1 text-xs text-white px-2 py-1 rounded-[4px] flex justify-center items-center ${
+          className={`absolute top-1 left-1 text-xs text-white px-2 py-1 rounded-[4px] z-10 ${
             gradeStyles[product.grade].style
           }`}
         >
           {gradeStyles[product.grade].label}
         </div>
 
+        {/* 프로모션 이름 뱃지 (우측 상단) */}
+        {product.promotionName && (
+          <div className="absolute top-1 right-1 bg-red-600 text-white text-xs font-semibold px-2 py-0.5 rounded-[4px] z-10">
+            {product.promotionName}
+          </div>
+        )}
+
+        {/* SOLD OUT 라벨 */}
         {product.purchasedStatus === "PURCHASED" && (
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-5xl text-red-600 font-bold text-center z-50">
             SOLD OUT
           </div>
         )}
+
+        {/* 이미지 */}
         <Image
           src={product.coverImage}
           alt={product.name}
@@ -72,13 +83,34 @@ const ProductCard = ({ product, onAddEquippedItem }: ProductCardProps) => {
       </div>
 
       <div className="flex justify-between items-center mt-2">
-        <span className="flex gap-2 items-center">
-          <Image src={"/game/ui/gold.png"} width={20} height={20} alt="gold" />
-          <p className="text-[#40381b] font-bold text-base">
-            {product.price.toLocaleString()}
-          </p>
-        </span>
+        {/* 가격 영역 */}
+        {product.saledPrice !== null && product.discountRate != null ? (
+          <div className="flex flex-col items-start">
+            <div className="line-through text-sm text-[#a39b85]">
+              {product.originPrice.toLocaleString()}G
+            </div>
+            <div className="text-[#d82c2c] font-bold text-lg">
+              {product.saledPrice.toLocaleString()}G
+            </div>
+            <div className="text-xs text-[#d82c2c] font-semibold">
+              ({Math.floor(product.discountRate * 100)}% 할인)
+            </div>
+          </div>
+        ) : (
+          <span className="flex gap-2 items-center">
+            <Image
+              src={"/game/ui/gold.png"}
+              width={20}
+              height={20}
+              alt="gold"
+            />
+            <p className="text-[#40381b] font-bold text-base">
+              {product.originPrice.toLocaleString()}
+            </p>
+          </span>
+        )}
 
+        {/* 버튼 영역 */}
         <div className="flex gap-1">
           <RetroButton onClick={onEquip}>장착</RetroButton>
           <RetroButton
@@ -88,7 +120,11 @@ const ProductCard = ({ product, onAddEquippedItem }: ProductCardProps) => {
                 ? onAddEquippedItem({
                     id: product.id,
                     name: product.name,
-                    price: product.price,
+                    price:
+                      // 가격은 0원일 수 있기 때문에 null로 비교
+                      product.saledPrice !== null
+                        ? product.saledPrice
+                        : product.originPrice,
                   })
                 : () => {}
             }

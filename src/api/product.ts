@@ -1,7 +1,7 @@
 import { http } from "@/api/http";
 import {
   GetProductListRequest,
-  GetProductListResponse,
+  GetProductListResponseV2,
   ProductCategoryItem,
 } from "mmorntype";
 
@@ -21,7 +21,7 @@ export const getProductCateogies = async () => {
 };
 
 export const getProducts = async (query: GetProductListRequest) => {
-  const response = await http.get<GetProductListResponse>("/products", {
+  const response = await http.get<GetProductListResponseV2>("/products/v2", {
     params: query,
   });
   return response.data;
