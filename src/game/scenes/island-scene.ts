@@ -31,7 +31,6 @@ import {
   ISLANF_NOT_FOUND_MESSAGE,
   UNKNOWN_MESSAGE,
 } from "@/error/exceptions/message";
-import { SpeechBubbleRenderer } from "@/game/managers/speech-bubble-renderer";
 import Reload from "@/utils/reload";
 import { HAS_NEW_VERSION } from "@/constants/message/info-message";
 import { useIslandStore } from "@/stores/useIslandStore";
@@ -434,26 +433,6 @@ export class IslandScene extends MetamornScene {
       texture: playerInfo.avatarKey,
     });
     playerStore.addPlayer(playerInfo.id, player);
-  }
-
-  showSpeechBubble(playerId: string, message: string, isMe = false) {
-    const player = isMe ? this.player : playerStore.getPlayer(playerId);
-    if (!player) return;
-
-    const currBubble = player.getSpeechBubble();
-    if (currBubble) {
-      currBubble.destroy();
-      player.setSpeechBubble(null);
-    }
-
-    const bubble = SpeechBubbleRenderer.render(
-      this,
-      player.x,
-      player.y - player.displayHeight / 2 - 10,
-      message
-    );
-
-    player.setSpeechBubble(bubble);
   }
 
   private changeToLoby() {
