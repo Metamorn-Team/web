@@ -11,8 +11,8 @@ import AuraEquipModal from "@/components/my-island/AuraEquipModal";
 import TagChangeModal from "@/components/my-island/TagChangeModal";
 import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
 import { EventWrapper } from "@/game/event/EventBus";
-import Alert from "@/utils/alert";
 import NicknameChangeModal from "@/components/my-island/NicknameChangeModal";
+import SpeechBubbleEquipModal from "@/components/my-island/SpeechBubbleEquipModal";
 
 export default function MyIsland() {
   const { data: profile } = useGetMyProfile();
@@ -25,6 +25,11 @@ export default function MyIsland() {
     isModalOpen: isAuraOpen,
     onOpen: onAuraOpen,
     onClose: onAuraClose,
+  } = useModal();
+  const {
+    isModalOpen: isSpeechBubbleOpen,
+    onOpen: onSpeechBubbleOpen,
+    onClose: onSpeechBubbleClose,
   } = useModal();
   const {
     isModalOpen: isTagOpen,
@@ -45,9 +50,6 @@ export default function MyIsland() {
     }
   }, [isOutfitOpen, isTagOpen, isNicknameOpen]);
 
-  const onSoon = () =>
-    Alert.info("구현 중이에요 조금만 기다려주세요 😁", false);
-
   return (
     <div className="absolute top-20 sm:top-24 right-2 sm:right-6 flex flex-col items-end space-y-2">
       <RetroButton onClick={() => onOutfitOpen()} className={buttonStyle}>
@@ -58,7 +60,7 @@ export default function MyIsland() {
         <GiSparkles />
         <p>오라</p>
       </RetroButton>
-      <RetroButton onClick={onSoon} className={buttonStyle}>
+      <RetroButton onClick={() => onSpeechBubbleOpen()} className={buttonStyle}>
         <BsChatSquareQuote className="mr-1" />
         <p>말풍선</p>
       </RetroButton>
@@ -77,6 +79,13 @@ export default function MyIsland() {
 
       {isAuraOpen ? (
         <AuraEquipModal isOpen={isAuraOpen} onClose={onAuraClose} />
+      ) : null}
+
+      {isSpeechBubbleOpen ? (
+        <SpeechBubbleEquipModal
+          isOpen={isSpeechBubbleOpen}
+          onClose={onSpeechBubbleClose}
+        />
       ) : null}
 
       {isTagOpen ? (

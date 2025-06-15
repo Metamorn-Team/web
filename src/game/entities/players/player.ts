@@ -183,6 +183,11 @@ export abstract class Player extends BaseEntity {
     aura?.changeAura(key);
   }
 
+  setSpeechBubble(key: string) {
+    const bubble = this.getComponent(SpeechBubble);
+    bubble?.setTexture(key);
+  }
+
   setNameLabel(newNickname: string) {
     this.getComponent(NameLabel)?.setText(newNickname);
   }

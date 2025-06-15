@@ -60,4 +60,5 @@ export interface UiToGameEvent {
   changeAvatarColor: (color: PawnColor) => void;
   changeNickname: (nickname: string) => void;
   changeAura: (key: string, grade: ItemGrade) => void;
+  changeSpeechBubble: (key: string) => void;
 }

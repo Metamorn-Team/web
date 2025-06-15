@@ -94,6 +94,11 @@ export class MyIslandScene extends MetamornScene {
     EventWrapper.onGameEvent("changeAura", (key) => {
       this.player.setAura(key);
     });
+
+    EventWrapper.onGameEvent("changeSpeechBubble", (key) => {
+      this.player.setSpeechBubble(key);
+      this.player.speech("장착 완료!");
+    });
   }
 
   clearBeforeLeft() {
