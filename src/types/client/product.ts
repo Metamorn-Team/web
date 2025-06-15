@@ -6,11 +6,18 @@ export interface Product {
   name: string;
   coverImage: string;
   description: string;
-  price: number;
+  originPrice: number;
+  saledPrice: number | null;
+  discountRate: number | null;
+  promotionName: string | null;
   type: string;
   key: string;
   grade: ItemGrade;
   purchasedStatus: PurchasedStatus;
 }
 
-export type EquippedItem = Pick<Product, "id" | "name" | "price">;
+export interface EquippedItem {
+  id: string;
+  name: string;
+  price: number;
+}

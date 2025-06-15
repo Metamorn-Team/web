@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FiZap } from "react-icons/fi";
-import { ProductType, ProductOrder } from "@/api/product";
+import { ProductOrder } from "@/api/product";
 import ProductList from "@/components/store/ProductList";
 import dynamic from "next/dynamic";
 import { GameRef } from "@/components/Game";
@@ -22,21 +21,26 @@ import { EventWrapper } from "@/game/event/EventBus";
 import Pawn from "@/components/common/Pawn";
 import { SoundManager } from "@/game/managers/sound-manager";
 import { CASH } from "@/constants/game/sounds/sfx/sfxs";
+import { useGetAllPromotion } from "@/hook/queries/useGetAllPromotions";
+import CategorySelector from "@/components/store/CategorySelector";
+import PromotionProductList from "@/components/store/PromotionProductList";
 
 const DynamicStoreGame = dynamic(() => import("@/components/StoreGame"), {
   ssr: false,
 });
 
-const categories = [
-  { value: ProductType.AURA, icon: <FiZap />, label: "오라" },
-];
-
 export default function StoreGameWrapper() {
-  const [selectedType, setSelectedType] = useState(ProductType.AURA);
+  const [selectedType, setSelectedType] = useState<string>("promotion");
+
   const [order, setOrder] = useState(ProductOrder.LATEST);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageArr, setPageArr] = useState([1]);
+
+  const { promotions } = useGetAllPromotion();
   const { data: gold } = useGetGoldBalance();
+  const [selectedPromotion, setSelectedPromotion] = useState(
+    promotions[0].name
+  );
 
   const [equippedItems, setEquippedItems] = useState<EquippedItem[]>([]);
   const [isSceneReady, setIsSceneReady] = useState(false);
@@ -136,34 +140,40 @@ export default function StoreGameWrapper() {
     >
       <main className="flex flex-1 overflow-hidden gap-6 overflow-y-auto p-6 justify-center">
         <div className="flex flex-col">
-          <div className="flex gap-3 mb-4 sticky top-0 z-50 bg-[#f9f5ec]">
-            {categories.map((category) => (
-              <RetroButton
-                key={category.value}
-                variant="ghost"
-                onClick={() => setSelectedType(category.value)}
-                className={`flex items-center gap-2 px-4 py-2 border border-[#bfae96] text-sm font-bold shadow-[3px_3px_0_#8c7a5c] transition-all rounded-[4px]
-          ${
-            selectedType === category.value
-              ? "bg-[#f0e4c3] text-[#2a1f14]"
-              : "bg-[#fcf4e4] text-[#5c4b32] hover:bg-[#f3e9d0]"
-          }`}
-              >
-                <span className="text-lg">{category.icon}</span>
-                <span>{category.label}</span>
-              </RetroButton>
-            ))}
-          </div>
+          {/* 카테고리 영역 */}
+          <CategorySelector
+            selectedType={selectedType}
+            setSelectedType={setSelectedType}
+          />
 
+          {/* 소분류 영역 */}
           <div className="flex items-center justify-between text-xs text-[#5c4b32] font-bold mb-3 px-1">
+            {/* 소분류 */}
             <div className="flex gap-2">
-              <button className="px-2 py-1 rounded bg-[#f3e9d0] hover:bg-[#e8ddc3] transition">
-                전체
-              </button>
+              {selectedType === "promotion" ? (
+                promotions.map((promotion) => (
+                  <button
+                    key={promotion.name}
+                    className={`px-2 py-1 rounded bg-[#f3e9d0] hover:bg-[#e8ddc3] transition ${
+                      selectedPromotion === promotion.name
+                        ? "bg-[#f0e4c3] text-[#2a1f14]"
+                        : "bg-[#fcf4e4] text-[#5c4b32] hover:bg-[#f3e9d0]"
+                    }`}
+                    onClick={() => setSelectedPromotion(promotion.name)}
+                  >
+                    {promotion.name}
+                  </button>
+                ))
+              ) : (
+                <button className="px-2 py-1 rounded bg-[#f3e9d0] hover:bg-[#e8ddc3] transition">
+                  전체
+                </button>
+              )}
             </div>
 
             <div className="flex justify-end mb-3 px-1">
               <div className="relative inline-block text-left">
+                {/* 정렬 기준 */}
                 <select
                   value={order}
                   onChange={(e) => setOrder(e.target.value as ProductOrder)}
@@ -180,15 +190,27 @@ export default function StoreGameWrapper() {
             </div>
           </div>
 
+          {/* 상품 영역 */}
           <div className="flex-1 overflow-y-auto pr-1 scrollbar-hide">
-            <ProductList
-              type={selectedType}
-              order={order}
-              page={currentPage}
-              limit={10}
-              onAddEquippedItem={onAddEquippedItem}
-              onSetPageArr={onSetPageArr}
-            />
+            {selectedType === "promotion" ? (
+              <PromotionProductList
+                name={selectedPromotion}
+                order={order}
+                page={currentPage}
+                limit={10}
+                onAddEquippedItem={onAddEquippedItem}
+                onSetPageArr={onSetPageArr}
+              />
+            ) : (
+              <ProductList
+                type={selectedType}
+                order={order}
+                page={currentPage}
+                limit={10}
+                onAddEquippedItem={onAddEquippedItem}
+                onSetPageArr={onSetPageArr}
+              />
+            )}
           </div>
 
           <div className="flex justify-center mt-8">
@@ -274,7 +296,7 @@ export default function StoreGameWrapper() {
         isOpen={isOpen}
         onClose={onPurchaseModalClose}
         onPurchase={onPurchase}
-        onCharge={() => Alert.warn("충전")}
+        onCharge={() => Alert.warn("준비 중..")}
         equippedItems={equippedItems}
         goldBalance={gold?.goldBalance ?? 0}
       />

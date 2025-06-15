@@ -2,7 +2,7 @@
 
 import { ProductOrder } from "@/api/product";
 import ProductCardSkeleton from "@/components/store/ProductCardSkeleton";
-import { useGetProducts } from "@/hook/queries/useGetProducts";
+import { useGetPromotionProducts } from "@/hook/queries/useGetPromotionProducts";
 import { EquippedItem } from "@/types/client/product";
 import dynamic from "next/dynamic";
 import React, { useEffect } from "react";
@@ -15,8 +15,8 @@ const DynamicProductCard = dynamic(
   }
 );
 
-interface ProductListProps {
-  type: string;
+interface PromotionProductListProps {
+  name: string;
   order: ProductOrder;
   page: number;
   limit: number;
@@ -24,16 +24,16 @@ interface ProductListProps {
   onSetPageArr: (productCount: number, limit: number) => void;
 }
 
-const ProductList = ({
-  type,
+const PromotionProductList = ({
+  name,
   order,
   page,
   limit,
   onAddEquippedItem,
   onSetPageArr,
-}: ProductListProps) => {
-  const { data, isLoading } = useGetProducts({
-    type,
+}: PromotionProductListProps) => {
+  const { data, isLoading } = useGetPromotionProducts({
+    name,
     order,
     limit,
     page,
@@ -65,4 +65,4 @@ const ProductList = ({
   );
 };
 
-export default ProductList;
+export default PromotionProductList;
