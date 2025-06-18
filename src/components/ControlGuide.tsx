@@ -7,6 +7,7 @@ const controls = [
   { keys: ["W", "A", "S", "D"], label: "이동" },
   { keys: ["↑", "↓", "←", "→"], label: "이동 (화살표)" },
   { keys: ["Z"], label: "공격" },
+  { keys: ["X"], label: "강공격" },
   { keys: ["Space"], label: "점프" },
   { keys: ["E"], label: "상호작용" },
 ];
