@@ -11,24 +11,24 @@ interface ProductCardProps {
   onAddEquippedItem: (item: EquippedItem) => void;
 }
 
-const gradeStyles = {
-  NORMAL: {
-    label: "일반",
-    style: "bg-gray-400 shadow-md",
-  },
-  RARE: {
-    label: "레어",
-    style: "bg-gradient-to-r from-blue-500 to-blue-700 shadow-glow",
-  },
-  UNIQUE: {
-    label: "유니크",
-    style: "bg-gradient-to-r from-yellow-400 to-orange-500 shadow-glow",
-  },
-  EPIC: {
-    label: "에픽",
-    style: "bg-gradient-to-r from-purple-600 to-purple-800 shadow-glow",
-  },
-};
+// const gradeStyles = {
+//   NORMAL: {
+//     label: "일반",
+//     style: "bg-gray-400 shadow-md",
+//   },
+//   RARE: {
+//     label: "레어",
+//     style: "bg-gradient-to-r from-blue-500 to-blue-700 shadow-glow",
+//   },
+//   UNIQUE: {
+//     label: "유니크",
+//     style: "bg-gradient-to-r from-yellow-400 to-orange-500 shadow-glow",
+//   },
+//   EPIC: {
+//     label: "에픽",
+//     style: "bg-gradient-to-r from-purple-600 to-purple-800 shadow-glow",
+//   },
+// };
 
 const ProductCard = ({ product, onAddEquippedItem }: ProductCardProps) => {
   const onEquip = () => {
@@ -44,13 +44,13 @@ const ProductCard = ({ product, onAddEquippedItem }: ProductCardProps) => {
     >
       <div className="relative w-full aspect-square overflow-hidden border border-[#d2c4ad] rounded-[4px]">
         {/* 등급 뱃지 (좌측 상단) */}
-        <div
+        {/* <div
           className={`absolute top-1 left-1 text-xs text-white px-2 py-1 rounded-[4px] z-10 ${
             gradeStyles[product.grade].style
           }`}
         >
           {gradeStyles[product.grade].label}
-        </div>
+        </div> */}
 
         {/* 프로모션 이름 뱃지 (우측 상단) */}
         {product.promotionName && (
