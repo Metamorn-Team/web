@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import RetroSideModal from "@/components/common/RetroSideModal";
 import RetroButton from "@/components/common/RetroButton";
 import Image from "next/image";
@@ -9,6 +9,9 @@ import { DotLoader } from "@/components/common/DotLoader";
 import { EventWrapper } from "@/game/event/EventBus";
 import { useEquipItem } from "@/hook/queries/useEquipItem";
 import { useUnequipItem } from "@/hook/queries/useUnequipItem";
+import { useGetEquippedItems } from "@/hook/queries/useGetEquippedItems";
+import { QUERY_KEY as EQUIPPED_ITEMS_QUERY_KEY } from "@/hook/queries/useGetEquippedItems";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface SpeechBubbleEquipModalProps {
   isOpen: boolean;
@@ -47,20 +50,30 @@ export default function SpeechBubbleEquipModal({
 const SpeechBubbleList = () => {
   // TODO grade 제거 예정
   const { data: items } = useGetAllOwnedItems("SPEECH_BUBBLE", "NORMAL");
+  const queryClient = useQueryClient();
   const { mutate: equip } = useEquipItem();
   const { mutate: unequip } = useUnequipItem();
+  const { equippedItems } = useGetEquippedItems();
 
-  const [currentAura, setCurrentAura] = useState("");
+  const [currentBubble, setCurrentBubble] = useState<string | null>(null);
 
-  const onEquip = (auraId: string, key: string) => {
-    if (auraId === currentAura) return;
+  useEffect(() => {
+    setCurrentBubble(equippedItems?.SPEECH_BUBBLE?.key || null);
+  }, [equippedItems]);
 
-    setCurrentAura(auraId);
+  const onEquip = (itemId: string, key: string) => {
+    if (key === currentBubble) return;
+
+    setCurrentBubble(key);
     equip(
-      { itemId: auraId, slot: "SPEECH_BUBBLE" },
+      { itemId: itemId, slot: "SPEECH_BUBBLE" },
       {
         onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: [EQUIPPED_ITEMS_QUERY_KEY],
+          });
           EventWrapper.emitToGame("changeSpeechBubble", key);
+          setCurrentBubble(key);
         },
       }
     );
@@ -69,7 +82,10 @@ const SpeechBubbleList = () => {
   const onUnequip = () => {
     unequip("SPEECH_BUBBLE", {
       onSuccess: () => {
-        setCurrentAura("");
+        queryClient.invalidateQueries({
+          queryKey: [EQUIPPED_ITEMS_QUERY_KEY],
+        });
+        setCurrentBubble(null);
         EventWrapper.emitToGame("changeSpeechBubble", "");
       },
     });
@@ -77,36 +93,51 @@ const SpeechBubbleList = () => {
 
   return (
     <div className="flex flex-col w-full">
-      {/* ✅ 해제 버튼 고정 */}
-      <div className="w-full flex justify-end mb-2 px-1">
-        <RetroButton variant="ghost" className="text-xs" onClick={onUnequip}>
-          말풍선 해제
-        </RetroButton>
-      </div>
-
       {/* ✅ 목록 */}
       <div className="flex w-full justify-center">
         {items.length === 0 ? (
           <p className="mt-4">멋진 말풍선을 구매해보아요 💭</p>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 w-full">
-            {items.map((bubble) => (
-              <div
-                key={bubble.id}
-                className="border border-[#bfae96] p-3 rounded bg-white flex flex-col items-center h-[150px]"
-              >
-                <div className="relative w-14 h-14 mb-2">
-                  <Image src={bubble.image} fill alt="말풍선" />
-                </div>
-                <p className="text-sm font-bold text-center">{bubble.name}</p>
-                <RetroButton
-                  className="w-full text-xs mt-2"
-                  onClick={() => onEquip(bubble.id, bubble.key)}
+            {items.map((bubble) => {
+              const isEquipped = bubble.key === currentBubble;
+
+              return (
+                <div
+                  key={bubble.id}
+                  className={`relative p-3 rounded bg-white flex flex-col items-center h-[150px] ${
+                    isEquipped
+                      ? "border-[#7a5c3d] shadow-inner"
+                      : "border-[#bfae96]"
+                  }`}
                 >
-                  장착
-                </RetroButton>
-              </div>
-            ))}
+                  {isEquipped && (
+                    <span className="absolute top-2 left-2 bg-[#c2a67a] text-white text-sm px-1 rounded shadow-sm z-10 w-5 text-center">
+                      E
+                    </span>
+                  )}
+
+                  <div className="relative w-14 h-14 mb-2">
+                    <Image src={bubble.image} fill alt="말풍선" />
+                  </div>
+                  <p
+                    className={`text-sm font-bold text-center ${
+                      isEquipped ? "text-[#5e3f2b]" : "text-black"
+                    }`}
+                  >
+                    {bubble.name}
+                  </p>
+                  <RetroButton
+                    className="w-full text-xs mt-2"
+                    onClick={() =>
+                      isEquipped ? onUnequip() : onEquip(bubble.id, bubble.key)
+                    }
+                  >
+                    {isEquipped ? "해제" : "장착"}
+                  </RetroButton>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
