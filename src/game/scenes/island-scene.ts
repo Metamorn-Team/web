@@ -37,6 +37,7 @@ import { useIslandStore } from "@/stores/useIslandStore";
 import { TOWN } from "@/constants/game/sounds/bgm/bgms";
 import { TilemapComponent } from "@/game/components/tile-map.component";
 import { playerSpawner } from "@/game/managers/spawners/player-spawner";
+import { MapKeys } from "@/game/managers/tile-map-manager";
 
 export class IslandScene extends MetamornScene {
   protected override player: Player;
@@ -82,8 +83,7 @@ export class IslandScene extends MetamornScene {
   create() {
     super.create();
 
-    this.mapComponent = new TilemapComponent(this, "island");
-    this.onMapResize(this.mapComponent.mapWidth, this.mapComponent.mapHeight);
+    // this.mapComponent = new TilemapComponent(this, "island");
 
     this.listenLocalEvents();
 
@@ -97,7 +97,7 @@ export class IslandScene extends MetamornScene {
     SoundManager.init(this);
     SoundManager.getInstance().playBgm(this.bgmKey);
 
-    this.ready(this.socketNsp);
+    // this.ready(this.socketNsp);
   }
 
   private hasPositionChangedSignificantly(): boolean {
@@ -179,23 +179,15 @@ export class IslandScene extends MetamornScene {
 
   listenSocketEvents() {
     const joinIsland = () => {
-      const position = {
-        x: this.mapComponent.centerOfMap.x,
-        y: this.mapComponent.centerOfMap.y,
-      };
-
       if (this.islandType === "NORMAL") {
         if (this.currentIslandId) {
-          this.io.emit("joinNormalIsland", {
-            ...position,
-            islandId: this.currentIslandId,
-          });
+          this.io.emit("joinNormalIsland", { islandId: this.currentIslandId });
           return;
         }
 
         this.joinFailed();
       } else {
-        this.io.emit("joinDesertedIsland", position);
+        this.io.emit("joinDesertedIsland");
       }
     };
 
@@ -228,35 +220,43 @@ export class IslandScene extends MetamornScene {
       EventWrapper.emitToUi("updateParticipantsPanel");
     });
 
-    this.io.on(
-      "playerJoinSuccess",
-      async (position: { x: number; y: number }) => {
-        // this.io.emit("islandHearbeat");
-        try {
-          if (this.player) {
-            this.player.destroy(true);
-          }
+    this.io.on("playerJoinSuccess", async (data) => {
+      // this.io.emit("islandHearbeat");
+      console.log(data);
+      const { mapKey, ...position } = data;
+      try {
+        // TODO 없는 키라면 예외처리
+        this.mapComponent = new TilemapComponent(this, mapKey as MapKeys);
+        this.onMapResize(
+          this.mapComponent.mapWidth,
+          this.mapComponent.mapHeight
+        );
 
-          const { equipmentState, ...playerInfo } = await this.getPlayerInfo();
-          this.player = playerSpawner.spawnPlayer({
-            scene: this,
-            equipment: equipmentState,
-            playerInfo,
-            position,
-            texture: playerInfo.avatarKey,
-            inputManager: this.inputManager,
-            io: this.io,
-          });
-          this.followPlayerCamera();
-        } catch (e: unknown) {
-          // TODO 토큰 재발급 추가하면 401시 그쪽에서 처리
-          console.log(e);
-
-          removeSessionItem("current_scene");
-          window.location.reload();
+        if (this.player) {
+          this.player.destroy(true);
         }
+
+        const { equipmentState, ...playerInfo } = await this.getPlayerInfo();
+        this.player = playerSpawner.spawnPlayer({
+          scene: this,
+          equipment: equipmentState,
+          playerInfo,
+          position,
+          texture: playerInfo.avatarKey,
+          inputManager: this.inputManager,
+          io: this.io,
+        });
+
+        this.followPlayerCamera();
+        this.ready(this.socketNsp);
+      } catch (e: unknown) {
+        // TODO 토큰 재발급 추가하면 401시 그쪽에서 처리
+        console.log(e);
+
+        removeSessionItem("current_scene");
+        window.location.reload();
       }
-    );
+    });
 
     this.io.on("playerLeftSuccess", () => {
       this.changeToLoby();

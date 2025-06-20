@@ -3,7 +3,8 @@ import { skullSpawner } from "@/game/managers/spawners/skull-sign-spawner";
 import { treeSpawner } from "@/game/managers/tree-spawner";
 import { Phaser } from "@/game/phaser";
 
-export type MapKeys = "island" | "loby" | "store" | "tiny-island";
+export const mapKeys = ["island", "loby", "store", "tiny-island"] as const;
+export type MapKeys = (typeof mapKeys)[number];
 
 class TileMapManager {
   private scene: Phaser.Scene;
