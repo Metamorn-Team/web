@@ -10,8 +10,8 @@ import { persistItem } from "@/utils/persistence";
 import { Keys } from "@/types/game/enum/key";
 
 export class MetamornScene extends Phaser.Scene {
-  protected player: Player;
-  protected inputManager: InputManager;
+  public player: Player;
+  public inputManager: InputManager;
   public isChangingScene = false;
   public isIntentionalDisconnect = false;
 
@@ -30,7 +30,7 @@ export class MetamornScene extends Phaser.Scene {
     return this.scale.width <= 640;
   }
 
-  protected followPlayerCamera() {
+  public followPlayerCamera() {
     this.cameras.main = this.cameras.main;
     this.cameras.main.startFollow(this.player);
   }
@@ -68,7 +68,7 @@ export class MetamornScene extends Phaser.Scene {
     });
   }
 
-  protected async getPlayerInfo() {
+  public async getPlayerInfo() {
     return this.fetchFreshPlayerInfo();
   }
 
@@ -79,7 +79,7 @@ export class MetamornScene extends Phaser.Scene {
     return user;
   }
 
-  protected ready(nsp?: string) {
+  public ready(nsp?: string) {
     EventWrapper.emitToUi("current-scene-ready", {
       scene: this,
       socketNsp: nsp,
@@ -171,7 +171,7 @@ export class MetamornScene extends Phaser.Scene {
     createButton(this.scale.width, baseY, Keys.SPACE, "점프");
   }
 
-  protected onMapResize(mapWith: number, mapHeight: number) {
+  public onMapResize(mapWith: number, mapHeight: number) {
     this.adjustZoomBasedOnWidth(mapWith, mapHeight);
     this.scale.on("resize", () => {
       this.adjustZoomBasedOnWidth(mapWith, mapHeight);
