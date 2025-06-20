@@ -40,6 +40,7 @@ export default function ParticipantPanel() {
         .map((player) => player.getPlayerInfo());
       setPlayers(players);
     };
+    updatePlayers();
 
     EventWrapper.onUiEvent("updateParticipantsPanel", updatePlayers);
     EventWrapper.onUiEvent("updateOnlineStatus", updatePlayers);
