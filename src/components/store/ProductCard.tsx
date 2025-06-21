@@ -98,10 +98,18 @@ const ProductCard = ({
         {product.saledPrice !== null && product.discountRate != null ? (
           <div className="flex flex-col items-start">
             <div className="line-through text-sm text-[#a39b85]">
-              {product.originPrice.toLocaleString()}G
+              {product.originPrice.toLocaleString()}
             </div>
-            <div className="text-[#d82c2c] font-bold text-lg">
-              {product.saledPrice.toLocaleString()}G
+            <div className="flex items-center gap-1">
+              <Image
+                src={"/game/ui/gold.png"}
+                width={20}
+                height={20}
+                alt="gold"
+              />
+              <div className="text-[#d82c2c] font-bold text-lg">
+                {product.saledPrice.toLocaleString()}
+              </div>
             </div>
             <div className="text-xs text-[#d82c2c] font-semibold">
               ({Math.floor(product.discountRate * 100)}% 할인)
