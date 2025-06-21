@@ -235,14 +235,14 @@ export default function StoreGameWrapper() {
         </div>
       )}
 
-      <main className="flex flex-1 overflow-hidden gap-6 overflow-y-auto p-4 justify-center">
+      <main className="flex flex-1 overflow-hidden gap-6 overflow-y-auto p-4 sm:p-6 justify-center">
         <div className={`flex flex-col ${isMobile ? "w-screen" : ""}`}>
           <CategorySelector
             selectedType={selectedType}
             setSelectedType={setSelectedType}
             className={isMobile ? "mt-[40px]" : ""}
           />
-          <div className="flex items-center justify-between text-xs text-[#5c4b32] font-bold mb-3 px-1">
+          <div className="flex items-start justify-between text-xs text-[#5c4b32] font-bold  px-1">
             <div className="flex gap-2">
               {selectedType === "promotion" ? (
                 promotions.map((promotion) => (
@@ -302,7 +302,7 @@ export default function StoreGameWrapper() {
               />
             )}
           </div>
-          <div className="flex justify-center mt-8">
+          <div className="flex justify-center mt-2">
             <nav className="inline-flex items-center space-x-1 bg-[#f3ece1] px-4 py-2 rounded-xl border border-[#d6c6aa] shadow-sm">
               {pageArr.map((page) => (
                 <button
