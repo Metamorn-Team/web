@@ -11,14 +11,18 @@ const categories = [
 interface CategorySelector {
   selectedType: string;
   setSelectedType: React.Dispatch<React.SetStateAction<string>>;
+  className?: string;
 }
 
 const CategorySelector = ({
   selectedType,
   setSelectedType,
+  className,
 }: CategorySelector) => {
   return (
-    <div className="flex gap-3 mb-4 sticky top-0 z-50 bg-[#f9f5ec]">
+    <div
+      className={`flex gap-3 mb-4 sticky top-0 z-40 bg-[#f9f5ec] ${className}`}
+    >
       {categories.map((category) => (
         <RetroButton
           key={category.value}

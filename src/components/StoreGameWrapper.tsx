@@ -25,12 +25,15 @@ import { CASH } from "@/constants/game/sounds/sfx/sfxs";
 import { useGetAllPromotion } from "@/hook/queries/useGetAllPromotions";
 import CategorySelector from "@/components/store/CategorySelector";
 import PromotionProductList from "@/components/store/PromotionProductList";
+import { useIsMobile } from "@/hook/useIsMobile";
+import { FiShoppingCart } from "react-icons/fi";
 
 const DynamicStoreGame = dynamic(() => import("@/components/StoreGame"), {
   ssr: false,
 });
 
 export default function StoreGameWrapper() {
+  const isMobile = useIsMobile();
   const [selectedType, setSelectedType] = useState<string>("promotion");
 
   const [promotionPage, setPromotionPage] = useState(1);
@@ -140,6 +143,7 @@ export default function StoreGameWrapper() {
       {
         onSuccess: () => {
           SoundManager.getInstance().playSfx(CASH, 1.5);
+          setIsCartVisible(false);
         },
       }
     );
@@ -156,16 +160,87 @@ export default function StoreGameWrapper() {
     });
   }, []);
 
+  const [isCartVisible, setIsCartVisible] = useState(false);
+
+  function renderGoldInfo(gold?: number) {
+    return (
+      <div className="flex gap-2 items-center">
+        <Image src="/game/ui/gold.png" width={20} height={20} alt="gold" />
+        <p className="text-lg font-bold text-[#a27c3f]">
+          {gold?.toLocaleString() ?? ""}
+        </p>
+      </div>
+    );
+  }
+
+  const renderCart = (onPurchase: () => void) => (
+    <div className="w-72 p-3 rounded-[6px] border border-[#d6c6aa] bg-[#fcf4e4] shadow-[3px_3px_0_#c6b89d]">
+      <div className="flex justify-between items-center mb-4">
+        <span className="text-sm font-bold text-[#3d2c1b]">🎒 장바구니</span>
+        <div className="flex gap-2">
+          <RetroButton variant="ghost" onClick={onPurchase}>
+            모두 구매
+          </RetroButton>
+          <RetroButton variant="ghost" onClick={() => setEquippedItems([])}>
+            모두 삭제
+          </RetroButton>
+          {isMobile && (
+            <RetroButton
+              variant="ghost"
+              onClick={() => setIsCartVisible(false)}
+            >
+              닫기
+            </RetroButton>
+          )}
+        </div>
+      </div>
+      <EquippedItemList
+        equippedItems={equippedItems}
+        onEquippedItemRemove={onEquippedItemRemove}
+      />
+    </div>
+  );
+
   return (
     <div
       className="flex h-screen bg-[#f9f5ec] text-[#2a1f14]"
       style={{ cursor: 'url("/game/ui/cursor.png"), default' }}
     >
-      <main className="flex flex-1 overflow-hidden gap-6 overflow-y-auto p-6 justify-center">
-        <div className="flex flex-col">
+      {/* 모바일 헤더 */}
+      {isMobile && (
+        <header className="fixed top-0 left-0 right-0 z-10 bg-[#f9f5ec] border-b border-[#d6c6aa] px-4 py-2 flex justify-between items-center shadow-md">
+          <div className="text-sm font-bold text-[#3d2c1b]">🎁 리아 상점</div>
+          <div className="flex items-center gap-3">
+            {renderGoldInfo(gold?.goldBalance)}
+            <button
+              onClick={() => setIsCartVisible(true)}
+              className="relative"
+              aria-label="장바구니 열기"
+            >
+              <FiShoppingCart className="w-6 h-6 text-[#5c4b32]" />
+              {equippedItems.length > 0 && (
+                <span className="absolute -top-1.5 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-[1px] rounded-full">
+                  {equippedItems.length}
+                </span>
+              )}
+            </button>
+          </div>
+        </header>
+      )}
+
+      {/* 모바일 장바구니 모달 */}
+      {isMobile && isCartVisible && (
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-end p-4 z-50">
+          {renderCart(openPurchaseModal)}
+        </div>
+      )}
+
+      <main className="flex flex-1 overflow-hidden gap-6 overflow-y-auto p-4 justify-center">
+        <div className={`flex flex-col ${isMobile ? "w-screen" : ""}`}>
           <CategorySelector
             selectedType={selectedType}
             setSelectedType={setSelectedType}
+            className={isMobile ? "mt-[40px]" : ""}
           />
           <div className="flex items-center justify-between text-xs text-[#5c4b32] font-bold mb-3 px-1">
             <div className="flex gap-2">
@@ -190,17 +265,17 @@ export default function StoreGameWrapper() {
               )}
             </div>
             <div className="flex justify-end mb-3 px-1">
-              <div className="relative inline-block text-left">
+              <div className="relative inline-block text-left w-24">
                 <select
                   value={order}
                   onChange={(e) => setOrder(e.target.value as ProductOrder)}
-                  className="block w-40 px-3 py-2 text-sm font-semibold text-[#5c4b32] bg-[#fcf4e4] border border-[#bfae96] rounded shadow-sm appearance-none focus:outline-none focus:ring-2 focus:ring-[#d6c6aa]"
+                  className="block w-full pl-2 pr-6 py-1.5 text-xs font-semibold text-[#5c4b32] bg-[#fcf4e4] border border-[#bfae96] rounded-lg shadow-sm appearance-none focus:outline-none focus:ring-2 focus:ring-[#d6c6aa]"
                 >
-                  <option value={ProductOrder.LATEST}>🕒 최신 순</option>
-                  <option value={ProductOrder.CHEAPEST}>⬇️ 가격 낮은 순</option>
-                  <option value={ProductOrder.PRICIEST}>⬆️ 가격 높은 순</option>
+                  <option value={ProductOrder.LATEST}>최신</option>
+                  <option value={ProductOrder.CHEAPEST}>저가순</option>
+                  <option value={ProductOrder.PRICIEST}>고가순</option>
                 </select>
-                <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-[#8c7a5c]">
+                <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-[#8c7a5c] text-xs">
                   ▼
                 </div>
               </div>
@@ -245,7 +320,13 @@ export default function StoreGameWrapper() {
             </nav>
           </div>
         </div>
-        <div className="flex flex-col gap-6 items-center pt-[4px]">
+        {/* 우측 영역 */}
+        <div
+          className={`flex flex-col gap-6 items-center pt-[4px] ${
+            isMobile ? "hidden" : ""
+          }`}
+        >
+          {/* 골드 및 브금 버튼 */}
           <div className="flex justify-between w-full items-center px-2">
             <div className="flex gap-2 items-center">
               <Image
@@ -260,6 +341,7 @@ export default function StoreGameWrapper() {
             </div>
             <RetroButton>BGM</RetroButton>
           </div>
+          {/* 미리보기 씬 영역 */}
           <div className="overflow-hidden rounded-[8px] border border-[#bfae96] shadow-[4px_4px_0_#8c7a5c] bg-[#fdf8ef]">
             <div className="w-[288px] h-[288px]">
               {!isSceneReady ? (
@@ -278,28 +360,9 @@ export default function StoreGameWrapper() {
               />
             </div>
           </div>
-          <div className="w-72 p-3 rounded-[6px] border border-[#d6c6aa] bg-[#fcf4e4] shadow-[3px_3px_0_#c6b89d]">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-sm font-bold text-[#3d2c1b]">
-                🎒 장바구니
-              </span>
-              <div className="flex gap-2">
-                <RetroButton variant="ghost" onClick={openPurchaseModal}>
-                  모두 구매
-                </RetroButton>
-                <RetroButton
-                  variant="ghost"
-                  onClick={() => setEquippedItems([])}
-                >
-                  모두 삭제
-                </RetroButton>
-              </div>
-            </div>
-            <EquippedItemList
-              equippedItems={equippedItems}
-              onEquippedItemRemove={onEquippedItemRemove}
-            />
-          </div>
+
+          {/* 장바구니 */}
+          <div className="w-72">{renderCart(openPurchaseModal)}</div>
         </div>
       </main>
       <ConfirmPurchaseModal

@@ -201,7 +201,7 @@ export default function MenuHeader({
         )}
 
         {isLogined && (
-          <div className="hidden sm:flex">
+          <div className="flex">
             <StyledMenuItem
               icon={<FiShoppingBag size={20} />}
               label="상점"
