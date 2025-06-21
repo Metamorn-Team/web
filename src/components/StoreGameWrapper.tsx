@@ -203,7 +203,7 @@ export default function StoreGameWrapper() {
 
   return (
     <div
-      className="flex h-screen bg-[#f9f5ec] text-[#2a1f14]"
+      className="flex h-dvh bg-[#f9f5ec] text-[#2a1f14]"
       style={{ cursor: 'url("/game/ui/cursor.png"), default' }}
     >
       {/* 모바일 헤더 */}
