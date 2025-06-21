@@ -58,7 +58,7 @@ export default function IslandCreationModal({
   };
 
   const validateData = (data: Partial<CreateIslandRequest>) => {
-    const { coverImage, description, maxMembers, name, tags } = data;
+    const { coverImage, description, maxMembers, name, tags, mapKey } = data;
 
     if (!coverImage || !description || !maxMembers || !name) {
       return false;
@@ -74,7 +74,9 @@ export default function IslandCreationModal({
       maxMembers <= 5 &&
       tags &&
       tags.length > 0 &&
-      tags.length < 4
+      tags.length < 4 &&
+      mapKey &&
+      mapKey.length > 0
     );
   };
 
