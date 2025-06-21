@@ -7,17 +7,7 @@ import { playerStore } from "@/game/managers/player-store";
 import { EventWrapper } from "@/game/event/EventBus";
 import { FiX } from "react-icons/fi";
 import { PAWN_AVATAR_URL } from "@/constants/image-path";
-
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth <= 640);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-  return isMobile;
-}
+import { useIsMobile } from "@/hook/useIsMobile";
 
 function ParticipantStatusLabel({ count }: { count: number }) {
   return (

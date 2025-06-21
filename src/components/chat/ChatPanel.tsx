@@ -11,6 +11,7 @@ import { socketManager } from "@/game/managers/socket-manager";
 import { linkify } from "@/game/utils/inkify";
 import { replaceBadWords } from "@/game/utils/text-filter";
 import { useModal } from "@/hook/useModal";
+import { useIsMobile } from "@/hook/useIsMobile";
 import Alert from "@/utils/alert";
 import { getItem } from "@/utils/persistence";
 import {
@@ -21,26 +22,6 @@ import {
 } from "mmorntype";
 import React, { useEffect, useRef, useState } from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
-
-function useIsMobile(): boolean {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const check = () => {
-      const mobile = window.innerWidth <= 640;
-      setIsMobile(mobile);
-    };
-
-    check();
-    window.addEventListener("resize", check);
-
-    return () => {
-      window.removeEventListener("resize", check);
-    };
-  }, []);
-
-  return isMobile;
-}
 
 interface ChatMessage {
   id: string;
