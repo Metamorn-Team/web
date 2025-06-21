@@ -27,6 +27,7 @@ import CategorySelector from "@/components/store/CategorySelector";
 import PromotionProductList from "@/components/store/PromotionProductList";
 import { useIsMobile } from "@/hook/useIsMobile";
 import { FiShoppingCart } from "react-icons/fi";
+import { persistItem } from "@/utils/persistence";
 
 const DynamicStoreGame = dynamic(() => import("@/components/StoreGame"), {
   ssr: false,
@@ -144,6 +145,8 @@ export default function StoreGameWrapper() {
         onSuccess: () => {
           SoundManager.getInstance().playSfx(CASH, 1.5);
           setIsCartVisible(false);
+          persistItem("aura_updated", Date.now().toString());
+          persistItem("bubble_updated", Date.now().toString());
         },
       }
     );

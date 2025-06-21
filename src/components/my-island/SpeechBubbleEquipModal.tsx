@@ -12,6 +12,7 @@ import { useUnequipItem } from "@/hook/queries/useUnequipItem";
 import { useGetEquippedItems } from "@/hook/queries/useGetEquippedItems";
 import { QUERY_KEY as EQUIPPED_ITEMS_QUERY_KEY } from "@/hook/queries/useGetEquippedItems";
 import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEY as ALL_OWNED_ITEMS_QUERY_KEY } from "@/hook/queries/useGetAllOwnedItems";
 
 interface SpeechBubbleEquipModalProps {
   isOpen: boolean;
@@ -60,6 +61,19 @@ const SpeechBubbleList = () => {
   useEffect(() => {
     setCurrentBubble(equippedItems?.SPEECH_BUBBLE?.key || null);
   }, [equippedItems]);
+
+  useEffect(() => {
+    const handler = (e: StorageEvent) => {
+      console.log(e.key);
+      if (e.key === "bubble_updated") {
+        queryClient.invalidateQueries({
+          queryKey: [ALL_OWNED_ITEMS_QUERY_KEY, "SPEECH_BUBBLE", "NORMAL"],
+        });
+      }
+    };
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, []);
 
   const onEquip = (itemId: string, key: string) => {
     if (key === currentBubble) return;

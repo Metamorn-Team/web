@@ -13,6 +13,7 @@ import { useUnequipItem } from "@/hook/queries/useUnequipItem";
 import { useGetEquippedItems } from "@/hook/queries/useGetEquippedItems";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEY as EQUIPPED_ITEMS_QUERY_KEY } from "@/hook/queries/useGetEquippedItems";
+import { QUERY_KEY as ALL_OWNED_ITEMS_QUERY_KEY } from "@/hook/queries/useGetAllOwnedItems";
 
 interface AuraEquipModalProps {
   isOpen: boolean;
@@ -61,6 +62,19 @@ const AuraList = () => {
   useEffect(() => {
     setCurrentAura(equippedItems?.AURA?.key || null);
   }, [equippedItems]);
+
+  useEffect(() => {
+    const handler = (e: StorageEvent) => {
+      console.log(e.key);
+      if (e.key === "aura_updated") {
+        queryClient.invalidateQueries({
+          queryKey: [ALL_OWNED_ITEMS_QUERY_KEY, "AURA", "NORMAL"],
+        });
+      }
+    };
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, []);
 
   const onEquip = (auraId: string, key: string, grade: ItemGrade) => {
     if (key === currentAura) return;
@@ -119,7 +133,7 @@ const AuraList = () => {
                   )}
 
                   <div className="relative w-14 h-14 mb-2">
-                    <Image src={aura.image} fill alt="오라" />
+                    <Image src={aura.image} fill alt="오라" sizes="56px" />
                   </div>
                   <p
                     className={`text-sm font-bold text-center ${
