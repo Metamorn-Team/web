@@ -9,6 +9,7 @@ import React from "react";
 interface ProductCardProps {
   product: Product;
   onAddEquippedItem: (item: EquippedItem) => void;
+  className?: string;
 }
 
 // const gradeStyles = {
@@ -30,7 +31,11 @@ interface ProductCardProps {
 //   },
 // };
 
-const ProductCard = ({ product, onAddEquippedItem }: ProductCardProps) => {
+const ProductCard = ({
+  product,
+  onAddEquippedItem,
+  className,
+}: ProductCardProps) => {
   const onEquip = () => {
     EventWrapper.emitToGame("tryOnProduct", product.type, product.key);
   };
@@ -40,7 +45,7 @@ const ProductCard = ({ product, onAddEquippedItem }: ProductCardProps) => {
       key={product.id}
       className={`bg-[#fdf8ef] border border-[#bfae96] shadow-[4px_4px_0_#8c7a5c] transition p-4 flex flex-col justify-between gap-2 w-52 rounded-[6px] ${
         product.purchasedStatus === "PURCHASED" ? "opacity-70" : "opacity-100"
-      }`}
+      } ${className}`}
     >
       <div className="relative w-full aspect-square overflow-hidden border border-[#d2c4ad] rounded-[4px]">
         {/* 등급 뱃지 (좌측 상단) */}
@@ -111,26 +116,28 @@ const ProductCard = ({ product, onAddEquippedItem }: ProductCardProps) => {
         )}
 
         {/* 버튼 영역 */}
-        <div className="flex gap-1">
-          <RetroButton onClick={onEquip}>장착</RetroButton>
-          <RetroButton
-            disabled={product.purchasedStatus === "PURCHASED"}
-            onClick={() =>
-              product.purchasedStatus !== "PURCHASED"
-                ? onAddEquippedItem({
-                    id: product.id,
-                    name: product.name,
-                    price:
-                      // 가격은 0원일 수 있기 때문에 null로 비교
-                      product.saledPrice !== null
-                        ? product.saledPrice
-                        : product.originPrice,
-                  })
-                : () => {}
-            }
-          >
-            담기
-          </RetroButton>
+        <div className="h-full flex flex-col justify-end">
+          <div className="flex gap-1">
+            <RetroButton onClick={onEquip}>장착</RetroButton>
+            <RetroButton
+              disabled={product.purchasedStatus === "PURCHASED"}
+              onClick={() =>
+                product.purchasedStatus !== "PURCHASED"
+                  ? onAddEquippedItem({
+                      id: product.id,
+                      name: product.name,
+                      price:
+                        // 가격은 0원일 수 있기 때문에 null로 비교
+                        product.saledPrice !== null
+                          ? product.saledPrice
+                          : product.originPrice,
+                    })
+                  : () => {}
+              }
+            >
+              담기
+            </RetroButton>
+          </div>
         </div>
       </div>
     </div>
