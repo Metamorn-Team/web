@@ -2,6 +2,7 @@
 
 import RetroButton from "@/components/common/RetroButton";
 import { EventWrapper } from "@/game/event/EventBus";
+import { useIsMobile } from "@/hook/useIsMobile";
 import { EquippedItem, Product } from "@/types/client/product";
 import Image from "next/image";
 import React from "react";
@@ -10,6 +11,7 @@ interface ProductCardProps {
   product: Product;
   onAddEquippedItem: (item: EquippedItem) => void;
   className?: string;
+  priority?: boolean;
 }
 
 // const gradeStyles = {
@@ -35,7 +37,10 @@ const ProductCard = ({
   product,
   onAddEquippedItem,
   className,
+  priority = false,
 }: ProductCardProps) => {
+  const isMobile = useIsMobile();
+
   const onEquip = () => {
     EventWrapper.emitToGame("tryOnProduct", product.type, product.key);
   };
@@ -76,7 +81,8 @@ const ProductCard = ({
           src={product.coverImage}
           alt={product.name}
           fill
-          objectFit="cover"
+          sizes="280px"
+          priority={priority}
         />
       </div>
 
@@ -118,7 +124,7 @@ const ProductCard = ({
         {/* 버튼 영역 */}
         <div className="h-full flex flex-col justify-end">
           <div className="flex gap-1">
-            <RetroButton onClick={onEquip}>장착</RetroButton>
+            {!isMobile && <RetroButton onClick={onEquip}>장착</RetroButton>}
             <RetroButton
               disabled={product.purchasedStatus === "PURCHASED"}
               onClick={() =>

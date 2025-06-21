@@ -54,11 +54,12 @@ const PromotionProductList = ({
             <ProductCardSkeleton key={`skeleton-${i}`} />
           ))
         : data &&
-          data.products.map((product) => (
+          data.products.map((product, index) => (
             <DynamicProductCard
               key={product.id}
               product={product}
               onAddEquippedItem={onAddEquippedItem}
+              priority={index === 0}
             />
           ))}
     </div>
