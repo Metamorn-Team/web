@@ -59,6 +59,7 @@ const PromotionProductList = ({
               key={product.id}
               product={product}
               onAddEquippedItem={onAddEquippedItem}
+              className="h-full"
               priority={index === 0}
             />
           ))}
