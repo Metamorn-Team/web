@@ -1,38 +1,38 @@
-import { COLLISION_CATEGORIES } from "@/constants/game/collision-categories";
 import { TREE } from "@/constants/game/sprites/nature";
 import { TREE_IDLE } from "@/game/animations/keys/objects/tree";
-import { CollisionComponent } from "@/game/components/collision";
 import { CollisionRangeSensorComponent } from "@/game/components/collision-range-sensor";
 import { Component } from "@/game/components/interface/component";
 import { Renderer } from "@/game/components/renderer";
-import {
-  NatureObject,
-  NatureObjectPrototype,
-} from "@/game/entities/nature/nature-object";
+import { NatureObject } from "@/game/entities/nature/nature-object";
+import { Position } from "@/types/game/game";
+
+interface TreePrototype {
+  id: string;
+  hp: number;
+  position: Position;
+}
 
 export class Tree extends NatureObject {
   private isShaking = false;
 
-  constructor(scene: Phaser.Scene, prototype: NatureObjectPrototype) {
-    super(scene, prototype);
-    this.registerComponents();
+  constructor(scene: Phaser.Scene, prototype: TreePrototype) {
+    super(scene, {
+      ...prototype,
+      texture: TREE,
+      width: 30,
+      height: 5,
+      displayOriginY: 100,
+    });
 
+    this.init();
     this.renderer = this.getComponent(Renderer);
     this.renderer?.play(TREE_IDLE);
   }
 
-  registerComponents() {
+  init() {
     const isDebug = !!this.scene.game.config.physics.matter?.debug;
 
     const components: Component[] = [
-      new Renderer(this, TREE).setScale(0.9).setDisplayOriginY(100),
-      new CollisionComponent(this, {
-        label: "TREE",
-        shape: "rectangle",
-        width: 30,
-        height: 5,
-        category: COLLISION_CATEGORIES.NATURE_OBJECT,
-      }).fixed(true),
       new CollisionRangeSensorComponent(this, {
         shape: "rectangle",
         width: 30,
