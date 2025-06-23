@@ -13,7 +13,7 @@ import {
   WOODLAND_FANTASY,
 } from "@/constants/game/sounds/bgm/bgms";
 import { CASH, HIT, JUMP, STRONG_HIT } from "@/constants/game/sounds/sfx/sfxs";
-import { SKULL_SIGN, TREE } from "@/constants/game/sprites/nature";
+import { MUSHROOM_L, SKULL_SIGN, TREE } from "@/constants/game/sprites/nature";
 import {
   FOAM,
   ROCK_L,
@@ -101,9 +101,9 @@ export class AssetManager {
       frameHeight: 192,
     });
 
-    scene.load.spritesheet(TREE, `${this.spriteUrl}/tree.png`, {
+    scene.load.spritesheet(TREE, `${this.spriteUrl}/tree-basic.png`, {
       frameWidth: 192,
-      frameHeight: 192,
+      frameHeight: 256,
     });
   }
 
@@ -120,7 +120,7 @@ export class AssetManager {
     scene.load.image("ground", `${this.tileUrl}/ground.png`);
     scene.load.image("shadow", `${this.tileUrl}/shadow.png`);
 
-    scene.load.image("mushroom-l", `${this.imageUrl}/mushroom-l.png`);
+    scene.load.image(MUSHROOM_L, `${this.imageUrl}/mushroom-l.png`);
     scene.load.image("mushroom-m", `${this.imageUrl}/mushroom-m.png`);
     scene.load.image("mushroom-s", `${this.imageUrl}/mushroom-s.png`);
 
