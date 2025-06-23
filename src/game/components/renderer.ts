@@ -13,7 +13,12 @@ export class Renderer implements Component {
   }
 
   init(): void {
-    this._sprite = this.host.scene.add.sprite(0, 0, this.texture);
+    this._sprite = this.host.scene.add.sprite(
+      this.host.x,
+      this.host.y,
+      this.texture
+    );
+    this._sprite.setDepth(this.host.y);
     this._sprite.setOrigin(0.5);
   }
 
@@ -60,8 +65,23 @@ export class Renderer implements Component {
     this._sprite.setTexture(key);
   }
 
+  setDepth(depth: number) {
+    this._sprite.setDepth(depth);
+    return this;
+  }
+
   once(event: string | symbol, fn: (...args: any[]) => void, context?: any) {
     this._sprite.once(event, fn, context);
+  }
+
+  setDisplayOriginX(x: number) {
+    this._sprite.displayOriginX += x;
+    return this;
+  }
+
+  setDisplayOriginY(y: number) {
+    this._sprite.displayOriginY += y;
+    return this;
   }
 
   destroy(fromScene = true): void {
