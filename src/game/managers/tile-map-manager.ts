@@ -1,6 +1,5 @@
 import { FOAM, ROCK_L, ROCK_M, ROCK_S } from "@/constants/game/sprites/tile";
 import { skullSpawner } from "@/game/managers/spawners/skull-sign-spawner";
-import { treeSpawner } from "@/game/managers/tree-spawner";
 import { Phaser } from "@/game/phaser";
 
 export const mapKeys = ["island", "loby", "store", "tiny-island"] as const;
@@ -125,20 +124,6 @@ class TileMapManager {
       });
 
       this.setRectanleCollisionObjects(map);
-
-      const positions = [
-        { cellX: 25, cellY: 4 },
-        { cellX: 22, cellY: 5 },
-        { cellX: 24, cellY: 6 },
-        { cellX: 4, cellY: 12 },
-        { cellX: 5, cellY: 12 },
-        { cellX: 4, cellY: 13 },
-        { cellX: 5, cellY: 13 },
-      ];
-
-      positions.map((position) =>
-        treeSpawner.spawnTree(this.scene, position.cellX, position.cellY)
-      );
     }
   }
 
