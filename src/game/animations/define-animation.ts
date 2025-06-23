@@ -166,9 +166,9 @@ export const defineAnimation = (scene: Phaser.Scene) => {
     key: TREE_IDLE,
     frames: scene.anims.generateFrameNumbers(TREE, {
       start: 0,
-      end: 3,
+      end: 7,
     }),
-    frameRate: 6,
+    frameRate: 10,
     repeat: -1,
   });
 
