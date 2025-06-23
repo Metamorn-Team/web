@@ -19,6 +19,8 @@ import {
 import { TilemapComponent } from "@/game/components/tile-map.component";
 import { MapKeys } from "@/game/managers/tile-map-manager";
 import { IslandScene } from "@/game/scenes/island-scene";
+import { NatureObjectSpawner } from "@/game/managers/nature-object-spawner";
+import { natureObjectStore } from "@/game/managers/nature-object-store";
 
 export class IslandNetworkHandler {
   constructor(
@@ -66,7 +68,7 @@ export class IslandNetworkHandler {
     });
 
     this.io.on("playerJoinSuccess", async (data) => {
-      const { mapKey, ...position } = data;
+      const { mapKey, activeObjects, ...position } = data;
       try {
         this.scene.mapComponent = new TilemapComponent(
           this.scene,
@@ -94,6 +96,14 @@ export class IslandNetworkHandler {
         });
 
         this.scene.followPlayerCamera();
+
+        // 자연 오브젝트 스폰 및 저장
+        const natureObjects = NatureObjectSpawner.spawnNatureObjects(
+          this.scene,
+          activeObjects
+        );
+        natureObjectStore.addNatureObjects(natureObjects);
+
         this.scene.ready(this.scene.socketNsp);
       } catch (e) {
         console.error(e);

@@ -24,6 +24,7 @@ import { TOWN } from "@/constants/game/sounds/bgm/bgms";
 import { TilemapComponent } from "@/game/components/tile-map.component";
 import { playerSpawner } from "@/game/managers/spawners/player-spawner";
 import { IslandNetworkHandler } from "@/game/components/island-network-handler";
+import { natureObjectStore } from "@/game/managers/nature-object-store";
 
 export class IslandScene extends MetamornScene {
   public override player: Player;
@@ -117,6 +118,10 @@ export class IslandScene extends MetamornScene {
     for (const player of playerStore.getAllPlayers().values()) {
       player.update(delta);
     }
+
+    for (const object of natureObjectStore.getNatureObjects().values()) {
+      object.update(delta);
+    }
   }
 
   spawnActiveUsers(activeUsers: ActivePlayerResponse) {
@@ -207,14 +212,9 @@ export class IslandScene extends MetamornScene {
     player?.onStrongAttack();
 
     this.time.delayedCall(200, () => {
-      if (attackedPlayerIds.includes(this.player.getPlayerInfo().id)) {
-        // EventWrapper.emitToUi("attacked");
-        this.player.hit();
-      }
-
       attackedPlayerIds
-        .map((id) => playerStore.getPlayer(id))
-        .forEach((player) => player?.hit());
+        .map((id) => natureObjectStore.getNatureObject(id))
+        .forEach((object) => object?.onHit());
     });
   }
 
