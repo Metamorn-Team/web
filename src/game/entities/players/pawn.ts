@@ -13,6 +13,7 @@ import { Renderer } from "@/game/components/renderer";
 import { Player, PlayerOptions } from "@/game/entities/players/player";
 import { SoundManager } from "@/game/managers/sound-manager";
 import { AttackType } from "@/types/game/enum/state";
+import { AttackRangeSensorComponent } from "@/game/components/attack-range-sensor";
 
 interface PawnOptions extends PlayerOptions {
   color: PawnColor;
@@ -31,8 +32,20 @@ export class Pawn extends Player {
 
     this.isBeingBorn = false;
     this.color = options.color;
+    const isDebug = !!this.scene.game.config.physics.matter?.debug;
 
     this.addComponent(new EquipmentState(options.equipment.AURA));
+    // 디버깅용 공격 범위 센서 컴포넌트
+    this.addComponent(
+      new AttackRangeSensorComponent(this, {
+        shape: "rectangle",
+        width: 40,
+        height: 30,
+        alpha: 0.3,
+        showText: true,
+        enabled: isDebug,
+      })
+    );
   }
 
   public update(delta: number): void {
@@ -70,6 +83,10 @@ export class Pawn extends Player {
         : PAWN_ATTACK(this.color),
       true
     );
+
+    // 공격 범위 센서 하이라이트
+    const attackSensor = this.getComponent(AttackRangeSensorComponent);
+    attackSensor?.highlight(500, 0xffff00);
 
     this.scene.time.delayedCall(240, () => {
       SoundManager.getInstance().playSfx(

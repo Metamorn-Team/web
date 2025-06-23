@@ -69,7 +69,7 @@ export abstract class Player extends BaseEntity {
     );
   }
 
-  registerComponents(options: PlayerOptions) {
+  protected registerComponents(options: PlayerOptions) {
     const renderer = new Renderer(this, options.texture).setScale(0.7);
     const components = [
       renderer,
@@ -80,6 +80,8 @@ export abstract class Player extends BaseEntity {
         shape: "circle",
         radius: options.radius,
         category: COLLISION_CATEGORIES.PLAYER,
+        // 같은 category 끼리는 충돌하지 않음
+        collidesGroup: -1,
       }),
       new NameLabel(this, {
         text: options.playerInfo.nickname,
