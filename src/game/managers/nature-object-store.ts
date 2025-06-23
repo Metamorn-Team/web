@@ -38,6 +38,13 @@ class NatureObjectStore {
   clear(): void {
     this.natureObjects.clear();
   }
+
+  clearAllNatureObjects(): void {
+    this.natureObjects.forEach((natureObject) => {
+      natureObject.destroy(true);
+    });
+    this.natureObjects.clear();
+  }
 }
 
 export const natureObjectStore = NatureObjectStore.getInstance();

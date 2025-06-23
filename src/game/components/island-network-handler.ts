@@ -97,7 +97,8 @@ export class IslandNetworkHandler {
 
         this.scene.followPlayerCamera();
 
-        // 자연 오브젝트 스폰 및 저장
+        // 기존 자연 오브젝트 정리 후 새로 생성
+        natureObjectStore.clearAllNatureObjects();
         const natureObjects = NatureObjectSpawner.spawnNatureObjects(
           this.scene,
           activeObjects
