@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 const controls = [
   { keys: ["W", "A", "S", "D"], label: "이동" },
   { keys: ["↑", "↓", "←", "→"], label: "이동 (화살표)" },
-  { keys: ["Z"], label: "공격" },
-  { keys: ["X"], label: "강공격" },
+  { keys: ["Z"], label: "플레이어 공격" },
+  { keys: ["X"], label: "오브젝트 공격" },
   { keys: ["Space"], label: "점프" },
   { keys: ["E"], label: "상호작용" },
 ];
