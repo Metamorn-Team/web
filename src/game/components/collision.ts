@@ -14,7 +14,22 @@ interface CollisionOptions {
 }
 
 /**
- * @category default: -1, 다른 카테고리끼리만 충돌
+ * Matter.js의 collisionFilter.group 사용 규칙:
+ *
+ * 1. group === 0 (기본값)
+ *    - 충돌 여부는 category & mask 로 결정됨
+ *
+ * 2. group > 0 (양수 그룹)
+ *    - 같은 group 값을 가진 바디끼리는 **무조건 충돌함**
+ *    - category/mask 무시됨
+ *
+ * 3. group < 0 (음수 그룹)
+ *    - 같은 group 값을 가진 바디끼리는 **절대 충돌하지 않음**
+ *    - category/mask 무시됨
+ *
+ * ✔️ 주로 사용하는 예:
+ *    - group = -1: 플레이어끼리는 충돌하지 않도록 설정
+ *    - group = 1: 파티클이나 연결된 오브젝트끼리 항상 충돌하게 설정
  */
 export class CollisionComponent implements Component {
   private scene: Phaser.Scene;
@@ -43,8 +58,7 @@ export class CollisionComponent implements Component {
 
     this.body = body;
     this.body.collisionFilter.category = options.category;
-    // (detault) 다른 카테고리끼리만 충돌
-    this.body.collisionFilter.group = options.collidesGroup ?? -1;
+    this.body.collisionFilter.group = options.collidesGroup ?? 0;
   }
 
   update(): void {
@@ -54,6 +68,11 @@ export class CollisionComponent implements Component {
 
   get name() {
     return CollisionComponent.name;
+  }
+
+  fixed(isStatic: boolean) {
+    this.body.isStatic = isStatic;
+    return this;
   }
 
   destroy(): void {
