@@ -1,4 +1,3 @@
-import { Mushroom } from "@/game/entities/nature/mushroom";
 import { NatureObject } from "@/game/entities/nature/nature-object";
 import { Tree } from "@/game/entities/nature/tree";
 import { Phaser } from "@/game/phaser";
@@ -19,12 +18,6 @@ export class NatureObjectSpawner {
     switch (object.type) {
       case "TREE":
         return new Tree(scene, {
-          id: object.id,
-          hp: object.hp,
-          position,
-        });
-      case "MUSHROOM":
-        return new Mushroom(scene, {
           id: object.id,
           hp: object.hp,
           position,
