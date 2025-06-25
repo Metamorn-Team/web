@@ -5,3 +5,7 @@ export const PRIVACY_POLICY_URL =
 
 export const TERMS_OF_USE_URL =
   "https://round-salto-95e.notion.site/18eb0c33dc078199821aeb6f58637b3b?source=copy_link";
+
+export const KAKAO_URL = "https://open.kakao.com/o/sMYWPgxh";
+
+export const INSTAGRAM_URL = "https://www.instagram.com/livisland_official/";

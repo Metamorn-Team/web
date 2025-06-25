@@ -28,6 +28,7 @@ import PromotionProductList from "@/components/store/PromotionProductList";
 import { useIsMobile } from "@/hook/useIsMobile";
 import { FiShoppingCart } from "react-icons/fi";
 import { persistItem } from "@/utils/persistence";
+import Footer from "@/components/common/Footer";
 
 const DynamicStoreGame = dynamic(() => import("@/components/StoreGame"), {
   ssr: false,
@@ -206,7 +207,7 @@ export default function StoreGameWrapper() {
 
   return (
     <div
-      className="flex h-dvh bg-[#f9f5ec] text-[#2a1f14]"
+      className="flex flex-col h-dvh bg-[#f9f5ec] text-[#2a1f14]"
       style={{ cursor: 'url("/game/ui/cursor.png"), default' }}
     >
       {/* 모바일 헤더 */}
@@ -284,7 +285,8 @@ export default function StoreGameWrapper() {
               </div>
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto pr-1 scrollbar-hide">
+          {/* 상품 목록 */}
+          <div className="flex-1 overflow-y-auto pr-1 scrollbar-hide flex flex-col gap-2">
             {selectedType === "promotion" ? (
               <PromotionProductList
                 name={selectedPromotion}
@@ -304,23 +306,24 @@ export default function StoreGameWrapper() {
                 onSetPageArr={onSetPageArr}
               />
             )}
-          </div>
-          <div className="flex justify-center mt-2">
-            <nav className="inline-flex items-center space-x-1 bg-[#f3ece1] px-4 py-2 rounded-xl border border-[#d6c6aa] shadow-sm">
-              {pageArr.map((page) => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`w-8 h-8 rounded-md text-sm font-medium transition ${
-                    page === currentPage
-                      ? "bg-[#e8e0d0] text-[#2a1f14] font-bold"
-                      : "hover:bg-[#f1e8d8] text-[#5c4b32]"
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
-            </nav>
+            <div className="flex justify-center mt-2">
+              <nav className="inline-flex items-center space-x-1 bg-[#f3ece1] px-4 py-2 rounded-xl border border-[#d6c6aa] shadow-sm">
+                {pageArr.map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`w-8 h-8 rounded-md text-sm font-medium transition ${
+                      page === currentPage
+                        ? "bg-[#e8e0d0] text-[#2a1f14] font-bold"
+                        : "hover:bg-[#f1e8d8] text-[#5c4b32]"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </nav>
+            </div>
+            <Footer />
           </div>
         </div>
         {/* 우측 영역 */}

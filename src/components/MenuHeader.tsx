@@ -288,7 +288,7 @@ export default function MenuHeader({
               />
             )}
             <DropdownItem
-              icon={<FiMenu />} // 적절한 아이콘으로 교체 가능
+              icon={<FiMenu />}
               label="업데이트 노트"
               onClick={onUpdateOpen}
             />
