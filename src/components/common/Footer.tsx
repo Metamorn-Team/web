@@ -13,9 +13,9 @@ import {
 export default function Footer({ className }: { className?: string }) {
   return (
     <footer
-      className={`w-full border-t border-gray-200 text-[12px] text-gray-500 mt-20 ${className}`}
+      className={`w-full max-w-2xl border-t border-gray-200 text-[12px] text-gray-500 mt-20 ${className}`}
     >
-      <div className="max-w-6xl mx-auto py-6 flex flex-col gap-4">
+      <div className="mx-auto py-6 flex flex-col gap-4">
         {/* 상단 메뉴 */}
         <nav className="flex flex-wrap gap-4 justify-center sm:justify-start text-gray-700 font-medium">
           <a href={TERMS_OF_USE_URL} target="_blank">
@@ -29,19 +29,23 @@ export default function Footer({ className }: { className?: string }) {
         {/* 회사 정보 및 소셜 */}
         <div className="w-full flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center border-t border-gray-200 pt-4">
           <div className="leading-relaxed text-gray-400">
-            <p>
+            <p className="w-fit">
               리브아일랜드 | 대표:{" "}
               {process.env.NEXT_PUBLIC_COMPANY_REPRESENTATIVE} | 사업자등록번호:{" "}
               {process.env.NEXT_PUBLIC_BUSINESS_NUMBER}
             </p>
-            <p className="flex flex-wrap gap-x-1 text-gray-400">
-              <span>{process.env.NEXT_PUBLIC_COMPANY_ADDRESS} |</span>
+            <p className="flex flex-wrap gap-x-1 text-gray-400 md:flex-col">
+              <span>{process.env.NEXT_PUBLIC_COMPANY_ADDRESS}</span>
               <span className="whitespace-nowrap">
-                이메일: {process.env.NEXT_PUBLIC_COMPANY_EMAIL} | 전화번호:{" "}
-                {process.env.NEXT_PUBLIC_COMPANY_PHONE}
+                이메일: {process.env.NEXT_PUBLIC_COMPANY_EMAIL}
+              </span>
+              <span className="whitespace-nowrap">
+                전화번호: {process.env.NEXT_PUBLIC_COMPANY_PHONE}
               </span>
             </p>
-            <p>ⓒ 리브아일랜드 Co., Ltd. All Rights Reserved.</p>
+            <p className="w-fit">
+              ⓒ 리브아일랜드 Co., Ltd. All Rights Reserved.
+            </p>
           </div>
 
           <div className="flex gap-3 text-xl text-gray-600">

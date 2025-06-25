@@ -303,7 +303,7 @@ export default function StoreGameWrapper() {
             </div>
           </div>
           {/* 상품 목록 */}
-          <div className="flex-1 overflow-y-auto pr-1 scrollbar-hide flex flex-col gap-2">
+          <div className="flex flex-col flex-1 overflow-y-auto pr-1 scrollbar-hide gap-2">
             <div className="flex-1">
               {selectedType === "promotion" ? (
                 <PromotionProductList
@@ -342,6 +342,7 @@ export default function StoreGameWrapper() {
                 ))}
               </nav>
             </div>
+
             <Footer />
           </div>
         </div>
