@@ -46,7 +46,7 @@ export default function GoldChargeModal({
   };
 
   return (
-    <RetroModal isOpen={isOpen} onClose={onClose} className="w-96">
+    <RetroModal isOpen={isOpen} onClose={onClose} className="!w-96">
       <div className="flex flex-col gap-4">
         <h2 className="text-lg font-bold text-center text-[#2a1f14]">
           골드 충전하기
