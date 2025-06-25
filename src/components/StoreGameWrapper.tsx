@@ -29,6 +29,7 @@ import { useIsMobile } from "@/hook/useIsMobile";
 import { FiShoppingCart } from "react-icons/fi";
 import { persistItem } from "@/utils/persistence";
 import Footer from "@/components/common/Footer";
+import GoldChargeModal from "@/components/GoldChargeModal";
 
 const DynamicStoreGame = dynamic(() => import("@/components/StoreGame"), {
   ssr: false,
@@ -76,6 +77,12 @@ export default function StoreGameWrapper() {
     isModalOpen: isOpen,
     onOpen: onPurchaseModalOpen,
     onClose: onPurchaseModalClose,
+  } = useModal();
+
+  const {
+    isModalOpen: isGoldChargeModalOpen,
+    onOpen: onGoldChargeModalOpen,
+    onClose: onGoldChargeModalClose,
   } = useModal();
 
   const queryClient = useQueryClient();
@@ -173,6 +180,12 @@ export default function StoreGameWrapper() {
         <p className="text-lg font-bold text-[#a27c3f]">
           {gold?.toLocaleString() ?? ""}
         </p>
+        <button
+          onClick={onGoldChargeModalOpen}
+          className="ml-1 px-2 py-0.5 text-xs font-semibold rounded bg-[#f3e9d0] border border-[#d6c6aa] text-[#5c4b32] hover:bg-[#e8ddc3] transition"
+        >
+          충전
+        </button>
       </div>
     );
   }
@@ -334,17 +347,7 @@ export default function StoreGameWrapper() {
         >
           {/* 골드 및 브금 버튼 */}
           <div className="flex justify-between w-full items-center px-2">
-            <div className="flex gap-2 items-center">
-              <Image
-                src="/game/ui/gold.png"
-                width={20}
-                height={20}
-                alt="gold"
-              />
-              <p className="text-lg font-bold text-[#a27c3f]">
-                {gold?.goldBalance.toLocaleString() ?? ""}
-              </p>
-            </div>
+            {renderGoldInfo(gold?.goldBalance)}
             <RetroButton>BGM</RetroButton>
           </div>
           {/* 미리보기 씬 영역 */}
@@ -375,9 +378,13 @@ export default function StoreGameWrapper() {
         isOpen={isOpen}
         onClose={onPurchaseModalClose}
         onPurchase={onPurchase}
-        onCharge={() => Alert.warn("준비 중..")} // TODO
+        onCharge={onGoldChargeModalOpen}
         equippedItems={equippedItems}
         goldBalance={gold?.goldBalance ?? 0}
+      />
+      <GoldChargeModal
+        isOpen={isGoldChargeModalOpen}
+        onClose={onGoldChargeModalClose}
       />
     </div>
   );

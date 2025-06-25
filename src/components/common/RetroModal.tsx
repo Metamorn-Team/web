@@ -57,7 +57,7 @@ const RetroModal = ({
       >
         {/* 모바일 전용 닫기 버튼 */}
         <button
-          className="absolute top-3 right-3 text-[#8c7a5c] font-bold text-xl sm:hidden"
+          className="absolute top-3 right-3 text-[#8c7a5c] font-bold text-xl"
           onClick={onClose}
         >
           ×
