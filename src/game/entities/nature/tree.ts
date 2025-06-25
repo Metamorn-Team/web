@@ -1,4 +1,4 @@
-import { TREE } from "@/constants/game/sprites/nature";
+import { NATURE_SPRITE } from "@/constants/game/sprites/nature";
 import { TREE_IDLE } from "@/game/animations/keys/objects/tree";
 import { CollisionRangeSensorComponent } from "@/game/components/collision-range-sensor";
 import { Component } from "@/game/components/interface/component";
@@ -18,7 +18,7 @@ export class Tree extends NatureObject {
   constructor(scene: Phaser.Scene, prototype: TreePrototype) {
     super(scene, {
       ...prototype,
-      texture: TREE,
+      texture: NATURE_SPRITE.TREE,
       width: 30,
       height: 5,
       displayOriginY: 100,
