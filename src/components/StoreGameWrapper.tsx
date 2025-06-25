@@ -218,6 +218,10 @@ export default function StoreGameWrapper() {
     </div>
   );
 
+  // if (isError || !isLoading) {
+  //   return <StoreRedirectPage />;
+  // }
+
   return (
     <div
       className="flex flex-col h-dvh bg-[#f9f5ec] text-[#2a1f14]"
