@@ -304,25 +304,27 @@ export default function StoreGameWrapper() {
           </div>
           {/* 상품 목록 */}
           <div className="flex-1 overflow-y-auto pr-1 scrollbar-hide flex flex-col gap-2">
-            {selectedType === "promotion" ? (
-              <PromotionProductList
-                name={selectedPromotion}
-                order={order}
-                page={currentPage}
-                limit={10}
-                onAddEquippedItem={onAddEquippedItem}
-                onSetPageArr={onSetPageArr}
-              />
-            ) : (
-              <ProductList
-                type={selectedType}
-                order={order}
-                page={currentPage}
-                limit={10}
-                onAddEquippedItem={onAddEquippedItem}
-                onSetPageArr={onSetPageArr}
-              />
-            )}
+            <div className="flex-1">
+              {selectedType === "promotion" ? (
+                <PromotionProductList
+                  name={selectedPromotion}
+                  order={order}
+                  page={currentPage}
+                  limit={10}
+                  onAddEquippedItem={onAddEquippedItem}
+                  onSetPageArr={onSetPageArr}
+                />
+              ) : (
+                <ProductList
+                  type={selectedType}
+                  order={order}
+                  page={currentPage}
+                  limit={10}
+                  onAddEquippedItem={onAddEquippedItem}
+                  onSetPageArr={onSetPageArr}
+                />
+              )}
+            </div>
             <div className="flex justify-center mt-2">
               <nav className="inline-flex items-center space-x-1 bg-[#f3ece1] px-4 py-2 rounded-xl border border-[#d6c6aa] shadow-sm">
                 {pageArr.map((page) => (
