@@ -263,7 +263,7 @@ export default function StoreGameWrapper() {
             setSelectedType={setSelectedType}
             className={isMobile ? "mt-[40px]" : ""}
           />
-          <div className="flex items-start justify-between text-xs text-[#5c4b32] font-bold  px-1">
+          <div className="flex items-start justify-between text-xs text-[#5c4b32] font-bold px-2 sm:py-4">
             <div className="flex gap-2">
               {selectedType === "promotion" ? (
                 promotions.map((promotion) => (
