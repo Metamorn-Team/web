@@ -7,6 +7,8 @@ import {
   FiMenu,
   FiLogOut,
   FiShoppingBag,
+  FiFileText,
+  FiShield,
 } from "react-icons/fi";
 import { useQueryClient } from "@tanstack/react-query";
 import { BsMusicNoteBeamed } from "react-icons/bs";
@@ -35,6 +37,7 @@ import {
 } from "@/constants/game/islands/island";
 import { useCurrentSceneStore } from "@/stores/useCurrentSceneStore";
 import Reload from "@/utils/reload";
+import { PRIVACY_POLICY_URL, TERMS_OF_USE_URL } from "@/constants/constants";
 
 interface MenuHeaderProps {
   changeFriendModalOpen: (state: boolean) => void;
@@ -293,6 +296,16 @@ export default function MenuHeader({
               icon={<FiSettings />}
               label="환경 설정"
               onClick={onSettingsModalOpen}
+            />
+            <DropdownItem
+              icon={<FiFileText />}
+              label="이용 약관"
+              onClick={() => window.open(TERMS_OF_USE_URL, "_blank")}
+            />
+            <DropdownItem
+              icon={<FiShield />}
+              label="개인정보 처리방침"
+              onClick={() => window.open(PRIVACY_POLICY_URL, "_blank")}
             />
           </div>
         )}
