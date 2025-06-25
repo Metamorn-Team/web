@@ -30,14 +30,17 @@ export default function Footer({ className }: { className?: string }) {
         <div className="w-full flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center border-t border-gray-200 pt-4">
           <div className="leading-relaxed text-gray-400">
             <p>
-              리브아일랜드 | 대표:{" "}
+              리브아일랜드 | 대표:
               {process.env.NEXT_PUBLIC_COMPANY_REPRESENTATIVE} | 사업자등록번호:{" "}
               {process.env.NEXT_PUBLIC_BUSINESS_NUMBER}
             </p>
-            <p>
-              {process.env.NEXT_PUBLIC_COMPANY_ADDRESS} | 이메일:
-              {process.env.NEXT_PUBLIC_COMPANY_EMAIL}
+            <p className="flex flex-wrap gap-x-1 text-gray-400">
+              <span>{process.env.NEXT_PUBLIC_COMPANY_ADDRESS} |</span>
+              <span className="whitespace-nowrap">
+                이메일: {process.env.NEXT_PUBLIC_COMPANY_EMAIL}
+              </span>
             </p>
+
             <p>ⓒ 리브아일랜드 Co., Ltd. All Rights Reserved.</p>
           </div>
 
