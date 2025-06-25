@@ -1,4 +1,4 @@
-import { FOAM, ROCK_L, ROCK_M, ROCK_S } from "@/constants/game/sprites/tile";
+import { FOAM } from "@/constants/game/sprites/tile";
 import { skullSpawner } from "@/game/managers/spawners/skull-sign-spawner";
 import { Phaser } from "@/game/phaser";
 
@@ -98,30 +98,30 @@ class TileMapManager {
       map.createLayer("bridge", bridgeTileset);
       map.createLayer("deco", mushroomLTileset);
 
-      const rockLayer = map.createLayer("rock", shadowTileset);
-      const sRocks = rockLayer?.createFromTiles([169], -1, {
-        key: ROCK_S,
-        origin: 0.2,
-      });
-      const mRocks = rockLayer?.createFromTiles([168], -1, {
-        key: ROCK_M,
-        origin: 0.2,
-      });
-      const lRocks = rockLayer?.createFromTiles([95], -1, {
-        key: ROCK_L,
-        origin: 0.2,
-      });
+      // const rockLayer = map.createLayer("rock", shadowTileset);
+      // const sRocks = rockLayer?.createFromTiles([169], -1, {
+      //   key: ROCK_S,
+      //   origin: 0.2,
+      // });
+      // const mRocks = rockLayer?.createFromTiles([168], -1, {
+      //   key: ROCK_M,
+      //   origin: 0.2,
+      // });
+      // const lRocks = rockLayer?.createFromTiles([95], -1, {
+      //   key: ROCK_L,
+      //   origin: 0.2,
+      // });
 
-      const rockMaps = [
-        { title: ROCK_S, value: sRocks },
-        { title: ROCK_M, value: mRocks },
-        { title: ROCK_L, value: lRocks },
-      ];
-      rockMaps.forEach((rock) => {
-        if (rock.value) {
-          this.scene.anims.staggerPlay(rock.title, rock.value, 50);
-        }
-      });
+      // const rockMaps = [
+      //   { title: ROCK_S, value: sRocks },
+      //   { title: ROCK_M, value: mRocks },
+      //   { title: ROCK_L, value: lRocks },
+      // ];
+      // rockMaps.forEach((rock) => {
+      //   if (rock.value) {
+      //     this.scene.anims.staggerPlay(rock.title, rock.value, 50);
+      //   }
+      // });
 
       this.setRectanleCollisionObjects(map);
     }

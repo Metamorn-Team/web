@@ -6,16 +6,12 @@ import {
   WARRIOR,
   warriorColors,
 } from "@/constants/game/entities";
-import { TREE } from "@/constants/game/sprites/nature";
-import {
-  FOAM,
-  ROCK_L,
-  ROCK_M,
-  ROCK_S,
-  ROCK_XL,
-} from "@/constants/game/sprites/tile";
+import { NATURE_SPRITE } from "@/constants/game/sprites/nature";
+import { SPRITE } from "@/constants/game/sprites/object";
+import { FOAM } from "@/constants/game/sprites/tile";
 import { BORN, DEAD } from "@/game/animations/keys/common";
 import { SHEEP } from "@/game/animations/keys/creatures/sheep/sheep";
+import { BOAT_IDLE } from "@/game/animations/keys/objects/boat";
 import { TREE_IDLE } from "@/game/animations/keys/objects/tree";
 import {
   PAWN_ATTACK,
@@ -164,7 +160,7 @@ export const defineAnimation = (scene: Phaser.Scene) => {
 
   scene.anims.create({
     key: TREE_IDLE,
-    frames: scene.anims.generateFrameNumbers(TREE, {
+    frames: scene.anims.generateFrameNumbers(NATURE_SPRITE.TREE, {
       start: 0,
       end: 7,
     }),
@@ -192,16 +188,26 @@ export const defineAnimation = (scene: Phaser.Scene) => {
     repeat: -1,
   });
 
-  const rocks = [ROCK_S, ROCK_M, ROCK_L, ROCK_XL];
-  rocks.forEach((rock) =>
-    scene.anims.create({
-      key: rock,
-      frames: scene.anims.generateFrameNumbers(rock, {
-        start: 0,
-        end: 7,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    })
-  );
+  scene.anims.create({
+    key: BOAT_IDLE,
+    frames: scene.anims.generateFrameNumbers(SPRITE.BOAT, {
+      start: 0,
+      end: 7,
+    }),
+    frameRate: 10,
+    repeat: -1,
+  });
+
+  // const rocks = [ROCK_S, ROCK_M, ROCK_L, ROCK_XL];
+  // rocks.forEach((rock) =>
+  //   scene.anims.create({
+  //     key: rock,
+  //     frames: scene.anims.generateFrameNumbers(rock, {
+  //       start: 0,
+  //       end: 7,
+  //     }),
+  //     frameRate: 6,
+  //     repeat: -1,
+  //   })
+  // );
 };

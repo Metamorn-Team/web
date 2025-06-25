@@ -13,14 +13,13 @@ import {
   WOODLAND_FANTASY,
 } from "@/constants/game/sounds/bgm/bgms";
 import { CASH, HIT, JUMP, STRONG_HIT } from "@/constants/game/sounds/sfx/sfxs";
-import { MUSHROOM_L, SKULL_SIGN, TREE } from "@/constants/game/sprites/nature";
 import {
-  FOAM,
-  ROCK_L,
-  ROCK_M,
-  ROCK_S,
-  ROCK_XL,
-} from "@/constants/game/sprites/tile";
+  MUSHROOM_L,
+  NATURE_SPRITE,
+  SKULL_SIGN,
+} from "@/constants/game/sprites/nature";
+import { SPRITE } from "@/constants/game/sprites/object";
+import { FOAM } from "@/constants/game/sprites/tile";
 import { DEAD } from "@/game/animations/keys/common";
 import { Phaser } from "@/game/phaser";
 
@@ -83,13 +82,13 @@ export class AssetManager {
       );
     });
 
-    const ROCKS = [ROCK_S, ROCK_M, ROCK_L, ROCK_XL];
-    ROCKS.forEach((ROCK) =>
-      scene.load.spritesheet(ROCK, `${this.spriteUrl}/${ROCK}.png`, {
-        frameWidth: 128,
-        frameHeight: 128,
-      })
-    );
+    // const ROCKS = [ROCK_S, ROCK_M, ROCK_L, ROCK_XL];
+    // ROCKS.forEach((ROCK) =>
+    //   scene.load.spritesheet(ROCK, `${this.spriteUrl}/${ROCK}.png`, {
+    //     frameWidth: 128,
+    //     frameHeight: 128,
+    //   })
+    // );
 
     scene.load.spritesheet("sleep", `${this.spriteUrl}/sleep.png`, {
       frameWidth: 192,
@@ -101,10 +100,55 @@ export class AssetManager {
       frameHeight: 192,
     });
 
-    scene.load.spritesheet(TREE, `${this.spriteUrl}/tree-basic.png`, {
-      frameWidth: 192,
+    scene.load.spritesheet(
+      NATURE_SPRITE.TREE,
+      `${this.spriteUrl}/tree-basic.png`,
+      {
+        frameWidth: 192,
+        frameHeight: 256,
+      }
+    );
+
+    scene.load.spritesheet(SPRITE.BOAT, `${this.spriteUrl}/boat.png`, {
+      frameWidth: 256,
       frameHeight: 256,
     });
+
+    scene.load.spritesheet(
+      NATURE_SPRITE.ROCK_XS,
+      `${this.spriteUrl}/rock-xs.png`,
+      {
+        frameWidth: 64,
+        frameHeight: 64,
+      }
+    );
+
+    scene.load.spritesheet(
+      NATURE_SPRITE.ROCK_S,
+      `${this.spriteUrl}/rock-s.png`,
+      {
+        frameWidth: 64,
+        frameHeight: 64,
+      }
+    );
+
+    scene.load.spritesheet(
+      NATURE_SPRITE.ROCK_M,
+      `${this.spriteUrl}/rock-m.png`,
+      {
+        frameWidth: 64,
+        frameHeight: 64,
+      }
+    );
+
+    scene.load.spritesheet(
+      NATURE_SPRITE.ROCK_L,
+      `${this.spriteUrl}/rock-l.png`,
+      {
+        frameWidth: 64,
+        frameHeight: 64,
+      }
+    );
   }
 
   loadMaps(scene: Phaser.Scene) {
