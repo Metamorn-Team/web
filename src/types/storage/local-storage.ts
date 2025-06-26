@@ -6,7 +6,8 @@ export interface LocalStorageData {
   play_bgm: boolean;
   sound_volume: number;
   fps_limit: number;
-  seen_control_guide: boolean;
   aura_updated: string;
   bubble_updated: string;
+  seen_control_guide: boolean;
+  seen_mobile_warning: boolean;
 }
