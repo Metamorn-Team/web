@@ -49,7 +49,7 @@ export class MyIslandScene extends MetamornScene {
     const centerX = this.mapComponent.centerOfMap.x;
     const centerY = this.mapComponent.centerOfMap.y;
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 1; i++) {
       const offsetX = Phaser.Math.Between(-100, 100);
       const offsetY = Phaser.Math.Between(-100, 100);
       const sheep = new Sheep(this, centerX + offsetX, centerY + offsetY);
