@@ -32,6 +32,7 @@ import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
 import MyIsland from "@/components/my-island/MyIsland";
 import { useCurrentSceneStore } from "@/stores/useCurrentSceneStore";
 import UpdateNoteModal from "@/components/UpdateNoteModal";
+import MobileWarningBanner from "./common/MobileWarningBanner";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -223,13 +224,16 @@ export default function GameWrapper({
   return (
     <div>
       {!isLoading ? (
-        <MenuHeader
-          changeFriendModalOpen={changeFriendModalOpen}
-          onSettingsModalOpen={onSettingsModalOpen}
-          onDevModalOpen={onDevOpen}
-          onUpdateOpen={onUpdateOpen}
-          onIslandInfoModalOpen={onIslandInfoModalOpen}
-        />
+        <>
+          <MenuHeader
+            changeFriendModalOpen={changeFriendModalOpen}
+            onSettingsModalOpen={onSettingsModalOpen}
+            onDevModalOpen={onDevOpen}
+            onUpdateOpen={onUpdateOpen}
+            onIslandInfoModalOpen={onIslandInfoModalOpen}
+          />
+          <MobileWarningBanner />
+        </>
       ) : null}
 
       <Game ref={gameRef} currentActiveScene={() => {}} />
