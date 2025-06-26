@@ -1,3 +1,11 @@
+## v1.2.1 (2025.06.27)
+
+## ✨ new
+
+- **"내섬"** 에서 허전함을 달래줄 새로운 양이 찾아왔어요!
+  - 풀을 뜯는 귀여운 모습
+    <img src="https://cdn.metamorn.com/update-note/2025-06-27-new-sheep.png" style="width: 100%; max-width: 150px" />
+
 ## v1.2.0 (2025.06.23)
 
 ## ✨ new
