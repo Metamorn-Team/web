@@ -149,6 +149,33 @@ export class AssetManager {
         frameHeight: 64,
       }
     );
+
+    scene.load.spritesheet(
+      SPRITE.SHEEP_GRASS,
+      `${this.spriteUrl}/sheep-grass.png`,
+      {
+        frameWidth: 128,
+        frameHeight: 128,
+      }
+    );
+
+    scene.load.spritesheet(
+      SPRITE.SHEEP_IDLE,
+      `${this.spriteUrl}/sheep-idle.png`,
+      {
+        frameWidth: 128,
+        frameHeight: 128,
+      }
+    );
+
+    scene.load.spritesheet(
+      SPRITE.SHEEP_MOVE,
+      `${this.spriteUrl}/sheep-move.png`,
+      {
+        frameWidth: 128,
+        frameHeight: 128,
+      }
+    );
   }
 
   loadMaps(scene: Phaser.Scene) {

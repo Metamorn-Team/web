@@ -170,19 +170,29 @@ export const defineAnimation = (scene: Phaser.Scene) => {
 
   scene.anims.create({
     key: SHEEP.IDLE,
-    frames: scene.anims.generateFrameNumbers("sheep", {
+    frames: scene.anims.generateFrameNumbers(SPRITE.SHEEP_IDLE, {
       start: 0,
-      end: 7,
+      end: 5,
     }),
     frameRate: 10,
     repeat: -1,
   });
 
   scene.anims.create({
-    key: SHEEP.JUMP,
-    frames: scene.anims.generateFrameNumbers("sheep", {
-      start: 8,
-      end: 13,
+    key: SHEEP.MOVE,
+    frames: scene.anims.generateFrameNumbers(SPRITE.SHEEP_MOVE, {
+      start: 0,
+      end: 3,
+    }),
+    frameRate: 10,
+    repeat: -1,
+  });
+
+  scene.anims.create({
+    key: SHEEP.GRASS,
+    frames: scene.anims.generateFrameNumbers(SPRITE.SHEEP_GRASS, {
+      start: 0,
+      end: 11,
     }),
     frameRate: 10,
     repeat: -1,

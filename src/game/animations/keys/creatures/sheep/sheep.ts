@@ -1,4 +1,6 @@
 export const SHEEP = {
-  IDLE: "sheep-idle",
-  JUMP: "sheep-jump",
+  IDLE: "SHEEP_IDLE",
+  JUMP: "SHEEP_JUMP",
+  MOVE: "SHEEP_MOVE",
+  GRASS: "SHEEP_GRASS",
 };

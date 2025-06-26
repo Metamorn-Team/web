@@ -1,3 +1,6 @@
 export const SPRITE = {
   BOAT: "boat",
+  SHEEP_GRASS: "SHEEP_GRASS",
+  SHEEP_IDLE: "SHEP_IDLE",
+  SHEEP_MOVE: "SHEEP_MOVE",
 };
