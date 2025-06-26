@@ -51,11 +51,11 @@ export class Sheep extends BaseEntity {
   }
 
   onMove() {
-    this.getComponent(Renderer)?.play(SHEEP_ANIMATION.JUMP, true);
+    this.getComponent(Renderer)?.play(SHEEP_ANIMATION.MOVE, true);
   }
 
-  onJump() {
-    this.getComponent(Renderer)?.play(SHEEP_ANIMATION.JUMP, true);
+  onGrass() {
+    this.getComponent(Renderer)?.play(SHEEP_ANIMATION.GRASS, true);
   }
 
   flipX(isRight: boolean) {

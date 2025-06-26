@@ -27,12 +27,12 @@ export class IdleState implements State<SheepState> {
     if (this.timer > this.moveDuration) {
       const r = Math.random();
 
-      // if (r < 0.2) {
-      //   this.parent.setState(SheepState.JUMP);
-      //   return;
-      // }
+      if (r < 0.3) {
+        this.parent.setState(SheepState.GRASS);
+        return;
+      }
 
-      if (r < 0.7) {
+      if (r < 0.6) {
         this.parent.setState(SheepState.MOVE);
         return;
       }
