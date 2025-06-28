@@ -16,6 +16,7 @@ import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { INITIAL_PROFILE } from "@/constants/game/initial-profile";
 import Pawn from "@/components/common/Pawn";
 import { pawnColors } from "@/constants/game/entities";
+import { BsThreeDots } from "react-icons/bs";
 
 interface PlayerInfoModalProps {
   playerInfo: UserInfo;
@@ -40,6 +41,7 @@ const PlayerInfoModal = ({
 
   const [isEditing, setIsEditing] = useState(false);
   const [bio, setBio] = useState<string>("");
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     if (isMe && user?.bio) {
@@ -56,6 +58,7 @@ const PlayerInfoModal = ({
   const { mutate: changeBio } = useChangeBio(() => {
     onSuccess();
     setIsEditing(false);
+    setShowEditModal(false);
   });
 
   const onSendRequest = () => {
@@ -69,6 +72,32 @@ const PlayerInfoModal = ({
 
     sendRequest({ targetUserId: playerInfo.id });
   };
+
+  const handleEditClick = () => {
+    setShowEditModal(true);
+  };
+
+  const handleEditBio = () => {
+    setShowEditModal(false);
+    setIsEditing(true);
+  };
+
+  // 모달 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showEditModal) {
+        const target = event.target as Element;
+        if (!target.closest(".edit-modal-container")) {
+          setShowEditModal(false);
+        }
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showEditModal]);
 
   const renderFriendButton = () => {
     if (isMe || !isLogined) return null;
@@ -135,7 +164,7 @@ const PlayerInfoModal = ({
 
           {/* 자기소개 영역 */}
           <div
-            className={`relative w-full bg-[#f9f5ec] border border-[#d6c6aa] rounded-md p-2 sm:p-5 text-sm text-[#5c4b32] text-center shadow-inner min-w-[200px] max-w-[340px] overflow-y-scroll scrollbar-hide ${
+            className={`relative w-full bg-[#f9f5ec] border border-[#d6c6aa] rounded-md py-4 px-2 sm:p-5 text-sm text-[#5c4b32] text-center shadow-inner min-w-[200px] max-w-[340px] overflow-y-scroll scrollbar-hide ${
               isEditing ? "h-fit" : "max-h-[80px] sm:max-h-[150px]"
             }`}
           >
@@ -143,16 +172,27 @@ const PlayerInfoModal = ({
               <>
                 {isMe && isLogined && (
                   <button
-                    onClick={() => setIsEditing(true)}
-                    className="absolute top-1 right-2 text-xs text-[#5c4b32] hover:underline"
+                    onClick={handleEditClick}
+                    className="absolute top-0.5 right-1 text-xs text-[#5c4b32] hover:text-[#8c7a5c] transition-colors"
                   >
-                    ✏️ 수정
+                    <BsThreeDots size={16} />
                   </button>
                 )}
                 {displayedUser.bio
                   ? `💬 ${displayedUser.bio}`
                   : "💬 자기소개가 아직 없어요!"}
               </>
+            )}
+
+            {showEditModal && (
+              <div className="absolute top-0 right-0 bg-white border border-[#d6c6aa] rounded-md shadow-lg z-20 min-w-[120px] edit-modal-container">
+                <button
+                  onClick={handleEditBio}
+                  className="w-full px-3 py-2 text-sm text-[#5c4b32] hover:bg-[#f9f5ec] transition-colors text-left"
+                >
+                  ✏️ 수정
+                </button>
+              </div>
             )}
 
             {isEditing && (
