@@ -2,7 +2,9 @@ import { Socket } from "socket.io-client";
 import {
   ActivePlayer,
   ActivePlayerResponse,
+  AttackedObject,
   ClientToServer,
+  IslandActiveObject,
   MessageSent,
   ReceiveMessage,
   ServerToClient,
@@ -25,6 +27,7 @@ import { TilemapComponent } from "@/game/components/tile-map.component";
 import { playerSpawner } from "@/game/managers/spawners/player-spawner";
 import { IslandNetworkHandler } from "@/game/components/island-network-handler";
 import { natureObjectStore } from "@/game/managers/nature-object-store";
+import { NatureObjectSpawner } from "@/game/managers/nature-object-spawner";
 
 export class IslandScene extends MetamornScene {
   public override player: Player;
@@ -205,16 +208,23 @@ export class IslandScene extends MetamornScene {
   }
 
   // TODO 오브젝트 공격 추가되면 수정
-  handleStrongAttacked(attackerId: string, attackedPlayerIds: string[]) {
+  handleStrongAttacked(attackerId: string, attackedObjects: AttackedObject[]) {
     const player = playerStore.getPlayer(attackerId);
     if (!player && attackerId !== this.player.getPlayerInfo().id) return;
 
     player?.onStrongAttack();
 
     this.time.delayedCall(200, () => {
-      attackedPlayerIds
-        .map((id) => natureObjectStore.getNatureObject(id))
-        .forEach((object) => object?.onHit());
+      attackedObjects.forEach((object) => {
+        const natureObject = natureObjectStore.getNatureObject(object.id);
+        if (natureObject) {
+          if (object.status === "ALIVE") {
+            natureObject.onHit();
+          } else {
+            natureObject.onDead();
+          }
+        }
+      });
     });
   }
 
@@ -232,6 +242,20 @@ export class IslandScene extends MetamornScene {
     if (player && !isBeingBorn) {
       player.onWalk(x, y);
     }
+  }
+
+  handleRespawnObjects(objects: IslandActiveObject[]) {
+    objects.forEach((object) => {
+      const existingObject = natureObjectStore.getNatureObject(object.id);
+      if (existingObject) {
+        existingObject.destroy(true);
+      }
+
+      const natureObject = NatureObjectSpawner.spawnNatureObject(this, object);
+      if (natureObject) {
+        natureObjectStore.addNatureObject(natureObject);
+      }
+    });
   }
 
   clearAllPlayer() {

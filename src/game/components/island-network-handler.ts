@@ -1,6 +1,7 @@
 import { Socket } from "socket.io-client";
 import {
   ActivePlayerResponse,
+  AttackObjectResponse,
   ClientToServer,
   ServerToClient,
   WsErrorBody,
@@ -136,8 +137,9 @@ export class IslandNetworkHandler {
       this.scene.handleAttacked(data.attackerId, data.attackedPlayerIds);
     });
 
-    this.io.on("strongAttacked", (data) => {
-      this.scene.handleStrongAttacked(data.attackerId, data.attackedPlayerIds);
+    this.io.on("strongAttacked", (data: AttackObjectResponse) => {
+      console.log(data);
+      this.scene.handleStrongAttacked(data.attackerId, data.attackedObjects);
     });
 
     this.io.on("jump", (userId: string) => {
@@ -153,6 +155,10 @@ export class IslandNetworkHandler {
 
     this.io.on("invalidVersion", () => {
       Reload.open(HAS_NEW_VERSION);
+    });
+
+    this.io.on("spawnObjects", (data) => {
+      this.scene.handleRespawnObjects(data.objects);
     });
   }
 
