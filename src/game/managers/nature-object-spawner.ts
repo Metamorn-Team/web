@@ -1,3 +1,4 @@
+import { NATURE_SPRITE } from "@/constants/game/sprites/nature";
 import { NatureObject } from "@/game/entities/nature/nature-object";
 import { Tree } from "@/game/entities/nature/tree";
 import { Phaser } from "@/game/phaser";
@@ -16,7 +17,7 @@ export class NatureObjectSpawner {
     };
 
     switch (object.type) {
-      case "TREE":
+      case NATURE_SPRITE.TREE:
         return new Tree(scene, {
           id: object.id,
           hp: object.hp,

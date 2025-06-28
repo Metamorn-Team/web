@@ -13,8 +13,8 @@ class NatureObjectStore {
     return NatureObjectStore.instance;
   }
 
-  addNatureObject(id: string, natureObject: NatureObject): void {
-    this.natureObjects.set(id, natureObject);
+  addNatureObject(natureObject: NatureObject): void {
+    this.natureObjects.set(natureObject.id, natureObject);
   }
 
   addNatureObjects(natureObjects: NatureObject[]): void {
