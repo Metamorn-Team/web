@@ -25,8 +25,9 @@ export class Tree extends NatureObject {
     });
 
     this.init();
-    this.renderer = this.getComponent(Renderer);
-    this.renderer?.play(TREE_IDLE);
+    const renderer = this.getComponent(Renderer);
+    renderer?.play(TREE_IDLE);
+    this.startFadeInAnimation(renderer);
   }
 
   init() {
@@ -50,11 +51,10 @@ export class Tree extends NatureObject {
 
     this.isShaking = true;
 
-    // 진동 애니메이션 시작
     const originalX = this.x;
     const shakeIntensity = 3;
-    const shakeDuration = 150; // 0.15초로 단축
-    const shakeCount = 3; // 진동 횟수 줄임
+    const shakeDuration = 150;
+    const shakeCount = 3;
 
     // 진동 효과
     this.scene.tweens.add({
@@ -69,14 +69,30 @@ export class Tree extends NatureObject {
         this.scene.tweens.add({
           targets: this,
           x: originalX,
-          duration: 10, // 복원 시간도 더 짧게
+          duration: 10,
           ease: "Power2",
           onComplete: () => {
             this.isShaking = false;
-            // TREE_IDLE 애니메이션으로 복원
             this.renderer?.play(TREE_IDLE);
           },
         });
+      },
+    });
+  }
+
+  onDead(): void {
+    const originalRotation = this.rotation;
+    const renderer = this.getComponent(Renderer);
+
+    // 오른쪽으로 넘어지면서 서서히 연해지는 애니메이션
+    this.scene.tweens.add({
+      targets: renderer?.sprite,
+      alpha: 0,
+      rotation: originalRotation + Math.PI / 2,
+      duration: 800,
+      ease: "Back.easeIn",
+      onComplete: () => {
+        this.destroy(true);
       },
     });
   }

@@ -15,7 +15,7 @@ export interface NatureObjectPrototype {
   displayOriginY?: number;
 }
 
-export class NatureObject extends BaseEntity {
+export abstract class NatureObject extends BaseEntity {
   public readonly id: string;
   public readonly hp: number;
 
@@ -45,5 +45,24 @@ export class NatureObject extends BaseEntity {
     ];
 
     components.forEach((c) => this.addComponent(c));
+  }
+
+  protected startFadeInAnimation(renderer: Renderer | undefined): void {
+    if (!renderer?.sprite) return;
+    renderer.sprite.setAlpha(0);
+
+    this.scene.tweens.add({
+      targets: renderer.sprite,
+      alpha: 1,
+      duration: 400,
+      ease: "Power2.out",
+    });
+  }
+
+  abstract onHit(): void;
+  abstract onDead(): void;
+
+  destroy(fromScene = true): void {
+    super.destroy(fromScene);
   }
 }
