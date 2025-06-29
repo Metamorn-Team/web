@@ -65,6 +65,10 @@ export default function MenuHeader({
   const { data: unreadRequestCount } = useGetUnreadFriendRequest();
   const { mutate: logoutMutate } = useLogout(
     () => {
+      if (window.Kakao && window.Kakao.isInitialized()) {
+        window.Kakao.Auth.logout();
+      }
+
       removeItem("access_token");
       removeItem("profile");
       setItem("current_scene", "LobyScene");

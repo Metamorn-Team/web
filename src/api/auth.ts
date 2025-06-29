@@ -5,7 +5,7 @@ import { RegisterRequest, RegisterResponse } from "mmorntype";
 export type RegisterPayload = BaseRegisterDate & AdditionalRegisterData;
 
 export async function login(
-  provider: "GOOGLE",
+  provider: "GOOGLE" | "KAKAO",
   body: {
     accessToken: string;
   }

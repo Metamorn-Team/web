@@ -85,6 +85,7 @@ const RootLayout = ({
           content="black-translucent"
         />
         <meta name="mobile-web-app-capable" content="yes" />
+        <script src="https://developers.kakao.com/sdk/js/kakao.js" async />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
