@@ -3,9 +3,14 @@
 ## ✨ new
 
 - 이제 섬의 자연 오브젝트를 파괴할 수 있어요.
+
   - 나무를 부숴봐요!
+  - 부서진 오브젝트는 일정 시간 후에 리스폰됩니다.
     <img src="https://cdn.metamorn.com/update-note/2025-06-29-tree-chop2.png" style="width: 100%; max-width: 150px" />
-- 부서진 오브젝트는 일정 시간 후에 리스폰됩니다.
+
+- 새로운 로그인 수단 **카카오 로그인**으로 더 쉽게 시작해보세요!
+
+    <img src="https://cdn.metamorn.com/update-note/2025-06-29-kakao-login.png" style="width: 100%; max-width: 200px" />
 
 ## 🧪 coming soon
 
