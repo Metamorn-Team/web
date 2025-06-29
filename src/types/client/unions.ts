@@ -15,6 +15,14 @@ declare global {
           success: (authObj: { access_token: string }) => void;
           fail: (err: Error) => void;
         }) => void;
+        authorize: (options: {
+          redirectUri: string;
+          prompt?: string;
+          state?: string;
+          scope?: string;
+        }) => void;
+        setAccessToken: (token: string) => void;
+        getAccessToken: () => string | null;
         logout: () => void;
       };
     };

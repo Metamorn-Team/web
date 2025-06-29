@@ -16,6 +16,13 @@ interface LoginStepProps {
   onSuccessLogin: (response: RegisterResponse) => void;
 }
 
+const mapProvider = (provider: string) => {
+  if (provider === "KAKAO") {
+    return "카카오";
+  }
+  return "구글";
+};
+
 const LoginStep = ({ nextStep, onSuccessLogin }: LoginStepProps) => {
   // const router = useRouter();
   const { updatePayload } = useRegisterPayloadStore();
@@ -53,8 +60,8 @@ const LoginStep = ({ nextStep, onSuccessLogin }: LoginStepProps) => {
       }
 
       if (isMobile) {
-        // 모바일: 카카오톡 앱으로 로그인
-        window.Kakao.Auth.loginForm({
+        // 일반 모바일 브라우저: loginForm (앱 설치시 앱으로 이동, 아니면 웹뷰)
+        window.Kakao.Auth.login({
           success: async (authObj: { access_token: string }) => {
             try {
               const response = await login("KAKAO", {
@@ -67,8 +74,9 @@ const LoginStep = ({ nextStep, onSuccessLogin }: LoginStepProps) => {
                 if (isErrorUserInfo(body)) {
                   console.log(body);
                   if (body.error === "PROVIDER_CONFLICT") {
-                    Alert.error("이미 다른 플랫폼으로 가입돼 있어요..");
-                    // 카카오 계정 로그아웃하여 다른 계정으로 로그인할 수 있도록 함
+                    Alert.info(
+                      `이미 ${mapProvider(body.provider)}로 가입되어 있어요!`
+                    );
                     window.Kakao.Auth.logout();
                     return;
                   }
@@ -84,8 +92,8 @@ const LoginStep = ({ nextStep, onSuccessLogin }: LoginStepProps) => {
           },
         });
       } else {
-        // 데스크톱: 팝업으로 로그인
-        window.Kakao.Auth.login({
+        // 데스크톱: loginForm 사용 (카카오톡 앱으로 이동)
+        window.Kakao.Auth.loginForm({
           success: async (authObj: { access_token: string }) => {
             try {
               const response = await login("KAKAO", {
@@ -99,9 +107,9 @@ const LoginStep = ({ nextStep, onSuccessLogin }: LoginStepProps) => {
                   console.log(body);
                   if (body.error === "PROVIDER_CONFLICT") {
                     window.Kakao.Auth.logout();
-
-                    Alert.error("이미 다른 플랫폼으로 가입돼 있어요..");
-                    // 카카오 계정 로그아웃하여 다른 계정으로 로그인할 수 있도록 함
+                    Alert.info(
+                      `이미 ${mapProvider(body.provider)}로 가입되어 있어요!`
+                    );
                     return;
                   }
                   const { email, provider } = body;
