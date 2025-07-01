@@ -412,7 +412,7 @@ export default function MainPage() {
               variant="auto"
               size="md"
               hover
-              timeOfDay={"morning"}
+              timeOfDay={"evening"}
             >
               취소
             </GlassButton>
@@ -421,7 +421,7 @@ export default function MainPage() {
               variant="auto"
               size="md"
               hover
-              timeOfDay={"morning"}
+              timeOfDay={"evening"}
             >
               상점 가기
             </GlassButton>

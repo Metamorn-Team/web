@@ -42,21 +42,21 @@ export default function GlassButton({
     switch (timeOfDay) {
       case "dawn":
         return {
+          background: `rgba(255, 216, 155, ${opacity})`,
+          borderColor: "rgba(25, 84, 123, 0.4)",
+          textColor: "text-yellow-900",
+          hoverBg: `rgba(255, 216, 155, ${opacity + 0.1})`,
+          gradient:
+            "bg-gradient-to-br from-yellow-200/30 via-transparent to-yellow-100/20",
+        };
+      case "morning":
+        return {
           background: `rgba(168, 192, 255, ${opacity})`,
           borderColor: "rgba(168, 192, 255, 0.4)",
           textColor: "text-blue-900",
           hoverBg: `rgba(168, 192, 255, ${opacity + 0.1})`,
           gradient:
             "bg-gradient-to-br from-blue-200/30 via-transparent to-blue-100/20",
-        };
-      case "morning":
-        return {
-          background: `rgba(255, 236, 210, ${opacity})`,
-          borderColor: "rgba(252, 182, 159, 0.4)",
-          textColor: "text-orange-900",
-          hoverBg: `rgba(255, 236, 210, ${opacity + 0.1})`,
-          gradient:
-            "bg-gradient-to-br from-orange-200/30 via-transparent to-orange-100/20",
         };
       case "afternoon":
         return {
@@ -69,12 +69,12 @@ export default function GlassButton({
         };
       case "evening":
         return {
-          background: `rgba(255, 216, 155, ${opacity})`,
-          borderColor: "rgba(25, 84, 123, 0.4)",
-          textColor: "text-yellow-900",
-          hoverBg: `rgba(255, 216, 155, ${opacity + 0.1})`,
+          background: `rgba(255, 236, 210, ${opacity})`,
+          borderColor: "rgba(252, 182, 159, 0.4)",
+          textColor: "text-orange-900",
+          hoverBg: `rgba(255, 236, 210, ${opacity + 0.1})`,
           gradient:
-            "bg-gradient-to-br from-yellow-200/30 via-transparent to-yellow-100/20",
+            "bg-gradient-to-br from-orange-200/30 via-transparent to-orange-100/20",
         };
       case "night":
         return {
