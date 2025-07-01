@@ -383,7 +383,9 @@ export default function MainPage() {
       <div className="flex justify-center">
         <Footer
           theme={
-            timeOfDay === "night" || timeOfDay === "dawn" ? "dark" : "default"
+            timeOfDay === "night" || timeOfDay === "morning"
+              ? "dark"
+              : "default"
           }
         />
       </div>
