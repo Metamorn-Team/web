@@ -11,6 +11,7 @@ import GlassButton from "@/components/common/GlassButton";
 import Logo from "@/components/common/Logo";
 import Footer from "@/components/common/Footer";
 import { PawnColor } from "@/constants/game/entities";
+import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
 
 // Pawn 색상 배열
 const PAWN_COLORS: PawnColor[] = [
@@ -120,11 +121,12 @@ const getBackgroundStyle = (timeOfDay: string) => {
 
 export default function MainPage() {
   const router = useRouter();
+  const { data: profile, isLoading: isLoadingProfile } = useGetMyProfile();
 
   const [showStoreModal, setShowStoreModal] = useState(false);
-  const [timeOfDay, setTimeOfDay] = useState("night");
-  const [backgroundStyle, setBackgroundStyle] = useState(
-    getBackgroundStyle("night")
+  const [timeOfDay, setTimeOfDay] = useState<string>(getTimeOfDay());
+  const [backgroundStyle, setBackgroundStyle] = useState(() =>
+    getBackgroundStyle(timeOfDay)
   );
   const [backgroundPawns, setBackgroundPawns] = useState<
     Array<{
@@ -139,7 +141,6 @@ export default function MainPage() {
   const [isClient, setIsClient] = useState(false);
   const [randomPawnColor, setRandomPawnColor] = useState<PawnColor>("blue");
 
-  // 클라이언트 사이드에서만 랜덤 값들 생성
   useEffect(() => {
     setIsClient(true);
 
@@ -239,15 +240,19 @@ export default function MainPage() {
         </div>
 
         {/* 메인 타이틀 */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 px-4">
           <h1
-            className="text-5xl font-bold mb-4 transition-colors duration-1000"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 transition-all duration-1000 ease-out leading-tight min-h-[1.2em] animate-[smoothGreeting_0.8s_ease-out]"
             style={{ color: backgroundStyle.textColor }}
           >
-            {backgroundStyle.greeting}
+            {isLoadingProfile
+              ? ""
+              : profile?.nickname
+              ? `${profile.nickname}님, ${backgroundStyle.greeting}`
+              : backgroundStyle.greeting}
           </h1>
           <h2
-            className="text-3xl font-bold transition-colors duration-1000"
+            className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold transition-all duration-1000 ease-out leading-tight"
             style={{ color: backgroundStyle.secondaryTextColor }}
           >
             {backgroundStyle.description}
