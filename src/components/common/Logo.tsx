@@ -18,9 +18,9 @@ export const Logo = ({
   const getPawnColor = (timeOfDay: string) => {
     switch (timeOfDay) {
       case "dawn":
-        return "blue";
-      case "morning":
         return "yellow";
+      case "morning":
+        return "blue";
       case "afternoon":
         return "purple";
       case "evening":
