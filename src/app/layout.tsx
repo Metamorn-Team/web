@@ -6,14 +6,34 @@ import AlertProvider from "@/components/common/AlertProvider";
 import GoogleAnalytics from "@/app/GoogleAnalytics";
 
 export const metadata: Metadata = {
-  title: "🏝️섬으로 떠나 친구를 만나요~!",
-  description: "일상을 떠나 평화로운 섬으로 - 리브아일랜드",
-  keywords: ["메타버스", "리브아일랜드", "친구", "섬", "게임", "소셜", "모험"],
+  title: "섬에서 만나요!, 리브아일랜드",
+  description:
+    "리브아일랜드에서 일상을 떠나 평화로운 섬으로! 새로운 친구들과 함께하는 소셜 메타버스 게임. 리브, LivIsland, 친구만나기, 섬여행",
+  keywords: [
+    "리브아일랜드",
+    "리브",
+    "LivIsland",
+    "메타버스",
+    "소셜게임",
+    "친구만나기",
+    "섬여행",
+    "온라인게임",
+    "소셜플랫폼",
+    "가상세계",
+    "평화로운섬",
+    "친구찾기",
+    "게임",
+    "소셜",
+    "모험",
+    "캐릭터",
+    "아바타",
+  ],
   applicationName: "리브아일랜드",
   authors: [{ name: "LivIsland Team" }],
   creator: "LivIsland Team",
   publisher: "LivIsland",
-  robots: "index, follow",
+  robots:
+    "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   metadataBase: new URL("https://livisland.com"),
   alternates: {
     canonical: "/",
@@ -23,9 +43,11 @@ export const metadata: Metadata = {
     shortcut: "/icons/favicon.png",
     apple: "/icons/apple-touch-icon.png",
   },
+  manifest: "/manifest.json",
   openGraph: {
-    title: "🏝️섬으로 떠나 친구를 만나요~!",
-    description: "일상을 떠나 평화로운 섬으로 - 리브아일랜드",
+    title: "리브아일랜드 - 평화로운 섬에서 친구를 만나요 🏝️",
+    description:
+      "리브아일랜드에서 일상을 떠나 평화로운 섬으로! 새로운 친구들과 함께하는 소셜 메타버스 게임",
     url: "https://livisland.com",
     siteName: "리브아일랜드",
     images: [
@@ -33,7 +55,7 @@ export const metadata: Metadata = {
         url: "https://cdn.metamorn.com/vanner/ad-vanner.png",
         width: 1200,
         height: 630,
-        alt: "리브아일랜드 OG 이미지",
+        alt: "리브아일랜드 - 평화로운 섬에서 친구를 만나요",
       },
     ],
     locale: "ko_KR",
@@ -41,10 +63,15 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "🏝️섬으로 떠나 친구를 만나요~!",
-    description: "일상을 떠나 평화로운 섬으로 - 리브아일랜드",
+    title: "리브아일랜드 - 평화로운 섬에서 친구를 만나요 🏝️",
+    description:
+      "리브아일랜드에서 일상을 떠나 평화로운 섬으로! 새로운 친구들과 함께하는 소셜 메타버스 게임",
     images: ["https://cdn.metamorn.com/vanner/ad-vanner.png"],
     site: "@livisland",
+  },
+  other: {
+    "naver-site-verification": "your-naver-verification-code",
+    "google-site-verification": "your-google-verification-code",
   },
 };
 
@@ -93,9 +120,39 @@ const RootLayout = ({
           "@context": "https://schema.org",
           "@type": "WebSite",
           "name": "리브아일랜드",
+          "alternateName": ["리브", "LivIsland"],
           "url": "https://livisland.com",
-          "description": "일상을 떠나 평화로운 섬으로 - 리브아일랜드",
-          "inLanguage": "ko-KR"
+          "description": "리브아일랜드에서 일상을 떠나 평화로운 섬으로! 새로운 친구들과 함께하는 소셜 메타버스 게임",
+          "inLanguage": "ko-KR",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://livisland.com/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }`,
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: `{
+          "@context": "https://schema.org",
+          "@type": "Game",
+          "name": "리브아일랜드",
+          "description": "평화로운 섬에서 친구들과 함께하는 소셜 메타버스 게임",
+          "genre": ["소셜게임", "메타버스", "어드벤처"],
+          "applicationCategory": "Game",
+          "operatingSystem": "Web Browser",
+          "url": "https://livisland.com",
+          "publisher": {
+            "@type": "Organization",
+            "name": "LivIsland Team"
+          },
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "KRW"
+          }
         }`,
           }}
         />

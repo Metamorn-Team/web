@@ -197,6 +197,8 @@ export default function MainPage() {
     <main
       className="w-full min-h-screen flex flex-col relative transition-all duration-1000"
       style={{ background: backgroundStyle.background }}
+      itemScope
+      itemType="https://schema.org/WebPage"
     >
       {/* 배경 장식용 Pawn들 - 클라이언트에서만 렌더링 */}
       {isClient &&
@@ -244,6 +246,7 @@ export default function MainPage() {
           <h1
             className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 transition-all duration-1000 ease-out leading-tight min-h-[1.2em] animate-[smoothGreeting_0.8s_ease-out]"
             style={{ color: backgroundStyle.textColor }}
+            itemProp="headline"
           >
             {isLoadingProfile
               ? ""
@@ -254,6 +257,7 @@ export default function MainPage() {
           <h2
             className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold transition-all duration-1000 ease-out leading-tight"
             style={{ color: backgroundStyle.secondaryTextColor }}
+            itemProp="description"
           >
             {backgroundStyle.description}
           </h2>
