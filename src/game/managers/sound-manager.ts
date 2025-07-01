@@ -1,7 +1,7 @@
 import { getItem, persistItem } from "@/utils/persistence";
 
 export class SoundManager {
-  private static instance: SoundManager;
+  private static instance: SoundManager | null = null;
   private currentScene: Phaser.Scene;
   private sound: Phaser.Sound.BaseSoundManager;
   private bgm: Phaser.Sound.BaseSound | null = null;
@@ -40,6 +40,13 @@ export class SoundManager {
 
   public static getInstanceSafe(): SoundManager | null {
     return this.instance || null;
+  }
+
+  public static destroy() {
+    if (this.instance) {
+      this.instance.cleanup();
+      this.instance = null;
+    }
   }
 
   public playBgm(key: string, initVolume = 0.2, loop = true) {
@@ -90,5 +97,25 @@ export class SoundManager {
 
     this.sound.volume = volume;
     persistItem("sound_volume", volumeWeight);
+  }
+
+  private cleanup() {
+    // 모든 사운드 정지
+    this.stopAll();
+
+    // BGM 정지
+    if (this.bgm) {
+      this.bgm.stop();
+      this.bgm.destroy();
+      this.bgm = null;
+    }
+
+    // 이벤트 리스너 제거
+    window.removeEventListener("blur", () => {
+      this.isFocused = false;
+    });
+    window.removeEventListener("focus", () => {
+      this.isFocused = true;
+    });
   }
 }

@@ -38,13 +38,15 @@ export default function LoadingPage() {
     },
   ] as const;
   const [loader, setLoader] = useState<(typeof loaders)[number] | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     const randomIndex = Math.floor(Math.random() * loaders.length);
     setLoader(loaders[randomIndex]);
   }, []);
 
-  if (!loader) return null;
+  if (!isClient || !loader) return null;
 
   return (
     <div className="absolute w-screen h-screen bg-darkBg flex flex-col justify-center items-center -z-50 gap-4">

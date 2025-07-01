@@ -10,34 +10,70 @@ import {
   TERMS_OF_USE_URL,
 } from "@/constants/constants";
 
-export default function Footer({ className }: { className?: string }) {
+interface FooterProps {
+  className?: string;
+  theme?: "default" | "dark" | "uniform";
+}
+
+export default function Footer({ className, theme = "default" }: FooterProps) {
+  // 테마별 색상 설정
+  const getThemeColors = () => {
+    switch (theme) {
+      case "dark":
+        return {
+          primary: "text-gray-800",
+          secondary: "text-gray-500",
+        };
+      case "uniform":
+        return {
+          primary: "text-gray-600",
+          secondary: "text-gray-600",
+        };
+      default:
+        return {
+          primary: "text-gray-700",
+          secondary: "text-gray-400",
+        };
+    }
+  };
+
+  const colors = getThemeColors();
+
   return (
     <footer
-      className={`w-full max-w-2xl border-t border-gray-200 text-[12px] text-gray-500 mt-20 ${className}`}
+      className={`w-full max-w-2xl text-[12px] mt-20 m-3 transition-colors duration-1000 ${className}`}
     >
       <div className="mx-auto py-6 flex flex-col gap-4">
         {/* 상단 메뉴 */}
-        <nav className="flex flex-wrap gap-4 justify-center sm:justify-start text-gray-700 font-medium">
-          <a href={TERMS_OF_USE_URL} target="_blank">
+        <nav className="flex flex-wrap gap-4 justify-center sm:justify-start font-medium">
+          <a
+            href={TERMS_OF_USE_URL}
+            target="_blank"
+            className={`${colors.primary} hover:opacity-80 transition-opacity duration-200`}
+          >
             이용약관
           </a>
-          <a href={PRIVACY_POLICY_URL} target="_blank">
+          <a
+            href={PRIVACY_POLICY_URL}
+            target="_blank"
+            className={`${colors.primary} hover:opacity-80 transition-opacity duration-200`}
+          >
             개인정보처리방침
           </a>
         </nav>
 
         {/* 회사 정보 및 소셜 */}
-        <div className="w-full flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center border-t border-gray-200 pt-4">
-          <div className="leading-relaxed text-gray-400">
+        <div className="w-full flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center pt-4">
+          <div className={`leading-relaxed ${colors.secondary}`}>
             <p className="w-fit">
               리브아일랜드 | 대표:{" "}
               {process.env.NEXT_PUBLIC_COMPANY_REPRESENTATIVE} | 사업자등록번호:{" "}
               {process.env.NEXT_PUBLIC_BUSINESS_NUMBER}
             </p>
-            <p className="flex flex-wrap gap-x-1 text-gray-400 md:flex-col">
-              <span>{process.env.NEXT_PUBLIC_COMPANY_ADDRESS}</span>
+            <p className="flex flex-wrap gap-x-1 md:flex-col">
+              <span>{process.env.NEXT_PUBLIC_COMPANY_ADDRESS} |</span>
               <span className="whitespace-nowrap">
-                이메일: {process.env.NEXT_PUBLIC_COMPANY_EMAIL}
+                이메일: {process.env.NEXT_PUBLIC_COMPANY_EMAIL} |
               </span>
               <span className="whitespace-nowrap">
                 전화번호: {process.env.NEXT_PUBLIC_COMPANY_PHONE}
@@ -48,11 +84,21 @@ export default function Footer({ className }: { className?: string }) {
             </p>
           </div>
 
-          <div className="flex gap-3 text-xl text-gray-600">
-            <a href={KAKAO_URL} target="_blank" rel="noreferrer">
+          <div className={`flex gap-3 text-xl ${colors.secondary}`}>
+            <a
+              href={KAKAO_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="hover:opacity-80 transition-opacity duration-200"
+            >
               <SiKakaotalk />
             </a>
-            <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer">
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="hover:opacity-80 transition-opacity duration-200"
+            >
               <FaInstagram />
             </a>
           </div>

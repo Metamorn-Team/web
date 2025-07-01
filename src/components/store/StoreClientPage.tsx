@@ -1,10 +1,7 @@
 "use client";
 
-import { getMyProfile } from "@/api/user";
-import StoreRedirectPage from "@/components/store/StoreRedirectPage";
-import { AxiosError } from "axios";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useIsLogined } from "@/hook/useIsLogined";
 
 const StoreGameWrapper = dynamic(
   () => import("@/components/StoreGameWrapper"),
@@ -25,36 +22,12 @@ const renderLoading = () => (
 );
 
 export default function StoreClientPage() {
-  const [isLogined, setIsLogined] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const checkLogin = async () => {
-    try {
-      await getMyProfile();
-      setIsLogined(true);
-    } catch (e: unknown) {
-      if (e instanceof AxiosError) {
-        if (e.response?.status === 401) {
-          setIsLogined(false);
-        }
-      }
-      throw e;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    checkLogin();
-  }, []);
+  const { isLogined, isLoading } = useIsLogined();
 
   if (isLoading) {
     return renderLoading();
   }
 
-  if (!isLoading && !isLogined) {
-    return <StoreRedirectPage />;
-  }
-
-  return <StoreGameWrapper />;
+  // 로그인하지 않은 사용자도 상점에 접근 가능
+  return <StoreGameWrapper isLogined={isLogined} />;
 }

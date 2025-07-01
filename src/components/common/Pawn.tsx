@@ -4,14 +4,17 @@ import React from "react";
 
 interface PawnProps {
   color: PawnColor;
-  animation: "run" | "idle";
+  animation: "run" | "idle" | "build";
   className?: string;
+  paused?: boolean;
 }
 
-const Pawn = ({ color, animation, className }: PawnProps) => {
+const Pawn = ({ color, animation, className, paused = false }: PawnProps) => {
   return (
     <div
-      className={`w-[100px] h-[100px] bg-[length:600%_100%] animate-pawn ${className}`}
+      className={`w-[100px] h-[100px] bg-[length:600%_100%] ${
+        paused ? "" : "animate-pawn"
+      } ${className}`}
       style={{
         backgroundImage: `url("${PAWN_ANIMATION_URL(color, animation)}")`,
       }}

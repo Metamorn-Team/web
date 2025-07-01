@@ -30,12 +30,17 @@ import { FiShoppingCart } from "react-icons/fi";
 import { persistItem } from "@/utils/persistence";
 import Footer from "@/components/common/Footer";
 import GoldChargeModal from "@/components/GoldChargeModal";
+import LoginModal from "@/components/login/LoginModal";
 
 const DynamicStoreGame = dynamic(() => import("@/components/StoreGame"), {
   ssr: false,
 });
 
-export default function StoreGameWrapper() {
+interface StoreGameWrapperProps {
+  isLogined: boolean;
+}
+
+export default function StoreGameWrapper({ isLogined }: StoreGameWrapperProps) {
   const isMobile = useIsMobile();
   const [selectedType, setSelectedType] = useState<string>("promotion");
 
@@ -64,10 +69,12 @@ export default function StoreGameWrapper() {
     }
   };
 
-  const { promotions } = useGetAllPromotion();
-  const { data: gold } = useGetGoldBalance();
+  // 로그인한 경우에만 API 호출
+  const { promotions } = useGetAllPromotion({ enabled: isLogined });
+  const { data: gold } = useGetGoldBalance({ enabled: isLogined });
+
   const [selectedPromotion, setSelectedPromotion] = useState(
-    promotions[0].name
+    promotions?.[0]?.name || ""
   );
 
   const [equippedItems, setEquippedItems] = useState<EquippedItem[]>([]);
@@ -83,6 +90,12 @@ export default function StoreGameWrapper() {
     isModalOpen: isGoldChargeModalOpen,
     onOpen: onGoldChargeModalOpen,
     onClose: onGoldChargeModalClose,
+  } = useModal();
+
+  const {
+    isModalOpen: isLoginModalOpen,
+    onOpen: onLoginModalOpen,
+    onClose: onLoginModalClose,
   } = useModal();
 
   const queryClient = useQueryClient();
@@ -130,6 +143,12 @@ export default function StoreGameWrapper() {
     };
   }, []);
 
+  useEffect(() => {
+    if (promotions && promotions.length > 0) {
+      setSelectedPromotion(promotions[0].name);
+    }
+  }, [promotions]);
+
   const gameRef = useRef<GameRef | null>(null);
 
   const onSetPageArr = (productCount: number, limit: number) => {
@@ -139,6 +158,11 @@ export default function StoreGameWrapper() {
   };
 
   const openPurchaseModal = () => {
+    if (!isLogined) {
+      onLoginModalOpen();
+      return;
+    }
+
     if (equippedItems.length === 0) {
       Alert.info("상품을 선택해주세요!");
       return;
@@ -164,16 +188,32 @@ export default function StoreGameWrapper() {
     setEquippedItems((prev) => prev.filter((item) => item.id !== id));
   }, []);
 
-  const onAddEquippedItem = useCallback((item: EquippedItem) => {
-    setEquippedItems((prev) => {
-      const alreadyExist = prev.some((i) => i.id === item.id);
-      return alreadyExist ? prev : [...prev, item];
-    });
-  }, []);
+  const onAddEquippedItem = useCallback(
+    (item: EquippedItem) => {
+      if (!isLogined) {
+        onLoginModalOpen();
+        return;
+      }
+
+      setEquippedItems((prev) => {
+        const alreadyExist = prev.some((i) => i.id === item.id);
+        return alreadyExist ? prev : [...prev, item];
+      });
+    },
+    [isLogined, onLoginModalOpen]
+  );
 
   const [isCartVisible, setIsCartVisible] = useState(false);
 
   function renderGoldInfo(gold?: number) {
+    if (!isLogined) {
+      return (
+        <div className="flex items-center gap-2 text-sm">
+          <span className="text-[#5c4b32]">로그인 후 이용해주세요</span>
+        </div>
+      );
+    }
+
     return (
       <div className="flex gap-2 items-center">
         <Image src="/game/ui/gold.png" width={20} height={20} alt="gold" />
@@ -196,7 +236,7 @@ export default function StoreGameWrapper() {
         <span className="text-sm font-bold text-[#3d2c1b]">🎒 장바구니</span>
         <div className="flex gap-2">
           <RetroButton variant="ghost" onClick={onPurchase}>
-            모두 구매
+            {isLogined ? "모두 구매" : "로그인 후 구매"}
           </RetroButton>
           <RetroButton variant="ghost" onClick={() => setEquippedItems([])}>
             모두 삭제
@@ -218,9 +258,38 @@ export default function StoreGameWrapper() {
     </div>
   );
 
-  // if (isError || !isLoading) {
-  //   return <StoreRedirectPage />;
-  // }
+  // 로그인하지 않은 사용자를 위한 UI
+  if (!isLogined) {
+    return (
+      <div className="flex flex-col h-dvh bg-[#f9f5ec] text-[#2a1f14]">
+        <main className="flex flex-1 gap-6 p-6 justify-center items-center">
+          <div className="text-center space-y-6">
+            <div className="space-y-4">
+              <h1 className="text-3xl font-bold text-[#5c4b32]">
+                🎁 리아 상점
+              </h1>
+              <p className="text-lg text-[#7a6144]">
+                로그인하고 귀여운 아이템들을 만나보세요!
+              </p>
+            </div>
+
+            <div className="flex justify-center">
+              <Pawn color="orange" animation="idle" className="w-20 h-20" />
+            </div>
+
+            <RetroButton
+              onClick={onLoginModalOpen}
+              className="text-lg px-6 py-3"
+            >
+              로그인하기
+            </RetroButton>
+          </div>
+        </main>
+
+        <LoginModal isOpen={isLoginModalOpen} onClose={onLoginModalClose} />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -266,7 +335,7 @@ export default function StoreGameWrapper() {
           <div className="flex items-start justify-between text-xs text-[#5c4b32] font-bold px-2 sm:py-4">
             <div className="flex gap-2">
               {selectedType === "promotion" ? (
-                promotions.map((promotion) => (
+                promotions?.map((promotion) => (
                   <button
                     key={promotion.name}
                     className={`px-2 py-1 rounded bg-[#f3e9d0] hover:bg-[#e8ddc3] transition ${
@@ -393,6 +462,7 @@ export default function StoreGameWrapper() {
         isOpen={isGoldChargeModalOpen}
         onClose={onGoldChargeModalClose}
       />
+      <LoginModal isOpen={isLoginModalOpen} onClose={onLoginModalClose} />
     </div>
   );
 }

@@ -10,6 +10,12 @@ import React, {
 import { Phaser } from "@/game/phaser";
 import FontFaceObserver from "fontfaceobserver";
 import classNames from "classnames";
+import { SoundManager } from "@/game/managers/sound-manager";
+import { EventWrapper } from "@/game/event/EventBus";
+import { socketManager } from "@/game/managers/socket-manager";
+import { playerStore } from "@/game/managers/player-store";
+import { natureObjectStore } from "@/game/managers/nature-object-store";
+import { removeItem } from "@/utils/session-storage";
 
 interface StoreGameProps {
   ref: RefObject<GameRef | null>;
@@ -47,29 +53,110 @@ const StoreGame = ({ ref, className }: StoreGameProps) => {
 
     const initialize = async () => {
       const mod = await import("@/game/main");
-      const { GameSingleton } = mod;
       let game: Phaser.Game;
 
       if (!gameRef.current) {
-        game = GameSingleton.getStoreInstance(288, 288);
+        game = mod.GameSingleton.getStoreInstance(288, 288);
         gameRef.current = game;
 
         if (ref) {
           ref.current = { game, currnetScene: null };
         }
       }
-
-      return () => {
-        if (gameRef.current) {
-          gameRef.current.destroy(true);
-          GameSingleton.destroy();
-          gameRef.current = null;
-        }
-      };
     };
 
     initialize();
+
+    // Cleanup function
+    return () => {
+      if (gameRef.current) {
+        console.log("StoreGame cleanup: destroying game instance");
+        try {
+          // SoundManager 완전 정리
+          SoundManager.destroy();
+
+          // EventWrapper의 모든 이벤트 리스너 제거
+          EventWrapper.destroy();
+
+          // Socket 연결 해제
+          socketManager.clear();
+
+          // Store 인스턴스들 정리
+          playerStore.clear();
+          natureObjectStore.clearAllNatureObjects();
+
+          // Session Storage 정리
+          removeItem("current_scene");
+          removeItem("current_island_id");
+          removeItem("current_island_type");
+
+          // 모든 씬을 완전히 정리
+          if (gameRef.current) {
+            gameRef.current.scene.scenes.forEach((scene) => {
+              if (scene.scene.isActive()) {
+                scene.scene.stop();
+              }
+              scene.scene.remove();
+            });
+          }
+
+          gameRef.current.destroy(true);
+        } catch (error) {
+          console.error("StoreGame cleanup error:", error);
+        }
+        gameRef.current = null;
+        if (ref && ref.current) {
+          ref.current = null;
+        }
+      }
+    };
   }, [ref, fontsLoaded]);
+
+  // Additional cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (gameRef.current) {
+        console.log("StoreGame unmount cleanup: destroying game instance");
+        try {
+          // SoundManager 완전 정리
+          SoundManager.destroy();
+
+          // EventWrapper의 모든 이벤트 리스너 제거
+          EventWrapper.destroy();
+
+          // Socket 연결 해제
+          socketManager.clear();
+
+          // Store 인스턴스들 정리
+          playerStore.clear();
+          natureObjectStore.clearAllNatureObjects();
+
+          // Session Storage 정리
+          removeItem("current_scene");
+          removeItem("current_island_id");
+          removeItem("current_island_type");
+
+          // 모든 씬을 완전히 정리
+          if (gameRef.current) {
+            gameRef.current.scene.scenes.forEach((scene) => {
+              if (scene.scene.isActive()) {
+                scene.scene.stop();
+              }
+              scene.scene.remove();
+            });
+          }
+
+          gameRef.current.destroy(true);
+        } catch (error) {
+          console.error("StoreGame unmount cleanup error:", error);
+        }
+        gameRef.current = null;
+        if (ref && ref.current) {
+          ref.current = null;
+        }
+      }
+    };
+  }, [ref]);
 
   return (
     <div className={classNames("relative", className)}>

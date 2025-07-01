@@ -87,11 +87,31 @@ export class GameSingleton {
 
   static destroy() {
     if (this.instance) {
+      // 모든 씬을 완전히 정리
+      this.instance.scene.scenes.forEach((scene) => {
+        if (scene.scene.isActive()) {
+          scene.scene.stop();
+        }
+        scene.scene.remove();
+      });
+
+      // 게임 인스턴스 파괴
       this.instance.destroy(true);
+      this.instance = null;
     }
 
     if (this.storeInstance) {
+      // 모든 씬을 완전히 정리
+      this.storeInstance.scene.scenes.forEach((scene) => {
+        if (scene.scene.isActive()) {
+          scene.scene.stop();
+        }
+        scene.scene.remove();
+      });
+
+      // 게임 인스턴스 파괴
       this.storeInstance.destroy(true);
+      this.storeInstance = null;
     }
   }
 }

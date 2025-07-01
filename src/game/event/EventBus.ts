@@ -59,6 +59,13 @@ class EventBusWrapper<
   ) {
     this.eventBus.off(name, callback);
   }
+
+  destroy() {
+    if (this.eventBus) {
+      this.eventBus.removeAllListeners();
+      this.eventBus.destroy();
+    }
+  }
 }
 
 if (typeof window !== "undefined") {
