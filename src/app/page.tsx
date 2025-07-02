@@ -13,30 +13,61 @@ import Footer from "@/components/common/Footer";
 import { PawnColor } from "@/constants/game/entities";
 import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
 
-// Pawn 색상 배열
-const PAWN_COLORS: PawnColor[] = [
-  "blue",
-  "purple",
-  "red",
-  "yellow",
-  "forest_green",
-  "orange",
+// 고정된 Pawn 배치 정의
+const FIXED_PAWNS = [
+  {
+    id: 1,
+    color: "blue" as PawnColor,
+    top: 15,
+    left: 20,
+    size: 0.9,
+    opacity: 0.25,
+  },
+  {
+    id: 2,
+    color: "purple" as PawnColor,
+    top: 25,
+    left: 75,
+    size: 1.1,
+    opacity: 0.2,
+  },
+  {
+    id: 3,
+    color: "red" as PawnColor,
+    top: 45,
+    left: 15,
+    size: 0.8,
+    opacity: 0.3,
+  },
+  {
+    id: 4,
+    color: "yellow" as PawnColor,
+    top: 55,
+    left: 80,
+    size: 1.0,
+    opacity: 0.15,
+  },
+  {
+    id: 5,
+    color: "forest_green" as PawnColor,
+    top: 70,
+    left: 25,
+    size: 0.95,
+    opacity: 0.2,
+  },
+  {
+    id: 6,
+    color: "orange" as PawnColor,
+    top: 80,
+    left: 70,
+    size: 1.05,
+    opacity: 0.25,
+  },
 ];
 
-// 랜덤 Pawn 생성 함수
-const generateRandomPawns = (count: number = 6) => {
-  const pawns = [];
-  for (let i = 0; i < count; i++) {
-    pawns.push({
-      id: i,
-      color: PAWN_COLORS[Math.floor(Math.random() * PAWN_COLORS.length)],
-      top: Math.random() * 70 + 10, // 10% ~ 80%
-      left: Math.random() * 80 + 10, // 10% ~ 90%
-      size: Math.random() * 0.4 + 0.8, // 0.8 ~ 1.2 배율
-      opacity: Math.random() * 0.3 + 0.1, // 0.1 ~ 0.4
-    });
-  }
-  return pawns;
+// 고정된 Pawn 생성 함수
+const generateFixedPawns = () => {
+  return FIXED_PAWNS;
 };
 
 // 시간대별 배경 설정
@@ -156,7 +187,7 @@ export default function MainPage() {
     setRandomPawnColor(colors[Math.floor(Math.random() * colors.length)]);
 
     // 배경 Pawn들 생성
-    setBackgroundPawns(generateRandomPawns(6));
+    setBackgroundPawns(generateFixedPawns());
   }, []);
 
   // 시간대 업데이트
@@ -166,8 +197,7 @@ export default function MainPage() {
       if (newTimeOfDay !== timeOfDay) {
         setTimeOfDay(newTimeOfDay);
         setBackgroundStyle(getBackgroundStyle(newTimeOfDay));
-        // 시간대가 바뀔 때마다 Pawn들도 새로 배치
-        setBackgroundPawns(generateRandomPawns(6));
+        // 고정된 Pawn 배치는 시간대가 바뀌어도 동일하게 유지
       }
     };
 
@@ -195,7 +225,7 @@ export default function MainPage() {
 
   return (
     <main
-      className="w-full min-h-screen flex flex-col relative transition-all duration-1000"
+      className="w-full min-h-screen flex flex-col relative"
       style={{ background: backgroundStyle.background }}
       itemScope
       itemType="https://schema.org/WebPage"
@@ -205,7 +235,7 @@ export default function MainPage() {
         backgroundPawns.map((pawn) => (
           <div
             key={pawn.id}
-            className="absolute pointer-events-none transition-all duration-1000"
+            className="absolute pointer-events-none"
             style={{
               top: `${pawn.top}%`,
               left: `${pawn.left}%`,
@@ -244,7 +274,7 @@ export default function MainPage() {
         {/* 메인 타이틀 */}
         <div className="text-center mb-12 px-4">
           <h1
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 transition-all duration-1000 ease-out leading-tight min-h-[1.2em] animate-[smoothGreeting_0.8s_ease-out]"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight min-h-[1.2em]"
             style={{ color: backgroundStyle.textColor }}
             itemProp="headline"
           >
