@@ -16,7 +16,8 @@ import { useLogout } from "@/hook/queries/useLogout";
 import { removeItem } from "@/utils/persistence";
 import Alert from "@/utils/alert";
 import { QUERY_KEY as GET_MY_PROFILE_QUERY_KEY } from "@/hook/queries/useGetMyProfile";
-import RetroModal from "@/components/common/RetroModal";
+import { Header } from "@/components/common/Header";
+import LogoutConfirmModal from "@/components/LogoutConfirmModal";
 
 // 고정된 Pawn 배치 정의
 const FIXED_PAWNS = [
@@ -265,7 +266,7 @@ export default function MainPage() {
 
   return (
     <main
-      className="w-full min-h-screen flex flex-col relative py-4"
+      className="w-full min-h-screen flex flex-col relative"
       style={{ background: backgroundStyle.background }}
       itemScope
       itemType="https://schema.org/WebPage"
@@ -291,33 +292,17 @@ export default function MainPage() {
           </div>
         ))}
 
-      <div className="w-full max-w-[1150px] mx-auto">
-        {/* 상단 버튼들 */}
-        <div className="flex justify-center sm:justify-end gap-2 sm:gap-3">
-          <GlassButton
-            onClick={profile ? onOpenLogoutConfirmModal : handleLogin}
-            variant="auto"
-            size="sm"
-            hover
-            timeOfDay={timeOfDay}
-            className="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
-          >
-            {profile ? "로그아웃" : "로그인"}
-          </GlassButton>
-          <GlassButton
-            onClick={handleVisitStore}
-            variant="auto"
-            size="sm"
-            hover
-            timeOfDay={timeOfDay}
-            className="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
-          >
-            🎁 리아 상점
-          </GlassButton>
-        </div>
+      <Header
+        isLogin={!!profile}
+        onOpenLogoutConfirmModal={onOpenLogoutConfirmModal}
+        handleLogin={handleLogin}
+        handleVisitStore={handleVisitStore}
+        timeOfDay={timeOfDay}
+      />
 
+      <div className="w-full max-w-[1150px] mx-auto p-4">
         {/* 메인 컨텐츠 */}
-        <div className="flex-1 flex flex-col items-center justify-center gap-8 z-10 px-4 py-8">
+        <div className="flex-1 flex flex-col items-center justify-center gap-8 z-10 py-8">
           {/* 로고 */}
           <div className="mb-8">
             <Logo
@@ -417,7 +402,15 @@ export default function MainPage() {
                 </div>
               </div>
             </GlassCardAdvanced>
-
+            <GlassButton
+              onClick={() => router.push("/my-islands")}
+              variant="auto"
+              size="lg"
+              className="font-bold"
+              timeOfDay={timeOfDay}
+            >
+              시작하기
+            </GlassButton>
             <GlassCardAdvanced
               variant="tinted"
               blur="sm"
@@ -487,45 +480,11 @@ export default function MainPage() {
       </div>
 
       {/* 로그아웃 */}
-      <RetroModal
+      <LogoutConfirmModal
         isOpen={isOpenLogoutConfirmModal}
         onClose={onCloseLogoutConfirmModal}
-        className="!max-w-[400px]"
-      >
-        <div className="text-center">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-[#5c4b32] mb-2">
-              로그아웃하시겠어요?
-            </h2>
-            <p className="text-[#7a6144]">또 놀러와주세요!</p>
-          </div>
-
-          <div className="flex justify-center mb-6">
-            <Pawn color="orange" animation="idle" className="w-20 h-20" />
-          </div>
-
-          <div className="flex gap-4 justify-center">
-            <GlassButton
-              onClick={onCloseLogoutConfirmModal}
-              variant="auto"
-              size="md"
-              hover
-              timeOfDay={"evening"}
-            >
-              아니요
-            </GlassButton>
-            <GlassButton
-              onClick={handleLogout}
-              variant="auto"
-              size="md"
-              hover
-              timeOfDay={"evening"}
-            >
-              예
-            </GlassButton>
-          </div>
-        </div>
-      </RetroModal>
+        handleLogout={handleLogout}
+      />
 
       {/* 로그인 모달 */}
       {isOpenLoginModal && (
