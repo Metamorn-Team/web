@@ -41,7 +41,7 @@ export default function Footer({ className, theme = "default" }: FooterProps) {
 
   return (
     <footer
-      className={`w-full max-w-2xl text-[12px] mt-20 m-3 transition-colors duration-1000 ${className}`}
+      className={`w-full max-w-[1150px] mx-auto text-[12px] mt-20 m-3 transition-colors duration-1000 ${className} px-4`}
     >
       <div className="mx-auto py-6 flex flex-col gap-4">
         {/* 상단 메뉴 */}

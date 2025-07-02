@@ -23,49 +23,49 @@ const FIXED_PAWNS = [
   {
     id: 1,
     color: "blue" as PawnColor,
-    top: 15,
+    top: 25,
     left: 20,
-    size: 0.9,
+    size: 0.8,
     opacity: 0.25,
   },
   {
     id: 2,
     color: "purple" as PawnColor,
-    top: 25,
-    left: 75,
-    size: 1.1,
+    top: 35,
+    left: 65,
+    size: 0.9,
     opacity: 0.2,
   },
   {
     id: 3,
     color: "red" as PawnColor,
-    top: 45,
+    top: 55,
     left: 15,
-    size: 0.8,
+    size: 0.7,
     opacity: 0.3,
   },
   {
     id: 4,
     color: "yellow" as PawnColor,
-    top: 55,
-    left: 80,
-    size: 1.0,
+    top: 65,
+    left: 70,
+    size: 0.85,
     opacity: 0.15,
   },
   {
     id: 5,
     color: "forest_green" as PawnColor,
-    top: 70,
+    top: 80,
     left: 25,
-    size: 0.95,
+    size: 0.8,
     opacity: 0.2,
   },
   {
     id: 6,
     color: "orange" as PawnColor,
-    top: 80,
-    left: 70,
-    size: 1.05,
+    top: 90,
+    left: 60,
+    size: 0.9,
     opacity: 0.25,
   },
 ];
@@ -265,7 +265,7 @@ export default function MainPage() {
 
   return (
     <main
-      className="w-full min-h-screen flex flex-col relative"
+      className="w-full min-h-screen flex flex-col relative py-4"
       style={{ background: backgroundStyle.background }}
       itemScope
       itemType="https://schema.org/WebPage"
@@ -283,199 +283,207 @@ export default function MainPage() {
               opacity: pawn.opacity,
             }}
           >
-            <Pawn color={pawn.color} animation="idle" className="w-16 h-16" />
+            <Pawn
+              color={pawn.color}
+              animation="idle"
+              className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16"
+            />
           </div>
         ))}
 
-      {/* 상단 버튼들 */}
-      <div className="absolute top-6 right-6 z-20 flex gap-3">
-        <GlassButton
-          onClick={profile ? onOpenLogoutConfirmModal : handleLogin}
-          variant="auto"
-          size="md"
-          hover
-          timeOfDay={timeOfDay}
-        >
-          {profile ? "로그아웃" : "로그인"}
-        </GlassButton>
-        <GlassButton
-          onClick={handleVisitStore}
-          variant="auto"
-          size="md"
-          hover
-          timeOfDay={timeOfDay}
-        >
-          🎁 리아 상점
-        </GlassButton>
-      </div>
-
-      {/* 메인 컨텐츠 */}
-      <div className="flex-1 flex flex-col items-center justify-center gap-8 z-10 px-4 py-8">
-        {/* 로고 */}
-        <div className="mb-8">
-          <Logo
-            width="280px"
+      <div className="w-full max-w-[1150px] mx-auto">
+        {/* 상단 버튼들 */}
+        <div className="flex justify-center sm:justify-end gap-2 sm:gap-3">
+          <GlassButton
+            onClick={profile ? onOpenLogoutConfirmModal : handleLogin}
+            variant="auto"
+            size="sm"
+            hover
             timeOfDay={timeOfDay}
-            textColor={backgroundStyle.textColor}
+            className="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+          >
+            {profile ? "로그아웃" : "로그인"}
+          </GlassButton>
+          <GlassButton
+            onClick={handleVisitStore}
+            variant="auto"
+            size="sm"
+            hover
+            timeOfDay={timeOfDay}
+            className="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+          >
+            🎁 리아 상점
+          </GlassButton>
+        </div>
+
+        {/* 메인 컨텐츠 */}
+        <div className="flex-1 flex flex-col items-center justify-center gap-8 z-10 px-4 py-8">
+          {/* 로고 */}
+          <div className="mb-8">
+            <Logo
+              width="280px"
+              timeOfDay={timeOfDay}
+              textColor={backgroundStyle.textColor}
+            />
+          </div>
+
+          {/* 메인 타이틀 */}
+          <div className="text-center mb-12 px-4">
+            <h1
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight min-h-[1.2em] transition-all duration-1000 ease-out"
+              style={{ color: backgroundStyle.textColor }}
+              itemProp="headline"
+            >
+              {isLoadingProfile
+                ? ""
+                : profile?.nickname
+                ? `${profile.nickname}님, ${backgroundStyle.greeting}`
+                : backgroundStyle.greeting}
+            </h1>
+            <h2
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold transition-all duration-1000 ease-out leading-tight"
+              style={{ color: backgroundStyle.secondaryTextColor }}
+              itemProp="description"
+            >
+              {backgroundStyle.description}
+            </h2>
+          </div>
+
+          {/* 선택 카드들 */}
+          <div className="flex flex-col gap-6 w-full max-w-md">
+            <GlassCardAdvanced
+              variant="tinted"
+              blur="sm"
+              shadow="xl"
+              opacity={0.1}
+              hover
+              className="transition-all duration-1000"
+            >
+              {/* Coming Soon 오버레이 */}
+              <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center z-10 rounded-lg">
+                <div className="flex flex-col items-center">
+                  <Pawn color="blue" animation="build" className="w-[150px]" />
+                  <h2 className="text-4xl font-bold mb-2 text-white drop-shadow-[0_0_3px_rgba(255,255,255,0.6)]">
+                    Coming Soon
+                  </h2>
+                  <p className="text-gray-200 text-lg">곧 만나요!</p>
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center gap-4 p-6">
+                <div className="flex gap-2">
+                  <Pawn
+                    color="blue"
+                    animation="run"
+                    className="w-12 h-12"
+                    paused
+                  />
+                  <Pawn
+                    color="purple"
+                    animation="run"
+                    className="w-12 h-12"
+                    paused
+                  />
+                  <Pawn
+                    color="red"
+                    animation="run"
+                    className="w-12 h-12"
+                    paused
+                  />
+                </div>
+                <div className="text-center">
+                  <h3
+                    className="text-2xl font-bold mb-2 transition-colors duration-1000"
+                    style={{ color: backgroundStyle.textColor }}
+                  >
+                    친구와 함께하기
+                  </h3>
+                  <p
+                    className="text-sm mb-4 transition-colors duration-1000"
+                    style={{ color: backgroundStyle.secondaryTextColor }}
+                  >
+                    내가 만든 섬에서 친구들과 함께
+                  </p>
+                  <GlassButton
+                    onClick={() => {}}
+                    variant="auto"
+                    size="lg"
+                    disabled
+                    className="font-bold"
+                    timeOfDay={timeOfDay}
+                  >
+                    시작하기
+                  </GlassButton>
+                </div>
+              </div>
+            </GlassCardAdvanced>
+
+            <GlassCardAdvanced
+              variant="tinted"
+              blur="sm"
+              shadow="xl"
+              opacity={0.1}
+              hover
+              className="transition-all duration-1000"
+            >
+              <div className="flex flex-col items-center gap-4 p-6">
+                <div className="flex justify-center">
+                  <Pawn
+                    color={randomPawnColor}
+                    animation="run"
+                    className="w-12 h-12"
+                  />
+                </div>
+                <div className="text-center">
+                  <h3
+                    className="text-2xl font-bold mb-2 transition-colors duration-1000"
+                    style={{ color: backgroundStyle.textColor }}
+                  >
+                    새로운 친구 만나기
+                  </h3>
+                  <p
+                    className="text-sm mb-4 transition-colors duration-1000"
+                    style={{ color: backgroundStyle.secondaryTextColor }}
+                  >
+                    다른 사람들의 섬에서 새로운 친구를 만나요
+                  </p>
+                  <GlassButton
+                    onClick={handleMeetNewFriends}
+                    variant="auto"
+                    size="lg"
+                    blur="md"
+                    opacity={0.2}
+                    hover
+                    className="font-bold"
+                    timeOfDay={timeOfDay}
+                  >
+                    시작하기
+                  </GlassButton>
+                </div>
+              </div>
+            </GlassCardAdvanced>
+          </div>
+
+          {/* 하단 설명 */}
+          <div
+            className="text-center mt-8 text-base transition-colors duration-1000"
+            style={{ color: backgroundStyle.secondaryTextColor }}
+          >
+            <p className="mb-2">✨ 친구들과 함께하는 평화로운 섬 여행</p>
+            <p>🎮 새로운 모험과 추억을 만들어보세요</p>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex justify-center">
+          <Footer
+            theme={
+              timeOfDay === "night" || timeOfDay === "morning"
+                ? "dark"
+                : "default"
+            }
           />
         </div>
-
-        {/* 메인 타이틀 */}
-        <div className="text-center mb-12 px-4">
-          <h1
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight min-h-[1.2em] transition-all duration-1000 ease-out"
-            style={{ color: backgroundStyle.textColor }}
-            itemProp="headline"
-          >
-            {isLoadingProfile
-              ? ""
-              : profile?.nickname
-              ? `${profile.nickname}님, ${backgroundStyle.greeting}`
-              : backgroundStyle.greeting}
-          </h1>
-          <h2
-            className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold transition-all duration-1000 ease-out leading-tight"
-            style={{ color: backgroundStyle.secondaryTextColor }}
-            itemProp="description"
-          >
-            {backgroundStyle.description}
-          </h2>
-        </div>
-
-        {/* 선택 카드들 */}
-        <div className="flex flex-col gap-6 w-full max-w-md">
-          <GlassCardAdvanced
-            variant="tinted"
-            blur="sm"
-            shadow="xl"
-            opacity={0.1}
-            hover
-            className="transition-all duration-1000"
-          >
-            {/* Coming Soon 오버레이 */}
-            <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center z-10 rounded-lg">
-              <div className="flex flex-col items-center">
-                <Pawn color="blue" animation="build" className="w-[150px]" />
-                <h2 className="text-4xl font-bold mb-2 text-white drop-shadow-[0_0_3px_rgba(255,255,255,0.6)]">
-                  Coming Soon
-                </h2>
-                <p className="text-gray-200 text-lg">곧 만나요!</p>
-              </div>
-            </div>
-
-            <div className="flex flex-col items-center gap-4 p-6">
-              <div className="flex gap-2">
-                <Pawn
-                  color="blue"
-                  animation="run"
-                  className="w-12 h-12"
-                  paused
-                />
-                <Pawn
-                  color="purple"
-                  animation="run"
-                  className="w-12 h-12"
-                  paused
-                />
-                <Pawn
-                  color="red"
-                  animation="run"
-                  className="w-12 h-12"
-                  paused
-                />
-              </div>
-              <div className="text-center">
-                <h3
-                  className="text-2xl font-bold mb-2 transition-colors duration-1000"
-                  style={{ color: backgroundStyle.textColor }}
-                >
-                  친구와 함께하기
-                </h3>
-                <p
-                  className="text-sm mb-4 transition-colors duration-1000"
-                  style={{ color: backgroundStyle.secondaryTextColor }}
-                >
-                  내가 만든 섬에서 친구들과 함께
-                </p>
-                <GlassButton
-                  onClick={() => {}}
-                  variant="auto"
-                  size="lg"
-                  disabled
-                  className="font-bold"
-                  timeOfDay={timeOfDay}
-                >
-                  시작하기
-                </GlassButton>
-              </div>
-            </div>
-          </GlassCardAdvanced>
-
-          <GlassCardAdvanced
-            variant="tinted"
-            blur="sm"
-            shadow="xl"
-            opacity={0.1}
-            hover
-            className="transition-all duration-1000"
-          >
-            <div className="flex flex-col items-center gap-4 p-6">
-              <div className="flex justify-center">
-                <Pawn
-                  color={randomPawnColor}
-                  animation="run"
-                  className="w-12 h-12"
-                />
-              </div>
-              <div className="text-center">
-                <h3
-                  className="text-2xl font-bold mb-2 transition-colors duration-1000"
-                  style={{ color: backgroundStyle.textColor }}
-                >
-                  새로운 친구 만나기
-                </h3>
-                <p
-                  className="text-sm mb-4 transition-colors duration-1000"
-                  style={{ color: backgroundStyle.secondaryTextColor }}
-                >
-                  다른 사람들의 섬에서 새로운 친구를 만나요
-                </p>
-                <GlassButton
-                  onClick={handleMeetNewFriends}
-                  variant="auto"
-                  size="lg"
-                  blur="md"
-                  opacity={0.2}
-                  hover
-                  className="font-bold"
-                  timeOfDay={timeOfDay}
-                >
-                  시작하기
-                </GlassButton>
-              </div>
-            </div>
-          </GlassCardAdvanced>
-        </div>
-
-        {/* 하단 설명 */}
-        <div
-          className="text-center mt-8 text-base transition-colors duration-1000"
-          style={{ color: backgroundStyle.secondaryTextColor }}
-        >
-          <p className="mb-2">✨ 친구들과 함께하는 평화로운 섬 여행</p>
-          <p>🎮 새로운 모험과 추억을 만들어보세요</p>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="flex justify-center">
-        <Footer
-          theme={
-            timeOfDay === "night" || timeOfDay === "morning"
-              ? "dark"
-              : "default"
-          }
-        />
       </div>
 
       {/* 로그아웃 */}
