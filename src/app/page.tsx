@@ -86,7 +86,7 @@ const getTimeOfDay = ():
   if (hour >= 5 && hour < 6) return "dawn";
   if (hour >= 6 && hour < 12) return "morning";
   if (hour >= 12 && hour < 18) return "afternoon";
-  if (hour >= 18 && hour < 22) return "evening";
+  if (hour >= 18 && hour < 21) return "evening";
   return "night";
 };
 
