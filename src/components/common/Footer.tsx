@@ -70,7 +70,7 @@ export default function Footer({ className, theme = "default" }: FooterProps) {
               {process.env.NEXT_PUBLIC_COMPANY_REPRESENTATIVE} | 사업자등록번호:{" "}
               {process.env.NEXT_PUBLIC_BUSINESS_NUMBER}
             </p>
-            <p className="flex flex-wrap gap-x-1 md:flex-col">
+            <p className="flex flex-col flex-wrap gap-x-1 lg:flex-row">
               <span>{process.env.NEXT_PUBLIC_COMPANY_ADDRESS} |</span>
               <span className="whitespace-nowrap">
                 이메일: {process.env.NEXT_PUBLIC_COMPANY_EMAIL} |
