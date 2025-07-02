@@ -402,15 +402,7 @@ export default function MainPage() {
                 </div>
               </div>
             </GlassCardAdvanced>
-            <GlassButton
-              onClick={() => router.push("/my-islands")}
-              variant="auto"
-              size="lg"
-              className="font-bold"
-              timeOfDay={timeOfDay}
-            >
-              시작하기
-            </GlassButton>
+
             <GlassCardAdvanced
               variant="tinted"
               blur="sm"

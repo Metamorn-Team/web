@@ -95,7 +95,7 @@ export default function GlassCardAdvanced({
       )}
 
       {/* 내부 컨텐츠 */}
-      <div className="relative z-10 p-4">{children}</div>
+      <div className="relative z-10 p-2">{children}</div>
     </div>
   );
 }
