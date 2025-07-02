@@ -6,13 +6,15 @@ import SelectAvatarStep from "@/components/login/steps/SelectAvatarStep";
 import useRegisterPayloadStore from "@/stores/useRegisterPayloadStore";
 import { RegisterResponse } from "mmorntype";
 import SquareModal from "@/components/common/SquareModal";
+import classNames from "classnames";
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
+  className?: string;
 }
 
-const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
+const LoginModal = ({ isOpen, onClose, className }: LoginModalProps) => {
   const { clear } = useRegisterPayloadStore();
   const [step, setStep] = useState(0);
 
@@ -48,7 +50,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   return (
     <SquareModal
       onClose={onCloseWithStateClear}
-      className="min-w-[365px] max-w-[420px]"
+      className={classNames("min-w-[365px] max-w-[420px]", className)}
     >
       {StepComponents[step]}
     </SquareModal>

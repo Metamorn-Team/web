@@ -2,16 +2,21 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import Pawn from "@/components/common/Pawn";
-
-import RetroModal from "@/components/common/RetroModal";
-
 import GlassCardAdvanced from "@/components/common/GlassCardAdvanced";
 import GlassButton from "@/components/common/GlassButton";
 import Logo from "@/components/common/Logo";
 import Footer from "@/components/common/Footer";
 import { PawnColor } from "@/constants/game/entities";
 import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
+import LoginModal from "@/components/login/LoginModal";
+import { useModal } from "@/hook/useModal";
+import { useLogout } from "@/hook/queries/useLogout";
+import { removeItem } from "@/utils/persistence";
+import Alert from "@/utils/alert";
+import { QUERY_KEY as GET_MY_PROFILE_QUERY_KEY } from "@/hook/queries/useGetMyProfile";
+import RetroModal from "@/components/common/RetroModal";
 
 // 고정된 Pawn 배치 정의
 const FIXED_PAWNS = [
@@ -152,9 +157,19 @@ const getBackgroundStyle = (timeOfDay: string) => {
 
 export default function MainPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: profile, isLoading: isLoadingProfile } = useGetMyProfile();
 
-  const [showStoreModal, setShowStoreModal] = useState(false);
+  const {
+    isModalOpen: isOpenLoginModal,
+    onOpen: onOpenLoginModal,
+    onClose: onCloseLoginModal,
+  } = useModal();
+  const {
+    isModalOpen: isOpenLogoutConfirmModal,
+    onOpen: onOpenLogoutConfirmModal,
+    onClose: onCloseLogoutConfirmModal,
+  } = useModal();
   const [timeOfDay, setTimeOfDay] = useState<string>(getTimeOfDay());
   const [backgroundStyle, setBackgroundStyle] = useState(() =>
     getBackgroundStyle(timeOfDay)
@@ -171,6 +186,21 @@ export default function MainPage() {
   >([]);
   const [isClient, setIsClient] = useState(false);
   const [randomPawnColor, setRandomPawnColor] = useState<PawnColor>("blue");
+  const { mutate: logoutMutate } = useLogout(
+    () => {
+      if (window.Kakao && window.Kakao.isInitialized()) {
+        window.Kakao.Auth.logout();
+      }
+
+      removeItem("access_token");
+      removeItem("profile");
+
+      // profile 관련 캐시만 초기화
+      queryClient.removeQueries({ queryKey: [GET_MY_PROFILE_QUERY_KEY] });
+      queryClient.setQueryData([GET_MY_PROFILE_QUERY_KEY], null);
+    },
+    () => Alert.error("로그아웃에 실패했어요.. 나중에 다시 시도해주세요.")
+  );
 
   useEffect(() => {
     setIsClient(true);
@@ -215,12 +245,22 @@ export default function MainPage() {
   };
 
   const handleVisitStore = () => {
-    setShowStoreModal(true);
+    router.push("/store");
   };
 
-  const handleStoreConfirm = () => {
-    setShowStoreModal(false);
-    router.push("/store");
+  const handleLogin = () => {
+    if (profile) {
+      // 로그인된 경우 내 정보 페이지로 이동 (추후 구현)
+      console.log("내 정보 페이지로 이동");
+    } else {
+      // 로그인되지 않은 경우 로그인 모달 열기
+      onOpenLoginModal();
+    }
+  };
+
+  const handleLogout = () => {
+    logoutMutate();
+    onCloseLogoutConfirmModal();
   };
 
   return (
@@ -247,8 +287,17 @@ export default function MainPage() {
           </div>
         ))}
 
-      {/* 상점 구경 버튼 */}
-      <div className="absolute top-6 right-6 z-20">
+      {/* 상단 버튼들 */}
+      <div className="absolute top-6 right-6 z-20 flex gap-3">
+        <GlassButton
+          onClick={profile ? onOpenLogoutConfirmModal : handleLogin}
+          variant="auto"
+          size="md"
+          hover
+          timeOfDay={timeOfDay}
+        >
+          {profile ? "로그아웃" : "로그인"}
+        </GlassButton>
         <GlassButton
           onClick={handleVisitStore}
           variant="auto"
@@ -274,7 +323,7 @@ export default function MainPage() {
         {/* 메인 타이틀 */}
         <div className="text-center mb-12 px-4">
           <h1
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight min-h-[1.2em]"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight min-h-[1.2em] transition-all duration-1000 ease-out"
             style={{ color: backgroundStyle.textColor }}
             itemProp="headline"
           >
@@ -429,18 +478,18 @@ export default function MainPage() {
         />
       </div>
 
-      {/* 상점 모달 */}
+      {/* 로그아웃 */}
       <RetroModal
-        isOpen={showStoreModal}
-        onClose={() => setShowStoreModal(false)}
+        isOpen={isOpenLogoutConfirmModal}
+        onClose={onCloseLogoutConfirmModal}
         className="!max-w-[400px]"
       >
         <div className="text-center">
           <div className="mb-6">
-            <h2 className="text-3xl font-bold text-[#5c4b32] mb-2">
-              🎁 리아 상점
+            <h2 className="text-2xl font-bold text-[#5c4b32] mb-2">
+              로그아웃하시겠어요?
             </h2>
-            <p className="text-[#7a6144]">귀여운 아이템들을 만나보세요!</p>
+            <p className="text-[#7a6144]">또 놀러와주세요!</p>
           </div>
 
           <div className="flex justify-center mb-6">
@@ -449,26 +498,31 @@ export default function MainPage() {
 
           <div className="flex gap-4 justify-center">
             <GlassButton
-              onClick={() => setShowStoreModal(false)}
+              onClick={onCloseLogoutConfirmModal}
               variant="auto"
               size="md"
               hover
               timeOfDay={"evening"}
             >
-              취소
+              아니요
             </GlassButton>
             <GlassButton
-              onClick={handleStoreConfirm}
+              onClick={handleLogout}
               variant="auto"
               size="md"
               hover
               timeOfDay={"evening"}
             >
-              상점 가기
+              예
             </GlassButton>
           </div>
         </div>
       </RetroModal>
+
+      {/* 로그인 모달 */}
+      {isOpenLoginModal && (
+        <LoginModal isOpen={isOpenLoginModal} onClose={onCloseLoginModal} />
+      )}
     </main>
   );
 }
