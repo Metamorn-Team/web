@@ -330,7 +330,7 @@ export default function MainPage() {
           {/* 메인 타이틀 */}
           <div className="text-center mb-12 px-4">
             <h1
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight min-h-[1.2em] transition-all duration-1000 ease-out"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight min-h-[1.2em] transition-all duration-1000 ease-out break-keep"
               style={{ color: backgroundStyle.textColor }}
               itemProp="headline"
             >
@@ -341,7 +341,7 @@ export default function MainPage() {
                 : backgroundStyle.greeting}
             </h1>
             <h2
-              className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold transition-all duration-1000 ease-out leading-tight"
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold transition-all duration-1000 ease-out leading-tight break-keep"
               style={{ color: backgroundStyle.secondaryTextColor }}
               itemProp="description"
             >
