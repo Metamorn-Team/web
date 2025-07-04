@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "@/app/provider";
 import AlertProvider from "@/components/common/AlertProvider";
 import GoogleAnalytics from "@/app/GoogleAnalytics";
+import SessionIdInitializer from "@/components/common/SessionIdInitializer";
 
 export const metadata: Metadata = {
   title: "섬에서 만나요!, 리브아일랜드",
@@ -158,6 +159,7 @@ const RootLayout = ({
         />
       </head>
       <body className={MapleStory.className}>
+        <SessionIdInitializer />
         <AlertProvider />
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID ? (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />

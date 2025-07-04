@@ -250,13 +250,7 @@ export default function MainPage() {
   };
 
   const handleLogin = () => {
-    if (profile) {
-      // 로그인된 경우 내 정보 페이지로 이동 (추후 구현)
-      console.log("내 정보 페이지로 이동");
-    } else {
-      // 로그인되지 않은 경우 로그인 모달 열기
-      onOpenLoginModal();
-    }
+    onOpenLoginModal();
   };
 
   const handleLogout = () => {
@@ -402,7 +396,6 @@ export default function MainPage() {
                 </div>
               </div>
             </GlassCardAdvanced>
-
             <GlassCardAdvanced
               variant="tinted"
               blur="sm"
