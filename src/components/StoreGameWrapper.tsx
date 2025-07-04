@@ -373,7 +373,7 @@ export default function StoreGameWrapper({ isLogined }: StoreGameWrapperProps) {
           </div>
           {/* 상품 목록 */}
           <div className="flex flex-col flex-1 overflow-y-auto scrollbar-hide gap-2">
-            <div className="flex-1">
+            <div className="flex-1 mr-1">
               {selectedType === "promotion" ? (
                 <PromotionProductList
                   name={selectedPromotion}
