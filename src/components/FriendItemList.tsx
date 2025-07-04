@@ -1,5 +1,6 @@
 import ScrollView from "@/components/common/ScrollView";
 import FriendItem from "@/components/FriendItem";
+import { PAWN_AVATAR_URL } from "@/constants/image-path";
 import { useInfiniteGetFriends } from "@/hook/queries/useInfiniteGetFriends";
 import { useEffect } from "react";
 
@@ -34,7 +35,7 @@ export default function FriendItmeList({ className }: FriendItemListProps) {
               key={friendship.id}
               friend={{
                 ...friendship,
-                profileImageUrl: `/images/avatar/${friendship.avatarKey}.png`,
+                profileImageUrl: PAWN_AVATAR_URL(friendship.avatarKey),
               }}
             />
           ))}
