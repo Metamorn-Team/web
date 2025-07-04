@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 
-export function setDeviceId() {
+export function setSessionId() {
   const cookieName = "sessionId";
 
   const existing = document.cookie
@@ -13,9 +13,11 @@ export function setDeviceId() {
   const isDev =
     location.hostname === "localhost" || location.hostname === "127.0.0.1";
 
-  document.cookie = `${cookieName}=${newId}; path=/; domain=${
+  // 1년 (365일 * 24시간 * 60분 * 60초)
+  const maxAge = 365 * 24 * 60 * 60;
+
+  document.cookie = `${cookieName}=${newId}; path=/; max-age=${maxAge}; domain=${
     isDev ? "" : ".livisland.com"
   } ${isDev ? "" : "; SameSite=None; Secure"}`;
-  // document.cookie = `${cookieName}=${newId}; path=/`;
   return newId;
 }
