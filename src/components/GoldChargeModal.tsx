@@ -192,7 +192,7 @@ function ConfirmStep({
   setSelectedMethod,
 }: ConfirmStepProps) {
   return (
-    <>
+    <div className="flex flex-col gap-8">
       <div className="bg-[#fcf4e4] border border-[#d6c6aa] rounded-lg p-4 text-[#3d2c1b]">
         <div className="flex justify-between">
           <span className="font-semibold">상품</span>
@@ -241,15 +241,16 @@ function ConfirmStep({
               return;
             }
             Alert.warn(
-              `${
-                selectedMethod === "kakao" ? "카카오페이" : "신용카드"
-              } 결제 처리 중입니다.`
+              "준비중.."
+              // `${
+              //   selectedMethod === "kakao" ? "카카오페이" : "신용카드"
+              // } 결제 처리 중입니다.`
             );
           }}
         >
           <p className="text-base py-1">결제하기</p>
         </RetroButton>
       </div>
-    </>
+    </div>
   );
 }
