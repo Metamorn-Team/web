@@ -5,111 +5,117 @@ import RetroButton from "@/components/common/RetroButton";
 import { useState } from "react";
 import Image from "next/image";
 import Alert from "@/utils/alert";
+import classNames from "classnames";
 
 interface GoldChargeModalProps {
   isOpen: boolean;
   onClose: () => void;
+  currentGold: number;
 }
 
 const PRESETS = [
-  {
-    label: "1천",
-    value: 1000,
-  },
-  {
-    label: "5천",
-    value: 5000,
-  },
-  {
-    label: "1만",
-    value: 10000,
-  },
-  {
-    label: "10만",
-    value: 100000,
-  },
+  { gold: 100, value: 1100 },
+  { gold: 500, value: 5500 },
+  { gold: 1000, value: 11000 },
+  { gold: 3000, value: 33000 },
+  { gold: 5000, value: 55000 },
+  { gold: 10000, value: 110000 },
 ];
 
 export default function GoldChargeModal({
   isOpen,
   onClose,
+  currentGold,
 }: GoldChargeModalProps) {
-  const [amount, setAmount] = useState(0);
-  const totalPrice = amount + Math.floor(amount * 0.1);
+  const [price, setPrice] = useState(0);
+  const [gold, setGold] = useState(0);
+  const totalPrice = price;
 
-  const handlePresetClick = (value: number) => {
-    setAmount((prev) => prev + value);
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(Number(e.target.value));
-  };
+  const chargedGold = currentGold + gold;
 
   return (
-    <RetroModal isOpen={isOpen} onClose={onClose} className="!w-96">
-      <div className="flex flex-col gap-4">
+    <RetroModal isOpen={isOpen} onClose={onClose} className="!w-[28rem]">
+      <div className="flex flex-col gap-5">
         <h2 className="text-lg font-bold text-center text-[#2a1f14]">
           골드 충전하기
         </h2>
 
-        <div className="border border-[#d6c6aa] rounded-lg bg-[#fcf4e4] px-4 py-3">
-          <label className="text-sm text-[#3d2c1b] font-semibold">
-            충전할 골드
-          </label>
-          <div className="flex items-center border mt-2 px-3 py-2 rounded-md bg-white shadow-inner">
-            <Image src="/game/ui/gold.png" width={20} height={20} alt="gold" />
-            <input
-              type="text"
-              value={amount.toLocaleString()}
-              onChange={handleInputChange}
-              placeholder="충전할 골드를 입력하세요"
-              className="ml-2 w-full outline-none text-lg font-bold appearance-none pointer-events-none select-none"
-              onKeyDown={(e) => e.preventDefault()}
-              readOnly
-            />
-            {amount > 0 && (
-              <button
-                onClick={() => setAmount(0)}
-                className="text-[#a27c3f] font-bold ml-2"
-              >
-                ✕
-              </button>
-            )}
-          </div>
-
-          {/* 프리셋 버튼 */}
-          <div className="flex flex-wrap gap-2 mt-3">
-            {PRESETS.map((preset) => (
-              <RetroButton
-                key={preset.value}
-                variant="primary"
-                onClick={() => handlePresetClick(preset.value)}
-                className="text-base"
-              >
-                <p className="text-sm">+{preset.label}</p>
-              </RetroButton>
-            ))}
-          </div>
-        </div>
-
-        <div className="text-right text-sm font-bold text-[#5c4b32]">
-          최종 결제금액:{" "}
-          <span className="text-[#a27c3f]">
-            {totalPrice.toLocaleString()}원
+        {/* 보유 골드 */}
+        <div className="flex justify-center text-sm text-[#5c4b32] font-semibold">
+          현재 보유 골드:{" "}
+          <span className="ml-1 text-[#a27c3f]">
+            {currentGold.toLocaleString()} G
           </span>
         </div>
 
+        {/* 골드 선택 영역 */}
+        <div className="grid grid-cols-3 gap-3">
+          {PRESETS.map((preset) => (
+            <button
+              key={preset.value}
+              onClick={() => {
+                setPrice(preset.value);
+                setGold(preset.gold);
+              }}
+              className={classNames(
+                "rounded-lg p-3 border flex flex-col items-center bg-white hover:shadow-md transition",
+                price === preset.value
+                  ? "border-yellow-600 bg-yellow-50 ring-2 ring-yellow-400"
+                  : "border-[#d6c6aa]"
+              )}
+            >
+              <Image
+                src="/game/ui/gold.png"
+                alt="gold"
+                width={36}
+                height={36}
+              />
+              <span className="font-bold text-sm mt-2 text-[#3d2c1b]">
+                {preset.gold.toLocaleString()} G
+              </span>
+              <span className="text-sm text-[#7b6c57] mt-1">
+                {preset.value.toLocaleString()}원
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* 요약 안내 */}
+        <div className="text-sm text-right text-[#5c4b32] font-semibold">
+          {price > 0 ? (
+            <>
+              <span className="text-[#a27c3f]">
+                {totalPrice.toLocaleString()}원
+              </span>
+              으로{" "}
+              <span className="text-[#a27c3f]">{gold.toLocaleString()} G</span>
+              를 충전합니다.
+              <br />
+              충전 후 보유 골드:{" "}
+              <span className="text-[#a27c3f]">
+                {chargedGold.toLocaleString()} G
+              </span>
+            </>
+          ) : (
+            <>충전할 금액을 선택해주세요</>
+          )}
+        </div>
+
+        {/* 동의 문구 */}
         <div className="flex justify-between items-center text-xs text-[#5c4b32]">
           <span>내용을 확인하였으며 골드 충전에 동의합니다.</span>
           <button className="underline">안내보기</button>
         </div>
 
+        {/* 결제 버튼 */}
         <RetroButton
-          disabled={amount <= 0}
+          disabled={price <= 0}
           className="w-full text-lg"
-          onClick={() => Alert.warn("준비 중..")}
+          onClick={() => Alert.warn("준비 중입니다.")}
         >
-          <p className="text-base py-1">충전하기</p>
+          <p className="text-base py-1">
+            {price > 0 ? `${totalPrice.toLocaleString()}원 결제` : "충전하기"}
+          </p>
         </RetroButton>
       </div>
     </RetroModal>

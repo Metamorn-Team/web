@@ -461,6 +461,7 @@ export default function StoreGameWrapper({ isLogined }: StoreGameWrapperProps) {
       <GoldChargeModal
         isOpen={isGoldChargeModalOpen}
         onClose={onGoldChargeModalClose}
+        currentGold={gold?.goldBalance ?? 0}
       />
       <LoginModal isOpen={isLoginModalOpen} onClose={onLoginModalClose} />
     </div>
