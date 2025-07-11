@@ -7,6 +7,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Alert from "@/utils/alert";
 import classNames from "classnames";
+import { FiArrowLeft } from "react-icons/fi";
 
 interface GoldChargeModalProps {
   isOpen: boolean;
@@ -49,9 +50,23 @@ export default function GoldChargeModal({
   return (
     <RetroModal isOpen={isOpen} onClose={handleClose} className="!w-[28rem]">
       <div className="flex flex-col gap-5">
-        <h2 className="text-lg font-bold text-center text-[#2a1f14]">
-          골드 충전하기
-        </h2>
+        <div className="flex justify-between items-center">
+          {step === "confirm" ? (
+            <RetroButton
+              variant="ghost"
+              className="flex items-center gap-2 text-sm w-9"
+              onClick={() => setStep("select")}
+            >
+              <FiArrowLeft size={18} />
+            </RetroButton>
+          ) : (
+            <div className="w-9" />
+          )}
+          <h2 className="text-lg font-bold text-center text-[#2a1f14]">
+            골드 충전하기
+          </h2>
+          <div className="w-9" />
+        </div>
 
         {step === "select" && (
           <SelectStep
@@ -104,7 +119,7 @@ function SelectStep({
   setStep,
 }: SelectStepProps) {
   return (
-    <>
+    <div className="flex flex-col gap-8">
       <div className="flex justify-center text-sm text-[#5c4b32] font-semibold">
         현재 보유 골드:{" "}
         <span className="ml-1 text-[#a27c3f]">
@@ -140,19 +155,22 @@ function SelectStep({
 
       <div className="text-sm text-right text-[#5c4b32] font-semibold">
         {price > 0 ? (
-          <>
-            <span className="text-[#a27c3f]">
-              {totalPrice.toLocaleString()}원
-            </span>
-            으로{" "}
-            <span className="text-[#a27c3f]">{gold.toLocaleString()} G</span>
-            를 충전합니다.
-            <br />
-            충전 후 보유 골드:{" "}
-            <span className="text-[#a27c3f]">
-              {chargedGold.toLocaleString()} G
-            </span>
-          </>
+          <div className="flex flex-col gap-1">
+            <div>
+              <span className="text-[#a27c3f]">
+                {totalPrice.toLocaleString()}원
+              </span>
+              으로{" "}
+              <span className="text-[#a27c3f]">{gold.toLocaleString()}G</span>를
+              충전합니다.
+            </div>
+            <div>
+              충전 후 보유 골드:{" "}
+              <span className="text-[#a27c3f]">
+                {chargedGold.toLocaleString()}G
+              </span>
+            </div>
+          </div>
         ) : (
           <>충전할 금액을 선택해주세요</>
         )}
@@ -168,9 +186,11 @@ function SelectStep({
         className="w-full text-lg"
         onClick={() => setStep("confirm")}
       >
-        <p className="text-base py-1">결제하기</p>
+        <p className="text-base py-1">
+          {price > 0 ? `${price.toLocaleString()}원 결제하기` : "결제하기"}
+        </p>
       </RetroButton>
-    </>
+    </div>
   );
 }
 
@@ -187,7 +207,6 @@ interface ConfirmStepProps {
 function ConfirmStep({
   price,
   gold,
-  setStep,
   selectedMethod,
   setSelectedMethod,
 }: ConfirmStepProps) {
@@ -227,14 +246,8 @@ function ConfirmStep({
 
       <div className="flex justify-between gap-2">
         <RetroButton
-          variant="ghost"
           className="flex-1"
-          onClick={() => setStep("select")}
-        >
-          <p className="text-base py-1">이전</p>
-        </RetroButton>
-        <RetroButton
-          className="flex-1"
+          disabled={!selectedMethod}
           onClick={() => {
             if (!selectedMethod) {
               Alert.warn("결제 수단을 선택해주세요.");
@@ -248,7 +261,9 @@ function ConfirmStep({
             );
           }}
         >
-          <p className="text-base py-1">결제하기</p>
+          <p className="text-base py-1">
+            {price > 0 ? `${price.toLocaleString()}원 결제하기` : "결제하기"}
+          </p>
         </RetroButton>
       </div>
     </div>
