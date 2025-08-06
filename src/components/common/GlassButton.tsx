@@ -11,6 +11,7 @@ interface GlassButtonProps {
   blur?: "sm" | "md" | "lg";
   opacity?: number;
   timeOfDay?: string;
+  type?: "button" | "submit" | "reset";
 }
 
 export default function GlassButton({
@@ -24,6 +25,7 @@ export default function GlassButton({
   blur = "md",
   opacity = 0.15,
   timeOfDay = "afternoon",
+  type = "button",
 }: GlassButtonProps) {
   const blurClasses = {
     sm: "backdrop-blur-sm",
@@ -136,6 +138,7 @@ export default function GlassButton({
 
   return (
     <button
+      type={type}
       onClick={onClick}
       disabled={disabled}
       className={`
