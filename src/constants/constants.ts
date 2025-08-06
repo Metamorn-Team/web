@@ -9,3 +9,5 @@ export const TERMS_OF_USE_URL =
 export const KAKAO_URL = "https://open.kakao.com/o/sMYWPgxh";
 
 export const INSTAGRAM_URL = "https://www.instagram.com/livisland_official/";
+
+export const SERVICE_URL = "https://livisland.com";

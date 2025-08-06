@@ -18,6 +18,7 @@ import Alert from "@/utils/alert";
 import { QUERY_KEY as GET_MY_PROFILE_QUERY_KEY } from "@/hook/queries/useGetMyProfile";
 import { Header } from "@/components/common/Header";
 import LogoutConfirmModal from "@/components/LogoutConfirmModal";
+import { getTimeOfDay, TimeOfDay } from "@/utils/date";
 
 // 고정된 Pawn 배치 정의
 const FIXED_PAWNS = [
@@ -74,21 +75,6 @@ const FIXED_PAWNS = [
 // 고정된 Pawn 생성 함수
 const generateFixedPawns = () => {
   return FIXED_PAWNS;
-};
-
-// 시간대별 배경 설정
-const getTimeOfDay = ():
-  | "dawn"
-  | "morning"
-  | "afternoon"
-  | "evening"
-  | "night" => {
-  const hour = new Date().getHours();
-  if (hour >= 5 && hour < 6) return "dawn";
-  if (hour >= 6 && hour < 12) return "morning";
-  if (hour >= 12 && hour < 18) return "afternoon";
-  if (hour >= 18 && hour < 21) return "evening";
-  return "night";
 };
 
 const getBackgroundStyle = (timeOfDay: string) => {
@@ -171,7 +157,7 @@ export default function MainPage() {
     onOpen: onOpenLogoutConfirmModal,
     onClose: onCloseLogoutConfirmModal,
   } = useModal();
-  const [timeOfDay, setTimeOfDay] = useState<string>(getTimeOfDay());
+  const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>(getTimeOfDay());
   const [backgroundStyle, setBackgroundStyle] = useState(() =>
     getBackgroundStyle(timeOfDay)
   );
@@ -243,6 +229,10 @@ export default function MainPage() {
 
   const handleMeetNewFriends = () => {
     router.push("/game");
+  };
+
+  const handlePlayWithFriends = () => {
+    router.push("/my-islands");
   };
 
   const handleVisitStore = () => {
@@ -396,6 +386,15 @@ export default function MainPage() {
                 </div>
               </div>
             </GlassCardAdvanced>
+            <GlassButton
+              onClick={handlePlayWithFriends}
+              variant="auto"
+              size="lg"
+              className="font-bold"
+              timeOfDay={timeOfDay}
+            >
+              시작하기
+            </GlassButton>
             <GlassCardAdvanced
               variant="tinted"
               blur="sm"
