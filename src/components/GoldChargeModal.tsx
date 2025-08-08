@@ -24,6 +24,22 @@ const PRESETS = [
   { gold: 10000, value: 110000 },
 ];
 
+const PAYMENT_METHODS = [
+  {
+    value: "kakao",
+    label: "카카오페이",
+    icon: (
+      <Image
+        src={"https://cdn.metamorn.com/image/system/kakao-pay-logo-s.png"}
+        alt="kakao-pay"
+        width={64}
+        height={26}
+      />
+    ),
+  },
+  { value: "card", label: "신용카드" },
+];
+
 export default function GoldChargeModal({
   isOpen,
   onClose,
@@ -32,9 +48,7 @@ export default function GoldChargeModal({
   const [step, setStep] = useState<"select" | "confirm">("select");
   const [price, setPrice] = useState(0);
   const [gold, setGold] = useState(0);
-  const [selectedMethod, setSelectedMethod] = useState<"kakao" | "card" | null>(
-    null
-  );
+  const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
 
   const totalPrice = price;
   const chargedGold = currentGold + gold;
@@ -200,8 +214,8 @@ interface ConfirmStepProps {
   totalPrice: number;
   chargedGold: number;
   setStep: (step: "select" | "confirm") => void;
-  selectedMethod: "kakao" | "card" | null;
-  setSelectedMethod: (method: "kakao" | "card") => void;
+  selectedMethod: string | null;
+  setSelectedMethod: (method: string) => void;
 }
 
 function ConfirmStep({
@@ -231,7 +245,16 @@ function ConfirmStep({
           결제 방법
         </label>
         <div className="flex gap-2">
-          <RadioButton
+          {PAYMENT_METHODS.map((method) => (
+            <RadioButton
+              key={method.value}
+              label={method.label}
+              icon={method.icon}
+              selected={selectedMethod === method.value}
+              onClick={() => setSelectedMethod(method.value)}
+            />
+          ))}
+          {/* <RadioButton
             label="카카오페이"
             selected={selectedMethod === "kakao"}
             onClick={() => setSelectedMethod("kakao")}
@@ -240,7 +263,7 @@ function ConfirmStep({
             label="신용카드"
             selected={selectedMethod === "card"}
             onClick={() => setSelectedMethod("card")}
-          />
+          /> */}
         </div>
       </div>
 
