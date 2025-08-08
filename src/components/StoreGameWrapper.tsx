@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { ProductOrder } from "@/api/product";
+import { ProductOrder, ProductType as ProductTypeEnum } from "@/api/product";
 import ProductList from "@/components/store/ProductList";
 import dynamic from "next/dynamic";
 import { GameRef } from "@/components/Game";
@@ -26,7 +26,7 @@ import { useGetAllPromotion } from "@/hook/queries/useGetAllPromotions";
 import CategorySelector from "@/components/store/CategorySelector";
 import PromotionProductList from "@/components/store/PromotionProductList";
 import { useIsMobile } from "@/hook/useIsMobile";
-import { FiShoppingCart } from "react-icons/fi";
+import { FiShoppingCart, FiTag, FiZap } from "react-icons/fi";
 import { persistItem } from "@/utils/persistence";
 import Footer from "@/components/common/Footer";
 import GoldChargeModal from "@/components/GoldChargeModal";
@@ -39,6 +39,11 @@ const DynamicStoreGame = dynamic(() => import("@/components/StoreGame"), {
 interface StoreGameWrapperProps {
   isLogined: boolean;
 }
+
+const categories = [
+  { value: "promotion", icon: <FiTag />, label: "프로모션" },
+  { value: ProductTypeEnum.AURA, icon: <FiZap />, label: "오라" },
+];
 
 export default function StoreGameWrapper({ isLogined }: StoreGameWrapperProps) {
   const isMobile = useIsMobile();
@@ -146,6 +151,13 @@ export default function StoreGameWrapper({ isLogined }: StoreGameWrapperProps) {
   useEffect(() => {
     if (promotions && promotions.length > 0) {
       setSelectedPromotion(promotions[0].name);
+      return;
+    }
+
+    // promotions가 빈 배열이면 다음 카테고리로 설정
+    const nextCategory = categories.find((cat) => cat.value !== "promotion");
+    if (nextCategory) {
+      setSelectedType(nextCategory.value);
     }
   }, [promotions]);
 
@@ -328,6 +340,12 @@ export default function StoreGameWrapper({ isLogined }: StoreGameWrapperProps) {
       <main className="flex flex-1 overflow-hidden gap-6 overflow-y-auto p-4 sm:p-6 justify-center">
         <div className={`flex flex-col ${isMobile ? "w-screen" : ""}`}>
           <CategorySelector
+            categories={categories.filter((category) => {
+              if (promotions.length === 0) {
+                return category.value !== "promotion";
+              }
+              return true;
+            })}
             selectedType={selectedType}
             setSelectedType={setSelectedType}
             className={isMobile ? "mt-[40px]" : ""}
