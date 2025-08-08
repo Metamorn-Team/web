@@ -156,7 +156,7 @@ interface Island {
   createdAt: string;
 }
 
-export default function MyIslandsPage() {
+export default function Wrapper() {
   const limit = 6;
   const [page, setPage] = useState(1);
   // TODO 정렬 기준 추가되면 set 함수 추가
@@ -327,10 +327,11 @@ export default function MyIslandsPage() {
           {/* 섬 목록 */}
           <div className="w-full max-w-6xl">
             {isLoading && (
-              <DotLoader
-                loadingText="섬을 찾는 중..."
-                className="text-center text-2xl font-bold mt-10"
-              />
+              <DotLoader loadingText="불러오는 중" />
+              // <DotLoader
+              //   loadingText="섬을 찾는 중..."
+              //   className="text-center text-2xl font-bold mt-10"
+              // />
             )}
             {!isLoading && data?.islands && (
               <>
