@@ -98,8 +98,7 @@ function IslandCard({
 
         {/* 섬 정보 */}
         <div className="flex-1 flex flex-col">
-          {/* public, password 상태 표시 - 이름 아래 오른쪽 정렬 */}
-          <div className="flex justify-end items-center gap-3 mb-4">
+          <div className="flex justify-end items-center gap-3">
             {/* 공개 여부 */}
             <div
               className={`text-xs font-semibold px-2 py-0.5 rounded-full select-none ${
@@ -117,8 +116,8 @@ function IslandCard({
             {island.hasPassword && (
               <div
                 className="text-xs font-semibold px-2 py-0.5 rounded-full select-none bg-yellow-100 text-yellow-800 flex items-center gap-1"
-                title="비밀번호 보호됨"
-                aria-label="비밀번호 보호됨"
+                title="비밀번호"
+                aria-label="비밀번호"
               >
                 <span>🔐</span> <span>비밀번호</span>
               </div>
