@@ -1,17 +1,20 @@
 import { useGetAllMap } from "@/hook/queries/useGetAllMap";
 import Image from "next/image";
 import { useEffect } from "react";
+import Label from "./common/Label";
 
 interface MapSelectorProps {
   selectedIslandKey: string;
   labelClassName?: string;
   onSelect: (key: string) => void;
+  required?: boolean;
 }
 
 export default function MapSelector({
   selectedIslandKey,
   onSelect,
   labelClassName,
+  required = false,
 }: MapSelectorProps) {
   const { data: maps } = useGetAllMap();
 
@@ -24,11 +27,13 @@ export default function MapSelector({
 
   return (
     <div>
-      <label
-        className={`block text-sm font-medium text-[#5c4b32] mt-4 mb-2 ${labelClassName}`}
+      <Label
+        htmlFor="map-selector"
+        className={labelClassName}
+        required={required}
       >
         섬 종류 선택
-      </label>
+      </Label>
       <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
         {maps.map((island) => (
           <div
