@@ -2,15 +2,17 @@ import { useGetAllMap } from "@/hook/queries/useGetAllMap";
 import Image from "next/image";
 import { useEffect } from "react";
 
-interface IslandSelectorProps {
+interface MapSelectorProps {
   selectedIslandKey: string;
+  labelClassName?: string;
   onSelect: (key: string) => void;
 }
 
-export default function IslandSelector({
+export default function MapSelector({
   selectedIslandKey,
   onSelect,
-}: IslandSelectorProps) {
+  labelClassName,
+}: MapSelectorProps) {
   const { data: maps } = useGetAllMap();
 
   useEffect(() => {
@@ -22,7 +24,9 @@ export default function IslandSelector({
 
   return (
     <div>
-      <label className="block text-sm font-medium text-[#5c4b32] mt-4 mb-2">
+      <label
+        className={`block text-sm font-medium text-[#5c4b32] mt-4 mb-2 ${labelClassName}`}
+      >
         섬 종류 선택
       </label>
       <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
