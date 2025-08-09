@@ -6,6 +6,8 @@ import Alert from "@/utils/alert";
 import Pawn from "./Pawn";
 import { getRandomPawnColor } from "@/utils/random";
 
+const pawnColor = getRandomPawnColor();
+
 interface ImageUploaderProps {
   value?: string; // 현재 선택된 이미지 URL
   onChange: (url: string) => void; // 업로드 성공 시 호출
@@ -15,7 +17,7 @@ interface ImageUploaderProps {
   borderColor?: string; // 테두리 색상
 }
 
-export default function ImageUploader({
+function ImageUploader({
   value,
   onChange,
   bucketPath = BUCKET_PATH.ISLAND,
@@ -68,7 +70,7 @@ export default function ImageUploader({
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
           <div className="relative flex flex-col items-center text-gray-500 gap-2">
             <Pawn
-              color={getRandomPawnColor()}
+              color={pawnColor}
               animation="idle"
               className="w-[70px] h-[70px]"
               paused
@@ -83,3 +85,5 @@ export default function ImageUploader({
     </div>
   );
 }
+
+export default React.memo(ImageUploader);

@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { Suspense, useRef, useState } from "react";
 import Image from "next/image";
 import { CreateIslandRequest } from "mmorntype";
 import RetroModal from "@/components/common/RetroModal";
@@ -12,7 +12,8 @@ import Alert from "@/utils/alert";
 import { useKeydownClose } from "@/hook/useKeydownClose";
 import { useGetAllTags } from "@/hook/queries/useGetAllTags";
 import { DotLoader } from "../common/DotLoader";
-import { useGetAllMap } from "@/hook/queries/useGetAllMap";
+import ImageUploader from "@/components/common/ImageUploader";
+import MapSelector from "@/components/MapSelector";
 
 interface IslandCreationModalProps {
   isOpen: boolean;
@@ -150,10 +151,10 @@ export default function IslandCreationModal({
                     unoptimized
                   />
                 ) : (
-                  <div className="flex flex-col items-center">
-                    <p>이미지를 등록해봐요</p>
-                    <p>Click!</p>
-                  </div>
+                  <ImageUploader
+                    onChange={(url) => onChange("coverImage", url)}
+                    value={createData.coverImage}
+                  />
                 )}
               </div>
             </div>
@@ -173,7 +174,7 @@ export default function IslandCreationModal({
 
             {/* 섬 타입 선택 - 가로 슬라이드 UI */}
             <Suspense fallback={<DotLoader loadingText="섬 로딩중..." />}>
-              <IslandSelector
+              <MapSelector
                 selectedIslandKey={createData.mapKey || ""}
                 onSelect={(key) => onChange("mapKey", key)}
               />
@@ -263,52 +264,5 @@ export default function IslandCreationModal({
         </div>
       </div>
     </RetroModal>
-  );
-}
-
-interface IslandSelectorProps {
-  selectedIslandKey: string;
-  onSelect: (key: string) => void;
-}
-
-function IslandSelector({ selectedIslandKey, onSelect }: IslandSelectorProps) {
-  const { data: maps } = useGetAllMap();
-
-  useEffect(() => {
-    if (maps.length > 0) {
-      onSelect(maps[0].key);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [maps]);
-
-  return (
-    <div>
-      <label className="block text-sm font-medium text-[#5c4b32] mt-4 mb-2">
-        섬 종류 선택
-      </label>
-      <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
-        {maps.map((island) => (
-          <div
-            key={island.key}
-            onClick={() => onSelect(island.key)}
-            className={`min-w-[100px] flex-shrink-0 cursor-pointer rounded-lg border-2 ${
-              selectedIslandKey === island.key
-                ? "border-[#5c4b32]"
-                : "border-[#ddd]"
-            }`}
-          >
-            <div className="w-[100px] h-[70px] relative rounded-t-lg overflow-hidden">
-              <Image
-                src={island.image}
-                alt={island.name}
-                layout="fill"
-                objectFit="cover"
-              />
-            </div>
-            <p className="text-center text-sm p-1">{island.name}</p>
-          </div>
-        ))}
-      </div>
-    </div>
   );
 }
