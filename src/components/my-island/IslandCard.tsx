@@ -87,8 +87,8 @@ function IslandCard({
           {/* 활성 여부 - 이미지 우측 상단 작은 원 */}
           <div
             className={`absolute top-2 right-2 w-4 h-4 rounded-full border-1 ${
-              !island.isLive
-                ? "bg-green-500 border-green-700"
+              island.isLive
+                ? "bg-green-500 border-green-700 animate-pulse"
                 : "bg-gray-400 border-gray-600"
             }`}
             title={island.isLive ? "활성 섬" : "비활성 섬"}
