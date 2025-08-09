@@ -22,6 +22,7 @@ import { DotLoader } from "@/components/common/DotLoader";
 import Pagination from "@/components/common/Pagination";
 import IslandCard from "@/components/my-island/IslandCard";
 import { getTimeOfDay } from "@/utils/date";
+import { PATH } from "@/constants/path";
 
 // 고정된 Pawn 배치 정의
 const FIXED_PAWNS = [
@@ -87,7 +88,7 @@ const getBackgroundStyle = (timeOfDay: string) => {
         background: "linear-gradient(135deg, #ffd89b 0%, #19547b 100%)",
         textColor: "#2a1f14",
         secondaryTextColor: "#4a3c2a",
-        borderColor: "#8c7a5c",
+        borderColor: "#c1a66b", // 여기를 변경
         shadowColor: "#5c4b32",
         greeting: "🏝️ 내가 관리하는 섬",
         description: "친구들과 함께할 수 있는 나만의 섬들을 관리해보세요",
@@ -157,7 +158,7 @@ interface Island {
 }
 
 export default function Wrapper() {
-  const limit = 6;
+  const limit = 12;
   const [page, setPage] = useState(1);
   // TODO 정렬 기준 추가되면 set 함수 추가
   const [order] = useState<Order>("desc");
@@ -246,11 +247,11 @@ export default function Wrapper() {
   };
 
   const handleBackToMain = () => {
-    router.push("/");
+    router.push(PATH.HOME);
   };
 
   const handleVisitStore = () => {
-    router.push("/store");
+    router.push(PATH.STORE);
   };
 
   const handlePageChange = (newPage: number) => {
@@ -318,6 +319,8 @@ export default function Wrapper() {
           <div className="w-full max-w-6xl mb-6">
             <GlassButton
               onClick={handleCreateIsland}
+              variant="auto"
+              timeOfDay={timeOfDay}
               className="text-lg px-6 py-3"
             >
               🏝️ 새 섬 만들기
@@ -326,13 +329,7 @@ export default function Wrapper() {
 
           {/* 섬 목록 */}
           <div className="w-full max-w-6xl">
-            {isLoading && (
-              <DotLoader loadingText="불러오는 중" />
-              // <DotLoader
-              //   loadingText="섬을 찾는 중..."
-              //   className="text-center text-2xl font-bold mt-10"
-              // />
-            )}
+            {isLoading && <DotLoader loadingText="불러오는 중" />}
             {!isLoading && data?.islands && (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
@@ -343,6 +340,7 @@ export default function Wrapper() {
                       backgroundStyle={backgroundStyle}
                       onJoinIsland={handleJoinIsland}
                       onShareLink={handleShareLink}
+                      timeOfDay={timeOfDay}
                     />
                   ))}
                 </div>

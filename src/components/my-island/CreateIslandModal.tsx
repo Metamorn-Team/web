@@ -13,6 +13,7 @@ import MapSelector from "@/components/MapSelector";
 import Toggle from "@/components/common/Toggle";
 import Tooltip from "@/components/common/Tooltop";
 import Label from "@/components/common/Label";
+import { getTimeOfDay } from "@/utils/date";
 
 interface CreateIslandModalProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ export default function CreateIslandModal({
   isOpen,
   onClose,
 }: CreateIslandModalProps) {
+  const timeOfDay = getTimeOfDay();
   const queryClient = useQueryClient();
   const { mutate: createPrivateIsland } = useCreatePrivateIsland(() => {
     queryClient.invalidateQueries({
@@ -40,8 +42,10 @@ export default function CreateIslandModal({
     name: "",
     description: "",
     coverImage: "",
-    mapKey: "island",
+    mapKey: "",
     isPublic: true,
+    usePassword: false,
+    password: "",
   });
 
   const handleInputChange = (
@@ -62,6 +66,16 @@ export default function CreateIslandModal({
       return;
     }
 
+    if (!formData.mapKey) {
+      Alert.error("섬 종류를 선택해주세요.");
+      return;
+    }
+
+    if (formData.usePassword && !formData.password.trim()) {
+      Alert.error("비밀번호를 입력해주세요.");
+      return;
+    }
+
     setIsLoading(true);
 
     const requestData = {
@@ -70,7 +84,9 @@ export default function CreateIslandModal({
       coverImage: formData.coverImage.trim(),
       mapKey: formData.mapKey.trim(),
       isPublic: formData.isPublic,
+      password: formData.usePassword ? formData.password.trim() : undefined,
     };
+
     createPrivateIsland(requestData);
 
     setIsLoading(false);
@@ -85,6 +101,8 @@ export default function CreateIslandModal({
         coverImage: "",
         mapKey: "island",
         isPublic: true,
+        usePassword: false,
+        password: "",
       });
       setStep(1);
       onClose();
@@ -109,14 +127,14 @@ export default function CreateIslandModal({
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-2">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {step === 1 && (
             <>
               {/* 이미지 업로더 */}
               <div className="w-full flex justify-center">
                 <ImageUploader
                   onChange={(url) =>
-                    setFormData({ ...formData, coverImage: url })
+                    setFormData((prev) => ({ ...prev, coverImage: url }))
                   }
                   value={formData.coverImage}
                   borderColor=""
@@ -166,7 +184,7 @@ export default function CreateIslandModal({
 
               {/* 섬 설명 */}
               <div>
-                <Label htmlFor="name">섬 설명</Label>
+                <Label htmlFor="description">섬 설명</Label>
                 <textarea
                   id="description"
                   name="description"
@@ -183,12 +201,55 @@ export default function CreateIslandModal({
           )}
 
           {step === 2 && (
-            <MapSelector
-              selectedIslandKey={formData.mapKey}
-              onSelect={(key) => setFormData({ ...formData, mapKey: key })}
-              labelClassName="text-black"
-              required
-            />
+            <div className="flex flex-col gap-8">
+              {/* 비밀번호 사용 여부 토글 */}
+              <div>
+                <div className="mt-4">
+                  <Toggle
+                    checked={formData.usePassword}
+                    onChange={(val) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        usePassword: val,
+                        password: val ? prev.password : "",
+                      }))
+                    }
+                    label="비밀번호 사용"
+                    labelPosition="left"
+                  />
+                </div>
+
+                {/* 비밀번호 입력 */}
+                {formData.usePassword && (
+                  <div className="mt-2">
+                    <Label htmlFor="password" required>
+                      비밀번호
+                    </Label>
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      placeholder="비밀번호를 입력해주세요"
+                      className="w-full px-3 py-1.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
+                      maxLength={20}
+                      disabled={isLoading}
+                      autoComplete="new-password"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <MapSelector
+                selectedIslandKey={formData.mapKey}
+                onSelect={(key) =>
+                  setFormData((prev) => ({ ...prev, mapKey: key }))
+                }
+                labelClassName="text-black"
+                required
+              />
+            </div>
           )}
 
           {/* 버튼 (고정) */}
@@ -197,7 +258,8 @@ export default function CreateIslandModal({
               <>
                 <GlassButton
                   onClick={handleClose}
-                  variant="ghost"
+                  variant="auto"
+                  timeOfDay={timeOfDay}
                   className="flex-1 py-1.5 rounded-full text-sm"
                   disabled={isLoading}
                 >
@@ -206,7 +268,9 @@ export default function CreateIslandModal({
                 <GlassButton
                   type="button"
                   onClick={() => setStep(2)}
-                  className="flex-1 py-1.5 rounded-full text-sm bg-pink-400 hover:bg-pink-500"
+                  variant="auto"
+                  timeOfDay={timeOfDay}
+                  className="flex-1 py-1.5 rounded-full text-sm"
                   disabled={isLoading}
                 >
                   다음
@@ -219,7 +283,8 @@ export default function CreateIslandModal({
                 <GlassButton
                   type="button"
                   onClick={() => setStep(1)}
-                  variant="ghost"
+                  variant="auto"
+                  timeOfDay={timeOfDay}
                   className="flex-1 py-1.5 rounded-full text-sm"
                   disabled={isLoading}
                 >
@@ -227,6 +292,8 @@ export default function CreateIslandModal({
                 </GlassButton>
                 <GlassButton
                   type="submit"
+                  variant="auto"
+                  timeOfDay={timeOfDay}
                   className="flex-1 py-1.5 rounded-full text-sm bg-pink-400 hover:bg-pink-500"
                   disabled={isLoading}
                 >
