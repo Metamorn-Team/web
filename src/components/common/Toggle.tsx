@@ -5,9 +5,9 @@ import React from "react";
 interface ToggleProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
-  label?: string; // 하나만 표시할 라벨
-  labelPosition?: "left" | "right"; // 라벨 위치
-  className?: string; // 추가 스타일
+  label?: string;
+  labelPosition?: "left" | "right";
+  className?: string;
 }
 
 export default function Toggle({
@@ -25,7 +25,9 @@ export default function Toggle({
     >
       {label && (
         <span
-          className={`text-xs ${checked ? "text-pink-500" : "text-gray-500"}`}
+          className={`text-xs ${
+            checked ? "text-emerald-600" : "text-gray-500 dark:text-gray-400"
+          }`}
         >
           {label}
         </span>
@@ -34,8 +36,10 @@ export default function Toggle({
       <button
         type="button"
         onClick={() => onChange(!checked)}
-        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-          checked ? "bg-pink-300" : "bg-gray-300"
+        className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${
+          checked
+            ? "bg-emerald-500 dark:bg-emerald-400"
+            : "bg-gray-300 dark:bg-gray-600"
         }`}
       >
         <span
