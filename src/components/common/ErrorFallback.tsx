@@ -7,7 +7,7 @@ interface ErrorFallbackProps {
 
 export default function ErrorFallback({ message }: ErrorFallbackProps) {
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+    <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
       <div className="relative flex flex-col items-center text-gray-500 gap-2">
         <Pawn
           color={getRandomPawnColor()}
