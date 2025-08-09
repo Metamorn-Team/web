@@ -1,62 +1,10 @@
-// "use client";
-
-// import classNames from "classnames";
-
-// interface RadioCardButtonProps {
-//   label: string;
-//   selected: boolean;
-//   onClick: () => void;
-//   className?: string;
-//   variant?: "card" | "default";
-// }
-
-// export default function RadioButton({
-//   label,
-//   selected,
-//   onClick,
-//   className,
-//   variant = "default",
-// }: RadioCardButtonProps) {
-//   return (
-//     <button
-//       type="button"
-//       onClick={onClick}
-//       className={classNames(
-//         "transition text-sm font-semibold flex items-center gap-2",
-//         variant === "card" &&
-//           classNames(
-//             "w-full px-4 py-2 rounded-md border justify-center",
-//             selected
-//               ? "bg-yellow-50 border-yellow-600 ring-2 ring-yellow-400 text-[#3d2c1b]"
-//               : "bg-white border-[#d6c6aa] text-[#5c4b32]"
-//           ),
-//         variant === "default" &&
-//           classNames(
-//             "py-1 px-2 rounded-md",
-//             selected ? "text-[#a27c3f] font-bold underline" : "text-[#5c4b32]"
-//           ),
-//         className
-//       )}
-//     >
-//       {variant === "default" && (
-//         <span
-//           className={classNames(
-//             "w-3 h-3 rounded-full border transition",
-//             selected ? "bg-[#a27c3f] border-[#a27c3f]" : "border-[#aaa]"
-//           )}
-//         />
-//       )}
-//       {label}
-//     </button>
-//   );
-// }
-
 "use client";
 
 import classNames from "classnames";
 
 interface RadioButtonProps {
   label: string;
+  icon?: React.ReactNode;
   selected: boolean;
   onClick: () => void;
   className?: string;
@@ -65,6 +13,7 @@ interface RadioButtonProps {
 
 export default function RadioButton({
   label,
+  icon,
   selected,
   onClick,
   className,
@@ -105,7 +54,7 @@ export default function RadioButton({
           )}
         </span>
       )}
-      {label}
+      {icon || label}
     </button>
   );
 }
