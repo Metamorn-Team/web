@@ -8,7 +8,7 @@ import GlassCardAdvanced from "@/components/common/GlassCardAdvanced";
 import GlassButton from "@/components/common/GlassButton";
 import Logo from "@/components/common/Logo";
 import Footer from "@/components/common/Footer";
-import { PawnColor } from "@/constants/game/entities";
+import { PawnColor, pawnColors } from "@/constants/game/entities";
 import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
 import LoginModal from "@/components/login/LoginModal";
 import { useModal } from "@/hook/useModal";
@@ -19,6 +19,7 @@ import { QUERY_KEY as GET_MY_PROFILE_QUERY_KEY } from "@/hook/queries/useGetMyPr
 import { Header } from "@/components/common/Header";
 import LogoutConfirmModal from "@/components/LogoutConfirmModal";
 import { getTimeOfDay, TimeOfDay } from "@/utils/date";
+import { PATH } from "@/constants/path";
 
 // 고정된 Pawn 배치 정의
 const FIXED_PAWNS = [
@@ -193,15 +194,9 @@ export default function MainPage() {
     setIsClient(true);
 
     // 랜덤 Pawn 색상 생성
-    const colors: PawnColor[] = [
-      "blue",
-      "purple",
-      "red",
-      "yellow",
-      "forest_green",
-      "orange",
-    ];
-    setRandomPawnColor(colors[Math.floor(Math.random() * colors.length)]);
+    setRandomPawnColor(
+      pawnColors[Math.floor(Math.random() * pawnColors.length)]
+    );
 
     // 배경 Pawn들 생성
     setBackgroundPawns(generateFixedPawns());
@@ -228,15 +223,15 @@ export default function MainPage() {
   }, [timeOfDay]);
 
   const handleMeetNewFriends = () => {
-    router.push("/game");
+    router.push(PATH.GAME);
   };
 
   const handlePlayWithFriends = () => {
-    router.push("/my-islands");
+    router.push(PATH.ISLANDS);
   };
 
   const handleVisitStore = () => {
-    router.push("/store");
+    router.push(PATH.STORE);
   };
 
   const handleLogin = () => {
