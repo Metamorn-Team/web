@@ -29,14 +29,6 @@ export const getCurrentISO = (): string => {
 };
 
 /**
- * ISO 문자열을 한국 시간대로 변환
- */
-export const toKoreanTime = (isoString: string): Date => {
-  const date = new Date(isoString);
-  return new Date(date.getTime() + 9 * 60 * 60 * 1000); // UTC+9
-};
-
-/**
  * 상대적 시간 표시 (예: "3분 전", "1시간 전", "2일 전")
  */
 export const getRelativeTime = (isoString: string): string => {
@@ -84,7 +76,7 @@ export const formatKoreanDate = (
     showWeekday = false,
   } = options;
 
-  const date = toKoreanTime(isoString);
+  const date = parseISO(isoString);
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
@@ -127,7 +119,7 @@ export const formatKoreanDate = (
  * 간단한 날짜 포맷 (예: "2024.01.15")
  */
 export const formatSimpleDate = (isoString: string): string => {
-  const date = toKoreanTime(isoString);
+  const date = parseISO(isoString);
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const day = date.getDate().toString().padStart(2, "0");
@@ -138,7 +130,7 @@ export const formatSimpleDate = (isoString: string): string => {
  * 시간 포함 날짜 포맷 (예: "2024.01.15 14:30")
  */
 export const formatDateTime = (isoString: string): string => {
-  const date = toKoreanTime(isoString);
+  const date = parseISO(isoString);
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const day = date.getDate().toString().padStart(2, "0");
@@ -158,7 +150,7 @@ export const formatDateWithWeekday = (isoString: string): string => {
  * 시간만 표시 (예: "14:30")
  */
 export const formatTime = (isoString: string): string => {
-  const date = toKoreanTime(isoString);
+  const date = parseISO(isoString);
   const hours = date.getHours().toString().padStart(2, "0");
   const minutes = date.getMinutes().toString().padStart(2, "0");
   return `${hours}:${minutes}`;
@@ -168,7 +160,7 @@ export const formatTime = (isoString: string): string => {
  * 시간과 초 포함 (예: "14:30:25")
  */
 export const formatTimeWithSeconds = (isoString: string): string => {
-  const date = toKoreanTime(isoString);
+  const date = parseISO(isoString);
   const hours = date.getHours().toString().padStart(2, "0");
   const minutes = date.getMinutes().toString().padStart(2, "0");
   const seconds = date.getSeconds().toString().padStart(2, "0");
@@ -179,7 +171,7 @@ export const formatTimeWithSeconds = (isoString: string): string => {
  * 월/일 포맷 (예: "1월 15일")
  */
 export const formatMonthDay = (isoString: string): string => {
-  const date = toKoreanTime(isoString);
+  const date = parseISO(isoString);
   const month = date.getMonth() + 1;
   const day = date.getDate();
   return `${month}월 ${day}일`;
@@ -189,7 +181,7 @@ export const formatMonthDay = (isoString: string): string => {
  * 년/월 포맷 (예: "2024년 1월")
  */
 export const formatYearMonth = (isoString: string): string => {
-  const date = toKoreanTime(isoString);
+  const date = parseISO(isoString);
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   return `${year}년 ${month}월`;
@@ -200,7 +192,7 @@ export const formatYearMonth = (isoString: string): string => {
  */
 export const formatBoardDate = (isoString: string): string => {
   const now = new Date();
-  const target = toKoreanTime(isoString);
+  const target = parseISO(isoString);
 
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
@@ -224,7 +216,7 @@ export const formatBoardDate = (isoString: string): string => {
  */
 export const formatChatDate = (isoString: string): string => {
   const now = new Date();
-  const target = toKoreanTime(isoString);
+  const target = parseISO(isoString);
 
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
@@ -268,7 +260,7 @@ export const getDuration = (startISO: string, endISO: string): string => {
  */
 export const isToday = (isoString: string): boolean => {
   const today = new Date();
-  const target = toKoreanTime(isoString);
+  const target = parseISO(isoString);
   return (
     today.getFullYear() === target.getFullYear() &&
     today.getMonth() === target.getMonth() &&
@@ -282,7 +274,7 @@ export const isToday = (isoString: string): boolean => {
 export const isYesterday = (isoString: string): boolean => {
   const today = new Date();
   const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
-  const target = toKoreanTime(isoString);
+  const target = parseISO(isoString);
   return (
     yesterday.getFullYear() === target.getFullYear() &&
     yesterday.getMonth() === target.getMonth() &&
@@ -295,7 +287,7 @@ export const isYesterday = (isoString: string): boolean => {
  */
 export const isThisWeek = (isoString: string): boolean => {
   const now = new Date();
-  const target = toKoreanTime(isoString);
+  const target = parseISO(isoString);
   const weekStart = new Date(
     now.getTime() - now.getDay() * 24 * 60 * 60 * 1000
   );
@@ -309,7 +301,7 @@ export const isThisWeek = (isoString: string): boolean => {
  */
 export const isThisMonth = (isoString: string): boolean => {
   const now = new Date();
-  const target = toKoreanTime(isoString);
+  const target = parseISO(isoString);
   return (
     now.getFullYear() === target.getFullYear() &&
     now.getMonth() === target.getMonth()
@@ -321,7 +313,7 @@ export const isThisMonth = (isoString: string): boolean => {
  */
 export const isThisYear = (isoString: string): boolean => {
   const now = new Date();
-  const target = toKoreanTime(isoString);
+  const target = parseISO(isoString);
   return now.getFullYear() === target.getFullYear();
 };
 
