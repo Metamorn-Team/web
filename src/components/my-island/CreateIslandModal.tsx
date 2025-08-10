@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import GlassModal from "@/components/common/GlassModal";
 import GlassButton from "@/components/common/GlassButton";
@@ -14,6 +14,7 @@ import Toggle from "@/components/common/Toggle";
 import Tooltip from "@/components/common/Tooltop";
 import Label from "@/components/common/Label";
 import { getTimeOfDay } from "@/utils/date";
+import { DotLoader } from "../common/DotLoader";
 
 interface CreateIslandModalProps {
   isOpen: boolean;
@@ -120,12 +121,7 @@ export default function CreateIslandModal({
     >
       <div className="flex flex-col gap-2">
         {/* 헤더 (고정) */}
-        <div className="text-center mb-3">
-          <h2 className="text-xl font-bold mb-1">🏝️ 새 섬 만들기</h2>
-          <p className="text-gray-500 text-sm">
-            작고 귀여운 나만의 섬을 만들어보아요
-          </p>
-        </div>
+        <h2 className="text-center text-xl font-bold mb-1">🏝️ 새 섬 만들기</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {step === 1 && (
@@ -240,15 +236,17 @@ export default function CreateIslandModal({
                   </div>
                 )}
               </div>
-
-              <MapSelector
-                selectedIslandKey={formData.mapKey}
-                onSelect={(key) =>
-                  setFormData((prev) => ({ ...prev, mapKey: key }))
-                }
-                labelClassName="text-black"
-                required
-              />
+              {/* 맵 목록 */}
+              <Suspense fallback={<DotLoader loadingText="맵 로딩중" />}>
+                <MapSelector
+                  selectedIslandKey={formData.mapKey}
+                  onSelect={(key) =>
+                    setFormData((prev) => ({ ...prev, mapKey: key }))
+                  }
+                  labelClassName="text-black"
+                  required
+                />
+              </Suspense>
             </div>
           )}
 
