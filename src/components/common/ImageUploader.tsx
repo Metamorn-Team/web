@@ -1,20 +1,21 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Image from "next/image";
 import { getPresignedUrl, uploadImage } from "@/api/file";
 import { BUCKET_PATH, CDN_URL } from "@/constants/image-path";
 import Alert from "@/utils/alert";
 import Pawn from "./Pawn";
 import { getRandomPawnColor } from "@/utils/random";
+import { DotLoader } from "./DotLoader";
 
 const pawnColor = getRandomPawnColor();
 
 interface ImageUploaderProps {
-  value?: string; // 현재 선택된 이미지 URL
-  onChange: (url: string) => void; // 업로드 성공 시 호출
-  bucketPath?: string; // S3 업로드 경로 (기본값: ISLAND)
-  aspectRatio?: string; // Tailwind aspect-[w/h] 형태, 기본값: 4/3
-  maxWidth?: string; // 최대 너비 Tailwind 클래스, 기본값: max-w-[330px]
-  borderColor?: string; // 테두리 색상
+  value?: string;
+  onChange: (url: string) => void;
+  bucketPath?: string;
+  aspectRatio?: string;
+  maxWidth?: string;
+  borderColor?: string;
 }
 
 function ImageUploader({
@@ -26,6 +27,7 @@ function ImageUploader({
   borderColor = "#8c7a5c",
 }: ImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false); // 🆕 업로드 상태
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -35,19 +37,22 @@ function ImageUploader({
         return;
       }
 
+      setIsUploading(true); // 🆕 업로드 시작
       const { presignedUrl, key } = await getPresignedUrl({ path: bucketPath });
       await uploadImage(presignedUrl, file);
       onChange(`${CDN_URL}/${key}`);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e: unknown) {
       Alert.error("이미지 업로드에 실패했어요..");
+    } finally {
+      setIsUploading(false); // 🆕 업로드 종료
     }
   };
 
   return (
     <div
       className={`relative mt-4 flex justify-center items-center ${maxWidth} w-2/3 ${aspectRatio} border border-[${borderColor}] rounded-lg cursor-pointer overflow-hidden`}
-      onClick={() => inputRef.current?.click()}
+      onClick={() => !isUploading && inputRef.current?.click()} // 🆕 업로드 중에는 클릭 방지
     >
       <input
         type="file"
@@ -57,7 +62,11 @@ function ImageUploader({
         className="hidden"
       />
 
-      {value ? (
+      {isUploading ? ( // 🆕 업로드 중 로더 표시
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+          <DotLoader loadingText="이미지 업로드중" />
+        </div>
+      ) : value ? (
         <Image
           src={value}
           alt="Preview"
