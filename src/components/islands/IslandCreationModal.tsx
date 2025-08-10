@@ -1,5 +1,4 @@
 import React, { Suspense, useRef, useState } from "react";
-import Image from "next/image";
 import { CreateIslandRequest } from "mmorntype";
 import RetroModal from "@/components/common/RetroModal";
 import RetroButton from "@/components/common/RetroButton";
@@ -137,26 +136,10 @@ export default function IslandCreationModal({
                 className="hidden"
               />
 
-              <div
-                className="relative mt-4 flex justify-center items-center max-w-[330px] w-2/3 aspect-[4/3] border border-[#8c7a5c] rounded-lg"
-                onClick={() => imageInputRef.current?.click()}
-              >
-                {createData.coverImage ? (
-                  <Image
-                    src={createData.coverImage}
-                    alt="Preview"
-                    layout="fill"
-                    objectFit="cover"
-                    className="rounded-lg shadow-md"
-                    unoptimized
-                  />
-                ) : (
-                  <ImageUploader
-                    onChange={(url) => onChange("coverImage", url)}
-                    value={createData.coverImage}
-                  />
-                )}
-              </div>
+              <ImageUploader
+                onChange={(url) => onChange("coverImage", url)}
+                value={createData.coverImage}
+              />
             </div>
 
             {/* 섬 이름 */}
