@@ -21,7 +21,7 @@ export default function NotFoundPage() {
       <div className="flex flex-col items-center gap-2">
         <Pawn color="pure_shadow" animation="idle" />
         <RetroButton variant="ghost" onClick={handleGoHome} className="mt-2">
-          <p className="text-lg">🏝️ 섬으로 가기</p>
+          <p className="text-lg">🏝️ 따라가기</p>
         </RetroButton>
       </div>
     </div>
