@@ -8,6 +8,7 @@ import { SERVICE_URL } from "@/constants/constants";
 import ImageWithLoading from "@/components/common/ImageWithLoading";
 import { getRandomPawnColor } from "@/utils/random";
 import { PrivateIslandItem } from "mmorntype";
+import { useRouter } from "next/navigation";
 
 interface IslandCardProps {
   island: PrivateIslandItem;
@@ -17,7 +18,6 @@ interface IslandCardProps {
     borderColor: string;
     shadowColor: string;
   };
-  onJoinIsland: (islandId: string) => void;
   onShareLink: (shareLink: string) => void;
   timeOfDay: string;
 }
@@ -25,20 +25,21 @@ interface IslandCardProps {
 function IslandCard({
   island,
   backgroundStyle,
-  onJoinIsland,
   onShareLink,
   timeOfDay,
 }: IslandCardProps) {
-  const handleJoinClick = () => {
-    onJoinIsland(island.id);
+  const router = useRouter();
+
+  const islandPath = window.location.origin
+    ? `${window.location.origin}/islands/${island.urlPath}`
+    : `${SERVICE_URL}/islands/${island.urlPath}`;
+
+  const handleMoveToIsland = () => {
+    router.push(islandPath);
   };
 
   const handleShareClick = () => {
-    onShareLink(
-      window.location.origin
-        ? `${window.location.origin}/islands/${island.urlPath}`
-        : `${SERVICE_URL}/islands/${island.urlPath}`
-    );
+    onShareLink(islandPath);
   };
 
   return (
@@ -150,7 +151,7 @@ function IslandCard({
           {/* 버튼들 */}
           <div className="flex gap-2 mt-auto">
             <GlassButton
-              onClick={handleJoinClick}
+              onClick={handleMoveToIsland}
               variant="auto"
               timeOfDay={timeOfDay}
               className="flex-1 px-3 py-2 text-sm"

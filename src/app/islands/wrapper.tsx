@@ -237,10 +237,6 @@ export default function Wrapper() {
     setIsCreateModalOpen(false);
   };
 
-  const handleJoinIsland = (islandId: string) => {
-    router.push(`/game?island=${islandId}`);
-  };
-
   const handleShareLink = (shareLink: string) => {
     navigator.clipboard.writeText(shareLink);
     Alert.info("링크가 클립보드에 복사되었습니다!");
@@ -338,7 +334,6 @@ export default function Wrapper() {
                       key={island.id}
                       island={island}
                       backgroundStyle={backgroundStyle}
-                      onJoinIsland={handleJoinIsland}
                       onShareLink={handleShareLink}
                       timeOfDay={timeOfDay}
                     />
