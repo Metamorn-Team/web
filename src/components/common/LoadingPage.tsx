@@ -7,7 +7,11 @@ import { DotLoader } from "@/components/common/DotLoader";
 
 const commonMessage = "섬을 만드는 중";
 
-export default function LoadingPage() {
+interface LoadingPageProps {
+  message?: string;
+}
+
+export default function LoadingPage({ message }: LoadingPageProps) {
   const loaders = [
     // { loader: <GoblinTorch key={"goblin"} />, message: "불을 밝히러 가는 중" },
     {
@@ -52,7 +56,7 @@ export default function LoadingPage() {
     <div className="absolute w-screen h-screen bg-darkBg flex flex-col justify-center items-center -z-50 gap-4">
       {loader.loader}
       <DotLoader
-        loadingText={commonMessage}
+        loadingText={message || commonMessage}
         className="text-white text-4xl font-bold mt-4"
       />
     </div>
