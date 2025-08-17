@@ -20,9 +20,11 @@ import {
 } from "mmorntype/dist/src/domain/types/private-island.types";
 import { DotLoader } from "@/components/common/DotLoader";
 import Pagination from "@/components/common/Pagination";
-import IslandCard from "@/components/my-island/IslandCard";
 import { getTimeOfDay } from "@/utils/date";
 import { PATH } from "@/constants/path";
+import { getBackgroundStyle } from "@/styles/time-of-date-style";
+import IslandCardList from "@/components/my-island/IslandCardList";
+import ErrorFallback from "@/components/common/ErrorFallback";
 
 // 고정된 Pawn 배치 정의
 const FIXED_PAWNS = [
@@ -81,71 +83,6 @@ const generateFixedPawns = () => {
   return FIXED_PAWNS;
 };
 
-const getBackgroundStyle = (timeOfDay: string) => {
-  switch (timeOfDay) {
-    case "dawn":
-      return {
-        background: "linear-gradient(135deg, #ffd89b 0%, #19547b 100%)",
-        textColor: "#2a1f14",
-        secondaryTextColor: "#4a3c2a",
-        borderColor: "#c1a66b", // 여기를 변경
-        shadowColor: "#5c4b32",
-        greeting: "🏝️ 내가 관리하는 섬",
-        description: "친구들과 함께할 수 있는 나만의 섬들을 관리해보세요",
-      };
-    case "morning":
-      return {
-        background: "linear-gradient(135deg, #a8c0ff 0%, #b8a9c9 100%)",
-        textColor: "#f8f9ff",
-        secondaryTextColor: "#e8eaff",
-        borderColor: "#9ba3d0",
-        shadowColor: "#7c8bc0",
-        greeting: "🏝️ 내가 관리하는 섬",
-        description: "친구들과 함께할 수 있는 나만의 섬들을 관리해보세요",
-      };
-    case "afternoon":
-      return {
-        background: "linear-gradient(135deg, #f9f5ec 0%, #e8d5c4 100%)",
-        textColor: "#5c4b32",
-        secondaryTextColor: "#7a6144",
-        borderColor: "#bfae96",
-        shadowColor: "#8c7a5c",
-        greeting: "🏝️ 내가 관리하는 섬",
-        description: "친구들과 함께할 수 있는 나만의 섬들을 관리해보세요",
-      };
-    case "evening":
-      return {
-        background: "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
-        textColor: "#5c4b32",
-        secondaryTextColor: "#7a6144",
-        borderColor: "#bfae96",
-        shadowColor: "#8c7a5c",
-        greeting: "🏝️ 내가 관리하는 섬",
-        description: "친구들과 함께할 수 있는 나만의 섬들을 관리해보세요",
-      };
-    case "night":
-      return {
-        background: "linear-gradient(135deg, #2c3e50 0%, #34495e 100%)",
-        textColor: "#ecf0f1",
-        secondaryTextColor: "#bdc3c7",
-        borderColor: "#7f8c8d",
-        shadowColor: "#2c3e50",
-        greeting: "🏝️ 내가 관리하는 섬",
-        description: "친구들과 함께할 수 있는 나만의 섬들을 관리해보세요",
-      };
-    default:
-      return {
-        background: "linear-gradient(135deg, #f9f5ec 0%, #e8d5c4 100%)",
-        textColor: "#5c4b32",
-        secondaryTextColor: "#7a6144",
-        borderColor: "#bfae96",
-        shadowColor: "#8c7a5c",
-        greeting: "🏝️ 내가 관리하는 섬",
-        description: "친구들과 함께할 수 있는 나만의 섬들을 관리해보세요",
-      };
-  }
-};
-
 interface Island {
   id: string;
   name: string;
@@ -184,9 +121,7 @@ export default function Wrapper() {
   );
 
   const [timeOfDay, setTimeOfDay] = useState(getTimeOfDay());
-  const [backgroundStyle, setBackgroundStyle] = useState(
-    getBackgroundStyle(timeOfDay)
-  );
+  const backgroundStyle = getBackgroundStyle(timeOfDay);
   const [fixedPawns] = useState(generateFixedPawns());
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [islands] = useState<Island[]>(
@@ -207,7 +142,6 @@ export default function Wrapper() {
       const newTimeOfDay = getTimeOfDay();
       if (newTimeOfDay !== timeOfDay) {
         setTimeOfDay(newTimeOfDay);
-        setBackgroundStyle(getBackgroundStyle(newTimeOfDay));
       }
     };
 
@@ -237,11 +171,6 @@ export default function Wrapper() {
     setIsCreateModalOpen(false);
   };
 
-  const handleShareLink = (shareLink: string) => {
-    navigator.clipboard.writeText(shareLink);
-    Alert.info("링크가 클립보드에 복사되었습니다!");
-  };
-
   const handleBackToMain = () => {
     router.push(PATH.HOME);
   };
@@ -253,10 +182,6 @@ export default function Wrapper() {
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
-
-  if (isError) {
-    return <div>Error</div>;
-  }
 
   return (
     <main
@@ -326,19 +251,19 @@ export default function Wrapper() {
           {/* 섬 목록 */}
           <div className="w-full max-w-6xl">
             {isLoading && <DotLoader loadingText="불러오는 중" />}
+
+            {!isLoading && isError && (
+              <ErrorFallback
+                message="섬 목록을 불러오는 중 오류가 발생했어요."
+                size="l"
+                backgroundColor="bg-transparent"
+                fullScreen={false}
+              />
+            )}
+
             {!isLoading && data?.islands && (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-                  {data.islands.map((island) => (
-                    <IslandCard
-                      key={island.id}
-                      island={island}
-                      backgroundStyle={backgroundStyle}
-                      onShareLink={handleShareLink}
-                      timeOfDay={timeOfDay}
-                    />
-                  ))}
-                </div>
+                <IslandCardList islands={data.islands} timeOfDay={timeOfDay} />
 
                 {/* 페이징 */}
                 {data.count && (
