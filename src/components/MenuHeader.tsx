@@ -38,6 +38,9 @@ import {
 import { useCurrentSceneStore } from "@/stores/useCurrentSceneStore";
 import Reload from "@/utils/reload";
 import { PRIVACY_POLICY_URL, TERMS_OF_USE_URL } from "@/constants/constants";
+import DropdownItem from "./common/dropdown/DropdownItem";
+import Dropdown from "@/components/common/dropdown/Dropdown";
+import RetroHeader from "@/components/common/RetroHeader";
 
 interface MenuHeaderProps {
   changeFriendModalOpen: (state: boolean) => void;
@@ -169,99 +172,99 @@ export default function MenuHeader({
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 w-full min-h-14 z-40 flex flex-wrap justify-between items-center px-4 sm:px-6 sm:py-3 bg-[#fdf8ef] border-b border-[#bfae96] shadow-[4px_4px_0_#8c7a5c]">
-      <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
-        <StyledMenuItem
-          icon={
-            isPlayBgm ? (
-              <BsMusicNoteBeamed size={20} />
-            ) : (
-              <BsMusicNoteBeamed size={20} className="opacity-40" />
-            )
-          }
-          label="BGM"
-          onClick={onPlayBgmToggle}
-        />
-
-        {isLogined && (
-          <div className="relative">
-            <StyledMenuItem
-              icon={<FiUser size={20} />}
-              label="친구"
-              onClick={() => changeFriendModalOpen(true)}
-            />
-
-            {unreadRequestCount && unreadRequestCount?.count > 0 && (
-              <span className="absolute -top-2 -right-2 w-[18px] h-[18px] text-[10px] px-[4px] text-white bg-red-600 rounded-full flex items-center justify-center">
-                {unreadRequestCount.count > 99
-                  ? "99+"
-                  : unreadRequestCount.count}
-              </span>
-            )}
-
-            {showNewRequestMessage && (
-              <div className="absolute top-full mt-1 left-1/2 -translate-x-1/2 bg-red-600 text-white text-xs px-3 py-1 rounded shadow animate-pulse whitespace-nowrap">
-                새로운 친구 요청이 왔어요!
-              </div>
-            )}
-          </div>
-        )}
-
-        {isLogined && (
-          <div className="flex">
-            <StyledMenuItem
-              icon={<FiShoppingBag size={20} />}
-              label="상점"
-              onClick={onClickStore}
-            />
-          </div>
-        )}
-
-        {isLogined && currentScene === LOBY_SCENE && (
-          <div>
-            <StyledMenuItem
-              icon={<GiIsland size={20} />}
-              label="내 섬"
-              onClick={onMoveToMyIsland}
-            />
-          </div>
-        )}
-      </div>
-
-      <div className="relative flex gap-2 sm:gap-3" ref={menuRef}>
-        {isVisibleExit && currentScene === ISLAND_SCENE && (
+    <RetroHeader
+      leftItems={
+        <>
           <StyledMenuItem
-            icon={<FaCompass size={20} />}
-            label="섬 정보"
-            onClick={onIslandInfoModalOpen}
-          />
-        )}
-        {isVisibleExit && currentScene !== LOBY_SCENE && (
-          <StyledMenuItem
-            icon={<GiSailboat size={20} />}
-            label="섬 떠나기"
-            onClick={
-              currentScene === ISLAND_SCENE
-                ? onLeftIsland
-                : currentScene === MY_ISLAND_SCENE
-                ? onMoveToLoby
-                : () => {
-                    Reload.open(
-                      "문제가 발생했어요 새로고침 시 해결될 거에요!.."
-                    );
-                  }
+            icon={
+              isPlayBgm ? (
+                <BsMusicNoteBeamed size={20} />
+              ) : (
+                <BsMusicNoteBeamed size={20} className="opacity-40" />
+              )
             }
+            label="BGM"
+            onClick={onPlayBgmToggle}
           />
-        )}
-
-        <StyledMenuItem
-          icon={<FiMenu size={20} />}
-          label="메뉴"
-          onClick={() => setMenuOpen((prev) => !prev)}
-        />
-
-        {menuOpen && (
-          <div className="absolute right-0 top-full mt-2 w-44 bg-[#fdf8ef] border border-[#bfae96] shadow-[4px_4px_0_#8c7a5c] p-2 flex flex-col gap-2 text-sm text-[#3d2c1b] animate-fadeIn rounded-[6px] sm:mt-2 z-50">
+          {isLogined && (
+            <div className="relative">
+              <StyledMenuItem
+                icon={<FiUser size={20} />}
+                label="친구"
+                onClick={() => changeFriendModalOpen(true)}
+              />
+              {unreadRequestCount && unreadRequestCount?.count > 0 && (
+                <span className="absolute -top-2 -right-2 w-[18px] h-[18px] text-[10px] px-[4px] text-white bg-red-600 rounded-full flex items-center justify-center">
+                  {unreadRequestCount.count > 99
+                    ? "99+"
+                    : unreadRequestCount.count}
+                </span>
+              )}
+              {showNewRequestMessage && (
+                <div className="absolute top-full mt-1 left-1/2 -translate-x-1/2 bg-red-600 text-white text-xs px-3 py-1 rounded shadow animate-pulse whitespace-nowrap">
+                  새로운 친구 요청이 왔어요!
+                </div>
+              )}
+            </div>
+          )}
+          {isLogined && (
+            <div className="flex">
+              <StyledMenuItem
+                icon={<FiShoppingBag size={20} />}
+                label="상점"
+                onClick={onClickStore}
+              />
+            </div>
+          )}
+          {isLogined && currentScene === LOBY_SCENE && (
+            <div>
+              <StyledMenuItem
+                icon={<GiIsland size={20} />}
+                label="내 섬"
+                onClick={onMoveToMyIsland}
+              />
+            </div>
+          )}
+        </>
+      }
+      rightItems={
+        <>
+          {isVisibleExit && currentScene === ISLAND_SCENE && (
+            <StyledMenuItem
+              icon={<FaCompass size={20} />}
+              label="섬 정보"
+              onClick={onIslandInfoModalOpen}
+            />
+          )}
+          {isVisibleExit && currentScene !== LOBY_SCENE && (
+            <StyledMenuItem
+              icon={<GiSailboat size={20} />}
+              label="섬 떠나기"
+              onClick={
+                currentScene === ISLAND_SCENE
+                  ? onLeftIsland
+                  : currentScene === MY_ISLAND_SCENE
+                  ? onMoveToLoby
+                  : () => {
+                      Reload.open(
+                        "문제가 발생했어요 새로고침 시 해결될 거에요!.."
+                      );
+                    }
+              }
+            />
+          )}
+          <Dropdown
+            open={menuOpen}
+            onClose={() => setMenuOpen(false)}
+            anchor={
+              <StyledMenuItem
+                icon={<FiMenu size={20} />}
+                label="메뉴"
+                onClick={() => setMenuOpen((prev) => !prev)}
+              />
+            }
+            className="w-44 bg-[#fdf8ef] border border-[#bfae96] shadow-[4px_4px_0_#8c7a5c] p-2 flex flex-col gap-2 text-sm text-[#3d2c1b] animate-fadeIn rounded-[6px] sm:mt-2"
+          >
             <DropdownItem
               icon={
                 <Image
@@ -311,10 +314,10 @@ export default function MenuHeader({
               label="개인정보 처리방침"
               onClick={() => window.open(PRIVACY_POLICY_URL, "_blank")}
             />
-          </div>
-        )}
-      </div>
-    </header>
+          </Dropdown>
+        </>
+      }
+    />
   );
 }
 
@@ -334,26 +337,6 @@ function StyledMenuItem({
     >
       {icon}
       <span className="hidden sm:inline">{label}</span>
-    </button>
-  );
-}
-
-function DropdownItem({
-  icon,
-  label,
-  onClick,
-}: {
-  icon: React.ReactNode;
-  label: string | React.ReactNode;
-  onClick?: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className="flex items-center gap-2 px-2 py-1 text-sm text-[#5c4b32] border border-transparent hover:border-[#bfae96] hover:bg-[#f8f1e4] transition-all rounded-[4px]"
-    >
-      {icon}
-      <span>{label}</span>
     </button>
   );
 }
