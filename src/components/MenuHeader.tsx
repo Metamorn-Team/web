@@ -6,20 +6,14 @@ import {
   FiSettings,
   FiMenu,
   FiLogOut,
-  FiShoppingBag,
   FiFileText,
   FiShield,
 } from "react-icons/fi";
 import { useQueryClient } from "@tanstack/react-query";
-import { BsMusicNoteBeamed } from "react-icons/bs";
 import { GiIsland, GiSailboat } from "react-icons/gi";
 import { getItem, setItem } from "@/utils/session-storage";
 import { EventWrapper } from "@/game/event/EventBus";
-import {
-  removeItem,
-  getItem as getPersistenceItem,
-  persistItem,
-} from "@/utils/persistence";
+import { removeItem, getItem as getPersistenceItem } from "@/utils/persistence";
 import { SoundManager } from "@/game/managers/sound-manager";
 import { socketManager } from "@/game/managers/socket-manager";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
@@ -40,10 +34,15 @@ import Reload from "@/utils/reload";
 import { PRIVACY_POLICY_URL, TERMS_OF_USE_URL } from "@/constants/constants";
 import DropdownItem from "./common/dropdown/DropdownItem";
 import Dropdown from "@/components/common/dropdown/Dropdown";
-import RetroHeader from "@/components/common/RetroHeader";
+import RetroHeader from "@/components/common/header/RetroHeader";
+import RetroHeaderButton from "@/components/common/header/RetroHeaderButton";
+import { useBgmToggle } from "@/hook/useBgmToggle";
+import BgmToggleButton from "@/components/common/header/BgmToggleButton";
+import StoreButton from "@/components/common/header/StoreButton";
+import MenuButton from "@/components/common/header/MenuButton";
 
 interface MenuHeaderProps {
-  changeFriendModalOpen: (state: boolean) => void;
+  onFriendModalOpen: () => void;
   onSettingsModalOpen: () => void;
   onDevModalOpen: () => void;
   onUpdateOpen: () => void;
@@ -51,14 +50,14 @@ interface MenuHeaderProps {
 }
 
 export default function MenuHeader({
-  changeFriendModalOpen,
+  onFriendModalOpen,
   onSettingsModalOpen,
   onDevModalOpen,
   onUpdateOpen,
   onIslandInfoModalOpen,
 }: MenuHeaderProps) {
   const queryClient = useQueryClient();
-  const [isPlayBgm, setIsPlayBgm] = useState(true);
+  const { isPlayBgm, toggleBgm } = useBgmToggle();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const [isVisibleExit, setIsVisibleExit] = useState(true);
@@ -129,24 +128,7 @@ export default function MenuHeader({
     EventWrapper.emitToGame("changeToLoby");
   }, []);
 
-  const onPlayBgmToggle = () => {
-    const soundManager = SoundManager.getInstance();
-
-    if (isPlayBgm) {
-      soundManager.pauseBgm();
-      persistItem("play_bgm", false);
-    } else {
-      soundManager.resumeBgm();
-      persistItem("play_bgm", true);
-    }
-    setIsPlayBgm(!isPlayBgm);
-  };
-
   const onLogout = () => logoutMutate();
-
-  const onClickStore = () => {
-    window.open("/store", "_blank");
-  };
 
   useEffect(() => {
     const isPlayBgm = getPersistenceItem("play_bgm") ?? true;
@@ -154,8 +136,6 @@ export default function MenuHeader({
     if (!isPlayBgm) {
       SoundManager.getInstance().pauseBgm();
     }
-
-    setIsPlayBgm(isPlayBgm);
 
     const currentScene = getItem("current_scene");
     if (currentScene === "LobyScene" || !currentScene) {
@@ -175,23 +155,13 @@ export default function MenuHeader({
     <RetroHeader
       leftItems={
         <>
-          <StyledMenuItem
-            icon={
-              isPlayBgm ? (
-                <BsMusicNoteBeamed size={20} />
-              ) : (
-                <BsMusicNoteBeamed size={20} className="opacity-40" />
-              )
-            }
-            label="BGM"
-            onClick={onPlayBgmToggle}
-          />
+          <BgmToggleButton isPlayBgm={isPlayBgm} onClick={toggleBgm} />
           {isLogined && (
             <div className="relative">
-              <StyledMenuItem
+              <RetroHeaderButton
                 icon={<FiUser size={20} />}
                 label="친구"
-                onClick={() => changeFriendModalOpen(true)}
+                onClick={onFriendModalOpen}
               />
               {unreadRequestCount && unreadRequestCount?.count > 0 && (
                 <span className="absolute -top-2 -right-2 w-[18px] h-[18px] text-[10px] px-[4px] text-white bg-red-600 rounded-full flex items-center justify-center">
@@ -207,18 +177,10 @@ export default function MenuHeader({
               )}
             </div>
           )}
-          {isLogined && (
-            <div className="flex">
-              <StyledMenuItem
-                icon={<FiShoppingBag size={20} />}
-                label="상점"
-                onClick={onClickStore}
-              />
-            </div>
-          )}
+          {isLogined && <StoreButton />}
           {isLogined && currentScene === LOBY_SCENE && (
             <div>
-              <StyledMenuItem
+              <RetroHeaderButton
                 icon={<GiIsland size={20} />}
                 label="내 섬"
                 onClick={onMoveToMyIsland}
@@ -230,14 +192,14 @@ export default function MenuHeader({
       rightItems={
         <>
           {isVisibleExit && currentScene === ISLAND_SCENE && (
-            <StyledMenuItem
+            <RetroHeaderButton
               icon={<FaCompass size={20} />}
               label="섬 정보"
               onClick={onIslandInfoModalOpen}
             />
           )}
           {isVisibleExit && currentScene !== LOBY_SCENE && (
-            <StyledMenuItem
+            <RetroHeaderButton
               icon={<GiSailboat size={20} />}
               label="섬 떠나기"
               onClick={
@@ -256,13 +218,7 @@ export default function MenuHeader({
           <Dropdown
             open={menuOpen}
             onClose={() => setMenuOpen(false)}
-            anchor={
-              <StyledMenuItem
-                icon={<FiMenu size={20} />}
-                label="메뉴"
-                onClick={() => setMenuOpen((prev) => !prev)}
-              />
-            }
+            anchor={<MenuButton onClick={() => setMenuOpen((prev) => !prev)} />}
             className="w-44 bg-[#fdf8ef] border border-[#bfae96] shadow-[4px_4px_0_#8c7a5c] p-2 flex flex-col gap-2 text-sm text-[#3d2c1b] animate-fadeIn rounded-[6px] sm:mt-2"
           >
             <DropdownItem
@@ -318,25 +274,5 @@ export default function MenuHeader({
         </>
       }
     />
-  );
-}
-
-function StyledMenuItem({
-  icon,
-  label,
-  onClick,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className="flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-2 bg-[#f3ece1] border border-[#5c4b32] rounded-[4px] text-[#5c4b32] text-[10px] sm:text-xs shadow-[2px_2px_0_#5c4b32] hover:bg-[#e8e0d0] transition-all"
-    >
-      {icon}
-      <span className="hidden sm:inline">{label}</span>
-    </button>
   );
 }
