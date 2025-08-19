@@ -85,13 +85,6 @@ const InviteModal = ({ isOpen, onClose, inviteUrl }: InviteModalProps) => {
 
   return (
     <RetroModal isOpen={isOpen} onClose={onClose} className="!max-w-[600px]">
-      <button
-        className="absolute top-4 right-4 z-20 flex items-center gap-1 px-3 py-1 bg-[#fff] border border-[#bfae96] rounded-lg text-[#8c7a5c] hover:bg-[#f5e1e6] hover:text-[#e57373] font-bold text-xs sm:text-sm shadow transition-colors"
-        onClick={onClose}
-        type="button"
-      >
-        <span>나가기</span>
-      </button>
       <div className="flex flex-col items-center gap-6 p-2">
         <div className="relative w-24 h-12">
           <Image
