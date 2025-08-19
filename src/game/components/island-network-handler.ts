@@ -22,6 +22,7 @@ import { MapKeys } from "@/game/managers/tile-map-manager";
 import { IslandScene } from "@/game/scenes/island-scene";
 import { NatureObjectSpawner } from "@/game/managers/nature-object-spawner";
 import { natureObjectStore } from "@/game/managers/nature-object-store";
+import { useIslandStore } from "@/stores/useIslandStore";
 
 export class IslandNetworkHandler {
   constructor(
@@ -31,29 +32,57 @@ export class IslandNetworkHandler {
 
   listenSocketEvents() {
     const joinIsland = () => {
-      if (this.scene.islandType === "NORMAL") {
-        if (this.scene.currentIslandId) {
+      // islandId가 있다면 private or normal
+      if (this.scene.currentIslandId) {
+        if (this.scene.islandType === "PRIVATE") {
+          // PasswordPage에서 확인 성공 시 추가됨
+          const { password } = useIslandStore.getState();
+
+          this.io.emit("joinPrivateIsland", {
+            islandId: this.scene.currentIslandId,
+            password,
+          });
+          return;
+        }
+
+        if (this.scene.islandType === "NORMAL") {
           this.io.emit("joinNormalIsland", {
             islandId: this.scene.currentIslandId,
           });
           return;
         }
+
         this.scene.joinFailed();
       } else {
         this.io.emit("joinDesertedIsland");
       }
+
+      // ---------------
+
+      // if (this.scene.islandType !== "DESERTED") {
+      //   if (this.scene.currentIslandId) {
+      //     this.io.emit("joinNormalIsland", {
+      //       islandId: this.scene.currentIslandId,
+      //     });
+      //     return;
+      //   }
+      //   this.scene.joinFailed();
+      // } else {
+      //   this.io.emit("joinDesertedIsland");
+      // }
     };
 
     if (this.io.connected) {
       joinIsland();
     }
 
+    // socket 연결 시 참여 요청
     this.io.on("connect", joinIsland);
 
     this.io.on("disconnect", () => {
       if (!this.scene.isIntentionalDisconnect) {
         Alert.error("서버와의 연결이 끊어졌어요..");
-        this.scene.clearAllPlayer();
+        this.scene.handleClearAllPlayer();
       }
     });
 
@@ -63,7 +92,7 @@ export class IslandNetworkHandler {
     });
 
     this.io.on("playerJoin", (data) => {
-      this.scene.addPlayer(data);
+      this.scene.handleAddPlayer(data);
       EventWrapper.emitToUi("newPlayer", data);
       EventWrapper.emitToUi("updateParticipantsPanel");
     });
@@ -125,7 +154,7 @@ export class IslandNetworkHandler {
 
     this.io.on("playerLeft", (data) => {
       EventWrapper.emitToUi("playerLeftChat", data);
-      this.scene.destroyPlayer(data.id);
+      this.scene.handleDestroyPlayer(data.id);
       EventWrapper.emitToUi("updateParticipantsPanel");
     });
 

@@ -24,10 +24,9 @@ import { ISLAND_SCENE, LOBY_SCENE } from "@/constants/game/islands/island";
 import { useIslandStore } from "@/stores/useIslandStore";
 import { TOWN } from "@/constants/game/sounds/bgm/bgms";
 import { TilemapComponent } from "@/game/components/tile-map.component";
-import { playerSpawner } from "@/game/managers/spawners/player-spawner";
 import { IslandNetworkHandler } from "@/game/components/island-network-handler";
 import { natureObjectStore } from "@/game/managers/nature-object-store";
-import { NatureObjectSpawner } from "@/game/managers/nature-object-spawner";
+import { IslandHandlerComponent } from "@/game/components/island-handler-component";
 
 export class IslandScene extends MetamornScene {
   public override player: Player;
@@ -36,47 +35,73 @@ export class IslandScene extends MetamornScene {
 
   public mapComponent: TilemapComponent;
   private socketHandler: IslandNetworkHandler;
+  private islandHandler: IslandHandlerComponent;
 
   private io: Socket<ServerToClient, ClientToServer>;
   public socketNsp = SOCKET_NAMESPACES.ISLAND;
+
+  // currentIslandId 값을 기반으로 socket 연결 시 즉시 참여 요청
   public currentIslandId?: string;
 
+  private isInvalidIsland = false;
   private isActiveChat = false;
-  public islandType: "NORMAL" | "DESERTED";
+  public islandType: "NORMAL" | "DESERTED" | "PRIVATE";
 
   constructor() {
     super(ISLAND_SCENE);
   }
 
-  init(data?: { islandId?: string; type: "NORMAL" | "DESERTED" }) {
+  async init(data?: {
+    islandId?: string;
+    type: "NORMAL" | "DESERTED" | "PRIVATE";
+    path?: string;
+  }) {
     this.isChangingScene = false;
 
-    if (data && "islandId" in data && "type" in data) {
-      if (data.type === "NORMAL" && data.islandId) {
-        setItem("current_island_id", data.islandId);
-        setItem("current_island_type", data.type);
-        useIslandStore.getState().setIsland(data.islandId);
-        this.currentIslandId = data.islandId;
-        this.islandType = data.type;
-        return;
-      }
-
-      return this.joinFailed();
+    // data에 정보가 있으면 NORMAL
+    if (data?.type === "NORMAL" && data?.islandId) {
+      setItem("current_island_id", data.islandId);
+      setItem("current_island_type", data.type);
+      useIslandStore.getState().setIsland(data.islandId);
+      this.currentIslandId = data.islandId;
+      this.islandType = data.type;
+      return;
     }
+
+    // store에 정보가 있으면 PRIVATE
+    const { id, type } = useIslandStore.getState();
+
+    if (type === "PRIVATE" && id) {
+      this.currentIslandId = id;
+      this.islandType = type;
+      return;
+    }
+
+    /**
+     * 둘 다 아니라면 세션 스토리지에서 꺼내옴
+     * NORMAL에 참여했다가 새로고침한 케이스
+     */
     const islandId = getItem("current_island_id");
-    const type = getItem("current_island_type");
+    const islandType = getItem("current_island_type");
 
     useIslandStore.getState().setIsland(islandId);
     this.currentIslandId = islandId;
-    this.islandType = type;
+    this.islandType = islandType;
   }
 
   create() {
+    if (this.isInvalidIsland) {
+      Alert.error("섬 정보를 찾을 수 없어요..");
+      this.changeToLoby();
+      return;
+    }
+
     super.create();
 
     this.listenLocalEvents();
-
     this.initConnection();
+
+    this.islandHandler = new IslandHandlerComponent(this);
 
     this.socketHandler = new IslandNetworkHandler(this, this.io);
     this.socketHandler.listenSocketEvents();
@@ -129,7 +154,7 @@ export class IslandScene extends MetamornScene {
 
   spawnActiveUsers(activeUsers: ActivePlayerResponse) {
     activeUsers.forEach((activeUser) => {
-      this.addPlayer(activeUser);
+      this.handleAddPlayer(activeUser);
     });
   }
 
@@ -171,121 +196,39 @@ export class IslandScene extends MetamornScene {
   }
 
   handleHeartbeat(playerId: string, newLastActivity: number) {
-    const player =
-      this.player.getPlayerInfo().id === playerId
-        ? this.player
-        : playerStore.getPlayer(playerId);
-
-    if (!player) return;
-
-    player.setLastActivity(newLastActivity);
-
-    const { lastActivity } = player.getPlayerInfo();
-    const now = Date.now();
-
-    const INACTIVITY_THRESHOLD = 1000 * 60 * 5;
-    if (now - (lastActivity || now) > INACTIVITY_THRESHOLD) {
-      player.sleep();
-    }
+    this.islandHandler.handleHeartbeat(playerId, newLastActivity);
   }
 
   handleAttacked(attackerId: string, attackedPlayerIds: string[]) {
-    const player = playerStore.getPlayer(attackerId);
-    if (!player && attackerId !== this.player.getPlayerInfo().id) return;
-
-    player?.onAttack();
-
-    this.time.delayedCall(200, () => {
-      if (attackedPlayerIds.includes(this.player.getPlayerInfo().id)) {
-        // EventWrapper.emitToUi("attacked");
-        this.player.hit();
-      }
-
-      attackedPlayerIds
-        .map((id) => playerStore.getPlayer(id))
-        .forEach((player) => player?.hit());
-    });
+    this.islandHandler.handleAttacked(attackerId, attackedPlayerIds);
   }
 
-  // TODO 오브젝트 공격 추가되면 수정
   handleStrongAttacked(attackerId: string, attackedObjects: AttackedObject[]) {
-    const player = playerStore.getPlayer(attackerId);
-    if (!player && attackerId !== this.player.getPlayerInfo().id) return;
-
-    player?.onStrongAttack();
-
-    this.time.delayedCall(200, () => {
-      attackedObjects.forEach((object) => {
-        const natureObject = natureObjectStore.getNatureObject(object.id);
-        if (natureObject) {
-          if (object.status === "ALIVE") {
-            natureObject.onHit();
-          } else {
-            natureObject.onDead();
-          }
-        }
-      });
-    });
+    this.islandHandler.handleStrongAttacked(attackerId, attackedObjects);
   }
 
   handleJump(userId: string) {
-    const player = playerStore.getPlayer(userId);
-    if (!player) return;
-
-    player.onJump();
+    this.islandHandler.handleJump(userId);
   }
 
   handleSetTargetPosition(playerId: string, x: number, y: number) {
-    const player = playerStore.getPlayer(playerId);
-    const isBeingBorn = player?.getIsBeingBorn();
-
-    if (player && !isBeingBorn) {
-      player.onWalk(x, y);
-    }
+    this.islandHandler.handleSetTargetPosition(playerId, x, y);
   }
 
   handleRespawnObjects(objects: IslandActiveObject[]) {
-    objects.forEach((object) => {
-      const existingObject = natureObjectStore.getNatureObject(object.id);
-      if (existingObject) {
-        existingObject.destroy(true);
-      }
-
-      const natureObject = NatureObjectSpawner.spawnNatureObject(this, object);
-      if (natureObject) {
-        natureObjectStore.addNatureObject(natureObject);
-      }
-    });
+    this.islandHandler.handleRespawnObjects(objects);
   }
 
-  clearAllPlayer() {
-    playerStore
-      .getAllPlayers()
-      .values()
-      .forEach((player) => {
-        player.destroy();
-      });
-    playerStore.clear();
+  handleClearAllPlayer() {
+    this.islandHandler.handleClearAllPlayer();
   }
 
-  destroyPlayer(playerId: string) {
-    const player = playerStore.getPlayer(playerId);
-    player?.destroyWithAnimation(true);
-    playerStore.deletePlayer(playerId);
+  handleDestroyPlayer(playerId: string) {
+    this.islandHandler.handleDestroyPlayer(playerId);
   }
 
-  addPlayer(data: ActivePlayer) {
-    const { x, y, ...playerInfo } = data;
-    if (playerStore.has(playerInfo.id)) return;
-
-    const player = playerSpawner.spawnPlayer({
-      scene: this,
-      equipment: data.equipmentState,
-      playerInfo: playerInfo,
-      position: { x, y },
-      texture: playerInfo.avatarKey,
-    });
-    playerStore.addPlayer(playerInfo.id, player);
+  handleAddPlayer(data: ActivePlayer) {
+    this.islandHandler.handleAddPlayer(data);
   }
 
   public changeToLoby() {
