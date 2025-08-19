@@ -7,6 +7,7 @@ export const useGetAllMap = () => {
   const result = useSuspenseQuery({
     queryKey: [QUERY_KEY],
     queryFn: getAllMap,
+    staleTime: 1000 * 60 * 30,
   });
 
   return {
