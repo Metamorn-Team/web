@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { AxiosError } from "axios";
 import Game, { GameRef } from "@/components/Game";
-import MenuHeader from "@/components/MenuHeader";
+// import MenuHeader from "@/components/MenuHeader";
 import { EventWrapper } from "@/game/event/EventBus";
 import { useModal } from "@/hook/useModal";
 import FriendModal from "@/components/FriendModal";
@@ -33,15 +33,19 @@ import MyIsland from "@/components/my-island/MyIsland";
 import { useCurrentSceneStore } from "@/stores/useCurrentSceneStore";
 import UpdateNoteModal from "@/components/UpdateNoteModal";
 import MobileWarningBanner from "./common/MobileWarningBanner";
+import HeaderSelector from "@/components/game/HeaderSelector";
+import InviteModal from "@/components/islands/InviteModal";
 
 interface GameWrapperProps {
   isLoading: boolean;
   changeIsLoading: (state: boolean) => void;
+  type: "default" | "private";
 }
 
 export default function GameWrapper({
   isLoading,
   changeIsLoading,
+  type = "default",
 }: GameWrapperProps) {
   const gameRef = useRef<GameRef | null>(null);
 
@@ -60,7 +64,7 @@ export default function GameWrapper({
   } = useModal();
   const {
     isModalOpen: isFriendModalOpen,
-    changeModalOpen: changeFriendModalOpen,
+    onOpen: onFriendModalOpen,
     onClose: onFriendClose,
   } = useModal();
   const {
@@ -92,6 +96,11 @@ export default function GameWrapper({
     isModalOpen: isUpdateModalOpen,
     onOpen: onUpdateOpen,
     onClose: onUpdateClose,
+  } = useModal();
+  const {
+    isModalOpen: isInviteModalOpen,
+    onOpen: onInviteModalOpen,
+    onClose: onInviteModalClose,
   } = useModal();
   const [isVisibleChat, setIsVisibleChat] = useState(false);
   const {
@@ -225,12 +234,14 @@ export default function GameWrapper({
     <div>
       {!isLoading ? (
         <>
-          <MenuHeader
-            changeFriendModalOpen={changeFriendModalOpen}
+          <HeaderSelector
+            type={type}
+            onFriendModalOpen={onFriendModalOpen}
             onSettingsModalOpen={onSettingsModalOpen}
             onDevModalOpen={onDevOpen}
             onUpdateOpen={onUpdateOpen}
             onIslandInfoModalOpen={onIslandInfoModalOpen}
+            onInviteModalOpen={onInviteModalOpen}
           />
           <MobileWarningBanner />
         </>
@@ -289,6 +300,11 @@ export default function GameWrapper({
       ) : null}
 
       {currentScene === MY_ISLAND_SCENE ? <MyIsland /> : null}
+      <InviteModal
+        isOpen={isInviteModalOpen}
+        onClose={onInviteModalClose}
+        inviteUrl={typeof window !== "undefined" ? window.location.href : ""}
+      />
     </div>
   );
 }

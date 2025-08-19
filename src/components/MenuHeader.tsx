@@ -9,21 +9,16 @@ import {
   FiFileText,
   FiShield,
 } from "react-icons/fi";
-import { useQueryClient } from "@tanstack/react-query";
 import { GiIsland, GiSailboat } from "react-icons/gi";
 import { getItem, setItem } from "@/utils/session-storage";
 import { EventWrapper } from "@/game/event/EventBus";
 import { removeItem, getItem as getPersistenceItem } from "@/utils/persistence";
 import { SoundManager } from "@/game/managers/sound-manager";
-import { socketManager } from "@/game/managers/socket-manager";
-import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { useGetUnreadFriendRequest } from "@/hook/queries/useGetUnreadFriendRequest";
-import { QUERY_KEY as UNREAD_COUNT_QUERY_KEY } from "@/hook/queries/useGetUnreadFriendRequest";
 import Image from "next/image";
 import { useLogout } from "@/hook/queries/useLogout";
 import Alert from "@/utils/alert";
 import { FaCompass } from "react-icons/fa";
-import { QUERY_KEY as ISLAND_INFO_QUERY_KEY } from "@/hook/queries/useGetIslandInfo";
 import {
   ISLAND_SCENE,
   LOBY_SCENE,
@@ -40,6 +35,8 @@ import { useBgmToggle } from "@/hook/useBgmToggle";
 import BgmToggleButton from "@/components/common/header/BgmToggleButton";
 import StoreButton from "@/components/common/header/StoreButton";
 import MenuButton from "@/components/common/header/MenuButton";
+import FriendButton from "@/components/common/header/FriendButton";
+import { useFriendEvent } from "@/hook/useFriendEvent";
 
 interface MenuHeaderProps {
   onFriendModalOpen: () => void;
@@ -56,15 +53,15 @@ export default function MenuHeader({
   onUpdateOpen,
   onIslandInfoModalOpen,
 }: MenuHeaderProps) {
-  const queryClient = useQueryClient();
   const { isPlayBgm, toggleBgm } = useBgmToggle();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const [isVisibleExit, setIsVisibleExit] = useState(true);
   const { currentScene } = useCurrentSceneStore();
-
-  const [showNewRequestMessage, setShowNewRequestMessage] = useState(false);
+  // 친구 요청 이벤트 수신
+  const { showNewRequestMessage } = useFriendEvent();
   const { data: unreadRequestCount } = useGetUnreadFriendRequest();
+
   const { mutate: logoutMutate } = useLogout(
     () => {
       if (window.Kakao && window.Kakao.isInitialized()) {
@@ -79,42 +76,8 @@ export default function MenuHeader({
     () => Alert.error("로그아웃에 실패했어요.. 나중에 다시 시도해주세요.")
   );
 
+  // TODO 상태 검증 필요
   const isLogined = !!getPersistenceItem("access_token");
-
-  useEffect(() => {
-    const socket = socketManager.connect(SOCKET_NAMESPACES.ISLAND);
-
-    const handleReceiveFriendRequest = () => {
-      const prev = queryClient.getQueryData<{ count: number }>([
-        UNREAD_COUNT_QUERY_KEY,
-      ]);
-
-      if (prev && typeof prev.count === "number") {
-        queryClient.setQueryData([UNREAD_COUNT_QUERY_KEY], {
-          count: prev.count + 1,
-        });
-      } else {
-        queryClient.setQueryData([UNREAD_COUNT_QUERY_KEY], { count: 1 });
-      }
-
-      setShowNewRequestMessage(true);
-      setTimeout(() => setShowNewRequestMessage(false), 5000);
-    };
-
-    const hadleIslandInfoUpdated = (data: { islandId: string }) => {
-      queryClient.invalidateQueries({
-        queryKey: [ISLAND_INFO_QUERY_KEY, data.islandId],
-      });
-    };
-
-    socket?.on("receiveFriendRequest", handleReceiveFriendRequest);
-    socket?.on("islandInfoUpdated", hadleIslandInfoUpdated);
-
-    return () => {
-      socket?.off("receiveFriendRequest");
-      socket?.off("islandInfoUpdated");
-    };
-  }, []);
 
   const onLeftIsland = useCallback(() => {
     EventWrapper.emitToGame("left-island");
@@ -157,25 +120,11 @@ export default function MenuHeader({
         <>
           <BgmToggleButton isPlayBgm={isPlayBgm} onClick={toggleBgm} />
           {isLogined && (
-            <div className="relative">
-              <RetroHeaderButton
-                icon={<FiUser size={20} />}
-                label="친구"
-                onClick={onFriendModalOpen}
-              />
-              {unreadRequestCount && unreadRequestCount?.count > 0 && (
-                <span className="absolute -top-2 -right-2 w-[18px] h-[18px] text-[10px] px-[4px] text-white bg-red-600 rounded-full flex items-center justify-center">
-                  {unreadRequestCount.count > 99
-                    ? "99+"
-                    : unreadRequestCount.count}
-                </span>
-              )}
-              {showNewRequestMessage && (
-                <div className="absolute top-full mt-1 left-1/2 -translate-x-1/2 bg-red-600 text-white text-xs px-3 py-1 rounded shadow animate-pulse whitespace-nowrap">
-                  새로운 친구 요청이 왔어요!
-                </div>
-              )}
-            </div>
+            <FriendButton
+              unreadRequestCount={unreadRequestCount}
+              showNewRequestMessage={showNewRequestMessage}
+              onClick={onFriendModalOpen}
+            />
           )}
           {isLogined && <StoreButton />}
           {isLogined && currentScene === LOBY_SCENE && (
