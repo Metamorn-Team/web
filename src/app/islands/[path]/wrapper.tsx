@@ -8,17 +8,20 @@ import { useEffect, useState } from "react";
 import PasswordPage from "./PasswordPage";
 import { useIslandStore } from "@/stores/useIslandStore";
 import GameWrapper from "@/components/GameWrapper";
+import { useIsLogined } from "@/hook/useIsLogined";
+import LoginModal from "@/components/login/LoginModal";
 
 export default function Wrapper() {
   const router = useRouter();
   const { setIsland } = useIslandStore();
   const { path } = useParams();
+  const { isLogined, isLoading: isLoginLoading } = useIsLogined();
   const {
     data: island,
     isLoading,
     isError,
     isSuccess,
-  } = useGetPrivateIslandId(path as string);
+  } = useGetPrivateIslandId(path as string, isLogined);
   const [isGameLoading, setIsGameLoading] = useState(true);
 
   useEffect(() => {
@@ -26,6 +29,11 @@ export default function Wrapper() {
       setIsland(island.id, "PRIVATE");
     }
   }, [isSuccess, path, router, setIsland, island]);
+
+  if (isLoginLoading) return <LoadingPage message="정보를 확인하는 중" />;
+  if (!isLogined) {
+    return <LoginModal isOpen={true} onClose={() => {}} />;
+  }
 
   if (isLoading) {
     return <LoadingPage message="섬을 찾는 중" />;
