@@ -323,37 +323,11 @@ export default function MainPage() {
               hover
               className="transition-all duration-1000"
             >
-              {/* Coming Soon 오버레이 */}
-              <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center z-10 rounded-lg">
-                <div className="flex flex-col items-center">
-                  <Pawn color="blue" animation="build" className="w-[150px]" />
-                  <h2 className="text-4xl font-bold mb-2 text-white drop-shadow-[0_0_3px_rgba(255,255,255,0.6)]">
-                    Coming Soon
-                  </h2>
-                  <p className="text-gray-200 text-lg">곧 만나요!</p>
-                </div>
-              </div>
-
               <div className="flex flex-col items-center gap-4 p-6">
                 <div className="flex gap-2">
-                  <Pawn
-                    color="blue"
-                    animation="run"
-                    className="w-12 h-12"
-                    paused
-                  />
-                  <Pawn
-                    color="purple"
-                    animation="run"
-                    className="w-12 h-12"
-                    paused
-                  />
-                  <Pawn
-                    color="red"
-                    animation="run"
-                    className="w-12 h-12"
-                    paused
-                  />
+                  <Pawn color="blue" animation="run" className="w-12 h-12" />
+                  <Pawn color="purple" animation="run" className="w-12 h-12" />
+                  <Pawn color="red" animation="run" className="w-12 h-12" />
                 </div>
                 <div className="text-center">
                   <h3
@@ -369,10 +343,9 @@ export default function MainPage() {
                     내가 만든 섬에서 친구들과 함께
                   </p>
                   <GlassButton
-                    onClick={() => {}}
+                    onClick={handlePlayWithFriends}
                     variant="auto"
                     size="lg"
-                    disabled
                     className="font-bold"
                     timeOfDay={timeOfDay}
                   >
@@ -381,15 +354,6 @@ export default function MainPage() {
                 </div>
               </div>
             </GlassCardAdvanced>
-            <GlassButton
-              onClick={handlePlayWithFriends}
-              variant="auto"
-              size="lg"
-              className="font-bold"
-              timeOfDay={timeOfDay}
-            >
-              시작하기
-            </GlassButton>
             <GlassCardAdvanced
               variant="tinted"
               blur="sm"

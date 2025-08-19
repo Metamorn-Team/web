@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Pawn from "@/components/common/Pawn";
 import { useCheckPrivateIslandPassword } from "@/hook/queries/useCheckPrivateIslandPassword";
 import GameWrapper from "@/components/GameWrapper";
 import { useIslandStore } from "@/stores/useIslandStore";
+import { setItem } from "@/utils/session-storage";
+import { ISLAND_SCENE } from "@/constants/game/islands/island";
 
 export default function PasswordPage({ islandId }: { islandId: string }) {
   const { setIsland } = useIslandStore();
@@ -15,9 +17,17 @@ export default function PasswordPage({ islandId }: { islandId: string }) {
   const [isVerified, setIsVerified] = useState(false);
   const [lastSubmit, setLastSubmit] = useState(0);
 
+  const [isGameLoading, setIsGameLoading] = useState(true);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
   const { mutate: checkPrivateIslandPassword } = useCheckPrivateIslandPassword(
     () => {
       setIsland(islandId, "PRIVATE", password);
+      setItem("current_scene", ISLAND_SCENE);
       setIsVerified(true);
     },
     () => {
@@ -45,7 +55,13 @@ export default function PasswordPage({ islandId }: { islandId: string }) {
   };
 
   if (isVerified) {
-    return <GameWrapper isLoading={false} changeIsLoading={() => {}} />;
+    return (
+      <GameWrapper
+        type="private"
+        isLoading={isGameLoading}
+        changeIsLoading={(state) => setIsGameLoading(state)}
+      />
+    );
   }
 
   const bubbleMessage = error ? "침입자?" : "반갑다!";
@@ -99,6 +115,7 @@ export default function PasswordPage({ islandId }: { islandId: string }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full border border-gray-300 rounded-lg p-3 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            ref={inputRef}
           />
           {password.length > 0 && (
             <button

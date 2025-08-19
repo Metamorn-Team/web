@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import GlassCardAdvanced from "@/components/common/GlassCardAdvanced";
 import GlassButton from "@/components/common/GlassButton";
 import Pawn from "@/components/common/Pawn";
 import Footer from "@/components/common/Footer";
@@ -83,17 +82,6 @@ const generateFixedPawns = () => {
   return FIXED_PAWNS;
 };
 
-interface Island {
-  id: string;
-  name: string;
-  description: string;
-  playerCount: number;
-  maxPlayers: number;
-  isActive: boolean;
-  shareLink: string;
-  createdAt: string;
-}
-
 export default function Wrapper() {
   const limit = 12;
   const [page, setPage] = useState(1);
@@ -124,18 +112,6 @@ export default function Wrapper() {
   const backgroundStyle = getBackgroundStyle(timeOfDay);
   const [fixedPawns] = useState(generateFixedPawns());
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [islands] = useState<Island[]>(
-    Array.from({ length: 12 }, (_, i) => ({
-      id: i.toString(),
-      name: "우리들의 평화로운 섬",
-      description: "친구들과 함께 휴식을 취할 수 있는 평화로운 섬입니다.",
-      playerCount: 3,
-      maxPlayers: 10,
-      isActive: true,
-      shareLink: "https://livisland.com/island/1",
-      createdAt: "2024-01-15",
-    }))
-  );
 
   useEffect(() => {
     const updateTimeOfDay = () => {
@@ -264,60 +240,29 @@ export default function Wrapper() {
             {!isLoading && data?.islands && (
               <>
                 <IslandCardList islands={data.islands} timeOfDay={timeOfDay} />
-
-                {/* 페이징 */}
-                {data.count && (
-                  <div className="mt-8 ">
-                    <Pagination
-                      currentPage={page}
-                      totalPages={Math.ceil(data.count / limit)}
-                      onPageChange={handlePageChange}
-                      className="justify-center"
-                    />
-                  </div>
-                )}
               </>
             )}
 
-            {islands.length === 0 && (
-              <div className="col-span-1 lg:col-span-2">
-                <GlassCardAdvanced
-                  className="border-2 shadow-lg"
-                  style={{
-                    borderColor: backgroundStyle.borderColor,
-                    boxShadow: `0 4px 6px -1px ${backgroundStyle.shadowColor}40`,
-                  }}
-                >
-                  <div className="text-center py-12">
-                    <div className="mb-4">
-                      <Pawn
-                        color="yellow"
-                        animation="idle"
-                        className="w-16 h-16 sm:w-20 sm:h-20 mx-auto opacity-50"
-                      />
-                    </div>
-                    <h3
-                      className="text-xl sm:text-2xl font-bold mb-2"
-                      style={{ color: backgroundStyle.textColor }}
-                    >
-                      아직 만든 섬이 없어요
-                    </h3>
-                    <p
-                      className="mb-4"
-                      style={{ color: backgroundStyle.secondaryTextColor }}
-                    >
-                      첫 번째 섬을 만들어 친구들과 함께해보세요!
-                    </p>
-                    <GlassButton
-                      onClick={handleCreateIsland}
-                      className="text-lg px-6 py-3"
-                    >
-                      첫 번째 섬 만들기
-                    </GlassButton>
-                  </div>
-                </GlassCardAdvanced>
-              </div>
+            {data?.islands.length === 0 && (
+              <ErrorFallback
+                message="섬을 만들어보아요!"
+                size="l"
+                backgroundColor="bg-transparent"
+                fullScreen={false}
+              />
             )}
+
+            {/* 페이징 */}
+            {data?.count && data.count > 0 ? (
+              <div className="mt-8 ">
+                <Pagination
+                  currentPage={page}
+                  totalPages={Math.ceil(data.count / limit)}
+                  onPageChange={handlePageChange}
+                  className="justify-center"
+                />
+              </div>
+            ) : null}
           </div>
         </div>
 
