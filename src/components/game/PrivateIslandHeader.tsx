@@ -25,8 +25,6 @@ import Alert from "@/utils/alert";
 import FriendButton from "../common/header/FriendButton";
 import { useFriendEvent } from "@/hook/useFriendEvent";
 import { useGetUnreadFriendRequest } from "@/hook/queries/useGetUnreadFriendRequest";
-import { useRouter } from "next/navigation";
-import { PATH } from "@/constants/path";
 
 interface PrivateIslandHeaderProps {
   onFriendModalOpen: () => void;
@@ -34,8 +32,8 @@ interface PrivateIslandHeaderProps {
   onDevModalOpen: () => void;
   onUpdateOpen: () => void;
   onIslandInfoModalOpen: () => void;
-
   onInviteModalOpen: () => void;
+  onExitModalOpen: () => void;
 }
 
 export default function PrivateIslandHeader({
@@ -45,8 +43,8 @@ export default function PrivateIslandHeader({
   onUpdateOpen,
   onIslandInfoModalOpen,
   onInviteModalOpen,
+  onExitModalOpen,
 }: PrivateIslandHeaderProps) {
-  const router = useRouter();
   const [menuOpen, setMenuOpen] = React.useState(false);
   const { isPlayBgm, toggleBgm } = useBgmToggle();
   const { mutate: logoutMutate } = useLogout(
@@ -70,7 +68,6 @@ export default function PrivateIslandHeader({
 
   // TODO 상태 검증 필요
   const isLogined = !!getItem("access_token");
-  const moveToHome = () => router.push(PATH.HOME);
 
   return (
     <RetroHeader
@@ -99,7 +96,7 @@ export default function PrivateIslandHeader({
           />
           <RetroHeaderButton
             icon={<FiLogOut size={20} />}
-            onClick={moveToHome}
+            onClick={onExitModalOpen}
           />
           <Dropdown
             open={menuOpen}

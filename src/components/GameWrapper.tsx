@@ -35,6 +35,11 @@ import UpdateNoteModal from "@/components/UpdateNoteModal";
 import MobileWarningBanner from "./common/MobileWarningBanner";
 import HeaderSelector from "@/components/game/HeaderSelector";
 import InviteModal from "@/components/islands/InviteModal";
+import RetroConfirmModalV2 from "@/components/common/RetroConfirmModalV2";
+import { useRouter } from "next/navigation";
+import { PATH } from "@/constants/path";
+import { socketManager } from "@/game/managers/socket-manager";
+import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -48,6 +53,7 @@ export default function GameWrapper({
   type = "default",
 }: GameWrapperProps) {
   const gameRef = useRef<GameRef | null>(null);
+  const router = useRouter();
 
   const [playerInfo, setPlayerInfo] = useState<UserInfo>({
     id: "",
@@ -108,9 +114,19 @@ export default function GameWrapper({
     onClose: onIslandListModalClose,
     onOpen: onIslandListModalOpen,
   } = useModal();
+  const {
+    isModalOpen: isExitModalOpen,
+    onOpen: onExitModalOpen,
+    onClose: onExitModalClose,
+  } = useModal();
   useAttackedSound();
 
   const { data: profile } = useGetMyProfile();
+
+  const handleExitIsland = () => {
+    socketManager.disconnect(SOCKET_NAMESPACES.ISLAND);
+    router.replace(PATH.HOME);
+  };
 
   useEffect(() => {
     if (profile) {
@@ -236,6 +252,7 @@ export default function GameWrapper({
         <>
           <HeaderSelector
             type={type}
+            onExitModalOpen={onExitModalOpen}
             onFriendModalOpen={onFriendModalOpen}
             onSettingsModalOpen={onSettingsModalOpen}
             onDevModalOpen={onDevOpen}
@@ -305,6 +322,15 @@ export default function GameWrapper({
         onClose={onInviteModalClose}
         inviteUrl={typeof window !== "undefined" ? window.location.href : ""}
       />
+      {isExitModalOpen ? (
+        <RetroConfirmModalV2
+          isOpen={isExitModalOpen}
+          onClose={onExitModalClose}
+          onConfirm={handleExitIsland}
+          title="섬을 떠나시겠어요?"
+          modalClassName="!max-w-[320px]"
+        />
+      ) : null}
     </div>
   );
 }

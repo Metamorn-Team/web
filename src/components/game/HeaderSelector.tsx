@@ -19,6 +19,7 @@ interface HeaderSelectorProps
   extends Partial<MenuHeaderProps>,
     Partial<PrivateHeaderProps> {
   type: "default" | "private";
+  onExitModalOpen: () => void;
 }
 
 export default function HeaderSelector(props: HeaderSelectorProps) {
@@ -36,6 +37,7 @@ export default function HeaderSelector(props: HeaderSelectorProps) {
           onIslandInfoModalOpen={props.onIslandInfoModalOpen ?? (() => {})}
           // 비밀섬
           onInviteModalOpen={props.onInviteModalOpen ?? (() => {})}
+          onExitModalOpen={props.onExitModalOpen ?? (() => {})}
         />
       );
     case "default":
@@ -47,6 +49,7 @@ export default function HeaderSelector(props: HeaderSelectorProps) {
           onDevModalOpen={props.onDevModalOpen ?? (() => {})}
           onUpdateOpen={props.onUpdateOpen ?? (() => {})}
           onIslandInfoModalOpen={props.onIslandInfoModalOpen ?? (() => {})}
+          // onExitModalOpen={props.onExitModalOpen ?? (() => {})}
         />
       );
   }
