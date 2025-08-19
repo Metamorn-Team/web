@@ -7,9 +7,8 @@ import GoogleAnalytics from "@/app/GoogleAnalytics";
 import SessionIdInitializer from "@/components/common/SessionIdInitializer";
 
 export const metadata: Metadata = {
-  title: "섬에서 만나요!, 리브아일랜드",
-  description:
-    "리브아일랜드에서 일상을 떠나 평화로운 섬으로! 새로운 친구들과 함께하는 소셜 메타버스 게임. 리브, LivIsland, 친구만나기, 섬여행",
+  title: "리브아일랜드",
+  description: "우리들만의 귀여운 픽셀 섬 리브아일랜드!",
   keywords: [
     "리브아일랜드",
     "리브",
