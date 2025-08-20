@@ -125,7 +125,7 @@ export default function GameWrapper({
 
   const handleExitIsland = () => {
     socketManager.disconnect(SOCKET_NAMESPACES.ISLAND);
-    router.replace(PATH.HOME);
+    router.replace(PATH.ISLANDS);
   };
 
   useEffect(() => {

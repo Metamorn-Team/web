@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import RetroModal from "@/components/common/RetroModal";
 import { FiCopy, FiShare2, FiCheck } from "react-icons/fi";
+import { BiQr } from "react-icons/bi";
 import { FaXTwitter } from "react-icons/fa6";
 import { RiKakaoTalkFill } from "react-icons/ri";
 import Alert from "@/utils/alert";
@@ -130,7 +131,7 @@ const InviteModal = ({ isOpen, onClose, inviteUrl }: InviteModalProps) => {
             카카오톡
           </ShareButton>
           <ShareButton
-            className="bg-black text-white hover:bg-[#1da1f2]"
+            className="bg-twitter text-white hover:bg-twitterHover"
             onClick={handleTwitterShare}
             title="X 공유"
           >
@@ -149,53 +150,7 @@ const InviteModal = ({ isOpen, onClose, inviteUrl }: InviteModalProps) => {
             onClick={() => setShowQr(true)}
             title="QR로 공유"
           >
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
-              <rect
-                x="3"
-                y="3"
-                width="7"
-                height="7"
-                rx="2"
-                stroke="#3d2c1b"
-                strokeWidth="2"
-              />
-              <rect
-                x="14"
-                y="3"
-                width="7"
-                height="7"
-                rx="2"
-                stroke="#3d2c1b"
-                strokeWidth="2"
-              />
-              <rect
-                x="14"
-                y="14"
-                width="7"
-                height="7"
-                rx="2"
-                stroke="#3d2c1b"
-                strokeWidth="2"
-              />
-              <rect
-                x="3"
-                y="14"
-                width="7"
-                height="7"
-                rx="2"
-                stroke="#3d2c1b"
-                strokeWidth="2"
-              />
-              <rect
-                x="8"
-                y="8"
-                width="8"
-                height="8"
-                rx="2"
-                stroke="#3d2c1b"
-                strokeWidth="2"
-              />
-            </svg>
+            <BiQr size={20} />
             QR로 공유
           </ShareButton>
         </div>
