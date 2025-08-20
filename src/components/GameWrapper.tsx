@@ -44,7 +44,7 @@ import RetroConfirmModalV2 from "@/components/common/RetroConfirmModalV2";
 interface GameWrapperProps {
   isLoading: boolean;
   changeIsLoading: (state: boolean) => void;
-  type: "default" | "private";
+  type?: "default" | "private";
 }
 
 export default function GameWrapper({
