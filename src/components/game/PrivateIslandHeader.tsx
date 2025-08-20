@@ -6,7 +6,7 @@ import RetroHeaderButton from "@/components/common/header/RetroHeaderButton";
 import { useBgmToggle } from "@/hook/useBgmToggle";
 import BgmToggleButton from "@/components/common/header/BgmToggleButton";
 import StoreButton from "@/components/common/header/StoreButton";
-import { FaCompass } from "react-icons/fa";
+// import { FaCompass } from "react-icons/fa";
 import Image from "next/image";
 import {
   FiFileText,
@@ -41,7 +41,7 @@ export default function PrivateIslandHeader({
   onSettingsModalOpen,
   onDevModalOpen,
   onUpdateOpen,
-  onIslandInfoModalOpen,
+  // onIslandInfoModalOpen,
   onInviteModalOpen,
   onExitModalOpen,
 }: PrivateIslandHeaderProps) {
@@ -89,11 +89,11 @@ export default function PrivateIslandHeader({
       }
       rightItems={
         <>
-          <RetroHeaderButton
+          {/* <RetroHeaderButton
             icon={<FaCompass size={20} />}
             label="섬 정보"
             onClick={onIslandInfoModalOpen}
-          />
+          /> */}
           <RetroHeaderButton
             icon={<FiLogOut size={20} />}
             onClick={onExitModalOpen}

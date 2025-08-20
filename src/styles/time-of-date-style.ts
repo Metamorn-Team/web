@@ -19,7 +19,7 @@ export function getBackgroundStyle(timeOfDay: TimeOfDay): BackgroundStyle {
         secondaryTextColor: "#4a3c2a",
         borderColor: "#c1a66b",
         shadowColor: "#5c4b32",
-        greeting: "🏝️ 내가 관리하는 섬",
+        greeting: "🏝️ 비밀 섬",
         description: "친구들과 함께할 수 있는 나만의 섬들을 관리해보세요",
       };
     case "morning":
@@ -29,7 +29,7 @@ export function getBackgroundStyle(timeOfDay: TimeOfDay): BackgroundStyle {
         secondaryTextColor: "#e8eaff",
         borderColor: "#9ba3d0",
         shadowColor: "#7c8bc0",
-        greeting: "🏝️ 내가 관리하는 섬",
+        greeting: "🏝️ 비밀 섬",
         description: "친구들과 함께할 수 있는 나만의 섬들을 관리해보세요",
       };
     case "afternoon":
@@ -39,7 +39,7 @@ export function getBackgroundStyle(timeOfDay: TimeOfDay): BackgroundStyle {
         secondaryTextColor: "#7a6144",
         borderColor: "#bfae96",
         shadowColor: "#8c7a5c",
-        greeting: "🏝️ 내가 관리하는 섬",
+        greeting: "🏝️ 비밀 섬",
         description: "친구들과 함께할 수 있는 나만의 섬들을 관리해보세요",
       };
     case "evening":
@@ -49,7 +49,7 @@ export function getBackgroundStyle(timeOfDay: TimeOfDay): BackgroundStyle {
         secondaryTextColor: "#7a6144",
         borderColor: "#bfae96",
         shadowColor: "#8c7a5c",
-        greeting: "🏝️ 내가 관리하는 섬",
+        greeting: "🏝️ 비밀 섬",
         description: "친구들과 함께할 수 있는 나만의 섬들을 관리해보세요",
       };
     case "night":
@@ -59,7 +59,7 @@ export function getBackgroundStyle(timeOfDay: TimeOfDay): BackgroundStyle {
         secondaryTextColor: "#bdc3c7",
         borderColor: "#7f8c8d",
         shadowColor: "#2c3e50",
-        greeting: "🏝️ 내가 관리하는 섬",
+        greeting: "🏝️ 비밀 섬",
         description: "친구들과 함께할 수 있는 나만의 섬들을 관리해보세요",
       };
     default:
@@ -69,7 +69,7 @@ export function getBackgroundStyle(timeOfDay: TimeOfDay): BackgroundStyle {
         secondaryTextColor: "#7a6144",
         borderColor: "#bfae96",
         shadowColor: "#8c7a5c",
-        greeting: "🏝️ 내가 관리하는 섬",
+        greeting: "🏝️ 비밀 섬",
         description: "친구들과 함께할 수 있는 나만의 섬들을 관리해보세요",
       };
   }
