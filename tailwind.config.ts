@@ -19,6 +19,8 @@ export default {
         kakaoText: "#3E1C00",
         naver: "#1EC800",
         naverHover: "#1A9A00",
+        twitter: "#222222",
+        twitterHover: "#000000",
       },
       backgroundImage: {
         homeBg: "url(/images/background.png)",
