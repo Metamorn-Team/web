@@ -35,11 +35,11 @@ import UpdateNoteModal from "@/components/UpdateNoteModal";
 import MobileWarningBanner from "./common/MobileWarningBanner";
 import HeaderSelector from "@/components/game/HeaderSelector";
 import InviteModal from "@/components/islands/InviteModal";
-import RetroConfirmModalV2 from "@/components/common/RetroConfirmModalV2";
 import { useRouter } from "next/navigation";
 import { PATH } from "@/constants/path";
 import { socketManager } from "@/game/managers/socket-manager";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
+import RetroConfirmModalV2 from "@/components/common/RetroConfirmModalV2";
 
 interface GameWrapperProps {
   isLoading: boolean;

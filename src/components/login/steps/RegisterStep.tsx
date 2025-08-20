@@ -57,7 +57,7 @@ const RegisterStep = ({ onSuccessLogin }: RegisterStepProps) => {
           : !isValidTagLength
           ? "태그는 4~15자 사이로 입력해주세요"
           : !isValidTagChars
-          ? "태그는 영어 소문자와 _ 만 사용 가능해요"
+          ? "태그는 영어 소문자, 숫자, _ 만 사용 가능해요"
           : "",
     }));
 
