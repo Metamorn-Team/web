@@ -3,8 +3,6 @@ import RetroModal from "@/components/common/RetroModal";
 import { FiCopy, FiShare2, FiCheck } from "react-icons/fi";
 import { BiQr } from "react-icons/bi";
 import { FaXTwitter } from "react-icons/fa6";
-import { RiKakaoTalkFill } from "react-icons/ri";
-import Alert from "@/utils/alert";
 import QRCode from "react-qr-code";
 import Image from "next/image";
 
@@ -63,21 +61,6 @@ const InviteModal = ({ isOpen, onClose, inviteUrl }: InviteModalProps) => {
     }
   };
 
-  // SNS 공유 예시 (카카오톡, 트위터)
-  const handleKakaoShare = () => {
-    // @ts-expect-error 카카오 Link 타입 정의가 없음
-    if (window.Kakao && window.Kakao.isInitialized() && window.Kakao.Link) {
-      // @ts-expect-error 카카오 Link 타입 정의가 없음
-      window.Kakao.Link.sendDefault({
-        objectType: "text",
-        text: `내 섬에 놀러와! ${inviteUrl}`,
-        link: { mobileWebUrl: inviteUrl, webUrl: inviteUrl },
-      });
-    } else {
-      Alert.warn("카카오톡 공유를 사용할 수 없는 환경이에요..");
-    }
-  };
-
   const handleTwitterShare = () => {
     const text = encodeURIComponent("내 섬에 놀러와!");
     const url = encodeURIComponent(inviteUrl);
@@ -99,7 +82,7 @@ const InviteModal = ({ isOpen, onClose, inviteUrl }: InviteModalProps) => {
         <div className="w-full flex flex-col items-center gap-1">
           <div className="flex items-center w-full bg-[#f5f1e6] border border-[#bfae96] rounded-lg px-2 py-1 min-h-[48px]">
             <span
-              className={`flex-1 text-base font-semibold break-all select-all transition-colors duration-200 ${
+              className={`flex-1 text-xs sm:text-base font-semibold break-all select-all transition-colors duration-200 ${
                 copied ? "text-green-600" : ""
               }`}
             >
@@ -122,14 +105,6 @@ const InviteModal = ({ isOpen, onClose, inviteUrl }: InviteModalProps) => {
           </div>
         </div>
         <div className="flex gap-2 sm:gap-3 mt-2 w-full justify-center">
-          <ShareButton
-            className="bg-kakao hover:bg-kakaoHover text-[#3d2c1b]"
-            onClick={handleKakaoShare}
-            title="카카오톡 공유"
-          >
-            <RiKakaoTalkFill size={28} />
-            카카오톡
-          </ShareButton>
           <ShareButton
             className="bg-twitter text-white hover:bg-twitterHover"
             onClick={handleTwitterShare}
@@ -171,7 +146,7 @@ const InviteModal = ({ isOpen, onClose, inviteUrl }: InviteModalProps) => {
             </div>
           </div>
         )}
-        <div className="text-xs text-[#8c7a5c] mt-1 text-center leading-tight">
+        <div className="text-xs text-[#8c7a5c] mt-1 text-center leading-tight break-keep">
           초대 링크를 복사하거나, 카카오톡/트위터로 바로 공유할 수 있습니다.
           <br />
           친구가 이 링크로 접속하면 바로 내 섬에 입장할 수 있어요!
