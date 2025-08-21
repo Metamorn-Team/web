@@ -55,10 +55,13 @@ export default function Wrapper() {
   return island?.hasPassword ? (
     <PasswordPage islandId={island.id} />
   ) : (
-    <GameWrapper
-      type="private"
-      isLoading={isGameLoading}
-      changeIsLoading={(state) => setIsGameLoading(state)}
-    />
+    <>
+      {isGameLoading ? <LoadingPage message="섬으로 가는 중" /> : null}
+      <GameWrapper
+        type="private"
+        isLoading={isGameLoading}
+        changeIsLoading={(state) => setIsGameLoading(state)}
+      />
+    </>
   );
 }

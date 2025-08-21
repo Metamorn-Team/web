@@ -7,6 +7,7 @@ import GameWrapper from "@/components/GameWrapper";
 import { useIslandStore } from "@/stores/useIslandStore";
 import { setItem } from "@/utils/session-storage";
 import { ISLAND_SCENE } from "@/constants/game/islands/island";
+import LoadingPage from "@/components/common/LoadingPage";
 
 export default function PasswordPage({ islandId }: { islandId: string }) {
   const { setIsland } = useIslandStore();
@@ -56,11 +57,14 @@ export default function PasswordPage({ islandId }: { islandId: string }) {
 
   if (isVerified) {
     return (
-      <GameWrapper
-        type="private"
-        isLoading={isGameLoading}
-        changeIsLoading={(state) => setIsGameLoading(state)}
-      />
+      <>
+        {isGameLoading ? <LoadingPage message="섬으로 가는 중" /> : null}
+        <GameWrapper
+          type="private"
+          isLoading={isGameLoading}
+          changeIsLoading={(state) => setIsGameLoading(state)}
+        />
+      </>
     );
   }
 
