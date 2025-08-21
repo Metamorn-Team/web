@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import RetroModal from "@/components/common/RetroModal";
 import { FiCopy, FiShare2, FiCheck } from "react-icons/fi";
 import { BiQr } from "react-icons/bi";
-import { FaXTwitter } from "react-icons/fa6";
 import QRCode from "react-qr-code";
 import Image from "next/image";
 
@@ -61,12 +60,6 @@ const InviteModal = ({ isOpen, onClose, inviteUrl }: InviteModalProps) => {
     }
   };
 
-  const handleTwitterShare = () => {
-    const text = encodeURIComponent("내 섬에 놀러와!");
-    const url = encodeURIComponent(inviteUrl);
-    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`);
-  };
-
   return (
     <RetroModal isOpen={isOpen} onClose={onClose} className="!max-w-[600px]">
       <div className="flex flex-col items-center gap-6 p-2">
@@ -106,19 +99,12 @@ const InviteModal = ({ isOpen, onClose, inviteUrl }: InviteModalProps) => {
         </div>
         <div className="flex gap-2 sm:gap-3 mt-2 w-full justify-center">
           <ShareButton
-            className="bg-twitter text-white hover:bg-twitterHover"
-            onClick={handleTwitterShare}
-            title="X 공유"
-          >
-            <FaXTwitter size={24} /> X로 공유
-          </ShareButton>
-          <ShareButton
-            className="bg-[#f5f1e6] hover:bg-[#e5e1d6] text-[#3d2c1b]"
+            className="bg-[#fff] hover:bg-[#f5f1e6] text-[#3d2c1b]"
             onClick={handleShare}
-            title="기타 공유"
+            title="공유"
           >
             <FiShare2 size={20} />
-            기타 공유
+            공유하기
           </ShareButton>
           <ShareButton
             className="bg-[#fff] hover:bg-[#f5f1e6] text-[#3d2c1b]"
