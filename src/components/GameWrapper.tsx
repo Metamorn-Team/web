@@ -40,6 +40,8 @@ import { PATH } from "@/constants/path";
 import { socketManager } from "@/game/managers/socket-manager";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import RetroConfirmModalV2 from "@/components/common/RetroConfirmModalV2";
+import { useIslandStore } from "@/stores/useIslandStore";
+import { useRtc } from "@/hook/rtc/useWebRtc";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -122,6 +124,7 @@ export default function GameWrapper({
   useAttackedSound();
 
   const { data: profile } = useGetMyProfile();
+  const { id: islandId } = useIslandStore();
 
   const handleExitIsland = () => {
     socketManager.disconnect(SOCKET_NAMESPACES.ISLAND);
@@ -223,6 +226,13 @@ export default function GameWrapper({
     };
   }, [gameRef]);
 
+  // 섬 입장 시 자동으로 RTC 방 참여
+  useEffect(() => {
+    if (islandId && !isLoading) {
+      // RTC 방 참여는 RtcProvider 내부에서 처리됨
+    }
+  }, [islandId, isLoading]);
+
   // 로그인 모달 떠 있을 떄 phaser 키 이벤트 비활성화
   useEffect(() => {
     if (
@@ -246,8 +256,29 @@ export default function GameWrapper({
     isIslandInfoModalOpen,
   ]);
 
+  // ----------------------- RTC TEST -----------------------
+
+  const myVideoRef = useRef<HTMLVideoElement>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  useRtc({ islandId, myVideoRef, remoteVideoRef });
+
+  // ----------------------- RTC TEST -----------------------
+
   return (
     <div>
+      <div className="fixed top-20 right-4 z-50 flex flex-col gap-2">
+        <video
+          ref={myVideoRef}
+          autoPlay
+          muted
+          className="w-32 h-24 bg-black scale-x-[-1]"
+        />
+        <video
+          ref={remoteVideoRef}
+          autoPlay
+          className="w-32 h-24 bg-black scale-x-[-1]"
+        />
+      </div>
       {!isLoading ? (
         <>
           <HeaderSelector
