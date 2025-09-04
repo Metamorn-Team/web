@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { AxiosError } from "axios";
-import Game, { GameRef } from "@/components/Game";
 // import MenuHeader from "@/components/MenuHeader";
 import { EventWrapper } from "@/game/event/EventBus";
 import { useModal } from "@/hook/useModal";
@@ -41,7 +40,12 @@ import { socketManager } from "@/game/managers/socket-manager";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import RetroConfirmModalV2 from "@/components/common/RetroConfirmModalV2";
 import { useIslandStore } from "@/stores/useIslandStore";
-import { useRtc } from "@/hook/rtc/useWebRtc";
+import RtcPanel from "@/components/rtc/RtcPanel";
+import PlayersMediaPanel from "@/components/rtc/PlayersMediaPanel";
+// import { useRtc } from "@/hook/rtc/useWebRtc";
+import PermissionModal from "@/components/rtc/PermissionModal";
+import { useRtc } from "@/hook/rtc/useRtc";
+import Game, { GameRef } from "@/components/Game";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -258,27 +262,77 @@ export default function GameWrapper({
 
   // ----------------------- RTC TEST -----------------------
 
-  const myVideoRef = useRef<HTMLVideoElement>(null);
-  const remoteVideoRef = useRef<HTMLVideoElement>(null);
-  useRtc({ islandId, myVideoRef, remoteVideoRef });
+  // const myVideoRef = useRef<HTMLVideoElement | null>(null);
+  // const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+  const {
+    isCamOn,
+    isConnected,
+    isMicOn,
+    isPermissionModalOpen,
+    localMediaStream,
+    peerMediaStreams,
+    peerConnections,
+    toggleCam,
+    toggleMic,
+    onPermissionModalClose,
+    onPermissionModalOpen,
+  } = useRtc();
+  // const {
+  //   camOn,
+  //   micOn,
+  //   screenSharing,
+  //   mediaInitialized,
+  //   isPermissionModalOpen,
+
+  //   toggleCam,
+  //   toggleMic,
+  //   toggleScreenShare,
+  //   stopUserMedia,
+  //   onPermissionModalClose,
+  // } = useRtc({
+  //   islandId,
+  //   myVideoRef,
+  //   remoteVideoRef,
+  // });
+
+  const localVideoRef = useRef<HTMLVideoElement | null>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+
+  // 로컬 비디오 스트림 연결
+  useEffect(() => {
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = localMediaStream;
+    }
+    console.log("localMediaStream", localMediaStream);
+  }, [localMediaStream]);
+
+  // 원격 비디오 스트림 연결 (첫 번째 피어의 스트림)
+  useEffect(() => {
+    if (remoteVideoRef.current && peerMediaStreams.size > 0) {
+      const firstStream = Array.from(peerMediaStreams.values())[0];
+      remoteVideoRef.current.srcObject = firstStream;
+      console.log("firstStream", firstStream.getTracks());
+    }
+  }, [peerMediaStreams]);
 
   // ----------------------- RTC TEST -----------------------
 
   return (
     <div>
-      <div className="fixed top-20 right-4 z-50 flex flex-col gap-2">
+      {/* <div className="fixed top-20 right-4 z-50 flex flex-col gap-2">
         <video
-          ref={myVideoRef}
+          ref={localVideoRef}
           autoPlay
-          muted
           className="w-32 h-24 bg-black scale-x-[-1]"
         />
         <video
           ref={remoteVideoRef}
           autoPlay
+          playsInline
+          muted={false}
           className="w-32 h-24 bg-black scale-x-[-1]"
         />
-      </div>
+      </div> */}
       {!isLoading ? (
         <>
           <HeaderSelector
@@ -296,6 +350,25 @@ export default function GameWrapper({
       ) : null}
 
       <Game ref={gameRef} currentActiveScene={() => {}} />
+
+      {/* RTC 컨트롤 패널 */}
+      <RtcPanel
+        camOn={isCamOn}
+        micOn={isMicOn}
+        screenSharing={false}
+        mediaInitialized={false}
+        toggleCam={toggleCam}
+        toggleMic={toggleMic}
+        toggleScreenShare={() => {}}
+        stopUserMedia={() => {}}
+      />
+      {/* fixed top-[68px] sm:top-[76px] right-3 sm:right-5 */}
+      <PlayersMediaPanel
+        peerConnections={peerConnections}
+        peerMediaStreams={peerMediaStreams}
+        localMediaStream={localMediaStream}
+        className="fixed top-28 sm:top-32 right-3 sm:right-5"
+      />
 
       {isHelpModalOpen ? (
         <TalkModal
@@ -360,6 +433,13 @@ export default function GameWrapper({
           onConfirm={handleExitIsland}
           title="섬을 떠나시겠어요?"
           modalClassName="!max-w-[320px]"
+        />
+      ) : null}
+
+      {isPermissionModalOpen ? (
+        <PermissionModal
+          isOpen={isPermissionModalOpen}
+          onClose={onPermissionModalClose}
         />
       ) : null}
     </div>
