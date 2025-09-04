@@ -1,5 +1,6 @@
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { socketManager } from "@/game/managers/socket-manager";
+import { useModal } from "@/hook/useModal";
 import { TypedSocket } from "@/types/socket-io";
 import { useEffect, useRef, useState, useCallback } from "react";
 
@@ -28,6 +29,11 @@ export const useRtc = () => {
   const localMediaStreamRef = useRef<MediaStream>(new MediaStream());
   const [isMicOn, setIsMicOn] = useState(false);
   const [isCamOn, setIsCamOn] = useState(false);
+  const {
+    isModalOpen: isPermissionModalOpen,
+    onOpen: onPermissionModalOpen,
+    onClose: onPermissionModalClose,
+  } = useModal();
 
   const socketRef = useRef<TypedSocket | null>(null);
 
@@ -235,8 +241,11 @@ export const useRtc = () => {
       peerConnectionsRef.current.forEach((pc, peerId) => {
         handleNegotiation(pc, peerId);
       });
-    } catch (err) {
-      console.error("마이크 토글 실패:", err);
+    } catch (e: unknown) {
+      if (e instanceof Error && e.name === "NotAllowedError") {
+        console.error("권한 X");
+        onPermissionModalOpen();
+      }
     }
   }, [isMicOn, handleNegotiation]);
 
@@ -289,8 +298,11 @@ export const useRtc = () => {
       peerConnectionsRef.current.forEach((pc, peerId) => {
         handleNegotiation(pc, peerId);
       });
-    } catch (err) {
-      console.error("카메라 토글 실패:", err);
+    } catch (e) {
+      if (e instanceof Error && e.name === "NotAllowedError") {
+        console.error("권한 X");
+        onPermissionModalOpen();
+      }
     }
   }, [isCamOn, handleNegotiation]);
 
@@ -398,5 +410,8 @@ export const useRtc = () => {
     toggleCam,
     isConnected: !!socketRef.current,
     streamVersion,
+    isPermissionModalOpen,
+    onPermissionModalOpen,
+    onPermissionModalClose,
   };
 };
