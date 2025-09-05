@@ -2,6 +2,7 @@ import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { socketManager } from "@/game/managers/socket-manager";
 import { useModal } from "@/hook/useModal";
 import { TypedSocket } from "@/types/socket-io";
+import Alert from "@/utils/alert";
 import { useEffect, useRef, useState, useCallback } from "react";
 
 export const useRtc = () => {
@@ -218,6 +219,7 @@ export const useRtc = () => {
         });
 
         setIsMicOn(true);
+        Alert.done("마이크가 켜졌어요!", false);
       } else {
         // 마이크 끄기
         localMediaStreamRef.current.getAudioTracks().forEach((track) => {
@@ -235,6 +237,7 @@ export const useRtc = () => {
         });
 
         setIsMicOn(false);
+        Alert.error("마이크가 꺼졌어요!", false);
       }
 
       // 재협상
@@ -275,6 +278,7 @@ export const useRtc = () => {
         });
 
         setIsCamOn(true);
+        Alert.done("카메라가 켜졌어요!", false);
       } else {
         // 카메라 끄기
         localMediaStreamRef.current.getVideoTracks().forEach((track) => {
@@ -292,6 +296,7 @@ export const useRtc = () => {
         });
 
         setIsCamOn(false);
+        Alert.error("카메라가 꺼졌어요!", false);
       }
 
       // 재협상
