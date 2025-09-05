@@ -196,9 +196,12 @@ export const useRtc = () => {
   const toggleMic = useCallback(async () => {
     try {
       if (!isMicOn) {
-        const audioStream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-        });
+        const constraints: MediaStreamConstraints = selectedMicId
+          ? { audio: { deviceId: { exact: selectedMicId } } }
+          : { audio: true };
+        const audioStream = await navigator.mediaDevices.getUserMedia(
+          constraints
+        );
 
         // 기존 오디오 트랙 제거
         localMediaStreamRef.current.getAudioTracks().forEach((track) => {
@@ -255,9 +258,13 @@ export const useRtc = () => {
   const toggleCam = useCallback(async () => {
     try {
       if (!isCamOn) {
-        const videoStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        });
+        const constraints = selectedCamId
+          ? { video: { deviceId: { exact: selectedCamId } } }
+          : { video: true };
+
+        const videoStream = await navigator.mediaDevices.getUserMedia(
+          constraints
+        );
 
         // 기존 비디오 트랙 제거
         localMediaStreamRef.current.getVideoTracks().forEach((track) => {
@@ -379,6 +386,21 @@ export const useRtc = () => {
       }
     });
 
+    socket.on("peerLeft", ({ userId: peerId }) => {
+      console.log(`[${peerId}] 피어 퇴장`);
+      const pc = peerConnectionsRef.current.get(peerId);
+      if (pc) {
+        pc.close();
+        setPeerConnections((prev) => {
+          const newConnections = new Map(prev);
+          newConnections.delete(peerId);
+          return newConnections;
+        });
+
+        pendingCandidatesRef.current.delete(peerId);
+      }
+    });
+
     return () => {
       console.log("RTC 정리 시작");
       localMediaStreamRef.current.getTracks().forEach((track) => track.stop());
@@ -405,12 +427,123 @@ export const useRtc = () => {
     };
   }, [createPeerConnection, flushCandidateQueue]);
 
+  // 현재 선택된 디바이스 ID 저장
+  const [selectedMicId, setSelectedMicId] = useState<string | undefined>();
+  const [selectedCamId, setSelectedCamId] = useState<string | undefined>();
+  // 마이크 디바이스 변경
+  const changeMicDevice = useCallback(
+    async (deviceId: string | undefined) => {
+      try {
+        if (!isMicOn) {
+          setSelectedMicId(deviceId);
+          return;
+        }
+
+        const constraints = deviceId
+          ? { audio: { deviceId: { exact: deviceId } } }
+          : { audio: true };
+
+        const audioStream = await navigator.mediaDevices.getUserMedia(
+          constraints
+        );
+
+        // 기존 오디오 트랙 제거
+        localMediaStreamRef.current.getAudioTracks().forEach((track) => {
+          track.stop();
+          localMediaStreamRef.current.removeTrack(track);
+        });
+
+        // 새 오디오 트랙 추가
+        audioStream.getAudioTracks().forEach((track) => {
+          localMediaStreamRef.current.addTrack(track);
+        });
+
+        // 모든 peer connection의 audio sender 교체
+        peerConnectionsRef.current.forEach((pc) => {
+          const audioSender = pc
+            .getSenders()
+            .find((sender) => sender.track?.kind === "audio");
+
+          const newAudioTrack = audioStream.getAudioTracks()[0];
+          if (audioSender && newAudioTrack) {
+            audioSender.replaceTrack(newAudioTrack);
+          } else if (!audioSender && newAudioTrack) {
+            pc.addTrack(newAudioTrack, localMediaStreamRef.current);
+          }
+        });
+
+        setSelectedMicId(deviceId);
+        Alert.done("마이크가 변경되었어요!", false);
+      } catch (e) {
+        console.error("마이크 변경 실패:", e);
+        Alert.error("마이크 변경에 실패했어요!", false);
+      }
+    },
+    [isMicOn]
+  );
+
+  // 카메라 디바이스 변경
+  const changeCamDevice = useCallback(
+    async (deviceId: string | undefined) => {
+      try {
+        if (!isCamOn) {
+          setSelectedCamId(deviceId);
+          return;
+        }
+
+        const constraints = deviceId
+          ? { video: { deviceId: { exact: deviceId } } }
+          : { video: true };
+
+        const videoStream = await navigator.mediaDevices.getUserMedia(
+          constraints
+        );
+
+        // 기존 비디오 트랙 제거
+        localMediaStreamRef.current.getVideoTracks().forEach((track) => {
+          track.stop();
+          localMediaStreamRef.current.removeTrack(track);
+        });
+
+        // 새 비디오 트랙 추가
+        videoStream.getVideoTracks().forEach((track) => {
+          localMediaStreamRef.current.addTrack(track);
+        });
+
+        // 모든 peer connection의 video sender 교체
+        peerConnectionsRef.current.forEach((pc) => {
+          const videoSender = pc
+            .getSenders()
+            .find((sender) => sender.track?.kind === "video");
+
+          const newVideoTrack = videoStream.getVideoTracks()[0];
+          if (videoSender && newVideoTrack) {
+            videoSender.replaceTrack(newVideoTrack);
+          } else if (!videoSender && newVideoTrack) {
+            pc.addTrack(newVideoTrack, localMediaStreamRef.current);
+          }
+        });
+
+        setSelectedCamId(deviceId);
+        Alert.done("카메라가 변경되었어요!", false);
+      } catch (e) {
+        console.error("카메라 변경 실패:", e);
+        Alert.error("카메라 변경에 실패했어요!", false);
+      }
+    },
+    [isCamOn]
+  );
+
   return {
     peerConnections,
     peerMediaStreams,
     localMediaStream: localMediaStreamRef.current,
     isMicOn,
     isCamOn,
+    selectedMicId,
+    selectedCamId,
+    changeMicDevice,
+    changeCamDevice,
     toggleMic,
     toggleCam,
     isConnected: !!socketRef.current,

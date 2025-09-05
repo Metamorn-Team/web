@@ -46,6 +46,7 @@ import PlayersMediaPanel from "@/components/rtc/PlayersMediaPanel";
 import PermissionModal from "@/components/rtc/PermissionModal";
 import { useRtc } from "@/hook/rtc/useRtc";
 import Game, { GameRef } from "@/components/Game";
+import RtcSettingsModal from "@/components/rtc/RtcSettingsModal";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -126,6 +127,11 @@ export default function GameWrapper({
     onClose: onExitModalClose,
   } = useModal();
   useAttackedSound();
+  const {
+    isModalOpen: isRtcSettingModalOpen,
+    onOpen: onRtcSettingModalOpen,
+    onClose: onRtcSettingModalClose,
+  } = useModal();
 
   const { data: profile } = useGetMyProfile();
   const { id: islandId } = useIslandStore();
@@ -266,8 +272,9 @@ export default function GameWrapper({
   // const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
   const {
     isCamOn,
-    isConnected,
     isMicOn,
+    selectedMicId,
+    selectedCamId,
     isPermissionModalOpen,
     localMediaStream,
     peerMediaStreams,
@@ -275,45 +282,29 @@ export default function GameWrapper({
     toggleCam,
     toggleMic,
     onPermissionModalClose,
-    onPermissionModalOpen,
+    changeMicDevice,
+    changeCamDevice,
   } = useRtc();
-  // const {
-  //   camOn,
-  //   micOn,
-  //   screenSharing,
-  //   mediaInitialized,
-  //   isPermissionModalOpen,
 
-  //   toggleCam,
-  //   toggleMic,
-  //   toggleScreenShare,
-  //   stopUserMedia,
-  //   onPermissionModalClose,
-  // } = useRtc({
-  //   islandId,
-  //   myVideoRef,
-  //   remoteVideoRef,
-  // });
+  // const localVideoRef = useRef<HTMLVideoElement | null>(null);
+  // const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
 
-  const localVideoRef = useRef<HTMLVideoElement | null>(null);
-  const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+  // // 로컬 비디오 스트림 연결
+  // useEffect(() => {
+  //   if (localVideoRef.current) {
+  //     localVideoRef.current.srcObject = localMediaStream;
+  //   }
+  //   console.log("localMediaStream", localMediaStream);
+  // }, [localMediaStream]);
 
-  // 로컬 비디오 스트림 연결
-  useEffect(() => {
-    if (localVideoRef.current) {
-      localVideoRef.current.srcObject = localMediaStream;
-    }
-    console.log("localMediaStream", localMediaStream);
-  }, [localMediaStream]);
-
-  // 원격 비디오 스트림 연결 (첫 번째 피어의 스트림)
-  useEffect(() => {
-    if (remoteVideoRef.current && peerMediaStreams.size > 0) {
-      const firstStream = Array.from(peerMediaStreams.values())[0];
-      remoteVideoRef.current.srcObject = firstStream;
-      console.log("firstStream", firstStream.getTracks());
-    }
-  }, [peerMediaStreams]);
+  // // 원격 비디오 스트림 연결 (첫 번째 피어의 스트림)
+  // useEffect(() => {
+  //   if (remoteVideoRef.current && peerMediaStreams.size > 0) {
+  //     const firstStream = Array.from(peerMediaStreams.values())[0];
+  //     remoteVideoRef.current.srcObject = firstStream;
+  //     console.log("firstStream", firstStream.getTracks());
+  //   }
+  // }, [peerMediaStreams]);
 
   // ----------------------- RTC TEST -----------------------
 
@@ -355,12 +346,9 @@ export default function GameWrapper({
       <RtcPanel
         camOn={isCamOn}
         micOn={isMicOn}
-        screenSharing={false}
-        mediaInitialized={false}
+        openSettings={onRtcSettingModalOpen}
         toggleCam={toggleCam}
         toggleMic={toggleMic}
-        toggleScreenShare={() => {}}
-        stopUserMedia={() => {}}
       />
       {/* fixed top-[68px] sm:top-[76px] right-3 sm:right-5 */}
       <PlayersMediaPanel
@@ -440,6 +428,17 @@ export default function GameWrapper({
         <PermissionModal
           isOpen={isPermissionModalOpen}
           onClose={onPermissionModalClose}
+        />
+      ) : null}
+
+      {isRtcSettingModalOpen ? (
+        <RtcSettingsModal
+          selectedCamId={selectedCamId}
+          selectedMicId={selectedMicId}
+          isOpen={isRtcSettingModalOpen}
+          onClose={onRtcSettingModalClose}
+          changeMicDevice={changeMicDevice}
+          changeCamDevice={changeCamDevice}
         />
       ) : null}
     </div>

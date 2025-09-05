@@ -5,30 +5,23 @@ import {
   MdMicOff,
   MdVideocam,
   MdVideocamOff,
-  MdScreenShare,
-  MdStopScreenShare,
+  MdSettings,
 } from "react-icons/md";
 
 interface RtcPanelProps {
   camOn: boolean;
   micOn: boolean;
-  screenSharing: boolean;
-  mediaInitialized: boolean;
   toggleCam: () => void;
   toggleMic: () => void;
-  toggleScreenShare: () => void;
-  stopUserMedia: () => void;
+  openSettings: () => void;
 }
 
 export default function RtcPanel({
   camOn,
   micOn,
-  screenSharing,
-  mediaInitialized,
   toggleCam,
   toggleMic,
-  toggleScreenShare,
-  stopUserMedia,
+  openSettings,
 }: RtcPanelProps) {
   return (
     <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-40">
@@ -41,6 +34,7 @@ export default function RtcPanel({
           )}{" "}
           마이크
         </PixelToggle>
+
         <PixelToggle active={camOn} onClick={toggleCam}>
           {camOn ? (
             <MdVideocam size={20} className="inline mr-1" />
@@ -49,14 +43,10 @@ export default function RtcPanel({
           )}{" "}
           카메라
         </PixelToggle>
-        {/* <PixelToggle active={screenSharing} onClick={toggleScreenShare}>
-          {screenSharing ? (
-            <MdStopScreenShare size={20} className="inline mr-1" />
-          ) : (
-            <MdScreenShare size={20} className="inline mr-1" />
-          )}{" "}
-          화면
-        </PixelToggle> */}
+
+        <PixelToggle active={false} onClick={openSettings}>
+          <MdSettings size={20} className="inline mr-1" /> 설정
+        </PixelToggle>
       </div>
     </div>
   );
