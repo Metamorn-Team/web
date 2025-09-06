@@ -2,6 +2,7 @@
 
 import { PAWN_AVATAR_URL } from "@/constants/image-path";
 import { playerStore } from "@/game/managers/player-store";
+import { useIsMobile } from "@/hook/useIsMobile";
 import Image from "next/image";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { MdMic, MdMicOff } from "react-icons/md";
@@ -28,6 +29,7 @@ export default function PlayerMediaBox({
 
   const [showWave, setShowWave] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const isMobile = useIsMobile();
 
   // 스트림 상태
   const [hasVideo, setHasVideo] = useState(false);
@@ -117,7 +119,7 @@ export default function PlayerMediaBox({
     <>
       {isFullscreen && (
         <div
-          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center cursor-pointer"
+          className="fixed inset-0 z-40 bg-black bg-opacity-50 flex items-center justify-center cursor-pointer"
           onClick={handleClick}
         />
       )}
@@ -132,8 +134,12 @@ export default function PlayerMediaBox({
         <div
           className={`relative ${
             isFullscreen
-              ? "w-[90vw] h-[90vh] border-4 border-[#bfae96] rounded-2xl shadow-[8px_8px_0_#8c7a5c] pointer-events-auto cursor-pointer"
-              : `w-40 h-32 border-2 border-[#bfae96] rounded-lg shadow-[4px_4px_0_#8c7a5c] cursor-pointer hover:shadow-[6px_6px_0_#8c7a5c] transition-shadow duration-200 transform ${
+              ? `${
+                  isMobile ? "w-[95vw] aspect-square" : "w-[90vw] h-[80vh]"
+                } border-4 rounded-2xl border-[#bfae96] shadow-[8px_8px_0_#8c7a5c] pointer-events-auto cursor-pointer`
+              : `border-[#bfae96] shadow-[4px_4px_0_#8c7a5c] cursor-pointer hover:shadow-[6px_6px_0_#8c7a5c] transition-shadow duration-200 transform border-2 rounded-lg ${
+                  isMobile ? "w-28 h-24" : "w-40 h-32"
+                } ${
                   showWave
                     ? "border-pink-400 ring-4 ring-pink-300 ring-offset-2 ring-offset-[#fdf8ef] shadow-[6px_6px_0_#b97ea0] scale-105"
                     : ""
@@ -172,14 +178,18 @@ export default function PlayerMediaBox({
             >
               <div
                 className={`bg-[#f5f1e6] border-2 border-[#bfae96] rounded-full flex items-center justify-center overflow-hidden ${
-                  isFullscreen ? "w-48 h-48 border-4" : "w-14 h-14"
+                  isFullscreen
+                    ? "w-48 h-48 border-4"
+                    : isMobile
+                    ? "w-12 h-12"
+                    : "w-14 h-14"
                 }`}
               >
                 <Image
                   src={avatarUrl || playerAvatarUrl}
                   alt={nickname || playerNickname}
-                  width={isFullscreen ? 160 : 40}
-                  height={isFullscreen ? 160 : 40}
+                  width={isFullscreen ? 160 : isMobile ? 36 : 40}
+                  height={isFullscreen ? 160 : isMobile ? 36 : 40}
                   className="object-cover"
                 />
               </div>

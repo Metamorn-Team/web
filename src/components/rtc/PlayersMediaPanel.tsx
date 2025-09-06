@@ -5,6 +5,7 @@ import PlayerMediaBox from "./PlayerMediaBox";
 import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
 import classNames from "classnames";
 import { PAWN_AVATAR_URL } from "@/constants/image-path";
+import { useIsMobile } from "@/hook/useIsMobile";
 
 interface PlayersMediaPanelProps {
   peerConnections: Map<string, RTCPeerConnection>;
@@ -20,13 +21,21 @@ export default function PlayersMediaPanel({
   className,
 }: PlayersMediaPanelProps) {
   const { data: profile } = useGetMyProfile();
+  const isMobile = useIsMobile();
 
   // peer ids
   const peerIds = Array.from(peerConnections.keys());
 
   return (
     <div
-      className={classNames("fixed top-4 right-4 z-40 space-y-4", className)}
+      className={classNames(
+        `fixed z-30 ${
+          isMobile
+            ? "left-3 flex gap-2 overflow-x-scroll scrollbar-hide"
+            : "top-4 right-4 space-y-4"
+        }`,
+        className
+      )}
     >
       {/* 로컬 플레이어 (스트림이 없다면 아바타) */}
       <PlayerMediaBox
