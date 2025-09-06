@@ -6,37 +6,30 @@ import { EventWrapper } from "@/game/event/EventBus";
 import { useModal } from "@/hook/useModal";
 import { Phaser } from "@/game/phaser";
 import { setItem } from "@/utils/session-storage";
-import TalkModal from "@/components/common/TalkModal";
 import { Npc } from "@/game/entities/npc/npc";
-import GoblinTorch from "@/components/common/GoblinTorch";
 import { UserInfo } from "@/types/socket-io/response";
-import { 지친_토치_고블린 } from "@/constants/game/talk-scripts";
-import LoginModal from "@/components/login/LoginModal";
 import { getMyProfile } from "@/api/user";
 import { persistItem } from "@/utils/persistence";
 import { useAttackedSound } from "@/hook/useAttackedSound";
 import Alert from "@/utils/alert";
-import IslandListModal from "@/components/islands/IslandListModal";
 import { ISLAND_SCENE, MY_ISLAND_SCENE } from "@/constants/game/islands/island";
 import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
 import MyIsland from "@/components/my-island/MyIsland";
 import { useCurrentSceneStore } from "@/stores/useCurrentSceneStore";
 import MobileWarningBanner from "./common/MobileWarningBanner";
 import HeaderSelector from "@/components/game/HeaderSelector";
-import InviteModal from "@/components/islands/InviteModal";
 import { useRouter } from "next/navigation";
 import { PATH } from "@/constants/path";
 import { socketManager } from "@/game/managers/socket-manager";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
-import RetroConfirmModalV2 from "@/components/common/RetroConfirmModalV2";
 import { useIslandStore } from "@/stores/useIslandStore";
 import RtcPanel from "@/components/rtc/RtcPanel";
 import PlayersMediaPanel from "@/components/rtc/PlayersMediaPanel";
-import PermissionModal from "@/components/rtc/PermissionModal";
 import { useRtc } from "@/hook/rtc/useRtc";
 import Game, { GameRef } from "@/components/Game";
-import RtcSettingsModal from "@/components/rtc/RtcSettingsModal";
 import CommonIslandModals from "@/components/islands/CommonIslandModals";
+import DefaultIslandModals from "@/components/islands/DefaultIslandModals";
+import PrivateIslandModals from "@/components/islands/PrivateIslandModals";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -93,6 +86,7 @@ export default function GameWrapper({
   } = useModal();
   const [isVisibleChat, setIsVisibleChat] = useState(false);
 
+  // NOTE Default
   const {
     isModalOpen: isLoginModalOpen,
     onClose: onLoginModalClose,
@@ -104,15 +98,18 @@ export default function GameWrapper({
     onClose: onHelpClose,
   } = useModal();
   const {
-    isModalOpen: isInviteModalOpen,
-    onOpen: onInviteModalOpen,
-    onClose: onInviteModalClose,
-  } = useModal();
-  const {
     isModalOpen: isIslandListModalOpen,
     onClose: onIslandListModalClose,
     onOpen: onIslandListModalOpen,
   } = useModal();
+
+  // NOTE PRIVATE
+  const {
+    isModalOpen: isInviteModalOpen,
+    onOpen: onInviteModalOpen,
+    onClose: onInviteModalClose,
+  } = useModal();
+
   const {
     isModalOpen: isExitModalOpen,
     onOpen: onExitModalOpen,
@@ -313,27 +310,14 @@ export default function GameWrapper({
       <Game ref={gameRef} currentActiveScene={() => {}} />
 
       {/* NORMAL ONLY */}
-      {isHelpModalOpen ? (
-        <TalkModal
-          onClose={onHelpClose}
-          avatar={<GoblinTorch />}
-          name="토치 고블린"
-          comments={지친_토치_고블린}
-        />
-      ) : null}
-      <LoginModal isOpen={isLoginModalOpen} onClose={onLoginModalClose} />
-      {isIslandListModalOpen ? (
-        <IslandListModal
-          isOpen={isIslandListModalOpen}
-          onClose={onIslandListModalClose}
-          onSelectIsland={() => {}}
-          onCreateIsland={() => {}}
-          onJoinRandomIsland={() => {
-            EventWrapper.emitToGame("joinDesertedIsland");
-            onIslandListModalClose();
-          }}
-        />
-      ) : null}
+      <DefaultIslandModals
+        isHelpModalOpen={isHelpModalOpen}
+        isLoginModalOpen={isLoginModalOpen}
+        isIslandListModalOpen={isIslandListModalOpen}
+        onHelpClose={onHelpClose}
+        onLoginModalClose={onLoginModalClose}
+        onIslandListModalClose={onIslandListModalClose}
+      />
 
       {/* COMMON */}
       <CommonIslandModals
@@ -357,39 +341,21 @@ export default function GameWrapper({
       {currentScene === MY_ISLAND_SCENE ? <MyIsland /> : null}
 
       {/* PRIVATE ONLY */}
-      <InviteModal
-        isOpen={isInviteModalOpen}
-        onClose={onInviteModalClose}
-        inviteUrl={typeof window !== "undefined" ? window.location.href : ""}
+      <PrivateIslandModals
+        isInviteModalOpen={isInviteModalOpen}
+        onInviteModalClose={onInviteModalClose}
+        isExitModalOpen={isExitModalOpen}
+        onExitModalClose={onExitModalClose}
+        handleExitIsland={handleExitIsland}
+        isPermissionModalOpen={isPermissionModalOpen}
+        onPermissionModalClose={onPermissionModalClose}
+        isRtcSettingModalOpen={isRtcSettingModalOpen}
+        onRtcSettingModalClose={onRtcSettingModalClose}
+        selectedCamId={selectedCamId}
+        selectedMicId={selectedMicId}
+        changeMicDevice={changeMicDevice}
+        changeCamDevice={changeCamDevice}
       />
-      {isExitModalOpen ? (
-        <RetroConfirmModalV2
-          isOpen={isExitModalOpen}
-          onClose={onExitModalClose}
-          onConfirm={handleExitIsland}
-          title="섬을 떠나시겠어요?"
-          modalClassName="!max-w-[320px]"
-        />
-      ) : null}
-
-      {/* RTC */}
-      {isPermissionModalOpen ? (
-        <PermissionModal
-          isOpen={isPermissionModalOpen}
-          onClose={onPermissionModalClose}
-        />
-      ) : null}
-
-      {isRtcSettingModalOpen ? (
-        <RtcSettingsModal
-          selectedCamId={selectedCamId}
-          selectedMicId={selectedMicId}
-          isOpen={isRtcSettingModalOpen}
-          onClose={onRtcSettingModalClose}
-          changeMicDevice={changeMicDevice}
-          changeCamDevice={changeCamDevice}
-        />
-      ) : null}
     </div>
   );
 }
