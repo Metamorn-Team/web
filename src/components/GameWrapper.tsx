@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { AxiosError } from "axios";
-// import MenuHeader from "@/components/MenuHeader";
 import { EventWrapper } from "@/game/event/EventBus";
 import { useModal } from "@/hook/useModal";
 import FriendModal from "@/components/FriendModal";
@@ -42,7 +41,6 @@ import RetroConfirmModalV2 from "@/components/common/RetroConfirmModalV2";
 import { useIslandStore } from "@/stores/useIslandStore";
 import RtcPanel from "@/components/rtc/RtcPanel";
 import PlayersMediaPanel from "@/components/rtc/PlayersMediaPanel";
-// import { useRtc } from "@/hook/rtc/useWebRtc";
 import PermissionModal from "@/components/rtc/PermissionModal";
 import { useRtc } from "@/hook/rtc/useRtc";
 import Game, { GameRef } from "@/components/Game";
@@ -266,10 +264,8 @@ export default function GameWrapper({
     isIslandInfoModalOpen,
   ]);
 
-  // ----------------------- RTC TEST -----------------------
+  // ----------------------- RTC -----------------------
 
-  // const myVideoRef = useRef<HTMLVideoElement | null>(null);
-  // const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
   const {
     isCamOn,
     isMicOn,
@@ -286,44 +282,8 @@ export default function GameWrapper({
     changeCamDevice,
   } = useRtc();
 
-  // const localVideoRef = useRef<HTMLVideoElement | null>(null);
-  // const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
-
-  // // 로컬 비디오 스트림 연결
-  // useEffect(() => {
-  //   if (localVideoRef.current) {
-  //     localVideoRef.current.srcObject = localMediaStream;
-  //   }
-  //   console.log("localMediaStream", localMediaStream);
-  // }, [localMediaStream]);
-
-  // // 원격 비디오 스트림 연결 (첫 번째 피어의 스트림)
-  // useEffect(() => {
-  //   if (remoteVideoRef.current && peerMediaStreams.size > 0) {
-  //     const firstStream = Array.from(peerMediaStreams.values())[0];
-  //     remoteVideoRef.current.srcObject = firstStream;
-  //     console.log("firstStream", firstStream.getTracks());
-  //   }
-  // }, [peerMediaStreams]);
-
-  // ----------------------- RTC TEST -----------------------
-
   return (
     <div>
-      {/* <div className="fixed top-20 right-4 z-50 flex flex-col gap-2">
-        <video
-          ref={localVideoRef}
-          autoPlay
-          className="w-32 h-24 bg-black scale-x-[-1]"
-        />
-        <video
-          ref={remoteVideoRef}
-          autoPlay
-          playsInline
-          muted={false}
-          className="w-32 h-24 bg-black scale-x-[-1]"
-        />
-      </div> */}
       {!isLoading ? (
         <>
           <HeaderSelector
