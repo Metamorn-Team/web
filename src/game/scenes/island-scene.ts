@@ -68,6 +68,16 @@ export class IslandScene extends MetamornScene {
       return;
     }
 
+    if (data?.type === "DESERTED") {
+      const islandId = getItem("current_island_id");
+      const islandType = getItem("current_island_type");
+
+      useIslandStore.getState().setIsland(islandId);
+      this.currentIslandId = islandId;
+      this.islandType = islandType;
+      return;
+    }
+
     // store에 정보가 있으면 PRIVATE
     const { id, type } = useIslandStore.getState();
 
@@ -77,16 +87,7 @@ export class IslandScene extends MetamornScene {
       return;
     }
 
-    /**
-     * 둘 다 아니라면 세션 스토리지에서 꺼내옴
-     * NORMAL에 참여했다가 새로고침한 케이스
-     */
-    const islandId = getItem("current_island_id");
-    const islandType = getItem("current_island_type");
-
-    useIslandStore.getState().setIsland(islandId);
-    this.currentIslandId = islandId;
-    this.islandType = islandType;
+    throw new Error("Invalid island data");
   }
 
   create() {
