@@ -26,9 +26,13 @@ export default function PlayerMediaBox({
   stream = null,
 }: PlayerMediaBoxProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const [showWave, setShowWave] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
+  const [volume, setVolume] = useState(0.5); // 기본 50%
+
   const isMobile = useIsMobile();
 
   // 스트림 상태
@@ -60,8 +64,6 @@ export default function PlayerMediaBox({
     calc();
 
     if (!stream) return;
-    console.log(playerStore.getPlayer(playerId)?.getPlayerInfo());
-    console.log(stream.getTracks());
 
     const onAdd = () => calc();
     const onRemove = () => calc();
@@ -91,7 +93,7 @@ export default function PlayerMediaBox({
     stream ? stream.getAudioTracks().length : 0,
   ]);
 
-  // video element에 stream 바인딩 — 같은 stream 객체라도 트랙 변경 시 강제 재바인딩
+  // video element에 stream 바인딩
   useLayoutEffect(() => {
     const vEl = videoRef.current;
     if (!vEl) return;
@@ -111,6 +113,13 @@ export default function PlayerMediaBox({
     stream?.getVideoTracks().length,
     stream?.getAudioTracks().length,
   ]);
+
+  // volume 상태가 변하면 audioRef에 반영
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
+  }, [volume]);
 
   const handleClick = () => setIsFullscreen((s) => !s);
   const isShowingScreenShare = false;
@@ -146,6 +155,8 @@ export default function PlayerMediaBox({
                 }`
           } bg-[#fdf8ef] overflow-hidden`}
           onClick={handleClick}
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
         >
           {showWave && !isFullscreen && (
             <>
@@ -201,6 +212,7 @@ export default function PlayerMediaBox({
                 playsInline
                 ref={(el) => {
                   if (el && el.srcObject !== stream) el.srcObject = stream;
+                  audioRef.current = el;
                 }}
                 className="hidden"
               />
@@ -233,23 +245,51 @@ export default function PlayerMediaBox({
                 ></div>
               )}
 
-              {
-                <div
-                  className="w-5 h-5 rounded-full flex items-center justify-center"
-                  title="마이크"
-                >
-                  {hasAudio ? (
-                    <MdMic color="green" />
-                  ) : (
-                    <MdMicOff color="red" />
-                  )}
-                </div>
-              }
+              <div
+                className="w-5 h-5 rounded-full flex items-center justify-center"
+                title="마이크"
+              >
+                {hasAudio ? <MdMic color="green" /> : <MdMicOff color="red" />}
+              </div>
             </div>
 
             {isFullscreen && (
               <div className="absolute top-4 left-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded text-sm">
                 {nickname || playerNickname}
+              </div>
+            )}
+
+            {/* hover 시 볼륨 슬라이더 */}
+            {isHovering && !isFullscreen && !isLocalPlayer && (
+              <div className="absolute bottom-1 left-1 right-1 flex justify-center">
+                <input
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={volume}
+                  onChange={(e) => setVolume(Number(e.target.value))}
+                  onClick={(e) => e.stopPropagation()}
+                  className="
+                  mb-1
+    w-24 
+    accent-[#bfae96]
+    bg-[#d6c3a6]
+    rounded-lg
+    appearance-none
+    [&::-webkit-slider-thumb]:appearance-none
+    [&::-webkit-slider-thumb]:h-4
+    [&::-webkit-slider-thumb]:w-4
+    [&::-webkit-slider-thumb]:rounded-full
+    [&::-webkit-slider-thumb]:bg-[#8c7a5c]
+    [&::-webkit-slider-thumb]:shadow-md
+    [&::-moz-range-thumb]:h-4
+    [&::-moz-range-thumb]:w-4
+    [&::-moz-range-thumb]:rounded-full
+    [&::-moz-range-thumb]:bg-[#8c7a5c]
+    [&::-moz-range-thumb]:border-none
+  "
+                />
               </div>
             )}
           </div>
