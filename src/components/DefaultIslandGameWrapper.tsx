@@ -10,41 +10,28 @@ import { Npc } from "@/game/entities/npc/npc";
 import { UserInfo } from "@/types/socket-io/response";
 import { getMyProfile } from "@/api/user";
 import { persistItem } from "@/utils/persistence";
-import { useAttackedSound } from "@/hook/useAttackedSound";
 import Alert from "@/utils/alert";
 import { ISLAND_SCENE, MY_ISLAND_SCENE } from "@/constants/game/islands/island";
 import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
 import MyIsland from "@/components/my-island/MyIsland";
 import { useCurrentSceneStore } from "@/stores/useCurrentSceneStore";
 import MobileWarningBanner from "./common/MobileWarningBanner";
-import HeaderSelector from "@/components/game/HeaderSelector";
-import { useRouter } from "next/navigation";
-import { PATH } from "@/constants/path";
-import { socketManager } from "@/game/managers/socket-manager";
-import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
-import { useIslandStore } from "@/stores/useIslandStore";
-import RtcPanel from "@/components/rtc/RtcPanel";
-import PlayersMediaPanel from "@/components/rtc/PlayersMediaPanel";
-import { useRtc } from "@/hook/rtc/useRtc";
 import Game, { GameRef } from "@/components/Game";
 import CommonIslandModals from "@/components/islands/CommonIslandModals";
 import DefaultIslandModals from "@/components/islands/DefaultIslandModals";
-import PrivateIslandModals from "@/components/islands/PrivateIslandModals";
 import { useDisableGameInputWhenOpen } from "@/hook/useDisableGameInputWhenOpen";
+import MenuHeader from "@/components/MenuHeader";
 
-interface GameWrapperProps {
+interface DefaultIslandGameWrapperProps {
   isLoading: boolean;
   changeIsLoading: (state: boolean) => void;
-  type?: "default" | "private";
 }
 
-export default function GameWrapper({
+export default function DefaultIslandGameWrapper({
   isLoading,
   changeIsLoading,
-  type = "default",
-}: GameWrapperProps) {
+}: DefaultIslandGameWrapperProps) {
   const gameRef = useRef<GameRef | null>(null);
-  const router = useRouter();
 
   const [playerInfo, setPlayerInfo] = useState<UserInfo>({
     id: "",
@@ -104,27 +91,7 @@ export default function GameWrapper({
     onOpen: onIslandListModalOpen,
   } = useModal();
 
-  // NOTE PRIVATE
-  const {
-    isModalOpen: isInviteModalOpen,
-    onOpen: onInviteModalOpen,
-    onClose: onInviteModalClose,
-  } = useModal();
-
-  const {
-    isModalOpen: isExitModalOpen,
-    onOpen: onExitModalOpen,
-    onClose: onExitModalClose,
-  } = useModal();
-  useAttackedSound();
-  const {
-    isModalOpen: isRtcSettingModalOpen,
-    onOpen: onRtcSettingModalOpen,
-    onClose: onRtcSettingModalClose,
-  } = useModal();
-
   const { data: profile } = useGetMyProfile();
-  const { id: islandId } = useIslandStore();
 
   // 모달 열릴 때 phaser 키 이벤트 비활성화
   useDisableGameInputWhenOpen(
@@ -135,11 +102,6 @@ export default function GameWrapper({
     isIslandListModalOpen,
     isIslandInfoModalOpen
   );
-
-  const handleExitIsland = () => {
-    socketManager.disconnect(SOCKET_NAMESPACES.ISLAND);
-    router.replace(PATH.ISLANDS);
-  };
 
   useEffect(() => {
     if (profile) {
@@ -236,61 +198,18 @@ export default function GameWrapper({
     };
   }, [gameRef]);
 
-  // 섬 입장 시 자동으로 RTC 방 참여
-  useEffect(() => {
-    if (islandId && !isLoading) {
-      // RTC 방 참여는 RtcProvider 내부에서 처리됨
-    }
-  }, [islandId, isLoading]);
-
-  // ----------------------- RTC -----------------------
-
-  const {
-    isCamOn,
-    isMicOn,
-    selectedMicId,
-    selectedCamId,
-    isPermissionModalOpen,
-    localMediaStream,
-    peerMediaStreams,
-    peerConnections,
-    toggleCam,
-    toggleMic,
-    onPermissionModalClose,
-    changeMicDevice,
-    changeCamDevice,
-  } = useRtc();
-
   return (
     <div>
       {!isLoading ? (
         <>
-          <HeaderSelector
-            type={type}
-            onExitModalOpen={onExitModalOpen}
-            onFriendModalOpen={onFriendModalOpen}
-            onSettingsModalOpen={onSettingsModalOpen}
+          <MenuHeader
             onDevModalOpen={onDevOpen}
-            onUpdateOpen={onUpdateOpen}
+            onFriendModalOpen={onFriendModalOpen}
             onIslandInfoModalOpen={onIslandInfoModalOpen}
-            onInviteModalOpen={onInviteModalOpen}
+            onSettingsModalOpen={onSettingsModalOpen}
+            onUpdateOpen={onUpdateOpen}
           />
           <MobileWarningBanner />
-
-          {/* RTC 컨트롤 패널 */}
-          <RtcPanel
-            camOn={isCamOn}
-            micOn={isMicOn}
-            openSettings={onRtcSettingModalOpen}
-            toggleCam={toggleCam}
-            toggleMic={toggleMic}
-          />
-          <PlayersMediaPanel
-            peerConnections={peerConnections}
-            peerMediaStreams={peerMediaStreams}
-            localMediaStream={localMediaStream}
-            className="fixed top-28 sm:top-32 right-3 sm:right-5"
-          />
         </>
       ) : null}
 
@@ -325,23 +244,6 @@ export default function GameWrapper({
         onSettingsModalClose={onSettingsModalClose}
         onDevClose={onDevClose}
         onUpdateClose={onUpdateClose}
-      />
-
-      {/* PRIVATE ONLY */}
-      <PrivateIslandModals
-        isInviteModalOpen={isInviteModalOpen}
-        onInviteModalClose={onInviteModalClose}
-        isExitModalOpen={isExitModalOpen}
-        onExitModalClose={onExitModalClose}
-        handleExitIsland={handleExitIsland}
-        isPermissionModalOpen={isPermissionModalOpen}
-        onPermissionModalClose={onPermissionModalClose}
-        isRtcSettingModalOpen={isRtcSettingModalOpen}
-        onRtcSettingModalClose={onRtcSettingModalClose}
-        selectedCamId={selectedCamId}
-        selectedMicId={selectedMicId}
-        changeMicDevice={changeMicDevice}
-        changeCamDevice={changeCamDevice}
       />
     </div>
   );

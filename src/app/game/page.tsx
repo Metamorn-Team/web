@@ -4,9 +4,12 @@ import LoadingPage from "@/components/common/LoadingPage";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
-const DynamicGameWrapper = dynamic(() => import("@/components/GameWrapper"), {
-  ssr: false,
-});
+const DynamicGameWrapper = dynamic(
+  () => import("@/components/DefaultIslandGameWrapper"),
+  {
+    ssr: false,
+  }
+);
 
 export default function GamePage() {
   const [isLoading, setIsLoading] = useState(true);
