@@ -43,7 +43,6 @@ export default function PlayersMediaPanel({
         playerId={profile?.id || "local-player"}
         nickname={"나"}
         avatarUrl={PAWN_AVATAR_URL(profile?.avatarKey || "blue_pawn.png")}
-        isSpeaking={false}
         isLocalPlayer={true}
         stream={localMediaStream}
       />
@@ -70,7 +69,6 @@ function RemotePlayerMediaBox({ peerId, stream }: RemotePlayerMediaBoxProps) {
   return (
     <PlayerMediaBox
       playerId={peerId}
-      isSpeaking={false}
       isLocalPlayer={false}
       stream={stream ?? null}
     />

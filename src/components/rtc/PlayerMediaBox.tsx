@@ -2,6 +2,7 @@
 
 import { PAWN_AVATAR_URL } from "@/constants/image-path";
 import { playerStore } from "@/game/managers/player-store";
+import { useSpeakingDetector } from "@/hook/rtc/useSpeakingDetector";
 import { useIsMobile } from "@/hook/useIsMobile";
 import Image from "next/image";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -19,7 +20,6 @@ interface PlayerMediaBoxProps {
 
 export default function PlayerMediaBox({
   playerId,
-  isSpeaking = false,
   isLocalPlayer = false,
   nickname,
   avatarUrl,
@@ -28,7 +28,7 @@ export default function PlayerMediaBox({
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const [showWave, setShowWave] = useState(false);
+  const isSpeaking = useSpeakingDetector(stream, 10);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [volume, setVolume] = useState(0.5); // 기본 50%
@@ -42,10 +42,6 @@ export default function PlayerMediaBox({
   const player = playerStore.getPlayer(playerId)?.getPlayerInfo();
   const playerNickname = player?.nickname || "알 수 없음";
   const playerAvatarUrl = PAWN_AVATAR_URL(player?.avatarKey || "blue_pawn.png");
-
-  useEffect(() => {
-    setShowWave(Boolean(isSpeaking));
-  }, [isSpeaking]);
 
   // 스트림으로부터 비디오/오디오 상태 계산 & 이벤트 리스너
   useEffect(() => {
@@ -141,30 +137,21 @@ export default function PlayerMediaBox({
         }`}
       >
         <div
-          className={`relative ${
+          className={`relative border-4 ${
+            isSpeaking ? "border-blue-500" : "border-[#bfae96]"
+          } ${
             isFullscreen
               ? `${
                   isMobile ? "w-[95vw] aspect-square" : "w-[90vw] h-[80vh]"
-                } border-4 rounded-2xl border-[#bfae96] shadow-[8px_8px_0_#8c7a5c] pointer-events-auto cursor-pointer`
-              : `border-[#bfae96] shadow-[4px_4px_0_#8c7a5c] cursor-pointer hover:shadow-[6px_6px_0_#8c7a5c] transition-shadow duration-200 transform border-2 rounded-lg ${
+                } rounded-2xl shadow-[8px_8px_0_#8c7a5c] pointer-events-auto cursor-pointer`
+              : ` shadow-[4px_4px_0_#8c7a5c] cursor-pointer hover:shadow-[6px_6px_0_#8c7a5c] transition-shadow duration-200 transform rounded-lg ${
                   isMobile ? "w-28 h-24" : "w-40 h-32"
-                } ${
-                  showWave
-                    ? "border-pink-400 ring-4 ring-pink-300 ring-offset-2 ring-offset-[#fdf8ef] shadow-[6px_6px_0_#b97ea0] scale-105"
-                    : ""
-                }`
+                } `
           } bg-[#fdf8ef] overflow-hidden`}
           onClick={handleClick}
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
         >
-          {showWave && !isFullscreen && (
-            <>
-              <div className="absolute inset-0 rounded-lg border-2 border-pink-300 pointer-events-none animate-pulse opacity-80"></div>
-              <div className="absolute -top-1 -left-1 w-3 h-3 bg-pink-300 shadow-[2px_2px_0_#8c7a5c] animate-bounce"></div>
-            </>
-          )}
-
           <div className="relative w-full h-full">
             <video
               ref={videoRef}
