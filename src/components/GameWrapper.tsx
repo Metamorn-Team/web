@@ -337,26 +337,25 @@ export default function GameWrapper({
             onInviteModalOpen={onInviteModalOpen}
           />
           <MobileWarningBanner />
+
+          {/* RTC 컨트롤 패널 */}
+          <RtcPanel
+            camOn={isCamOn}
+            micOn={isMicOn}
+            openSettings={onRtcSettingModalOpen}
+            toggleCam={toggleCam}
+            toggleMic={toggleMic}
+          />
+          <PlayersMediaPanel
+            peerConnections={peerConnections}
+            peerMediaStreams={peerMediaStreams}
+            localMediaStream={localMediaStream}
+            className="fixed top-28 sm:top-32 right-3 sm:right-5"
+          />
         </>
       ) : null}
 
       <Game ref={gameRef} currentActiveScene={() => {}} />
-
-      {/* RTC 컨트롤 패널 */}
-      <RtcPanel
-        camOn={isCamOn}
-        micOn={isMicOn}
-        openSettings={onRtcSettingModalOpen}
-        toggleCam={toggleCam}
-        toggleMic={toggleMic}
-      />
-      {/* fixed top-[68px] sm:top-[76px] right-3 sm:right-5 */}
-      <PlayersMediaPanel
-        peerConnections={peerConnections}
-        peerMediaStreams={peerMediaStreams}
-        localMediaStream={localMediaStream}
-        className="fixed top-28 sm:top-32 right-3 sm:right-5"
-      />
 
       {isHelpModalOpen ? (
         <TalkModal
