@@ -326,7 +326,11 @@ export const useRtc = () => {
     socket.on("peerJoined", async ({ userId: peerId }) => {
       console.log(`[${peerId}] 피어 참여`);
       const pc = createPeerConnection(peerId);
-      // addLocalTracksToNewPeer(pc);
+
+      // 기존 로컬 스트림 트랙을 새로 생성한 peer connection에 추가
+      localMediaStreamRef.current.getTracks().forEach((track) => {
+        pc.addTrack(track, localMediaStreamRef.current);
+      });
 
       const offer = await pc.createOffer({
         offerToReceiveAudio: true,
