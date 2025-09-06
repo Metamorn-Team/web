@@ -4,32 +4,23 @@ import { useState, useRef, useEffect } from "react";
 import { AxiosError } from "axios";
 import { EventWrapper } from "@/game/event/EventBus";
 import { useModal } from "@/hook/useModal";
-import FriendModal from "@/components/FriendModal";
 import { Phaser } from "@/game/phaser";
 import { setItem } from "@/utils/session-storage";
 import TalkModal from "@/components/common/TalkModal";
 import { Npc } from "@/game/entities/npc/npc";
 import GoblinTorch from "@/components/common/GoblinTorch";
 import { UserInfo } from "@/types/socket-io/response";
-import PlayerInfoModal from "@/components/PlayerInfoModal";
 import { 지친_토치_고블린 } from "@/constants/game/talk-scripts";
 import LoginModal from "@/components/login/LoginModal";
 import { getMyProfile } from "@/api/user";
 import { persistItem } from "@/utils/persistence";
-import ChatPanel from "@/components/chat/ChatPanel";
 import { useAttackedSound } from "@/hook/useAttackedSound";
 import Alert from "@/utils/alert";
-import ParticipantPanel from "@/components/ParticipantsPanel";
-import SettingsModal from "@/components/SettingsModal";
 import IslandListModal from "@/components/islands/IslandListModal";
 import { ISLAND_SCENE, MY_ISLAND_SCENE } from "@/constants/game/islands/island";
-import ControlGuide from "@/components/ControlGuide";
-import HelpModal from "@/components/HelpModal";
-import IslandInfoModal from "@/components/IslandInfoModal";
 import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
 import MyIsland from "@/components/my-island/MyIsland";
 import { useCurrentSceneStore } from "@/stores/useCurrentSceneStore";
-import UpdateNoteModal from "@/components/UpdateNoteModal";
 import MobileWarningBanner from "./common/MobileWarningBanner";
 import HeaderSelector from "@/components/game/HeaderSelector";
 import InviteModal from "@/components/islands/InviteModal";
@@ -45,6 +36,7 @@ import PermissionModal from "@/components/rtc/PermissionModal";
 import { useRtc } from "@/hook/rtc/useRtc";
 import Game, { GameRef } from "@/components/Game";
 import RtcSettingsModal from "@/components/rtc/RtcSettingsModal";
+import CommonIslandModals from "@/components/islands/CommonIslandModals";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -68,11 +60,7 @@ export default function GameWrapper({
   });
   const { currentScene, setCurrentScene } = useCurrentSceneStore();
 
-  const {
-    isModalOpen: isLoginModalOpen,
-    onClose: onLoginModalClose,
-    onOpen: onLoginModalOpen,
-  } = useModal();
+  // NOTE COMMON
   const {
     isModalOpen: isFriendModalOpen,
     onOpen: onFriendModalOpen,
@@ -82,11 +70,6 @@ export default function GameWrapper({
     isModalOpen: isIslandInfoModalOpen,
     onOpen: onIslandInfoModalOpen,
     onClose: onIslandInfoModalClose,
-  } = useModal();
-  const {
-    isModalOpen: isHelpModalOpen,
-    onOpen: onHelpOpen,
-    onClose: onHelpClose,
   } = useModal();
   const {
     isModalOpen: isPlayerModalOpen,
@@ -108,12 +91,23 @@ export default function GameWrapper({
     onOpen: onUpdateOpen,
     onClose: onUpdateClose,
   } = useModal();
+  const [isVisibleChat, setIsVisibleChat] = useState(false);
+
+  const {
+    isModalOpen: isLoginModalOpen,
+    onClose: onLoginModalClose,
+    onOpen: onLoginModalOpen,
+  } = useModal();
+  const {
+    isModalOpen: isHelpModalOpen,
+    onOpen: onHelpOpen,
+    onClose: onHelpClose,
+  } = useModal();
   const {
     isModalOpen: isInviteModalOpen,
     onOpen: onInviteModalOpen,
     onClose: onInviteModalClose,
   } = useModal();
-  const [isVisibleChat, setIsVisibleChat] = useState(false);
   const {
     isModalOpen: isIslandListModalOpen,
     onClose: onIslandListModalClose,
@@ -315,8 +309,10 @@ export default function GameWrapper({
         </>
       ) : null}
 
+      {/* SCENE */}
       <Game ref={gameRef} currentActiveScene={() => {}} />
 
+      {/* NORMAL ONLY */}
       {isHelpModalOpen ? (
         <TalkModal
           onClose={onHelpClose}
@@ -325,25 +321,7 @@ export default function GameWrapper({
           comments={지친_토치_고블린}
         />
       ) : null}
-
-      {isFriendModalOpen ? <FriendModal onClose={onFriendClose} /> : null}
-
-      <IslandInfoModal
-        isOpen={isIslandInfoModalOpen}
-        onClose={onIslandInfoModalClose}
-      />
-
-      {isPlayerModalOpen ? (
-        <PlayerInfoModal onClose={onPlayerModalClose} playerInfo={playerInfo} />
-      ) : null}
-
       <LoginModal isOpen={isLoginModalOpen} onClose={onLoginModalClose} />
-
-      <SettingsModal
-        isOpen={isSettingsModalOpen}
-        onClose={onSettingsModalClose}
-      />
-
       {isIslandListModalOpen ? (
         <IslandListModal
           isOpen={isIslandListModalOpen}
@@ -356,18 +334,29 @@ export default function GameWrapper({
           }}
         />
       ) : null}
-      {isVisibleChat ? <ChatPanel /> : null}
-      {isVisibleChat ? <ParticipantPanel /> : null}
-      {<ControlGuide />}
-      {isDevModalOpen ? (
-        <HelpModal isOpen={isDevModalOpen} onClose={onDevClose} />
-      ) : null}
 
-      {isUpdateModalOpen ? (
-        <UpdateNoteModal isOpen={isUpdateModalOpen} onClose={onUpdateClose} />
-      ) : null}
+      {/* COMMON */}
+      <CommonIslandModals
+        playerInfo={playerInfo}
+        isVisibleChat={isVisibleChat}
+        isFriendModalOpen={isFriendModalOpen}
+        isIslandInfoModalOpen={isIslandInfoModalOpen}
+        isPlayerModalOpen={isPlayerModalOpen}
+        isSettingsModalOpen={isSettingsModalOpen}
+        isDevModalOpen={isDevModalOpen}
+        isUpdateModalOpen={isUpdateModalOpen}
+        onFriendClose={onFriendClose}
+        onIslandInfoModalClose={onIslandInfoModalClose}
+        onPlayerModalClose={onPlayerModalClose}
+        onSettingsModalClose={onSettingsModalClose}
+        onDevClose={onDevClose}
+        onUpdateClose={onUpdateClose}
+      />
 
+      {/* 내섬? */}
       {currentScene === MY_ISLAND_SCENE ? <MyIsland /> : null}
+
+      {/* PRIVATE ONLY */}
       <InviteModal
         isOpen={isInviteModalOpen}
         onClose={onInviteModalClose}
@@ -383,6 +372,7 @@ export default function GameWrapper({
         />
       ) : null}
 
+      {/* RTC */}
       {isPermissionModalOpen ? (
         <PermissionModal
           isOpen={isPermissionModalOpen}
