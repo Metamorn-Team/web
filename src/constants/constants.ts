@@ -1,4 +1,4 @@
-export const APP_VERSION = "1.4.0";
+export const APP_VERSION = "1.5.0";
 
 export const PRIVACY_POLICY_URL =
   "https://round-salto-95e.notion.site/18eb0c33dc0781d1a4c0dd3944b5b1e1?pvs=74";
