@@ -30,6 +30,7 @@ import Game, { GameRef } from "@/components/Game";
 import CommonIslandModals from "@/components/islands/CommonIslandModals";
 import DefaultIslandModals from "@/components/islands/DefaultIslandModals";
 import PrivateIslandModals from "@/components/islands/PrivateIslandModals";
+import { useDisableGameInputWhenOpen } from "@/hook/useDisableGameInputWhenOpen";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -124,6 +125,16 @@ export default function GameWrapper({
 
   const { data: profile } = useGetMyProfile();
   const { id: islandId } = useIslandStore();
+
+  // 모달 열릴 때 phaser 키 이벤트 비활성화
+  useDisableGameInputWhenOpen(
+    isHelpModalOpen,
+    isFriendModalOpen,
+    isPlayerModalOpen,
+    isLoginModalOpen,
+    isIslandListModalOpen,
+    isIslandInfoModalOpen
+  );
 
   const handleExitIsland = () => {
     socketManager.disconnect(SOCKET_NAMESPACES.ISLAND);
@@ -232,29 +243,6 @@ export default function GameWrapper({
     }
   }, [islandId, isLoading]);
 
-  // 로그인 모달 떠 있을 떄 phaser 키 이벤트 비활성화
-  useEffect(() => {
-    if (
-      isHelpModalOpen ||
-      isFriendModalOpen ||
-      isPlayerModalOpen ||
-      isLoginModalOpen ||
-      isIslandListModalOpen ||
-      isIslandInfoModalOpen
-    ) {
-      EventWrapper.emitToGame("disableGameInput");
-    } else {
-      EventWrapper.emitToGame("enableGameKeyboardInput");
-    }
-  }, [
-    isFriendModalOpen,
-    isHelpModalOpen,
-    isIslandListModalOpen,
-    isLoginModalOpen,
-    isPlayerModalOpen,
-    isIslandInfoModalOpen,
-  ]);
-
   // ----------------------- RTC -----------------------
 
   const {
@@ -318,6 +306,8 @@ export default function GameWrapper({
         onLoginModalClose={onLoginModalClose}
         onIslandListModalClose={onIslandListModalClose}
       />
+      {/* 내섬 */}
+      {currentScene === MY_ISLAND_SCENE ? <MyIsland /> : null}
 
       {/* COMMON */}
       <CommonIslandModals
@@ -336,9 +326,6 @@ export default function GameWrapper({
         onDevClose={onDevClose}
         onUpdateClose={onUpdateClose}
       />
-
-      {/* 내섬? */}
-      {currentScene === MY_ISLAND_SCENE ? <MyIsland /> : null}
 
       {/* PRIVATE ONLY */}
       <PrivateIslandModals
