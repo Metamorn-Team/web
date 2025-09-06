@@ -3,11 +3,11 @@
 import { useState, useRef, useEffect } from "react";
 import Pawn from "@/components/common/Pawn";
 import { useCheckPrivateIslandPassword } from "@/hook/queries/useCheckPrivateIslandPassword";
-import GameWrapper from "@/components/GameWrapper";
 import { useIslandStore } from "@/stores/useIslandStore";
 import { setItem } from "@/utils/session-storage";
 import { ISLAND_SCENE } from "@/constants/game/islands/island";
 import LoadingPage from "@/components/common/LoadingPage";
+import PrivateIslandGameWrapper from "@/components/PrivateIslandGameWrapper";
 
 export default function PasswordPage({ islandId }: { islandId: string }) {
   const { setIsland } = useIslandStore();
@@ -59,8 +59,7 @@ export default function PasswordPage({ islandId }: { islandId: string }) {
     return (
       <>
         {isGameLoading ? <LoadingPage message="섬으로 가는 중" /> : null}
-        <GameWrapper
-          type="private"
+        <PrivateIslandGameWrapper
           isLoading={isGameLoading}
           changeIsLoading={(state) => setIsGameLoading(state)}
         />

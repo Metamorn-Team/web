@@ -7,9 +7,9 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import PasswordPage from "./PasswordPage";
 import { useIslandStore } from "@/stores/useIslandStore";
-import GameWrapper from "@/components/GameWrapper";
 import { useIsLogined } from "@/hook/useIsLogined";
 import LoginModal from "@/components/login/LoginModal";
+import PrivateIslandGameWrapper from "@/components/PrivateIslandGameWrapper";
 
 export default function Wrapper() {
   const router = useRouter();
@@ -57,8 +57,7 @@ export default function Wrapper() {
   ) : (
     <>
       {isGameLoading ? <LoadingPage message="섬으로 가는 중" /> : null}
-      <GameWrapper
-        type="private"
+      <PrivateIslandGameWrapper
         isLoading={isGameLoading}
         changeIsLoading={(state) => setIsGameLoading(state)}
       />
