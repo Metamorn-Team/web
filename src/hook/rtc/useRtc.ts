@@ -55,12 +55,9 @@ export const useRtc = () => {
     const queued = pendingCandidatesRef.current.get(peerId) || [];
     if (queued.length === 0) return;
 
-    console.log(`[${peerId}] 큐에 있던 ICE 후보 ${queued.length}개 처리`);
-
     for (const candidate of queued) {
       try {
         await pc.addIceCandidate(new RTCIceCandidate(candidate));
-        console.log(`[${peerId}] ICE 후보 추가 성공`);
       } catch (err) {
         console.error(`[${peerId}] ICE 후보 추가 실패:`, err);
       }
@@ -75,27 +72,20 @@ export const useRtc = () => {
       return peerConnectionsRef.current.get(peerId)!;
     }
 
-    console.log(`[${peerId}] 새 PeerConnection 생성`);
     const pc = new RTCPeerConnection({
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
     });
 
     pc.onicecandidate = (e) => {
       if (e.candidate) {
-        console.log(`[${peerId}] ICE 후보 전송`);
-        socketRef.current?.emit("webrtcIceCandidateV2", {
+        socketRef.current?.emit("iceCandidate", {
           targetUserId: peerId,
           candidate: e.candidate,
         });
       }
     };
 
-    pc.onconnectionstatechange = () => {
-      console.log(`[${peerId}] Connection state:`, pc.connectionState);
-    };
-
     pc.ontrack = (event) => {
-      console.log(`[RTC][${peerId}] ontrack`, event);
       const remoteStreamFromEvent = event.streams && event.streams[0];
 
       setPeerMediaStreams((prev) => {
@@ -111,7 +101,6 @@ export const useRtc = () => {
           .some((t) => t.id === event.track.id);
         if (!exists) {
           remoteStream.addTrack(event.track);
-          console.log(`[RTC][${peerId}] 트랙 추가: ${event.track.kind}`);
         }
 
         // 트랙 종료 시 제거
@@ -124,7 +113,6 @@ export const useRtc = () => {
                 stream.removeTrack(event.track);
                 if (stream.getTracks().length === 0) {
                   copy.delete(peerId);
-                  console.log(`[RTC][${peerId}] 빈 스트림 제거`);
                 } else {
                   copy.set(peerId, stream);
                 }
@@ -137,10 +125,6 @@ export const useRtc = () => {
         };
 
         newMap.set(peerId, remoteStream);
-        console.log(
-          `[RTC][${peerId}] 스트림 업데이트, 총 트랙:`,
-          remoteStream.getTracks().length
-        );
 
         return newMap;
       });
@@ -159,15 +143,11 @@ export const useRtc = () => {
     // 큐에 있던 ICE 후보들 처리 (pc 생성 직후)
     const pending = pendingCandidatesRef.current.get(peerId);
     if (pending && pending.length > 0) {
-      console.log(
-        `[${peerId}] PeerConnection 생성 후 큐잉된 ICE 후보 ${pending.length}개 처리`
-      );
       // 약간의 지연 후 처리 (안정성을 위해)
       setTimeout(() => {
         pending.forEach(async (candidate) => {
           try {
             await pc.addIceCandidate(new RTCIceCandidate(candidate));
-            console.log(`[${peerId}] 큐잉된 ICE 후보 추가 성공`);
           } catch (err) {
             console.error(`[${peerId}] 큐잉된 ICE 후보 추가 실패:`, err);
           }
@@ -182,10 +162,9 @@ export const useRtc = () => {
   const handleNegotiation = useCallback(
     async (pc: RTCPeerConnection, peerId: string) => {
       try {
-        console.log(`[${peerId}] 재협상 시작`);
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);
-        socketRef.current?.emit("webrtcOffer", { offer, targetUserId: peerId });
+        socketRef.current?.emit("offer", { offer, targetUserId: peerId });
       } catch (err) {
         console.error(`[${peerId}] 재협상 실패:`, err);
       }
@@ -324,7 +303,6 @@ export const useRtc = () => {
     socketRef.current = socket;
 
     socket.on("peerJoined", async ({ userId: peerId }) => {
-      console.log(`[${peerId}] 피어 참여`);
       const pc = createPeerConnection(peerId);
 
       // 기존 로컬 스트림 트랙을 새로 생성한 peer connection에 추가
@@ -337,11 +315,10 @@ export const useRtc = () => {
         offerToReceiveVideo: true,
       });
       await pc.setLocalDescription(offer);
-      socket.emit("webrtcOffer", { offer, targetUserId: peerId });
+      socket.emit("offer", { offer, targetUserId: peerId });
     });
 
     socket.on("offer", async ({ from: peerId, sdp }) => {
-      console.log(`[${peerId}] Offer 수신`);
       const pc = createPeerConnection(peerId);
 
       await pc.setRemoteDescription(new RTCSessionDescription(sdp));
@@ -353,11 +330,10 @@ export const useRtc = () => {
         offerToReceiveVideo: true,
       });
       await pc.setLocalDescription(answer);
-      socket.emit("webrtcAnswer", { answer, targetUserId: peerId });
+      socket.emit("answer", { answer, targetUserId: peerId });
     });
 
     socket.on("answer", async ({ from: peerId, sdp }) => {
-      console.log(`[${peerId}] Answer 수신`);
       const pc = peerConnectionsRef.current.get(peerId);
       if (!pc) return;
 
@@ -367,22 +343,16 @@ export const useRtc = () => {
     });
 
     socket.on("iceCandidate", async ({ from: peerId, candidate }) => {
-      console.log(`[${peerId}] ICE 후보 수신`);
       const pc = peerConnectionsRef.current.get(peerId);
 
       if (pc && pc.remoteDescription) {
         // 즉시 추가 가능
         try {
           await pc.addIceCandidate(new RTCIceCandidate(candidate));
-          console.log(`[${peerId}] ICE 후보 즉시 추가 성공`);
         } catch (err) {
           console.error(`[${peerId}] ICE 후보 즉시 추가 실패:`, err);
         }
       } else {
-        // 큐에 저장
-        console.log(
-          `[${peerId}] ICE 후보 큐잉 (pc=${!!pc}, remoteDesc=${!!pc?.remoteDescription})`
-        );
         if (!pendingCandidatesRef.current.has(peerId)) {
           pendingCandidatesRef.current.set(peerId, []);
         }
@@ -391,7 +361,6 @@ export const useRtc = () => {
     });
 
     socket.on("peerLeft", ({ userId: peerId }) => {
-      console.log(`[${peerId}] 피어 퇴장`);
       const pc = peerConnectionsRef.current.get(peerId);
       if (pc) {
         pc.close();
@@ -406,17 +375,14 @@ export const useRtc = () => {
     });
 
     return () => {
-      console.log("RTC 정리 시작");
       localMediaStreamRef.current.getTracks().forEach((track) => track.stop());
 
-      peerConnectionsRef.current.forEach((pc, peerId) => {
-        console.log(`[${peerId}] PeerConnection 정리`);
+      peerConnectionsRef.current.forEach((pc) => {
         pc.close();
       });
       setPeerConnections(new Map());
 
-      peerMediaStreamsRef.current.forEach((stream, peerId) => {
-        console.log(`[${peerId}] MediaStream 정리`);
+      peerMediaStreamsRef.current.forEach((stream) => {
         stream.getTracks().forEach((track) => track.stop());
       });
       setPeerMediaStreams(new Map());
