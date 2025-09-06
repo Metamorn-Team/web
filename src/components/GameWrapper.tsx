@@ -2,8 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { AxiosError } from "axios";
-import Game, { GameRef } from "@/components/Game";
-// import MenuHeader from "@/components/MenuHeader";
 import { EventWrapper } from "@/game/event/EventBus";
 import { useModal } from "@/hook/useModal";
 import FriendModal from "@/components/FriendModal";
@@ -40,6 +38,13 @@ import { PATH } from "@/constants/path";
 import { socketManager } from "@/game/managers/socket-manager";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import RetroConfirmModalV2 from "@/components/common/RetroConfirmModalV2";
+import { useIslandStore } from "@/stores/useIslandStore";
+import RtcPanel from "@/components/rtc/RtcPanel";
+import PlayersMediaPanel from "@/components/rtc/PlayersMediaPanel";
+import PermissionModal from "@/components/rtc/PermissionModal";
+import { useRtc } from "@/hook/rtc/useRtc";
+import Game, { GameRef } from "@/components/Game";
+import RtcSettingsModal from "@/components/rtc/RtcSettingsModal";
 
 interface GameWrapperProps {
   isLoading: boolean;
@@ -120,8 +125,14 @@ export default function GameWrapper({
     onClose: onExitModalClose,
   } = useModal();
   useAttackedSound();
+  const {
+    isModalOpen: isRtcSettingModalOpen,
+    onOpen: onRtcSettingModalOpen,
+    onClose: onRtcSettingModalClose,
+  } = useModal();
 
   const { data: profile } = useGetMyProfile();
+  const { id: islandId } = useIslandStore();
 
   const handleExitIsland = () => {
     socketManager.disconnect(SOCKET_NAMESPACES.ISLAND);
@@ -223,6 +234,13 @@ export default function GameWrapper({
     };
   }, [gameRef]);
 
+  // 섬 입장 시 자동으로 RTC 방 참여
+  useEffect(() => {
+    if (islandId && !isLoading) {
+      // RTC 방 참여는 RtcProvider 내부에서 처리됨
+    }
+  }, [islandId, isLoading]);
+
   // 로그인 모달 떠 있을 떄 phaser 키 이벤트 비활성화
   useEffect(() => {
     if (
@@ -246,6 +264,24 @@ export default function GameWrapper({
     isIslandInfoModalOpen,
   ]);
 
+  // ----------------------- RTC -----------------------
+
+  const {
+    isCamOn,
+    isMicOn,
+    selectedMicId,
+    selectedCamId,
+    isPermissionModalOpen,
+    localMediaStream,
+    peerMediaStreams,
+    peerConnections,
+    toggleCam,
+    toggleMic,
+    onPermissionModalClose,
+    changeMicDevice,
+    changeCamDevice,
+  } = useRtc();
+
   return (
     <div>
       {!isLoading ? (
@@ -261,6 +297,21 @@ export default function GameWrapper({
             onInviteModalOpen={onInviteModalOpen}
           />
           <MobileWarningBanner />
+
+          {/* RTC 컨트롤 패널 */}
+          <RtcPanel
+            camOn={isCamOn}
+            micOn={isMicOn}
+            openSettings={onRtcSettingModalOpen}
+            toggleCam={toggleCam}
+            toggleMic={toggleMic}
+          />
+          <PlayersMediaPanel
+            peerConnections={peerConnections}
+            peerMediaStreams={peerMediaStreams}
+            localMediaStream={localMediaStream}
+            className="fixed top-28 sm:top-32 right-3 sm:right-5"
+          />
         </>
       ) : null}
 
@@ -329,6 +380,24 @@ export default function GameWrapper({
           onConfirm={handleExitIsland}
           title="섬을 떠나시겠어요?"
           modalClassName="!max-w-[320px]"
+        />
+      ) : null}
+
+      {isPermissionModalOpen ? (
+        <PermissionModal
+          isOpen={isPermissionModalOpen}
+          onClose={onPermissionModalClose}
+        />
+      ) : null}
+
+      {isRtcSettingModalOpen ? (
+        <RtcSettingsModal
+          selectedCamId={selectedCamId}
+          selectedMicId={selectedMicId}
+          isOpen={isRtcSettingModalOpen}
+          onClose={onRtcSettingModalClose}
+          changeMicDevice={changeMicDevice}
+          changeCamDevice={changeCamDevice}
         />
       ) : null}
     </div>
