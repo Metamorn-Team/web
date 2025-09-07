@@ -238,7 +238,11 @@ export const useRtc = () => {
     try {
       if (!isCamOn) {
         const constraints = selectedCamId
-          ? { video: { deviceId: { exact: selectedCamId } } }
+          ? {
+              video: {
+                deviceId: { exact: selectedCamId, width: 1280, height: 720 },
+              },
+            }
           : { video: true };
 
         const videoStream = await navigator.mediaDevices.getUserMedia(

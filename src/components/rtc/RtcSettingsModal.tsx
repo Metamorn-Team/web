@@ -143,7 +143,11 @@ export default function RtcSettingsModal({
         if (isCancelled) return;
 
         const constraints = selectedCamId
-          ? { video: { deviceId: { exact: selectedCamId } } }
+          ? {
+              video: {
+                deviceId: { exact: selectedCamId, width: 1280, height: 720 },
+              },
+            }
           : { video: true };
 
         console.log(
@@ -343,6 +347,14 @@ export default function RtcSettingsModal({
 
       {/* 카메라 프리뷰 */}
       <div className="mb-6">
+        <div className="flex items-center gap-2 mb-2">
+          <label className="text-sm font-bold text-[#5c4b36]">
+            카메라 미리보기
+          </label>
+          <label className="block text-xs font-semibold  text-gray-500">
+            미리보기는 다른 사람에겐 보이지 않아요!
+          </label>
+        </div>
         <video
           ref={videoRef}
           autoPlay

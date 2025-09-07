@@ -142,7 +142,7 @@ export default function PlayerMediaBox({
           } ${
             isFullscreen
               ? `${
-                  isMobile ? "w-[95vw] aspect-square" : "w-[90vw] h-[80vh]"
+                  isMobile ? "w-[95vw] aspect-square" : " h-[80vh] aspect-video"
                 } rounded-2xl shadow-[8px_8px_0_#8c7a5c] pointer-events-auto cursor-pointer`
               : ` shadow-[4px_4px_0_#8c7a5c] cursor-pointer hover:shadow-[6px_6px_0_#8c7a5c] transition-shadow duration-200 transform rounded-lg ${
                   isMobile ? "w-28 h-24" : "w-40 h-32"
@@ -152,11 +152,12 @@ export default function PlayerMediaBox({
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
         >
-          <div className="relative w-full h-full">
+          <div
+            className={`relative w-full h-full ${hasVideo ? "bg-black" : ""}`}
+          >
             <video
               ref={videoRef}
               autoPlay
-              playsInline
               muted
               className={`w-full h-full ${
                 isShowingScreenShare
