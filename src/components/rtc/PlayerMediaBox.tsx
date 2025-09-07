@@ -142,7 +142,9 @@ export default function PlayerMediaBox({
           } ${
             isFullscreen
               ? `${
-                  isMobile ? "w-[95vw] aspect-square" : " h-[80vh] aspect-video"
+                  isMobile
+                    ? "w-[95vw] aspect-square"
+                    : "h-[80vh] max-w-[90vw] aspect-video"
                 } rounded-2xl shadow-[8px_8px_0_#8c7a5c] pointer-events-auto cursor-pointer`
               : ` shadow-[4px_4px_0_#8c7a5c] cursor-pointer hover:shadow-[6px_6px_0_#8c7a5c] transition-shadow duration-200 transform rounded-lg ${
                   isMobile ? "w-28 h-24" : "w-40 h-32"
