@@ -234,7 +234,9 @@ export default function PlayerMediaBox({
               )}
 
               <div
-                className="w-5 h-5 rounded-full flex items-center justify-center"
+                className={`w-5 h-5 rounded-full flex items-center justify-center ${
+                  isFullscreen ? "absolute top-2 right-2" : ""
+                }`}
                 title="마이크"
               >
                 {hasAudio ? <MdMic color="green" /> : <MdMicOff color="red" />}
