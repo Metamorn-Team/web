@@ -95,7 +95,6 @@ export default function IslandListModal({
       const socket = socketManager.connect(SOCKET_NAMESPACES.ISLAND);
       if (socket) {
         socketRef.current = socket;
-        console.log(socket);
         socket.emit("getActiveIslands", query);
       }
     }
@@ -139,10 +138,6 @@ export default function IslandListModal({
       setIsRefreshing(false);
     }, 650);
   };
-
-  useEffect(() => {
-    console.log(query);
-  }, [query]);
 
   return (
     <>

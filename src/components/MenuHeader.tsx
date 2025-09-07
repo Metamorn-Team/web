@@ -168,7 +168,7 @@ export default function MenuHeader({
             open={menuOpen}
             onClose={() => setMenuOpen(false)}
             anchor={<MenuButton onClick={() => setMenuOpen((prev) => !prev)} />}
-            className="w-44 bg-[#fdf8ef] border border-[#bfae96] shadow-[4px_4px_0_#8c7a5c] p-2 flex flex-col gap-2 text-sm text-[#3d2c1b] animate-fadeIn rounded-[6px] sm:mt-2 z-50"
+            className="w-44 bg-[#fdf8ef] border border-[#bfae96] shadow-[4px_4px_0_#8c7a5c] p-2 flex flex-col gap-2 text-sm text-[#3d2c1b] animate-fadeIn rounded-[6px] sm:mt-2 z-[100]"
           >
             <DropdownItem
               icon={

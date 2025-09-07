@@ -70,7 +70,6 @@ const StoreGame = ({ ref, className }: StoreGameProps) => {
     // Cleanup function
     return () => {
       if (gameRef.current) {
-        console.log("StoreGame cleanup: destroying game instance");
         try {
           // SoundManager 완전 정리
           SoundManager.destroy();
@@ -116,7 +115,6 @@ const StoreGame = ({ ref, className }: StoreGameProps) => {
   useEffect(() => {
     return () => {
       if (gameRef.current) {
-        console.log("StoreGame unmount cleanup: destroying game instance");
         try {
           // SoundManager 완전 정리
           SoundManager.destroy();

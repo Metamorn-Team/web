@@ -67,7 +67,8 @@ const InviteModal = ({ isOpen, onClose, inviteUrl }: InviteModalProps) => {
           <Image
             src={"/images/pawn_friend.png"}
             fill
-            objectFit="cover"
+            sizes=""
+            className="object-cover"
             alt="친구"
           />
         </div>

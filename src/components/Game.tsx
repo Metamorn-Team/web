@@ -68,7 +68,6 @@ const Game = ({ ref }: GameProps) => {
     // Cleanup function
     return () => {
       if (gameRef.current) {
-        console.log("Game cleanup: destroying game instance");
         try {
           // SoundManager 완전 정리
           SoundManager.destroy();
@@ -114,7 +113,6 @@ const Game = ({ ref }: GameProps) => {
   useEffect(() => {
     return () => {
       if (gameRef.current) {
-        console.log("Game unmount cleanup: destroying game instance");
         try {
           // SoundManager 완전 정리
           SoundManager.destroy();

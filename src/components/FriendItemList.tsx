@@ -2,7 +2,6 @@ import ScrollView from "@/components/common/ScrollView";
 import FriendItem from "@/components/FriendItem";
 import { PAWN_AVATAR_URL } from "@/constants/image-path";
 import { useInfiniteGetFriends } from "@/hook/queries/useInfiniteGetFriends";
-import { useEffect } from "react";
 
 interface FriendItemListProps {
   className?: string;
@@ -17,10 +16,6 @@ export default function FriendItmeList({ className }: FriendItemListProps) {
     isLoading,
     hasNextPage,
   } = useInfiniteGetFriends({ limit: 10 });
-
-  useEffect(() => {
-    console.log(friends);
-  }, []);
 
   return (
     <ScrollView className={className}>

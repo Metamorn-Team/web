@@ -11,7 +11,6 @@ class TileMapManager {
   registerTileMap(scene: Phaser.Scene, mapKey: MapKeys) {
     this.scene = scene;
 
-    console.log(scene);
     const map = scene.make.tilemap({ key: mapKey });
 
     if (mapKey === "island") {

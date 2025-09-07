@@ -10,7 +10,6 @@ export default function MobileWarningBanner() {
       window.innerWidth < 768;
     const dismissed = getItem("seen_mobile_warning");
 
-    console.log(isMobile, dismissed);
     if (isMobile && !dismissed) {
       setIsVisible(true);
     }

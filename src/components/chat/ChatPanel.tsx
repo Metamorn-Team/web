@@ -255,7 +255,7 @@ export default function ChatPanel() {
 
   return (
     <div
-      className={`fixed z-30 transition-all duration-300 ease-in-out
+      className={`fixed z-20 transition-all duration-300 ease-in-out
     ${
       isMobile
         ? "bottom-0 left-0 w-full"

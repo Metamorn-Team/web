@@ -74,8 +74,6 @@ export class StoreScene extends MetamornScene {
 
   listenEvent() {
     EventWrapper.onGameEvent("tryOnProduct", (type, key) => {
-      console.log(key);
-      console.log(type);
       if (type === "AURA") {
         this.player.setAura(key);
       }

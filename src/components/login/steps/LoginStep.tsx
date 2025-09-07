@@ -72,7 +72,6 @@ const LoginStep = ({ nextStep, onSuccessLogin }: LoginStepProps) => {
               if (e instanceof AxiosError) {
                 const body = e.response?.data;
                 if (isErrorUserInfo(body)) {
-                  console.log(body);
                   if (body.error === "PROVIDER_CONFLICT") {
                     Alert.info(
                       `이미 ${mapProvider(body.provider)}로 가입되어 있어요!`
@@ -104,7 +103,6 @@ const LoginStep = ({ nextStep, onSuccessLogin }: LoginStepProps) => {
               if (e instanceof AxiosError) {
                 const body = e.response?.data;
                 if (isErrorUserInfo(body)) {
-                  console.log(body);
                   if (body.error === "PROVIDER_CONFLICT") {
                     window.Kakao.Auth.logout();
                     Alert.info(

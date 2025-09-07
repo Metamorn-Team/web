@@ -121,7 +121,6 @@ function NormalIslandInfo({ islandId }: { islandId: string }) {
     if (!socket) return;
 
     const { data, hasChanged } = validateUpdatedIslandData();
-    console.log("validateUpdatedIslandData", data, hasChanged);
 
     if (hasChanged) {
       socket.emit("updateIslandInfo", data);
@@ -182,8 +181,6 @@ function NormalIslandInfo({ islandId }: { islandId: string }) {
       });
     }
   }, [island]);
-
-  console.log("island", island);
 
   if (isLoading) return <div className="text-[#3d2c1b]">로딩 중...</div>;
   if (!island)

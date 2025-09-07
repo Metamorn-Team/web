@@ -36,20 +36,15 @@ export default function RtcSettingsModal({
 
   /** 공통 정리 함수 */
   const clearResources = async () => {
-    console.log("clearResources called");
-
     // 1. 애니메이션 루프 종료
     if (animationRef.current) {
-      console.log("Cancelling animation frame", animationRef.current);
       cancelAnimationFrame(animationRef.current);
       animationRef.current = 0;
     }
 
     // 2. 마이크 스트림 종료
     if (micStreamRef.current) {
-      console.log("Stopping mic tracks");
       micStreamRef.current.getTracks().forEach((track) => {
-        console.log("Stopping mic track", track.kind, track.readyState);
         track.stop();
       });
       micStreamRef.current = null;
@@ -57,9 +52,7 @@ export default function RtcSettingsModal({
 
     // 3. AudioContext 정리
     if (audioCtxRef.current) {
-      console.log("Closing AudioContext");
       if (analyserRef.current) {
-        console.log("Disconnecting analyser");
         analyserRef.current.disconnect();
         analyserRef.current = null;
       }
@@ -69,9 +62,7 @@ export default function RtcSettingsModal({
 
     // 4. 카메라 스트림 종료
     if (previewStreamRef.current) {
-      console.log("Stopping preview tracks");
       previewStreamRef.current.getTracks().forEach((track) => {
-        console.log("Stopping camera track", track.kind, track.readyState);
         track.stop();
       });
       previewStreamRef.current = null;
@@ -79,13 +70,11 @@ export default function RtcSettingsModal({
 
     // 5. 비디오 엘리먼트 srcObject 제거
     if (videoRef.current) {
-      console.log("Removing video srcObject");
       videoRef.current.srcObject = null;
     }
 
     // 6. 브라우저가 리소스를 완전히 해제할 시간을 줌
     await new Promise((resolve) => setTimeout(resolve, 100));
-    console.log("Resources cleared");
   };
 
   /** 닫기 핸들러 (자원 정리 포함) */
@@ -96,10 +85,8 @@ export default function RtcSettingsModal({
 
   // 모달 열림/닫힘 시 디바이스 초기화
   useEffect(() => {
-    console.log("Modal isOpen:", isOpen);
     if (isOpen) {
       navigator.mediaDevices.enumerateDevices().then((all) => {
-        console.log("Devices found:", all);
         setDevices(all);
       });
     } else {
@@ -107,7 +94,6 @@ export default function RtcSettingsModal({
     }
 
     return () => {
-      console.log("Component unmount or modal change cleanup");
       clearResources();
     };
   }, [isOpen]);
@@ -123,9 +109,7 @@ export default function RtcSettingsModal({
       try {
         // 이전 스트림 정리
         if (previewStreamRef.current) {
-          console.log("Stopping previous camera tracks before setup");
           previewStreamRef.current.getTracks().forEach((track) => {
-            console.log("Stopping track:", track.kind, track.readyState);
             track.stop();
           });
           previewStreamRef.current = null;
@@ -150,10 +134,6 @@ export default function RtcSettingsModal({
             }
           : { video: true };
 
-        console.log(
-          "Creating new camera stream with constraints:",
-          constraints
-        );
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
 
         // 취소되었다면 새로 생성된 스트림도 바로 정리
@@ -162,7 +142,6 @@ export default function RtcSettingsModal({
           return;
         }
 
-        console.log("Camera stream obtained", stream);
         previewStreamRef.current = stream;
         setHasCamPermission(true);
 
@@ -180,16 +159,10 @@ export default function RtcSettingsModal({
     setupCamPreview();
 
     return () => {
-      console.log("Cleaning up camera effect");
       isCancelled = true; // 취소 플래그 설정
 
       if (previewStreamRef.current) {
         previewStreamRef.current.getTracks().forEach((track) => {
-          console.log(
-            "Stopping camera track in effect cleanup",
-            track.kind,
-            track.readyState
-          );
           track.stop();
         });
         previewStreamRef.current = null;
@@ -212,17 +185,12 @@ export default function RtcSettingsModal({
       try {
         // 이전 스트림 정리
         if (micStreamRef.current) {
-          console.log("Stopping previous mic tracks before setup");
           micStreamRef.current.getTracks().forEach((track) => track.stop());
           micStreamRef.current = null;
         }
 
         // 이전 애니메이션 정리
         if (animationRef.current) {
-          console.log(
-            "Cancelling previous animation frame before setup",
-            animationRef.current
-          );
           cancelAnimationFrame(animationRef.current);
           animationRef.current = 0;
         }
@@ -247,7 +215,6 @@ export default function RtcSettingsModal({
           ? { audio: { deviceId: { exact: selectedMicId } } }
           : { audio: true };
 
-        console.log("Creating new mic stream with constraints:", constraints);
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
 
         // 취소되었다면 새로 생성된 스트림도 바로 정리
@@ -256,7 +223,6 @@ export default function RtcSettingsModal({
           return;
         }
 
-        console.log("Mic stream obtained", stream);
         micStreamRef.current = stream;
         setHasMicPermission(true);
 
@@ -306,26 +272,16 @@ export default function RtcSettingsModal({
     setupMicTest();
 
     return () => {
-      console.log("Cleaning up mic effect");
       isCancelled = true; // 취소 플래그 설정
 
       if (micStreamRef.current) {
         micStreamRef.current.getTracks().forEach((track) => {
-          console.log(
-            "Stopping mic track in effect cleanup",
-            track.kind,
-            track.readyState
-          );
           track.stop();
         });
         micStreamRef.current = null;
       }
 
       if (animationRef.current) {
-        console.log(
-          "Cancelling animation frame in mic cleanup",
-          animationRef.current
-        );
         cancelAnimationFrame(animationRef.current);
         animationRef.current = 0;
       }
