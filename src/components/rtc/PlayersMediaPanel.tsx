@@ -29,7 +29,7 @@ export default function PlayersMediaPanel({
   return (
     <div
       className={classNames(
-        `fixed z-30 pb-2 ${
+        `fixed z-40 pb-2 ${
           isMobile
             ? "left-3 flex gap-2 overflow-x-scroll scrollbar-hide"
             : "top-4 right-4 space-y-4"
