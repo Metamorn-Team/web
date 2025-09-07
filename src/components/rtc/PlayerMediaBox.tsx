@@ -161,6 +161,7 @@ export default function PlayerMediaBox({
               ref={videoRef}
               autoPlay
               muted
+              playsInline
               className={`w-full h-full ${
                 isShowingScreenShare
                   ? "object-contain bg-black"
