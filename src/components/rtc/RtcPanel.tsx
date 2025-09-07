@@ -28,7 +28,7 @@ export default function RtcPanel({
 
   return (
     <div
-      className={`fixed z-40 ${
+      className={`fixed z-50 ${
         isMobile
           ? "top-16 left-3"
           : "bottom-4 left-1/2 transform -translate-x-1/2"
