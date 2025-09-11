@@ -79,7 +79,10 @@ export const useRtc = () => {
       iceServers: [
         { urls: "stun:stun.l.google.com:19302" },
         {
-          urls: [process.env.NEXT_PUBLIC_TURN_SERVER_URL],
+          urls: [
+            process.env.NEXT_PUBLIC_TURN_SERVER_URL1,
+            process.env.NEXT_PUBLIC_TURN_SERVER_URL2,
+          ],
           username: credentials?.username || "",
           credential: credentials?.password || "",
         },
