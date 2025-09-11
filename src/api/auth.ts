@@ -1,6 +1,6 @@
 import { http } from "@/api/http";
 import { AdditionalRegisterData, BaseRegisterDate } from "@/api/user";
-import { RegisterRequest, RegisterResponse } from "mmorntype";
+import { RegisterRequest, RegisterResponse, TurnAuthResponse } from "mmorntype";
 
 export type RegisterPayload = BaseRegisterDate & AdditionalRegisterData;
 
@@ -32,12 +32,15 @@ export const refreshAuthToken = async () => {
   return await http.post("/auth/token");
 };
 
-export const getTurnCredentials = async () => {
-  try {
-    const response = await http.get("/auth/turn-credentials");
-    return response.data;
-  } catch (err) {
-    console.error("TURN credentials fetch failed:", err);
-    return null;
-  }
-};
+export const getTurnCredentials =
+  async (): Promise<TurnAuthResponse | null> => {
+    try {
+      const response = await http.get<TurnAuthResponse>(
+        "/auth/turn-credentials"
+      );
+      return response.data;
+    } catch (err) {
+      console.error("TURN credentials fetch failed:", err);
+      return null;
+    }
+  };

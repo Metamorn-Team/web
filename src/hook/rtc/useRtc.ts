@@ -74,15 +74,14 @@ export const useRtc = () => {
     }
 
     const credentials = await getTurnCredentials();
-    const { username, password } = credentials;
 
     const pc = new RTCPeerConnection({
       iceServers: [
         { urls: "stun:stun.l.google.com:19302" },
         {
           urls: [process.env.NEXT_PUBLIC_TURN_SERVER_URL],
-          username,
-          credential: password,
+          username: credentials?.username || "",
+          credential: credentials?.password || "",
         },
       ],
     });
