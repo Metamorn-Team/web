@@ -1,3 +1,4 @@
+import { getTurnCredentials } from "@/api/auth";
 import { SOCKET_NAMESPACES } from "@/constants/socket/namespaces";
 import { socketManager } from "@/game/managers/socket-manager";
 import { useModal } from "@/hook/useModal";
@@ -66,14 +67,24 @@ export const useRtc = () => {
     pendingCandidatesRef.current.delete(peerId);
   }, []);
 
-  const createPeerConnection = useCallback((peerId: string) => {
+  const createPeerConnection = useCallback(async (peerId: string) => {
     // 이미 존재하는 경우 반환
     if (peerConnectionsRef.current.has(peerId)) {
       return peerConnectionsRef.current.get(peerId)!;
     }
 
+    const credentials = await getTurnCredentials();
+    const { username, password } = credentials;
+
     const pc = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+      iceServers: [
+        { urls: "stun:stun.l.google.com:19302" },
+        {
+          urls: [process.env.NEXT_PUBLIC_TURN_SERVER_URL],
+          username,
+          credential: password,
+        },
+      ],
     });
 
     pc.onicecandidate = (e) => {
@@ -307,7 +318,7 @@ export const useRtc = () => {
     socketRef.current = socket;
 
     socket.on("peerJoined", async ({ userId: peerId }) => {
-      const pc = createPeerConnection(peerId);
+      const pc = await createPeerConnection(peerId);
 
       // 기존 로컬 스트림 트랙을 새로 생성한 peer connection에 추가
       localMediaStreamRef.current.getTracks().forEach((track) => {
@@ -323,7 +334,7 @@ export const useRtc = () => {
     });
 
     socket.on("offer", async ({ from: peerId, sdp }) => {
-      const pc = createPeerConnection(peerId);
+      const pc = await createPeerConnection(peerId);
 
       await pc.setRemoteDescription(new RTCSessionDescription(sdp));
       // remote description 설정 후 큐 플러시

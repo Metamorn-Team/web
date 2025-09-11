@@ -31,3 +31,13 @@ export async function register(
 export const refreshAuthToken = async () => {
   return await http.post("/auth/token");
 };
+
+export const getTurnCredentials = async () => {
+  try {
+    const response = await http.get("/auth/turn-credentials");
+    return response.data;
+  } catch (err) {
+    console.error("TURN credentials fetch failed:", err);
+    return null;
+  }
+};
