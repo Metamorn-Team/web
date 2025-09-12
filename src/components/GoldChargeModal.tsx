@@ -9,20 +9,18 @@ import Alert from "@/utils/alert";
 import classNames from "classnames";
 import { FiArrowLeft } from "react-icons/fi";
 
+interface GoldChargeProduct {
+  id: string;
+  amount: number;
+  price: number;
+}
+
 interface GoldChargeModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentGold: number;
+  products: GoldChargeProduct[];
 }
-
-const PRESETS = [
-  { gold: 100, value: 1100 },
-  { gold: 500, value: 5500 },
-  { gold: 1000, value: 11000 },
-  { gold: 3000, value: 33000 },
-  { gold: 5000, value: 55000 },
-  { gold: 10000, value: 110000 },
-];
 
 const PAYMENT_METHODS = [
   {
@@ -44,6 +42,7 @@ export default function GoldChargeModal({
   isOpen,
   onClose,
   currentGold,
+  products,
 }: GoldChargeModalProps) {
   const [step, setStep] = useState<"select" | "confirm">("select");
   const [price, setPrice] = useState(0);
@@ -92,6 +91,7 @@ export default function GoldChargeModal({
             totalPrice={totalPrice}
             chargedGold={chargedGold}
             setStep={setStep}
+            products={products}
           />
         )}
 
@@ -120,6 +120,7 @@ interface SelectStepProps {
   totalPrice: number;
   chargedGold: number;
   setStep: (step: "select" | "confirm") => void;
+  products: GoldChargeProduct[];
 }
 
 function SelectStep({
@@ -131,6 +132,7 @@ function SelectStep({
   totalPrice,
   chargedGold,
   setStep,
+  products,
 }: SelectStepProps) {
   return (
     <div className="flex flex-col gap-8">
@@ -142,26 +144,26 @@ function SelectStep({
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        {PRESETS.map((preset) => (
+        {products.map((preset) => (
           <button
-            key={preset.value}
+            key={preset.id}
             onClick={() => {
-              setPrice(preset.value);
-              setGold(preset.gold);
+              setPrice(preset.price);
+              setGold(preset.amount);
             }}
             className={classNames(
               "rounded-lg p-3 border flex flex-col items-center bg-white hover:shadow-md transition",
-              price === preset.value
+              price === preset.price
                 ? "border-yellow-600 bg-yellow-50 ring-2 ring-yellow-400"
                 : "border-[#d6c6aa]"
             )}
           >
             <Image src="/game/ui/gold.png" alt="gold" width={36} height={36} />
             <span className="font-bold text-sm mt-2 text-[#3d2c1b]">
-              {preset.gold.toLocaleString()} G
+              {preset.amount.toLocaleString()} G
             </span>
             <span className="text-sm text-[#7b6c57] mt-1">
-              {preset.value.toLocaleString()}원
+              {preset.price.toLocaleString()}원
             </span>
           </button>
         ))}

@@ -31,6 +31,7 @@ import { persistItem } from "@/utils/persistence";
 import Footer from "@/components/common/Footer";
 import GoldChargeModal from "@/components/GoldChargeModal";
 import LoginModal from "@/components/login/LoginModal";
+import { useGetAllGoldPaymentProduct } from "@/hook/queries/useGetAllGoldChargePaymentProduct";
 
 const DynamicStoreGame = dynamic(() => import("@/components/StoreGame"), {
   ssr: false,
@@ -75,6 +76,11 @@ export default function StoreGameWrapper({ isLogined }: StoreGameWrapperProps) {
   };
 
   // 로그인한 경우에만 API 호출
+  const { data: goldChargeProducts } = useGetAllGoldPaymentProduct({
+    enabled: isLogined,
+  });
+  console.log(isLogined);
+  console.log(goldChargeProducts);
   const { promotions } = useGetAllPromotion({ enabled: isLogined });
   const { data: gold } = useGetGoldBalance({ enabled: isLogined });
 
@@ -480,6 +486,7 @@ export default function StoreGameWrapper({ isLogined }: StoreGameWrapperProps) {
         isOpen={isGoldChargeModalOpen}
         onClose={onGoldChargeModalClose}
         currentGold={gold?.goldBalance ?? 0}
+        products={goldChargeProducts?.products || []}
       />
       <LoginModal isOpen={isLoginModalOpen} onClose={onLoginModalClose} />
     </div>
