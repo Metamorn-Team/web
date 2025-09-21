@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import RetroHeader from "@/components/common/header/RetroHeader";
 import Dropdown from "@/components/common/dropdown/Dropdown";
 import DropdownItem from "@/components/common/dropdown/DropdownItem";
@@ -25,6 +25,7 @@ import Alert from "@/utils/alert";
 import FriendButton from "../common/header/FriendButton";
 import { useFriendEvent } from "@/hook/useFriendEvent";
 import { useGetUnreadFriendRequest } from "@/hook/queries/useGetUnreadFriendRequest";
+import { SoundManager } from "@/game/managers/sound-manager";
 
 interface PrivateIslandHeaderProps {
   onFriendModalOpen: () => void;
@@ -68,6 +69,14 @@ export default function PrivateIslandHeader({
 
   // TODO 상태 검증 필요
   const isLogined = !!getItem("access_token");
+
+  useEffect(() => {
+    const isPlayBgm = getItem("play_bgm") ?? true;
+
+    if (!isPlayBgm) {
+      SoundManager.getInstance().pauseBgm();
+    }
+  }, []);
 
   return (
     <RetroHeader
