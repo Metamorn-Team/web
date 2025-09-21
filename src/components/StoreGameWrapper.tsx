@@ -79,8 +79,6 @@ export default function StoreGameWrapper({ isLogined }: StoreGameWrapperProps) {
   const { data: goldChargeProducts } = useGetAllGoldPaymentProduct({
     enabled: isLogined,
   });
-  console.log(isLogined);
-  console.log(goldChargeProducts);
   const { promotions } = useGetAllPromotion({ enabled: isLogined });
   const { data: gold } = useGetGoldBalance({ enabled: isLogined });
 
