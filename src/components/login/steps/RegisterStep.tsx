@@ -95,7 +95,12 @@ const RegisterStep = ({ onSuccessLogin }: RegisterStepProps) => {
       clear();
     } catch (e) {
       if (e instanceof AxiosError) {
-        // setError(e.response?.data.message || "가입 실패");
+        if (e.status === 409) {
+          setIsVisibleErrorText((curr) => ({
+            ...curr,
+            tag: "이미 사용중인 태그에요..",
+          }));
+        }
       }
     } finally {
       setIsSubmitting(false);
