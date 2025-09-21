@@ -6,5 +6,6 @@ declare namespace NodeJS {
     NEXT_PUBLIC_KAKAO_APP_KEY: string;
     NEXT_PUBLIC_TURN_SERVER_URL1: string;
     NEXT_PUBLIC_TURN_SERVER_URL2: string;
+    NEXT_PUBLIC_TURN_SERVER_URL3: string;
   }
 }

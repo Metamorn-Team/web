@@ -82,6 +82,7 @@ export const useRtc = () => {
           urls: [
             process.env.NEXT_PUBLIC_TURN_SERVER_URL1,
             process.env.NEXT_PUBLIC_TURN_SERVER_URL2,
+            process.env.NEXT_PUBLIC_TURN_SERVER_URL3,
           ],
           username: credentials?.username || "",
           credential: credentials?.password || "",
