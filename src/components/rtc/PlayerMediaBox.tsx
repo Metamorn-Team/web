@@ -132,7 +132,7 @@ export default function PlayerMediaBox({
       <div
         className={`${
           isFullscreen
-            ? "fixed inset-0 flex items-center justify-center pointer-events-none"
+            ? "fixed inset-0 flex items-center justify-center pointer-events-none z-50"
             : ""
         }`}
       >

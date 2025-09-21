@@ -20,63 +20,7 @@ import { Header } from "@/components/common/Header";
 import LogoutConfirmModal from "@/components/LogoutConfirmModal";
 import { getTimeOfDay, TimeOfDay } from "@/utils/date";
 import { PATH } from "@/constants/path";
-
-// 고정된 Pawn 배치 정의
-const FIXED_PAWNS = [
-  {
-    id: 1,
-    color: "blue" as PawnColor,
-    top: 25,
-    left: 20,
-    size: 0.8,
-    opacity: 0.25,
-  },
-  {
-    id: 2,
-    color: "purple" as PawnColor,
-    top: 35,
-    left: 65,
-    size: 0.9,
-    opacity: 0.2,
-  },
-  {
-    id: 3,
-    color: "red" as PawnColor,
-    top: 55,
-    left: 15,
-    size: 0.7,
-    opacity: 0.3,
-  },
-  {
-    id: 4,
-    color: "yellow" as PawnColor,
-    top: 65,
-    left: 70,
-    size: 0.85,
-    opacity: 0.15,
-  },
-  {
-    id: 5,
-    color: "forest_green" as PawnColor,
-    top: 80,
-    left: 25,
-    size: 0.8,
-    opacity: 0.2,
-  },
-  {
-    id: 6,
-    color: "orange" as PawnColor,
-    top: 90,
-    left: 60,
-    size: 0.9,
-    opacity: 0.25,
-  },
-];
-
-// 고정된 Pawn 생성 함수
-const generateFixedPawns = () => {
-  return FIXED_PAWNS;
-};
+import { FaMicrophone, FaVideo } from "react-icons/fa";
 
 const getBackgroundStyle = (timeOfDay: string) => {
   switch (timeOfDay) {
@@ -199,7 +143,7 @@ export default function MainPage() {
     );
 
     // 배경 Pawn들 생성
-    setBackgroundPawns(generateFixedPawns());
+    setBackgroundPawns(FIXED_PAWNS);
   }, []);
 
   // 시간대 업데이트
@@ -323,7 +267,10 @@ export default function MainPage() {
               hover
               className="transition-all duration-1000"
             >
-              <div className="flex flex-col items-center gap-4 p-6">
+              {/* 뱃지 */}
+              <BadgeList />
+
+              <div className="flex flex-col items-center gap-4 px-6 py-12">
                 <div className="flex gap-2">
                   <Pawn color="blue" animation="run" className="w-12 h-12" />
                   <Pawn color="purple" animation="run" className="w-12 h-12" />
@@ -336,12 +283,14 @@ export default function MainPage() {
                   >
                     친구와 함께하기
                   </h3>
+
                   <p
                     className="text-sm mb-4 transition-colors duration-1000"
                     style={{ color: backgroundStyle.secondaryTextColor }}
                   >
-                    내가 만든 섬에서 친구들과 함께
+                    우리들만의 비밀섬에서 친구들과 함께
                   </p>
+
                   <GlassButton
                     onClick={handlePlayWithFriends}
                     variant="auto"
@@ -362,7 +311,7 @@ export default function MainPage() {
               hover
               className="transition-all duration-1000"
             >
-              <div className="flex flex-col items-center gap-4 p-6">
+              <div className="flex flex-col items-center gap-4 px-6 py-8">
                 <div className="flex justify-center">
                   <Pawn
                     color={randomPawnColor}
@@ -381,7 +330,7 @@ export default function MainPage() {
                     className="text-sm mb-4 transition-colors duration-1000"
                     style={{ color: backgroundStyle.secondaryTextColor }}
                   >
-                    다른 사람들의 섬에서 새로운 친구를 만나요
+                    무인도에서 새로운 친구들과 함께
                   </p>
                   <GlassButton
                     onClick={handleMeetNewFriends}
@@ -405,8 +354,10 @@ export default function MainPage() {
             className="text-center mt-8 text-base transition-colors duration-1000"
             style={{ color: backgroundStyle.secondaryTextColor }}
           >
-            <p className="mb-2">✨ 친구들과 함께하는 평화로운 섬 여행</p>
-            <p>🎮 새로운 모험과 추억을 만들어보세요</p>
+            <p className="mb-2">
+              ✨ 친구들과 함께 우리만의 공간에서 시간을 보내요
+            </p>
+            <p>🌿 다양한 사람들과 만나고, 추억을 만들어보세요</p>
           </div>
         </div>
 
@@ -436,3 +387,91 @@ export default function MainPage() {
     </main>
   );
 }
+
+const BadgeList = () => {
+  const badges = [
+    { label: "NEW", bgColor: "#ff8fb1" },
+    { label: "추천", bgColor: "#ffb86c" },
+    {
+      label: (
+        <>
+          <FaVideo className="inline mb-0.5" /> 화상채팅
+        </>
+      ),
+      bgColor: "#3ddc97",
+    },
+    {
+      label: (
+        <>
+          <FaMicrophone className="inline mb-0.5" /> 음성채팅
+        </>
+      ),
+      bgColor: "#a28aff",
+    },
+  ];
+
+  return (
+    <div className="absolute top-2 left-2 flex gap-1">
+      {badges.map((badge, idx) => (
+        <span
+          key={idx}
+          className="text-white text-xs font-bold px-2 py-0.5 rounded-full shadow"
+          style={{ backgroundColor: badge.bgColor }}
+        >
+          {badge.label}
+        </span>
+      ))}
+    </div>
+  );
+};
+
+const FIXED_PAWNS = [
+  {
+    id: 1,
+    color: "blue" as PawnColor,
+    top: 25,
+    left: 20,
+    size: 0.8,
+    opacity: 0.25,
+  },
+  {
+    id: 2,
+    color: "purple" as PawnColor,
+    top: 35,
+    left: 65,
+    size: 0.9,
+    opacity: 0.2,
+  },
+  {
+    id: 3,
+    color: "red" as PawnColor,
+    top: 55,
+    left: 15,
+    size: 0.7,
+    opacity: 0.3,
+  },
+  {
+    id: 4,
+    color: "yellow" as PawnColor,
+    top: 65,
+    left: 70,
+    size: 0.85,
+    opacity: 0.15,
+  },
+  {
+    id: 5,
+    color: "forest_green" as PawnColor,
+    top: 80,
+    left: 25,
+    size: 0.8,
+    opacity: 0.2,
+  },
+  {
+    id: 6,
+    color: "orange" as PawnColor,
+    top: 90,
+    left: 60,
+    size: 0.9,
+    opacity: 0.25,
+  },
+];
