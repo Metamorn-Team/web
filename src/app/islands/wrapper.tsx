@@ -24,6 +24,12 @@ import { PATH } from "@/constants/path";
 import { getBackgroundStyle } from "@/styles/time-of-date-style";
 import IslandCardList from "@/components/my-island/IslandCardList";
 import ErrorFallback from "@/components/common/ErrorFallback";
+import { useModal } from "@/hook/useModal";
+import LoginModal from "@/components/login/LoginModal";
+import LogoutConfirmModal from "@/components/LogoutConfirmModal";
+import { removeItem } from "@/utils/persistence";
+import { QUERY_KEY as GET_MY_PROFILE_QUERY_KEY } from "@/hook/queries/useGetMyProfile";
+import { QUERY_KEY as ISLAND_LIST_QUERY_KEY } from "@/hook/queries/useGetPaginatedPrivateIsland";
 
 // 고정된 Pawn 배치 정의
 const FIXED_PAWNS = [
@@ -98,20 +104,38 @@ export default function Wrapper() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { data: profile } = useGetMyProfile();
-  const logoutMutation = useLogout(
+  const isLogined = !!profile;
+  const { mutate: logoutMutate } = useLogout(
     () => {
-      queryClient.clear();
-      router.push("/");
+      if (window.Kakao && window.Kakao.isInitialized()) {
+        window.Kakao.Auth.logout();
+      }
+
+      removeItem("access_token");
+      removeItem("profile");
+
+      // profile 관련 캐시만 초기화
+      queryClient.removeQueries({ queryKey: [GET_MY_PROFILE_QUERY_KEY] });
+      queryClient.setQueryData([GET_MY_PROFILE_QUERY_KEY], null);
+      queryClient.removeQueries({ queryKey: [ISLAND_LIST_QUERY_KEY] });
     },
-    () => {
-      Alert.error("로그아웃 중 오류가 발생했습니다.");
-    }
+    () => Alert.error("로그아웃에 실패했어요.. 나중에 다시 시도해주세요.")
   );
 
   const [timeOfDay, setTimeOfDay] = useState(getTimeOfDay());
   const backgroundStyle = getBackgroundStyle(timeOfDay);
   const [fixedPawns] = useState(generateFixedPawns());
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const {
+    isModalOpen: isOpenLoginModal,
+    onOpen: onOpenLoginModal,
+    onClose: onCloseLoginModal,
+  } = useModal();
+  const {
+    isModalOpen: isOpenLogoutConfirmModal,
+    onOpen: onOpenLogoutConfirmModal,
+    onClose: onCloseLogoutConfirmModal,
+  } = useModal();
 
   useEffect(() => {
     const updateTimeOfDay = () => {
@@ -135,8 +159,13 @@ export default function Wrapper() {
     window.scrollTo(0, 0);
   }, []);
 
+  const handleLogin = () => {
+    onOpenLoginModal();
+  };
+
   const handleLogout = () => {
-    logoutMutation.mutate();
+    logoutMutate();
+    onCloseLogoutConfirmModal();
   };
 
   const handleCreateIsland = () => {
@@ -186,9 +215,9 @@ export default function Wrapper() {
       ))}
 
       <Header
-        isLogin={!!profile}
-        onOpenLogoutConfirmModal={handleLogout}
-        handleLogin={() => {}}
+        isLogin={isLogined}
+        onOpenLogoutConfirmModal={onOpenLogoutConfirmModal}
+        handleLogin={handleLogin}
         handleVisitStore={handleVisitStore}
         handleBackToMain={handleBackToMain}
         timeOfDay={timeOfDay}
@@ -218,6 +247,7 @@ export default function Wrapper() {
               onClick={handleCreateIsland}
               variant="auto"
               timeOfDay={timeOfDay}
+              disabled={!profile}
               className="text-lg px-6 py-3"
             >
               🏝️ 새 섬 만들기
@@ -230,7 +260,11 @@ export default function Wrapper() {
 
             {!isLoading && isError && (
               <ErrorFallback
-                message="섬 목록을 불러오는 중 오류가 발생했어요."
+                message={`${
+                  isLogined
+                    ? "섬 목록을 불러오는 중 오류가 발생했어요."
+                    : "로그인 후 섬 목록을 확인할 수 있어요."
+                }`}
                 size="l"
                 backgroundColor="bg-transparent"
                 fullScreen={false}
@@ -287,6 +321,17 @@ export default function Wrapper() {
           console.log("섬 생성 완료");
         }}
       />
+
+      {/* 로그아웃 */}
+      <LogoutConfirmModal
+        isOpen={isOpenLogoutConfirmModal}
+        onClose={onCloseLogoutConfirmModal}
+        handleLogout={handleLogout}
+      />
+
+      {isOpenLoginModal && (
+        <LoginModal isOpen={isOpenLoginModal} onClose={onCloseLoginModal} />
+      )}
     </main>
   );
 }
