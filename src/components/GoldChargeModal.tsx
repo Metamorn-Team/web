@@ -291,6 +291,7 @@ ConfirmStepProps) {
   //   }, 2000); // 2초마다 확인
   // };
 
+  // TODO 취소 시에서 status idle로 변경해야함
   // const requestPayment = async (orderName: string, totalAmount: number) => {
   //   const paymentId = v4();
   //   await PortOne.requestPayment({
