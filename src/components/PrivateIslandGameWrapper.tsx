@@ -12,7 +12,7 @@ import { ISLAND_SCENE, MY_ISLAND_SCENE } from "@/constants/game/islands/island";
 import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
 import MyIsland from "@/components/my-island/MyIsland";
 import { useCurrentSceneStore } from "@/stores/useCurrentSceneStore";
-import MobileWarningBanner from "./common/MobileWarningBanner";
+// import MobileWarningBanner from "./common/MobileWarningBanner";
 import { useRouter } from "next/navigation";
 import { PATH } from "@/constants/path";
 import { socketManager } from "@/game/managers/socket-manager";
@@ -206,7 +206,7 @@ export default function PrivateIslandGameWrapper({
             onSettingsModalOpen={onSettingsModalOpen}
             onUpdateOpen={onUpdateOpen}
           />
-          <MobileWarningBanner />
+          {/* <MobileWarningBanner /> */}
 
           {/* RTC 컨트롤 패널 */}
           <RtcPanel

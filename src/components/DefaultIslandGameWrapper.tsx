@@ -15,7 +15,7 @@ import { ISLAND_SCENE, MY_ISLAND_SCENE } from "@/constants/game/islands/island";
 import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
 import MyIsland from "@/components/my-island/MyIsland";
 import { useCurrentSceneStore } from "@/stores/useCurrentSceneStore";
-import MobileWarningBanner from "./common/MobileWarningBanner";
+// import MobileWarningBanner from "./common/MobileWarningBanner";
 import Game, { GameRef } from "@/components/Game";
 import CommonIslandModals from "@/components/islands/CommonIslandModals";
 import DefaultIslandModals from "@/components/islands/DefaultIslandModals";
@@ -209,7 +209,7 @@ export default function DefaultIslandGameWrapper({
             onSettingsModalOpen={onSettingsModalOpen}
             onUpdateOpen={onUpdateOpen}
           />
-          <MobileWarningBanner />
+          {/* <MobileWarningBanner /> */}
         </>
       ) : null}
 
