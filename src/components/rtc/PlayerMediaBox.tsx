@@ -253,7 +253,7 @@ export default function PlayerMediaBox({
             )}
 
             {/* hover 시 볼륨 슬라이더 */}
-            {isHovering && !isFullscreen && !isLocalPlayer && (
+            {!isMobile && isHovering && !isFullscreen && !isLocalPlayer && (
               <div className="absolute bottom-1 left-1 right-1 flex justify-center">
                 <input
                   type="range"
