@@ -7,5 +7,7 @@ declare namespace NodeJS {
     NEXT_PUBLIC_TURN_SERVER_URL1: string;
     NEXT_PUBLIC_TURN_SERVER_URL2: string;
     NEXT_PUBLIC_TURN_SERVER_URL3: string;
+    NEXT_PUBLIC_PORTONE_STORE_ID: string;
+    NEXT_PUBLIC_PORTONE_CHANNEL_KEY: string;
   }
 }

@@ -10,7 +10,7 @@ let EventWrapper: EventBusWrapper<GameToUiEvent, UiToGameEvent>;
 
 class EventBusWrapper<
   GameToUi extends Events = DefaultEvents,
-  UiTiGame extends Events = DefaultEvents
+  UiToGame extends Events = DefaultEvents
 > {
   eventBus: Phaser.Events.EventEmitter;
 
@@ -18,9 +18,9 @@ class EventBusWrapper<
     this.eventBus = new Phaser.Events.EventEmitter();
   }
 
-  emitToGame<K extends Extract<keyof UiTiGame, string>>(
+  emitToGame<K extends Extract<keyof UiToGame, string>>(
     name: K,
-    ...args: Parameters<UiTiGame[K]>
+    ...args: Parameters<UiToGame[K]>
   ) {
     this.eventBus.emit(name, ...args);
   }
@@ -32,9 +32,9 @@ class EventBusWrapper<
     this.eventBus.emit(name, ...args);
   }
 
-  onGameEvent<K extends Extract<keyof UiTiGame, string>>(
+  onGameEvent<K extends Extract<keyof UiToGame, string>>(
     name: K,
-    callback: UiTiGame[K]
+    callback: UiToGame[K]
   ) {
     this.eventBus.on(name, callback);
   }
@@ -46,9 +46,9 @@ class EventBusWrapper<
     this.eventBus.on(name, callback);
   }
 
-  offGameEvent<K extends Extract<keyof UiTiGame, string>>(
+  offGameEvent<K extends Extract<keyof UiToGame, string>>(
     name: K,
-    callback?: UiTiGame[K]
+    callback?: UiToGame[K]
   ) {
     this.eventBus.off(name, callback);
   }

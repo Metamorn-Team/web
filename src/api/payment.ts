@@ -1,5 +1,9 @@
 import { http } from "@/api/http";
-import { GetPaymentStatusResponse } from "mmorntype";
+import { CreatePaymentRequest, GetPaymentStatusResponse } from "mmorntype";
+
+export const startPayment = async (body: CreatePaymentRequest) => {
+  return await http.post("/payments", body);
+};
 
 export const getPaymentStatus = async (merchantPaymentId: string) => {
   const response = await http.get<GetPaymentStatusResponse>(

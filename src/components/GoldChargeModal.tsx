@@ -8,12 +8,12 @@ import RetroModal from "@/components/common/RetroModal";
 import RetroButton from "@/components/common/RetroButton";
 import RadioButton from "@/components/common/RadioButton";
 import Alert from "@/utils/alert";
-// import * as PortOne from "@portone/browser-sdk/v2";
-// import { v4 } from "uuid";
-// import { useQueryClient } from "@tanstack/react-query";
-// import { QUERY_KEY as GOLD_BALANCE_QUERY_KEY } from "@/hook/queries/useGetGoldBalance";
-// import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
-// import { getPaymentStatus } from "@/api/payment";
+import * as PortOne from "@portone/browser-sdk/v2";
+import { v4 } from "uuid";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEY as GOLD_BALANCE_QUERY_KEY } from "@/hook/queries/useGetGoldBalance";
+import { useGetMyProfile } from "@/hook/queries/useGetMyProfile";
+import { getPaymentStatus, startPayment } from "@/api/payment";
 import Pawn from "@/components/common/Pawn";
 import { getRandomPawnColor } from "@/utils/random";
 import { FaCheck } from "react-icons/fa";
@@ -260,70 +260,115 @@ interface ConfirmStepProps {
 }
 
 function ConfirmStep({
-  // productId,
+  productId,
   price,
   gold,
   selectedMethod,
   setSelectedMethod,
-}: // setPaymentStatus,
-// handleClose,
-ConfirmStepProps) {
+  setPaymentStatus,
+  handleClose,
+}: ConfirmStepProps) {
   const [isPaymentAgreed, setIsPaymentAgreed] = useState(false);
-  // const queryClient = useQueryClient();
-  // const { data: profile } = useGetMyProfile();
+  const queryClient = useQueryClient();
+  const { data: profile } = useGetMyProfile();
 
-  // const pollPaymentStatus = async (paymentId: string) => {
-  //   const interval = setInterval(async () => {
-  //     const payment = await getPaymentStatus(paymentId);
-  //     if (payment.status === "COMPLETE") {
-  //       clearInterval(interval);
+  const pollPaymentStatus = async (paymentId: string) => {
+    let pollCount = 0;
+    const maxPolls = 5;
 
-  //       queryClient.invalidateQueries({ queryKey: [GOLD_BALANCE_QUERY_KEY] });
-  //       handleClose();
-  //       Alert.done("결제가 완료되었어요!");
-  //       setPaymentStatus("idle");
-  //     } else if (payment.status === "FAILED") {
-  //       clearInterval(interval);
+    const interval = setInterval(async () => {
+      pollCount++;
 
-  //       Alert.error("결제에 실패했어요..");
-  //       setPaymentStatus("idle");
-  //     }
-  //   }, 2000); // 2초마다 확인
-  // };
+      try {
+        const payment = await getPaymentStatus(paymentId);
+
+        if (payment.status === "COMPLETE") {
+          clearInterval(interval);
+          queryClient.invalidateQueries({ queryKey: [GOLD_BALANCE_QUERY_KEY] });
+          handleClose();
+          Alert.done("결제가 완료되었어요!");
+          setPaymentStatus("idle");
+        } else if (payment.status === "FAILED") {
+          clearInterval(interval);
+          Alert.error("결제에 실패했어요..");
+          setPaymentStatus("idle");
+        } else if (pollCount >= maxPolls) {
+          // 최대 폴링 횟수 도달
+          clearInterval(interval);
+          Alert.warn(
+            "결제 상태 확인에 시간이 걸리고 있어요. 잠시 후 다시 확인해주세요."
+          );
+          setPaymentStatus("idle");
+        }
+      } catch (error) {
+        console.error("Payment status polling error:", error);
+
+        if (pollCount >= maxPolls) {
+          clearInterval(interval);
+          Alert.error("결제 상태 확인 중 오류가 발생했어요.");
+          setPaymentStatus("idle");
+        }
+      }
+    }, 1000);
+  };
 
   // TODO 취소 시에서 status idle로 변경해야함
-  // const requestPayment = async (orderName: string, totalAmount: number) => {
-  //   const paymentId = v4();
-  //   await PortOne.requestPayment({
-  //     storeId: "",
-  //     channelKey: "",
-  //     // 결제 건 구분, portone에서 이 값으로 결제 정보를 조회해서 서버에서 검증함
-  //     paymentId,
-  //     // 주문 내용, 상품 이름 넣자
-  //     orderName,
-  //     totalAmount,
-  //     currency: "CURRENCY_KRW",
-  //     // TODO 결제 수단 추가되면 매개변수로 받거나 분기
-  //     payMethod: "EASY_PAY",
-  //     customData: {
-  //       productId,
-  //       userId: profile?.id,
-  //       productType: "GOLD_CHARGE",
-  //     },
-  //   });
-  //   setPaymentStatus("processing");
+  const requestPayment = async (orderName: string, totalAmount: number) => {
+    const paymentId = v4();
+    try {
+      if (!productId) {
+        Alert.error("상품 정보를 찾을 수 없어요..");
+        return;
+      }
 
-  //   // 웹훅으로 처리해서 폴링으로 확인해야함
-  //   pollPaymentStatus(paymentId);
-  // };
+      await startPayment({
+        amount: totalAmount,
+        merchantPaymentId: paymentId,
+        paymentProductId: productId,
+        type: "GOLD_CHARGE",
+      });
+      const payment = await PortOne.requestPayment({
+        storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID,
+        channelKey: process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY,
+        // 결제 건 구분, portone에서 이 값으로 결제 정보를 조회해서 서버에서 검증함
+        paymentId,
+        // 주문 내용, 상품 이름 넣자
+        orderName,
+        totalAmount,
+        currency: "CURRENCY_KRW",
+        // TODO 결제 수단 추가되면 매개변수로 받거나 분기
+        payMethod: "EASY_PAY",
+        customData: {
+          productId,
+          userId: profile?.id,
+          productType: "GOLD_CHARGE",
+        },
+      });
+
+      // code가 있다면 실패
+      if (payment?.code) {
+        setPaymentStatus("idle");
+        Alert.error("결제에 실패했어요..");
+      } else {
+        setPaymentStatus("processing");
+
+        // 웹훅으로 처리해서 폴링으로 확인해야함
+        pollPaymentStatus(paymentId);
+      }
+    } catch (e: unknown) {
+      Alert.error("결제에 실패했어요..");
+      setPaymentStatus("idle");
+      console.error(e);
+    }
+  };
 
   const handlePayment = () => {
-    Alert.info("준비 중이에요..");
-    // if (!selectedMethod) {
-    //   Alert.warn("결제 수단을 선택해주세요.");
-    //   return;
-    // }
-    // requestPayment(`리아 골드 ${gold}G 충전`, price);
+    // Alert.info("준비 중이에요..");
+    if (!selectedMethod) {
+      Alert.warn("결제 수단을 선택해주세요.");
+      return;
+    }
+    requestPayment(`리아 골드 ${gold}G 충전`, price);
   };
 
   return (
